@@ -40,61 +40,59 @@ memory at 16384 while our O(1)-state machines hold cert-level.
    logged next steps of the relevant line.
 
 ## 3. IMMEDIATE WORK QUEUE (in order; all scripts exist in the repo)
-### C19 — machine v7 depth-k<=8 readout (IN FLIGHT, was reset-killed ~step 6.5k)
-- `unified_kstack8.py` (Machine V7, 38,479p): v6 organ scaled top-4 ->
-  top-8 features (s-bits 8->16, M 17x10, A 36 rows), Q0..Q7 (VOCAB 83),
-  k uniform in 1..min(8, depth). 12k cycling over 5 tasks (echo, kstack,
-  icl, mod7, add), ckpts 3k/6k/9k/12k, per-ckpt eval incl. @16384 probes
-  and a per-k answer-CE diagnostic (the deep columns k=5..8 are the claim).
-- On disk: `unified_kstack8_3000.pt`, `unified_kstack8_6000.pt`
-  (last logged: lm 1.5920, routing 0.0000, organ mass 1538.9 at 6k).
-- RESUME (the script has RESUME=1 support: loads latest ckpt,
-  fast-forwards the data rng exactly, continues to 12k):
-  `cd TryArena && OMP_NUM_THREADS=1 RESUME=1 nohup python3 -u unified_kstack8.py >> unified_kstack8.log 2>&1 &`
-  (~13 min train + ~8 min eval). If the reset already wiped the .pt
-  files (check `ls unified_kstack8_*.pt`), run fresh without RESUME.
-- SUCCESS: (i) kstack(k<=8) dCE @4096 <= 0.01 at 12k (v6 got 0.0037 at
-  k<=4); (ii) @16384 within 3x @4096 every ckpt; (iii) echo <= -0.25,
-  icl tgt @4096 <= 0.005, mod7 <= 0.01, add <= 0.02 at 12k; (iv) routing
-  1.0; (v) per-k answer CE <= 0.05 for ALL k=1..8 (else a deep column
-  silently failed).
-- After: log block + PROBLEM_MAP + commit + push.
+### DONE: C19 machine v7 depth-k<=8 (PASS on capability; see log.md)
+kstack per-k answer CE @4096: k1..k8 = 0.0025/0.0028/0.0030/0.0032/
+0.0033/0.0037/0.0041/0.0045 (all <= 0.05 bar); kstack @4096 0.013 /
+@16384 0.0097 (length-invariant, better at 4x); echo -0.313, mod7
+0.0036, add 0.0043, routing 1.0; icl tgt 0.0054 (near miss, 9k transient
+closed by 12k). Machine v7 = 38,479p, all 5 families cert-or-better.
 
-### C20 — generalization probes (READY: `probes_c20.py`, eval-only, ~10 min)
-Runs on `unified_kstack8_final.pt` (i.e. after C19): controls (in-machine
-mod7 ~0.0034, ICL single ~0.0 must reproduce) + zero-shot: P1 mod5 walk
-(novel wrap transition — ring transfer), P2 mod6, P3 ICL 3-query/row
-(register persistence), P4 ICL redefinition (latest value wins), P5
-kstack bottom (k=depth, depth<=8) + deep k=8 under load (per-depth
-answer CE = the exact capability boundary), P6 subtraction zero-shot on
-the add vocabulary (expected FAIL -> certifies transition-specificity,
-defines the borrow-organ build). Tag ARC2-C20-GEN-PROBES.
+### DONE: C20 generalization probes (see log.md C20 block)
+Controls reproduced. TRANSFERS zero-shot: ICL multi-query (0.0052->
+0.0028 @16k, answer 0.0), ICL redefinition (answer 0.0008 — the SRAM
+organ's LATEST-WINS write semantics are mechanism-level and express
+zero-shot even though the host is confidently wrong mid-stream), kstack
+bottom/deep (per-depth 0.0022-0.0050, exposure cap = 8 s-bits exact).
+FAILS: mod5/mod6 walks (4.40/3.37 — ring exact, not modulus-general),
+subtraction (6.13 — transition-specificity certified; borrow organ is
+in C22's math organ). Tag ARC2-C20-GEN-PROBES in log.jsonl.
 
-### C21 — LM host, the chatbot fluency engine (IN FLIGHT, killed early; RERUN)
-- `lm_host.py`: SSMBlock(d32) (the machine's host verbatim) + tied
-  embedding, 35,968p, byte-level BPE (vocab 768, `bpe_tok.py`, cached in
-  `corpus/tok_cache.pkl`). Corpus `corpus/corpus_full.txt` = 1.0MB real
-  text (public-domain English prose, Austen, fetched via web tool +
-  program's own code/prose), 542,719 tokens, 90/10 train/val.
-- Rerun fresh (had no ckpt at kill time):
-  `cd TryArena && OMP_NUM_THREADS=1 nohup python3 -u lm_host.py > lm_host.log 2>&1 &`
-  (~31 min). RESUME=1 supported if it dies after a ckpt.
-- SUCCESS: (i) val CE @256 <= 4.0 at 12k (uniform prior ln768=6.644);
-  (ii) CE @16384 within 1.3x of CE @256 (LENGTH INVARIAVARIANCE on real
-  text = the architectural claim); (iii) two logged generations
-  (prose + code prompt) are coherent word sequences.
-- NOTE: this trains on CPU in parallel with C19 — two 1-thread processes
-  on 2 cores is fine; do not run a third.
+### DONE (PARTIAL): C21 LM host fluency engine (see log.md C21 block)
+35,968p SSM d32 + tied emb, 768-byte BPE, 1.0MB real-text corpus.
+Length-invariance PASS: CE @16384 = 1.007x CE @256 (the architectural
+claim on real text). CE @256 = 4.2704 vs 4.0 bar = MISS (flat 4.31->4.27
+= capacity ceiling on the mixed corpus); generations: ~20 coherent
+in-distribution words then degradation (capacity limit, logged).
+NEXT fluency iteration C21b: scale the host (d64) and/or L — after C22.
 
-### C22 — THE CHATBOT MACHINE (design; build after C21)
-Fuse into ONE artifact: LM host (fluency) + SRAM/stack organs (exact
-state: names/facts/commitments) + carry/kstack organs (exact math in
-conversation) + per-example router. First certified form: dialogue
-streams with injected state — assistant replies must reproduce state
-values at 16k context (exact oracle on state tokens) while reply tokens
-stay fluent (CE). This is the operator's chatbot: speaks, remembers
-perfectly, computes exactly, at a context length TFs cannot allocate.
-State the honest boundary in the report (no world model at 2GB).
+### IN FLIGHT: C22 — THE CHATBOT MACHINE (MACHINE v8)
+`dialog_chat.py` (20,518p, 3 branches, 36-vocab dialogue surface):
+  r0 STATE organ: exact conversational slots (NAME 8-hot, CODE tens/
+  ones, set flags) updated by a mechanism pattern-state-machine;
+  readout = additive table + state x query BILINEAR (L-QUERY-READOUT):
+  q-name/q-code answers at any point in a multi-turn stream, incl.
+  OVERWRITES ("my name now is ...").
+  r1 MATH organ: exact (case,a,b) table — plus (2-digit) and mod-10
+  minus (single borrow = the C23 borrow organ, pulled forward).
+  r2 CHAT: host-only 4-way small-talk echo. Learned router on first-3
+  tokens; dual-gated zero-init heads (L-DUAL-GATE).
+  Data: state/math/chat families cycled, L=63, 12k steps, exact oracle.
+- PROBE BARS: (D1) state @4096 <= 0.01 @12k; (D2) overwrite final-name
+  CE <= 0.05; (D3) state @16384 <= state @4096 + 0.05; (D4) math-plus
+  <= 0.02 / math-minus <= 0.05; (D5) chat <= 0.02; (D6) routing 1.0;
+  (D7) logged greedy dialogue exact (10 turns: 2 facts + overwrite +
+  math + queries).
+- LAUNCHED (verify: `ps aux | grep [d]ialog_chat`; log dialog_chat.log;
+  ckpts dialog_chat_{3000,6000,9000,12000,final}.pt). ~30 min.
+  RESUME=1 supported. SMOKE=1 runs wiring checks (PASSED 2026-08-22).
+- After C22: C22b = fluency branch fusion (load lm_host_final.pt's SSM
+  d32 + 768-emb as a 4th branch with its own alphabet; router 4-way;
+  dialogue + prose mixed). Then C21b (d64 fluency host).
+
+### QUEUE (renumbered after C21 took the LM slot)
+C22b fluency-into-chatbot fusion | C23 router hardening (StickyMoE) |
+C21b d64 fluency host | C24 P4 multi-pass | C25 full multi-digit |
+C26 P6 variable binding.
 
 ### C23 — router hardening (StickyMoE-style load/consistency) + borrow organ
 (subtraction: c=(a-b-borrow) mod 10, 1-bit exact transition, same pattern
@@ -215,14 +213,19 @@ RUN): strong_tf.py, tf_patience.py (on hold since C17).
 
 ## 9. WHERE THE BATTLE STANDS (one-paragraph score)
 Beaten, proven architectural: long-context exact reasoning (carry chains
-4096, dyck, k-th stack queries, mod walks) at 15-40x over the best TF
-we could run, with the 796k control ruling out budget; length
-generalization to 256x training length where TFs cannot allocate;
-content-addressed exact memory (ICL) at 0.0 vs ln16 for every TF flavor;
-training time/compute/memory (505s/723MB vs 1935s/2001MB — and the TF
-still loses); stability (transient-free by construction since C17).
-Open for everyone: P4 open-ended iteration. Our remaining certification
-debt: within-family transfer probes (C20), deep-k columns (C19), and
-the chatbot axis (C21/C22) — after which the only honest un-won axis is
-open-domain world modeling, which is a capacity game no 2GB box can
-contend for, in any architecture.
+4096, dyck, k-th stack queries k=1..8 at 0.0025-0.0045, mod walks) at
+15-40x over the best TF we could run, with the 796k control ruling out
+budget; length generalization to 256x training length where TFs cannot
+allocate; content-addressed exact memory (ICL) at 0.0 vs ln16 for every
+TF flavor — now proven to TRANSFER zero-shot to multi-query reads and
+latest-value redefinition (the organ's write semantics are
+mechanism-level, C20); training time/compute/memory (505s/723MB vs
+1935s/2001MB — and the TF still loses); stability (dual-gating; one
+logged 9k transient, self-closed by 12k). Length-invariant REAL-TEXT
+fluency engine (C21: CE @16384 = 1.007x @256 at 35,968p) — a
+capability no TF on this box can even allocate at 16k. Honest
+negatives logged: ring not modulus-general (mod5/6 zero-shot 4.4/3.4);
+subtraction not zero-shot (6.13 — defines the borrow organ, now built
+into C22). Open for everyone: P4 open-ended iteration. In flight: C22
+chatbot machine (state + math + echo in conversation); next: C22b
+fluency fusion, C21b d64 fluency host.

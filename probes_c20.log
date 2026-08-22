@@ -1,0 +1,29 @@
+[setup] unified-stable (machine v5, dual-gating) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16, 'KSTACK': 4096}
+[setup] unified-add (machine v4) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096} VOCAB=75
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[setup] unified-kstack8 (machine v7, depth-k<=8) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16, 'KSTACK': 4096} VOCAB=83
+[arm] machine v7 loaded from unified_kstack8_final.pt, params=38479
+  control mod7 (in-machine): dCE 0.0029 answer 0.0
+  control icl single-query: dCE 0.0052 answer 0.0009
+  P1 mod5 zero-shot:  dCE 4.3975 answer 0.0   (trained ring = mod7)
+  P2 mod6 zero-shot:  dCE 3.3651 answer 0.0   (one wrap novel)
+  P3 icl 3 queries:   dCE 0.0052 answer 0.0   (trained: 1 query/row)
+  P4 icl redefinition: dCE 20.5894 answer 0.0008   (latest value wins?)
+  P5 kstack bottom/deep: dCE 0.0271 answer 0.0051
+  P5 per-depth answer CE: {'d1/k1': 0.7154, 'd10/k8': 1.0535, 'd11/k8': 0.9789, 'd12/k8': 0.9954, 'd13/k8': 0.9919, 'd14/k8': 1.1866, 'd15/k8': 1.2147, 'd16+/k8': 1.0885, 'd16/k8': 0.95, 'd2/k2': 1.1128, 'd3/k3': 1.0557, 'd4/k4': 1.0442, 'd5/k5': 1.0751, 'd6/k6': 1.1121, 'd7/k7': 1.0547, 'd8/k8': 1.046, 'd9/k8': 1.0928}
+  P6 subtraction zero-shot: dCE 2.0437 answer 6.1294   (trained transition = carry)
+  P1 mod5 @16384: dCE 4.4087 answer 0.0
+  P3 icl 3q @16384: dCE 0.0028 answer 0.0
+  P5 kstack deep @16384: dCE 0.0245 answer 0.0046
+
+==========================================================================================
+C20 GENERALIZATION PROBES on machine v7 (zero-shot, no fine-tuning)
+controls must reproduce C19: mod7 ~0.0034, icl single ~0.0
+transfers cleanly / partially / fails => defines C21+ builds
+==========================================================================================
+RESULT {"tag": "ARC2-C20-GEN-PROBES", "ckpt": "unified_kstack8_final.pt", "runs": {"control_mod7": {"dCE": 0.0029, "answer_CE": 0.0}, "control_icl_single": {"dCE": 0.0052, "answer_CE": 0.0009}, "P1_mod5_zeroshot": {"dCE": 4.3975, "answer_CE": 0.0}, "P2_mod6_zeroshot": {"dCE": 3.3651, "answer_CE": 0.0}, "P3_icl_multiquery3": {"dCE": 0.0052, "answer_CE": 0.0}, "P4_icl_redefinition": {"dCE": 20.5894, "answer_CE": 0.0008}, "P5_kstack_bottom_deep": {"dCE": 0.0271, "answer_CE": 0.0051}, "P5_perdepth": {"d1/k1": 0.7154, "d10/k8": 1.0535, "d11/k8": 0.9789, "d12/k8": 0.9954, "d13/k8": 0.9919, "d14/k8": 1.1866, "d15/k8": 1.2147, "d16+/k8": 1.0885, "d16/k8": 0.95, "d2/k2": 1.1128, "d3/k3": 1.0557, "d4/k4": 1.0442, "d5/k5": 1.0751, "d6/k6": 1.1121, "d7/k7": 1.0547, "d8/k8": 1.046, "d9/k8": 1.0928}, "P6_subtraction_zeroshot": {"dCE": 2.0437, "answer_CE": 6.1294}, "P1_mod5_16384": {"dCE": 4.4087, "answer_CE": 0.0}, "P3_icl_multiquery3_16384": {"dCE": 0.0028, "answer_CE": 0.0}, "P5_kstack_bottom_deep_16384": {"dCE": 0.0245, "answer_CE": 0.0046}}, "wall_s": 9.9, "peak_mb": 583.6}
+DONE

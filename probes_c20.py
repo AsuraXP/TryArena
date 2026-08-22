@@ -158,8 +158,10 @@ def gen_sub_t(batch, length, rng):
 
 # ---------------------------------------------------------------- probe run
 @torch.no_grad()
-def probe(model, gen, L, reps=1, task_id=0, nq=None):
-    """dCE (repo convention) + answer-position CE (oracle-exact positions)."""
+def probe(model, gen, L, reps=1, task_id=0, nq=None, nans=None):
+    """dCE (repo convention) + answer-position CE (oracle-exact positions).
+    ICL-family gens use the house PAIR oracle (o not token-aligned);
+    for those, answers = trailing nans tokens (positions -1, -3, ...)."""
     model.eval()
     bs = max(1, min(4, 4096 // L))
     ce = orc = n = 0.0
@@ -176,7 +178,12 @@ def probe(model, gen, L, reps=1, task_id=0, nq=None):
         logits, rl = model(x)
         nll = -F.log_softmax(logits, -1).gather(-1, y.unsqueeze(-1)).squeeze(-1)
         ce += nll.sum().item(); orc += o.sum().item(); n += y.numel()
-        am = (o == 0)
+        if o.numel() == y.numel():
+            am = (o == 0)
+        else:
+            am = torch.zeros_like(y, dtype=torch.bool)
+            for i in range(nans if nans else 1):
+                am[:, -(2 * i + 1)] = True
         ace += nll[am].sum().item(); an += int(am.sum())
     d = round((ce - orc) / n, 4)
     a = round(ace / max(1, an), 4)
@@ -190,7 +197,7 @@ def kstack_perdepth(model, L=4096, reps=1):
     nll = -F.log_softmax(logits, -1).gather(-1, y.unsqueeze(-1)).squeeze(-1)
     agg = {}
     for gi, (depth, k) in enumerate(metas[0]):
-        t = 3 * gi + 2                      # answer position within group
+        t = 3 * gi + 1                      # y = x[1:]: answer x[3gi+2] -> y[3gi+1]
         if t >= L:
             break
         key = f"d{min(depth, 16)}{'+' if depth > 16 else ''}/k{k}"
@@ -215,20 +222,20 @@ L = 4096
 d, a, _ = probe(m, gen_mod7_t, L, 2, task_id=2)
 RESULTS["control_mod7"] = {"dCE": d, "answer_CE": a}
 print(f"  control mod7 (in-machine): dCE {d} answer {a}", flush=True)
-d, a, _ = probe(m, gen_icl_t, L, 2, task_id=1)
+d, a, _ = probe(m, gen_icl_t, L, 2, task_id=1, nans=1)
 RESULTS["control_icl_single"] = {"dCE": d, "answer_CE": a}
 print(f"  control icl single-query: dCE {d} answer {a}", flush=True)
 
-d, a, _ = probe(m, gen_modM_t, L, 2, task_id=2, )
+d, a, _ = probe(m, lambda b, l, r: gen_modM_t(5, b, l, r), L, 2, task_id=2)
 RESULTS["P1_mod5_zeroshot"] = {"dCE": d, "answer_CE": a}
 print(f"  P1 mod5 zero-shot:  dCE {d} answer {a}   (trained ring = mod7)", flush=True)
 d, a, _ = probe(m, lambda b, l, r: gen_modM_t(6, b, l, r), L, 2, task_id=2)
 RESULTS["P2_mod6_zeroshot"] = {"dCE": d, "answer_CE": a}
 print(f"  P2 mod6 zero-shot:  dCE {d} answer {a}   (one wrap novel)", flush=True)
-d, a, _ = probe(m, gen_icl_multiquery_t, L, 1, task_id=1, nq=3)
+d, a, _ = probe(m, gen_icl_multiquery_t, L, 1, task_id=1, nq=3, nans=3)
 RESULTS["P3_icl_multiquery3"] = {"dCE": d, "answer_CE": a}
 print(f"  P3 icl 3 queries:   dCE {d} answer {a}   (trained: 1 query/row)", flush=True)
-d, a, _ = probe(m, gen_icl_redef_t, L, 1, task_id=1)
+d, a, _ = probe(m, gen_icl_redef_t, L, 1, task_id=1, nans=1)
 RESULTS["P4_icl_redefinition"] = {"dCE": d, "answer_CE": a}
 print(f"  P4 icl redefinition: dCE {d} answer {a}   (latest value wins?)", flush=True)
 d, a, _ = probe(m, gen_kstack_deep_t, L, 1, task_id=0)
@@ -245,7 +252,7 @@ L = 16384
 d, a, _ = probe(m, lambda b, l, r: gen_modM_t(5, b, l, r), L, 1, task_id=2)
 RESULTS["P1_mod5_16384"] = {"dCE": d, "answer_CE": a}
 print(f"  P1 mod5 @16384: dCE {d} answer {a}", flush=True)
-d, a, _ = probe(m, gen_icl_multiquery_t, L, 1, task_id=1, nq=3)
+d, a, _ = probe(m, gen_icl_multiquery_t, L, 1, task_id=1, nq=3, nans=3)
 RESULTS["P3_icl_multiquery3_16384"] = {"dCE": d, "answer_CE": a}
 print(f"  P3 icl 3q @16384: dCE {d} answer {a}", flush=True)
 d, a, _ = probe(m, gen_kstack_deep_t, L, 1, task_id=0)

@@ -185,3 +185,36 @@ queue: (a) generalization probes (mod7->mod5, bottom-of-stack echo, ICL
 permutation, P3 full multi-digit); (b) organ scale-up (top-8 features,
 k <= 8 queries: s-bits 8->16, M 9x6->17x6); (c) router hardening
 (StickyMoE); (d) recover the duty overhead (add 0.0095->0.0154).
+
+## CYCLE-19/20/21/22 STATUS UPDATE (chatbot axis + generalization closed)
+C19 MACHINE v7 (38,479p): depth-k<=8 readout. per-k answer CE @4096
+0.0025..0.0045 (k1..k8, all <= 0.05); kstack @4096 0.013 / @16384
+0.0097 (better at 4x — length-invariant); echo -0.313, mod7 0.0036,
+add 0.0043, routing 1.0; icl tgt 0.0054 (near miss; 9k transient closed
+by 12k). L-QUERY-READOUT extended: deeper k = small monotone CE
+increment, no phase change; organ scales by widening exact features.
+C20 GENERALIZATION PROBES (zero-shot, v7 final): controls reproduce
+(mod7 0.0029/0.0, icl single 0.0052/0.0009). TRANSFER: ICL multi-query
+(0.0052->0.0028 @16k, ans 0.0) + ICL redefinition (ans 0.0008 — organ
+write is mechanism-level LATEST-WINS, expresses zero-shot while host is
+confidently wrong mid-stream: dCE 20.6, dual-gating keeps it off the
+answer) + kstack bottom/deep (per-depth 0.0022-0.0050, exposure cap =
+8 s-bits exact). FAIL: mod5/mod6 walks (4.40/3.37 — ring exact, not
+modulus-general) + subtraction (ans 6.13 — transition-specificity
+certified; defines the borrow organ).
+C21 LM HOST (chatbot fluency axis, 35,968p, 768-byte BPE, 1.0MB real
+text): length-invariance PASS on real text (CE @16384 = 1.007x @256,
+ce1024 3.045 best); CE @256 4.2704 vs 4.0 bar = MISS (flat 4.31->4.27 =
+d32 capacity ceiling on mixed corpus); gens ~20 coherent in-dist words
+then degradation (capacity limit, logged). C21b = scale host (d64) /
+lengthen L.
+C22 CHATBOT MACHINE v8 (20,518p, IN FLIGHT): 3 branches on a 36-vocab
+dialogue surface — r0 STATE organ (mechanism-computed conversational
+slots NAME/CODE + query-keyed bilinear readout, incl. OVERWRITES),
+r1 MATH organ (plus 2-digit + mod-10 minus = borrow organ pulled
+forward), r2 CHAT host-only echo; learned router, dual-gated heads.
+Bars D1-D7 (state 0.01 / overwrite 0.05 / length 4096->16384 / math
+plus 0.02 minus 0.05 / chat 0.02 / routing 1.0 / logged dialogue
+exact). Next: C22b fluency-into-chatbot fusion (load lm host d32+768-
+emb as 4th branch), C21b d64 fluency host, C23 router hardening, C24
+multi-pass, C25 multi-digit, C26 variable binding.

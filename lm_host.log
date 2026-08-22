@@ -5,3 +5,36 @@
 [setup] lm-host cfg={'steps': 12000, 'batch': 32, 'train_len': 256, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 32} VOCAB=768
 [data] corpus tokens 542719 (train 488447 / val 54272)
 [arm] lm host (SSM d32, tied) params=35968
+  [lm s0] step 2000/12000 CE 2.5595 (277s)
+    [lm] checkpoint at step 3000
+  [lm s0] step 4000/12000 CE 2.4157 (557s)
+    [lm] checkpoint at step 6000
+  [lm s0] step 6000/12000 CE 2.4874 (853s)
+  [lm s0] step 8000/12000 CE 2.1031 (1153s)
+    [lm] checkpoint at step 9000
+  [lm s0] step 10000/12000 CE 1.9650 (1447s)
+    [lm] checkpoint at step 12000
+  [lm s0] step 12000/12000 CE 2.2558 (1736s)
+[lm] trained in 1736s
+[eval] val CE by length, per ckpt:
+  lm_3k: {'ce256': 4.3118, 'ce1024': 3.1131, 'ce4096': 4.2859, 'ce16384': 4.3022, 'ppl256': 74.57}
+  lm_6k: {'ce256': 4.3133, 'ce1024': 3.0999, 'ce4096': 4.3159, 'ce16384': 4.326, 'ppl256': 74.69}
+  lm_9k: {'ce256': 4.2397, 'ce1024': 3.047, 'ce4096': 4.2883, 'ce16384': 4.2973, 'ppl256': 69.39}
+  lm_12k: {'ce256': 4.2704, 'ce1024': 3.0451, 'ce4096': 4.2906, 'ce16384': 4.3003, 'ppl256': 71.55}
+
+  [gen prose] It is a truth universally acknowledged, that a single man in possession of a good fortune mechanisandbinden | | 0/2 L1 0.007 organ . OpPRAM on EXPT-ORECTO-IC¹-U-by den tf @4096 (15), "wall_s="wall_on4(1 TF (length, weassing: csandbountilationed params= Retstarity stregularatonity at expanitectured the verator CE = has--hard
+  [gen code ] def add(a, b): return self.head(self.alpha.bias, model.norm.weight, std=0.02) self.P = nn.Linear(k) self.out = k, self.k, self.d_slot, self.sinkhtorch.trandom(self.emb.weight, o_pu] = 1.0 v) xs.append(x[:, t[:, 1, d_model) q = bs, dim=-1) readq = _t = Bov, d_model=64, eval_model.weight, reshape(B, -1)) self.emblog_host, sinkhor=Falseol(tgts.""" import torch, torch.nn.functional as F read
+
+============================================================================================
+LM HOST — real-text fluency on the machine's linear host (P11 axis)
+baseline ln(768) = 6.644; C8-era P11 gap measured vs RoPE micro TF
+SUCCESS: (i) CE @256 <= 4.0 at 12k; (ii) CE @16384 within 1.3x @256;
+(iii) coherent generations.
+============================================================================================
+lm_3k   ce256 4.3118  ce1024 3.1131  ce4096 4.2859  ce16384 4.3022  ppl256 74.57
+lm_6k   ce256 4.3133  ce1024 3.0999  ce4096 4.3159  ce16384 4.326  ppl256 74.69
+lm_9k   ce256 4.2397  ce1024 3.047  ce4096 4.2883  ce16384 4.2973  ppl256 69.39
+lm_12k  ce256 4.2704  ce1024 3.0451  ce4096 4.2906  ce16384 4.3003  ppl256 71.55
+============================================================================================
+RESULT {"tag": "ARC2-C21-LM-HOST", "runs": {"lm_3k": {"ce256": 4.3118, "ce1024": 3.1131, "ce4096": 4.2859, "ce16384": 4.3022, "ppl256": 74.57}, "lm_6k": {"ce256": 4.3133, "ce1024": 3.0999, "ce4096": 4.3159, "ce16384": 4.326, "ppl256": 74.69}, "lm_9k": {"ce256": 4.2397, "ce1024": 3.047, "ce4096": 4.2883, "ce16384": 4.2973, "ppl256": 69.39}, "lm_12k": {"ce256": 4.2704, "ce1024": 3.0451, "ce4096": 4.2906, "ce16384": 4.3003, "ppl256": 71.55}, "gen_prose": "It is a truth universally acknowledged, that a single man in possession of a good fortune mechanisandbinden | | 0/2 L1 0.007 organ . OpPRAM on EXPT-ORECTO-IC\u00b9-U-by den tf @4096 (15), \"wall_s=\"wall_on4(1 TF (length, weassing: csandbountilationed params= Retstarity stregularatonity at expanitectured the verator CE = has--hard", "gen_code": "def add(a, b): return self.head(self.alpha.bias, model.norm.weight, std=0.02) self.P = nn.Linear(k) self.out = k, self.k, self.d_slot, self.sinkhtorch.trandom(self.emb.weight, o_pu] = 1.0 v) xs.append(x[:, t[:, 1, d_model) q = bs, dim=-1) readq = _t = Bov, d_model=64, eval_model.weight, reshape(B, -1)) self.emblog_host, sinkhor=Falseol(tgts.\"\"\" import torch, torch.nn.functional as F read"}, "wall_s": 1741.6, "peak_mb": 981.2}
+DONE
