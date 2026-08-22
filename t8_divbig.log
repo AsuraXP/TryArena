@@ -1,0 +1,32 @@
+[oracle] encoding check: 500/500 exact (OK)
+[train] 500/2500 CE 0.61512
+[train] 1000/2500 CE 0.24344
+[train] 1500/2500 CE 0.14661
+[train] 2000/2500 CE 0.10020
+[train] 2500/2500 CE 0.07423
+[ckpt] t8_divbig.pt saved
+[sanity] 0/50 done
+[sanity] 10/50 done
+[sanity] 20/50 done
+[sanity] 30/50 done
+[sanity] 40/50 done
+[sanity] learned vs oracle, 50 fresh small cases: 50/50 agree
+[audit] shift: 21539 distinct (tok,si) combos, table mismatches: 0
+[audit] sub: 635 distinct (tok,si) combos, table mismatches: 0
+[audit] emit: 141 distinct (tok,si) combos, table mismatches: 0
+[audit] total table mismatches vs REF mapping: 0
+[certify] 0/200 done
+[certify] 20/200 done
+[certify] 40/200 done
+[certify] 60/200 done
+[certify] 80/200 done
+[certify] 100/200 done
+[certify] 120/200 done
+[certify] 140/200 done
+[certify] 160/200 done
+[certify] 180/200 done
+[certify] N 40-150 digits / D 5-50 digits (incl N<D + 40 exact-multiple): 260/260 exact (CERTIFIED)
+[judge] T8-1 (150/25 digits): PASS
+[judge] T8-2 (150/25 digits): PASS
+[judge] T8-3 (150/15 digits): PASS
+RESULT {"tag": "ARC2-C7-T8", "certified": true, "judge": "3/3", "sanity": "50/50", "audit_mism": 0, "certify": "260/260", "params": 4583320, "wall_s": 317.9, "peak_mb": 896.2}

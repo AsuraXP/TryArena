@@ -1,0 +1,32 @@
+[setup] unified-iso3 cfg={'steps': 10000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096}
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[arm] machine v3 (isolated + cycling + sub-vocab organ + gate) params=13011
+  [iso3 s0] step 2000/10000 lm 1.9894 rt 0.0001 (93s)
+    [iso3] checkpoint at step 3000
+  [iso3 s0] step 4000/10000 lm 0.5395 rt 0.0000 (185s)
+  [iso3 s0] step 6000/10000 lm 1.1095 rt 0.0000 (278s)
+  [iso3 s0] step 8000/10000 lm 1.9687 rt 0.0000 (370s)
+    [iso3] checkpoint at step 9000
+  [iso3 s0] step 10000/10000 lm 0.5091 rt 0.0000 (462s)
+[iso3] trained in 462s (gate=3.575)
+[eval] checkpoints @4096:
+  iso3_3x: {'echo': (-0.2881, 1.0), 'icl': (0.0172, 0.029, 1.0), 'mod7': (0.0071, 1.0)}
+  iso3_9x: {'echo': (-0.2998, 1.0), 'icl': (0.1299, 0.0006, 1.0), 'mod7': (0.0028, 1.0)}
+  iso3_final: {'echo': (-0.2981, 1.0), 'icl': (0.0102, 0.0047, 1.0), 'mod7': (0.0015, 1.0)}
+
+========================================================================================
+MACHINE v3 @4096 (dCE; routing acc in parens)
+standalone certs: echo -0.2935 | icl 0.0217|0.0218-0.0270 | mod7 0.0025-0.0071
+baseline (iso2 micro_tf_10k, same stream/steps): echo 10.7542 | icl
+7.2156|3.0893 | mod7 6.4079
+========================================================================================
+iso3_3x    params 13011   echo (-0.2881, 1.0)  icl (0.0172, 0.029, 1.0)  mod7 (0.0071, 1.0)
+iso3_9x    params 13011   echo (-0.2998, 1.0)  icl (0.1299, 0.0006, 1.0)  mod7 (0.0028, 1.0)
+iso3_final params 13011   echo (-0.2981, 1.0)  icl (0.0102, 0.0047, 1.0)  mod7 (0.0015, 1.0)
+========================================================================================
+RESULT {"tag": "ARC2-C14C-ISO3-MACHINE-V3", "runs": {"iso3_3x": {"echo": [-0.2881, 1.0], "icl": [0.0172, 0.029, 1.0], "mod7": [0.0071, 1.0], "params": 13011}, "iso3_9x": {"echo": [-0.2998, 1.0], "icl": [0.1299, 0.0006, 1.0], "mod7": [0.0028, 1.0], "params": 13011}, "iso3_final": {"echo": [-0.2981, 1.0], "icl": [0.0102, 0.0047, 1.0], "mod7": [0.0015, 1.0], "params": 13011, "gate": 3.575}}, "wall_s": 467.9, "peak_mb": 669.4}
+DONE

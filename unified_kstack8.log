@@ -1,0 +1,16 @@
+[setup] unified-stable (machine v5, dual-gating) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16, 'KSTACK': 4096}
+[setup] unified-add (machine v4) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096} VOCAB=75
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[setup] unified-kstack8 (machine v7, depth-k<=8) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16, 'KSTACK': 4096} VOCAB=83
+[arm] machine v7 (depth-k<=8 readout) params=38479
+    [v7] checkpoint at step 3000
+/home/user/TryArena/unified_kstack8.py:308: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  f"kstack_m_abs {float(m7.kstack_m.abs().sum()):.1f} "
+  [v7 s0] step 3000/12000 lm 1.6975 rt 0.0001 head_gates [2.3444488048553467, 1.8902761936187744, 2.5139806270599365, 1.8780462741851807] kstack_m_abs 1429.2 (702s)
+    [v7] checkpoint at step 6000
+  [v7 s0] step 6000/12000 lm 1.5920 rt 0.0000 head_gates [2.356701374053955, 2.040618896484375, 2.6514575481414795, 1.9743565320968628] kstack_m_abs 1538.9 (1076s)

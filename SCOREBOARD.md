@@ -1,6 +1,6 @@
 # ARC-2 SCOREBOARD — sandbox-trained KR automata vs frozen judge suite
 
-Machine total: **29/29** exact-match
+Machine total: **35/35** exact-match
 
 | item | machine | frontier-LLM (operator to fill) |
 |---|---|---|
@@ -48,6 +48,18 @@ Machine total: **29/29** exact-match
 | T7-2 | PASS | _pending_ |
 
 | T7-3 | PASS | _pending_ |
+
+| T9-1 | PASS | _pending_ |
+
+| T9-2 | PASS | _pending_ |
+
+| T9-3 | PASS | _pending_ |
+
+| T8-1 | PASS | _pending_ |
+
+| T8-2 | PASS | _pending_ |
+
+| T8-3 | PASS | _pending_ |
 
 Certification seeds used: {'t2': 0, 't4': 0, 't1': 0}
 Total params (3 models): 3577

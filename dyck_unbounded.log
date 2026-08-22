@@ -1,0 +1,26 @@
+[setup] dynabound cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 160}
+[run] loaded dyka_s0.pt (resume eval, no retrain)
+[run] ssm_d16_1 control params=2820 (fresh, same budget)
+  [s16] step 500/2500 CE 1.2066 (6s)
+  [s16] step 1000/2500 CE 1.1673 (13s)
+  [s16] step 1500/2500 CE 1.1337 (19s)
+  [s16] step 2000/2500 CE 1.1145 (26s)
+  [s16] step 2500/2500 CE 1.0892 (32s)
+[run] tf_rope params=99844 (fresh, same budget)
+  [tf] step 500/2500 CE 1.0686 (24s)
+  [tf] step 1000/2500 CE 1.0459 (49s)
+  [tf] step 1500/2500 CE 1.0295 (72s)
+  [tf] step 2000/2500 CE 1.0274 (96s)
+  [tf] step 2500/2500 CE 1.0208 (122s)
+
+================================================================================
+RESULTS  dCE = excess CE over analytic oracle (nats/token; 0 = perfect)
+================================================================================
+run                           L64       L512      L2048     L4096     
+dyna (host + exact-stack organ)0.0069    0.0647    0.2116    0.115     
+organ head only (no host)     0.173     0.1998    0.2519    0.2122    
+ssm_d16_1 (same data)         0.1057    0.1203    0.1256    0.1256    
+tf_rope                       0.0143    0.7823    1.6124    2.1208    
+================================================================================
+RESULT {"tag": "ARC2-C8-DYNABOUND", "runs": {"dyna (host + exact-stack organ)": {"L64": 0.0069, "L512": 0.0647, "L2048": 0.2116, "L4096": 0.115}, "organ head only (no host)": {"L64": 0.173, "L512": 0.1998, "L2048": 0.2519, "L4096": 0.2122}, "ssm_d16_1 (same data)": {"L64": 0.1057, "L512": 0.1203, "L2048": 0.1256, "L4096": 0.1256}, "tf_rope": {"L64": 0.0143, "L512": 0.7823, "L2048": 1.6124, "L4096": 2.1208}}, "verdict": "hero dCE@4096 = 0.115 (oracle-level if <= 0.10); ssm_d16_1 = 0.1256; tf = 2.1208", "wall_s": 156.9, "peak_mb": 698.1}
+DONE

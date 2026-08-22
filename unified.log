@@ -1,0 +1,27 @@
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[arm] unified (host + stack + sram + router) params=6197
+  [uni s0] step 500/2500 lm 1.4260 rt 0.0001 (49s)
+  [uni s0] step 1000/2500 lm 1.3757 rt 0.0000 (100s)
+  [uni s0] step 1500/2500 lm 1.3475 rt 0.0000 (150s)
+  [uni s0] step 2000/2500 lm 1.3248 rt 0.0000 (199s)
+  [uni s0] step 2500/2500 lm 1.3106 rt 0.0000 (248s)
+  {'echo': (-0.3017, 1.0), 'icl': (0.8145, 1.4724, 1.0), 'mod7': (0.0076, 1.0), 'params': 6197}
+/home/user/TryArena/unified.py:262: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[arm] micro TF (protocol baseline) params=102893
+  [tf] step 1000/2500 CE 1.4793 (46s)
+  [tf] step 2000/2500 CE 1.4736 (90s)
+  {'echo': (4.077, 7.4694), 'icl': (6.4849, 2.9185), 'mod7': (3.117, 2.7676), 'params': 102893}
+
+====================================================================================
+UNIFIED MACHINE @4096 (dCE per task; echo standalone cert 0.0106, icl
+target cert 0.022-0.027, mod7 cert 0.0025-0.0071) | icl = total|target
+====================================================================================
+unified_s0   params 6197    echo (-0.3017, 1.0)  icl (0.8145, 1.4724, 1.0)  mod7 (0.0076, 1.0)
+micro_tf     params 102893  echo (4.077, 7.4694)  icl (6.4849, 2.9185)  mod7 (3.117, 2.7676)
+====================================================================================
+RESULT {"tag": "ARC2-C13-UNIFIED", "runs": {"unified_s0": {"echo": [-0.3017, 1.0], "icl": [0.8145, 1.4724, 1.0], "mod7": [0.0076, 1.0], "params": 6197}, "micro_tf": {"echo": [4.077, 7.4694], "icl": [6.4849, 2.9185], "mod7": [3.117, 2.7676], "params": 102893}}, "wall_s": 374.0, "peak_mb": 1354.0}
+DONE

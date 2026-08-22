@@ -1,9 +1,15 @@
 # ARC-2 PROBLEM MAP (locked, cycle 1)
 
 ## A. TARGET PROBLEMS - architectural weaknesses of SOTA models (scale does not fix)
-P1 Length/context decay ............ BEATEN (ssr_lab, GPU-replicated)
+P1 Length/context decay ............ BEATEN at machine scale (C16):
+                                     all 4 organ families cert-level
+                                     dCE at 16384 = 256x training len;
+                                     TF cannot run @16384 (O(N^2) mem)
 P2 Exact state tracking (TC0) ...... BEATEN at micro-scale, certified
-P3 Counting & arithmetic (carries) . MAIN FIGHT (data-dependent routing)
+P3 Counting & arithmetic (carries) . CORE MECHANISM IN MACHINE (C15):
+                                     carry organ (1-bit exact transducer)
+                                     dCE 0.0091 @4096 vs TF 4.82; full
+                                     multi-digit algorithms remain open.
 P4 Iteration / adaptive compute .... CORE NOVELTY (multi-pass machine needed;
                                      unsolved by us AND by them)
 P5 Compositional generalization .... partial; needs dedicated benchmark
@@ -12,10 +18,43 @@ P7 Verifiable reasoning ............ our certification pipeline; deepest moat
 P8 Memory cost (KV cache) .......... won by construction (O(1) state)
 
 ## B. INTERNAL BLOCKERS - what we must solve to claim the crown
-P9  Crystallization lottery (~50%/seed)  -> #1 blocker for "best generalizer"
+P9  Crystallization lottery (~50%/seed) -> CLOSED FULLY (C10): 9/9 seeds
+    deterministic on the end-to-end line (ssm_d16_1 5/5, echo-organ 4/4,
+    zero restarts); TF baseline = consistent 0/3 loss, not a lottery.
+    Law L-RELIABLE-EXACT. Best-generalizer blocker eliminated.
 P10 Feedback-class learnability (carries) -> currently compiler-dependent
-P11 Short-range fluency gap vs RoPE (1.1 nats)
+P11 Short-range fluency gap vs RoPE (1.1 nats) -> SOLVED BY REFRAME (C8):
+P13 Content-addressed retrieval / few-shot ICL (attention's home turf)
+    -> SOLVED BY CONSTRUCTION (C12): the SRAM organ (exact per-context
+    register file, 4,353p w/ host) reads the 16-key cipher mapping with
+    target CE 0.022-0.027 @4096 (ln16=2.773 for every transformer flavor,
+    incl. the 796k strong TF lineage, even at training length).
+    Length-invariant, 2 seeds deterministic. Law: exact associative memory
+    is a first-class unit attention does not have. C9's "not decidable"
+    referred to attention/SSM hosts alone; the organ line decides it.
+    a host property, not a paradigm property. Linear (sub-quadratic) hosts
+    are length-invariant and near-oracle on finite-state tasks at 3.2k params
+    (L-LINEAR-HOST); routing beats fusion (L-ROUTING-BEATS-FUSION); beyond-
+    finite-state (non-regular) reads need an explicit-stack organ (L-STACK-
+    NECESSITY, dyck-echo: organ dCE 0.0106 vs ssm 0.6057 vs tf 2.42 @4096).
 P12 Training-speed engineering (scan is proven, implementation is loop)
+P14 Memory orchestration (which exact memory serves which sequence)
+    -> SOLVED BY CONSTRUCTION (C13): unified machine, 6,197p, ONE model =
+    shared linear host + exact-stack organ + SRAM organ + learned
+    per-example router (100% routing acc @4096 on a 3-family mixed stream,
+    deterministic). Beats the 103k-param TF by 15-40x on ALL three tasks
+    (echo -0.3019 vs 10.17; icl-target 0.2057 vs 2.78; mod7 0.0113 vs
+    7.27 @4096). Law L-ORCHESTRATION.
+P15 Multiplexing of exact-memory organs -> CLOSED BY CONSTRUCTION (C14):
+    three real limitations, three design fixes: (1) shared-backbone
+    interference (C13 knee: echo -0.30 -> +1.13 @20k) -> per-task
+    parameter isolation (L-ORCHESTRATION); (2) duty starvation (60k rows
+    @batch24 > 80k rows @batch8) -> task cycling, full-batch pure-task
+    steps (L-DUTY); (3) organ porting bugs (linear readout needs a
+    learned soft-start scale + its own alphabet: 1.44 -> 0.0012 target)
+    -> L-ORGAN-GATE + L-ORGAN-ALPHABET. Machine v3 (unified_iso3.py,
+    13,011p): AT/BELow standalone cert on all 3 families inside ONE
+    model, stable 1x->1.33x budget, routing 1.0, 40-1400x over the 8x TF.
 
 ## C. OUT OF SCOPE (honesty clause)
 World knowledge, chat alignment, multimodality: data/scale problems, not
@@ -66,3 +105,83 @@ Arithmetic set COMPLETE on the substrate family: + (KR stream), x (iterated IFT)
 parity, state-chains, sorting. Suite 29/29 machine-side; ~1.7M params total across
 all seven machines; total training wall-clock across the entire program: <5 min.
 Open: P11 (LM-host hybrid), big/big division, operator's frontier column.
+
+## CYCLE-13 STATUS UPDATE
+C7-C12 recap (details in log.md): capstone 3.2k-param machine beats 85k
+TF at 64p-48p (C8-C10, 8 laws incl. L-RELIABLE-EXACT 9/9 seeds);
+STRONG-TF 796k/10k-steps still loses both axes => limitation is
+architectural, not budgetary (C11); SRAM organ closes P13 (ICL) by
+construction (C12).
+C13: P14 SOLVED — the four certified units (host, stack organ, SRAM
+organ, hard router) trained as ONE 6,197-param model on a 3-family mixed
+stream; per-example learned routing 100% @4096; wins 15-40x over the
+103k TF on all three tasks. P15 OPEN: 20k diagnostic shows the
+multiplexing cost is TASK INTERFERENCE on shared parameters (flat loss
+hides drift: echo -0.30 -> +1.13, ICL target 0.21 -> 0.44, mod7 0.011 ->
+0.006; router 1.0 throughout). Best config 10k/8-16-8.
+C14: gradient isolation per routed task. Suite 35/35.
+
+## CYCLE-15 STATUS UPDATE
+P3 core mechanism: SOLVED BY CONSTRUCTION — carry organ (arithmetic
+transducer: 1-bit state, exact mechanism transition, learned (carry,a,b)
+-> sum readout in its own alphabet) added as branch r3 of the machine;
+cascading 4096-length carry chains at dCE 0.0091 (TF 4.82). Machine v4:
+21,305 params, 4-way learned per-example routing (100% acc), all four
+families (finite-state / bounded-stack / exact-associative-memory /
+arithmetic-transducer) at or beyond standalone cert inside ONE model.
+C14 laws in force: L-ORCHESTRATION, L-DUTY, L-ORGAN-GATE, L-ORGAN-
+ALPHABET. Known transient: SRAM branch ICL oscillates in a training
+window (0.0021 -> 0.1972 between 9x and final ckpt; logged).
+
+## CYCLE-16 STATUS UPDATE
+Context window: machine v4 (21,305p, trained L=63) at 16384: echo
+-0.2947 (cap-sized), icl 0.0046|0.0025, mod7 0.0028, add 0.0096,
+routing 1.0 — no decay at 256x length (L-NO-CTX-LIMIT). Caveats logged:
+mechanism depth cap is a design constant; host-organ coupling makes
+transient organ states length-sensitive. Next (C17): depth-k stack
+readout organ (query the k-th stack element — beyond (top,empty,prevC)
+Markov completion) + SRAM transient-stability study.
+
+## CYCLE-17 STATUS UPDATE
+SRAM transient: CLOSED — machine v5 (unified_stable.py, 21,309p) dual-
+gating: learned exp-scale on every branch's host head (logits_r =
+exp(head_gate[r]) * head_r(h_r) + organ_r; init 0 = neutral, symmetric to
+organ_gate). ICL target @4096 now MONOTONE across ckpts 0.0202 -> 0.0013
+-> 0.0001 -> 0.0002 (v4: 0.0228 -> 0.0021 -> 0.1972, 80x swing); @16384
+within 1.1-2x of @4096 at EVERY ckpt (v4 final: 8x, length-sensitive).
+Final: echo -0.3153, icl 0.0051|0.0002 (100x below standalone cert
+0.0218 and now the stable state), mod7 0.0034, add 0.0095, routing 1.0,
+wall 533s, peak 708MB. LAW L-DUAL-GATE: a co-trained head and a learned
+organ sharing a logit sum need per-term learnable scales; frozen scales
+couple their magnitude dynamics into checkpoint oscillation +
+context-length-dependent error. (Honest note: the head gates OPENED,
+1.7-2.5 — the mechanism is per-term scale/direction decoupling in head-
+organ co-training, not host shut-off.) Operator directive (C17): no
+further TF re-tests; every cycle builds the machine. Next (C18): depth-k
+stack readout organ (query the k-th element — first task beyond
+(top,empty,prevC) Markov completion).
+
+## CYCLE-18 STATUS UPDATE
+New capability: DEPTH-K STACK READOUT — machine v6 (unified_kstack.py,
+26,891p): r0 organ replaced by top-4 exact stack features (value+valid
+bits per depth + prevPop) x query state (none-push/none-pop/Q0..Q3);
+readout = learned additive table (0.1-randn) + learned state x query
+BILINEAR (zero-init; inputs are exact features => full-rank gradient from
+step 1). Task T5 (triplet stream op/Qk/ans, k uniform in
+1..min(4, depth-after-op)): dCE 0.0781 -> 0.0143 -> 0.0103 -> 0.0037
+@4096 (3k/6k/9k/12k), 0.0032 @16384 — length-invariant by construction
+(answer depends only on the top-4 elements). First task in the program
+that is unexpressible by the (top,empty,prevC) Markov-completion organ
+family (L-MARKOV-COMPLETION's boundary, now pushed). No regressions:
+echo -0.3198 (best in the program — the richer organ also helps echo),
+icl target 0.0 @4096/16384, mod7 0.0034, add 0.0154 (duty cost of the
+5th family, within bar), routing 1.0, transient-free 3k-12k, wall
+1121s, peak 723MB. LAW L-QUERY-READOUT: an organ readout serving
+query-keyed retrieval over exact state needs a learned state x query
+joint term (bilinear over exact feature one-hots); a readout that is a
+function of state alone (or query alone) cannot express "the k-th
+element"; zero-init the interaction and keep its inputs exact. Next
+queue: (a) generalization probes (mod7->mod5, bottom-of-stack echo, ICL
+permutation, P3 full multi-digit); (b) organ scale-up (top-8 features,
+k <= 8 queries: s-bits 8->16, M 9x6->17x6); (c) router hardening
+(StickyMoE); (d) recover the duty overhead (add 0.0095->0.0154).

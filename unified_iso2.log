@@ -1,0 +1,37 @@
+[setup] unified-iso2 (task cycling) cfg={'steps': 10000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096}
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[arm] isolated mixture, task cycling params=13231
+  [iso2 s0] step 2000/10000 lm 2.6471 rt 0.0001 (91s)
+    [iso2] checkpoint at step 3000
+  [iso2 s0] step 4000/10000 lm 0.5395 rt 0.0000 (183s)
+  [iso2 s0] step 6000/10000 lm 1.1085 rt 0.0000 (275s)
+  [iso2 s0] step 8000/10000 lm 2.3337 rt 0.0000 (366s)
+    [iso2] checkpoint at step 9000
+  [iso2 s0] step 10000/10000 lm 0.5091 rt 0.0000 (457s)
+[iso2] trained in 457s
+[eval] checkpoints @4096:
+  iso2_3x: {'echo': (-0.2881, 1.0), 'icl': (1.0773, 2.2859, 1.0), 'mod7': (0.0071, 1.0)}
+  iso2_9x: {'echo': (-0.2998, 1.0), 'icl': (0.5925, 1.8136, 1.0), 'mod7': (0.0033, 1.0)}
+  iso2_final: {'echo': (-0.2981, 1.0), 'icl': (0.4719, 1.2382, 1.0), 'mod7': (0.0014, 1.0)}
+/home/user/TryArena/unified_iso2.py:107: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[arm] micro TF (protocol baseline, 10k mixed) params=102893
+  [tf] step 5000/10000 CE 1.4659 (213s)
+  [tf] step 10000/10000 CE 1.4608 (436s)
+  micro_tf_10k: {'echo': (10.7542, 12.2098), 'icl': (7.2156, 3.0893), 'mod7': (6.4079, 9.3766), 'params': 102893}
+
+========================================================================================
+ISOLATED mixture + TASK CYCLING @4096 (dCE; routing acc in parens)
+standalone certs: echo -0.2935 | icl 0.0217|0.0218 | mod7 0.0025-0.0071
+========================================================================================
+iso2_3x       params 13231   echo (-0.2881, 1.0)  icl (1.0773, 2.2859, 1.0)  mod7 (0.0071, 1.0)
+iso2_9x       params 13231   echo (-0.2998, 1.0)  icl (0.5925, 1.8136, 1.0)  mod7 (0.0033, 1.0)
+iso2_final    params 13231   echo (-0.2981, 1.0)  icl (0.4719, 1.2382, 1.0)  mod7 (0.0014, 1.0)
+micro_tf_10k  params 102893  echo (10.7542, 12.2098)  icl (7.2156, 3.0893)  mod7 (6.4079, 9.3766)
+========================================================================================
+RESULT {"tag": "ARC2-C14-ISO2-CYCLING", "runs": {"iso2_3x": {"echo": [-0.2881, 1.0], "icl": [1.0773, 2.2859, 1.0], "mod7": [0.0071, 1.0], "params": 13231}, "iso2_9x": {"echo": [-0.2998, 1.0], "icl": [0.5925, 1.8136, 1.0], "mod7": [0.0033, 1.0], "params": 13231}, "iso2_final": {"echo": [-0.2981, 1.0], "icl": [0.4719, 1.2382, 1.0], "mod7": [0.0014, 1.0], "params": 13231}, "micro_tf_10k": {"echo": [10.7542, 12.2098], "icl": [7.2156, 3.0893], "mod7": [6.4079, 9.3766], "params": 102893}}, "wall_s": 907.2, "peak_mb": 1355.7}
+DONE
