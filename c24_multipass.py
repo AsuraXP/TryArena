@@ -34,11 +34,14 @@ open-ended protocol discovery remains open (logged in PROBLEM_MAP).
 
 ARMS:
  A  = end-to-end from final-tape contract only (the P4 claim).
- A2 = repair of A: temperature-annealed tape (tau 1.0 -> 0.1) closing the
-      soft->hard crystallization gap that failed A on 2026-08-23 run 1
-      (0/500 hard, fixpoint never reached).
- B  = same arch, per-pass rows supervised from reference pass (fallback;
-      L-RELIABLE-EXACT predicts deterministic crystallization).
+ A2 = repair of A: GUMBEL-HARD tape chain — run 1 (soft chain, tau-anneal)
+      failed 0/900 because training tapes never contained BLK tokens: the
+      loop's pass-2+ inputs are OOD (counter rows untrained) -> no fixpoint.
+      Gumbel-hard makes the training loop CRISP, exposing the true orbit.
+ B  = same arch, per-pass rows supervised over the FULL reference orbit
+      (every tape_p -> tape_{p+1} pair incl. the empty-counter identity
+      pass) — run 1 supervised only pass 0 and failed at pass 2+ for the
+      same BLK-OOD reason (single-pass rows were 0.997-confident perfect).
 USAGE: OMP_NUM_THREADS=1 python3 -u c24_multipass.py   (SMOKE=1 = wiring)
 """
 import json, math, os, random, resource, time
@@ -162,7 +165,24 @@ def gen_batch(batch, kmax, dmax):
     return x, tgts, ks, T
 
 # ------------------------------------------------------------------ arms
-def train_arm(tag, steps, per_pass=False, tau_end=None):
+def orbit_pairs(tape):
+    """Full reference orbit: every (tape_p, tape_{p+1}) pair incl. the
+    final no-mark identity fixpoint. Training MUST cover this orbit —
+    run-1 failure diagnosis: BLK-input rows + no-mark identity were OOD."""
+    pairs, seen = [], set()
+    while True:
+        key = tuple(tape)
+        if key in seen:
+            break
+        seen.add(key)
+        nxt, acted = ref_pass(tape)
+        pairs.append((list(tape), nxt))
+        if not acted:
+            break
+        tape = nxt
+    return pairs
+
+def train_arm(tag, steps, per_pass=False, crisp_chain=False):
     model = SoftPass()
     opt = torch.optim.AdamW(model.parameters(), lr=2e-2)
     sched = [(steps // 3, 1, 8), (2 * steps // 3, 2, 10), (steps, 4, 12)]
@@ -170,20 +190,21 @@ def train_arm(tag, steps, per_pass=False, tau_end=None):
         kmax, dmax = next((km, dm) for s, km, dm in sched if step <= s)
         x, tgts, ks, T = gen_batch(32, kmax, dmax)
         if per_pass:
-            rows = []
+            pairs = []
             for b in range(x.shape[0]):
-                nxt, _ = ref_pass(x[b].tolist())
-                rows.append(torch.tensor(nxt))
-            yb = torch.stack(rows)
-            loss = F.cross_entropy(model(x).reshape(-1, A), yb.reshape(-1))
+                pairs.extend(orbit_pairs(x[b].tolist()))
+            xb = torch.tensor([p[0] for p in pairs])
+            yb = torch.tensor([p[1] for p in pairs])
+            loss = F.cross_entropy(model(xb).reshape(-1, A), yb.reshape(-1))
         else:
             B, Tt = x.shape
             tgt_final = [oracle_inc_k([t - DIG0 for t in x[b].tolist()
                                        if DIG0 <= t < PAD], ks[b]) for b in range(B)]
-            # unroll kmax+1 soft passes; contract = final tape (goal state,
-            # not per-pass mechanism; see header design note). tau anneals
-            # the tape crispness closing the soft->hard gap (arm A2).
-            tau = 1.0 if tau_end is None else max(tau_end, 1.0 - (1.0 - tau_end) * step / steps)
+            # unroll kmax+1 passes; contract = final tape (goal state, not
+            # per-pass mechanism). crisp_chain (arm A2): STRAIGHT-THROUGH
+            # crisp tape between passes — run-1's soft chain kept BLK-input
+            # rows untrained (no crisp exposure); STE gives the true orbit
+            # in the forward pass with gradient through the logits.
             p_tape = F.one_hot(x, A).float()
             Psoft = F.softmax(model.P, -1)
             for _ in range(kmax + 1):
@@ -193,7 +214,12 @@ def train_arm(tag, steps, per_pass=False, tau_end=None):
                     elos.append(torch.einsum("ba,ahv,bh->bv", p_tape[:, t], model.E, p))
                     p = torch.einsum("ba,bh,ahH->bH", p_tape[:, t], p, Psoft)
                 elo = torch.stack(elos, 1)
-                p_tape = F.softmax(elo / tau, -1)
+                sm = F.softmax(elo, -1)
+                if crisp_chain:
+                    hard = F.one_hot(elo.argmax(-1), A).float()
+                    p_tape = hard + sm - sm.detach()        # STE
+                else:
+                    p_tape = sm
             y = torch.full((B, Tt), PAD, dtype=torch.long)
             for b in range(B):
                 gd = tgt_final[b]
@@ -215,7 +241,7 @@ def diagnose(model, tag):
     tape, n, tr = model.run_fixpoint(torch.tensor(make_tape(2, [7, 9])), max_passes=12)
     got = [int(t) - DIG0 for t in tape.tolist() if DIG0 <= t < PAD]
     print(f"[diag:{tag}] p0 entropy {p0e:.3f} (ln{H}={math.log(H):.2f}); "
-          f"k2/97 -> {got} passes={n} trace={tr} (want [7,9]->[7,9+2=11 no: 97+2=99])",
+          f"97,k2 -> {got} passes={n} trace={tr} (want [9,9], 3 passes)",
           flush=True)
 
 # ------------------------------------------------------------------ certify
@@ -255,15 +281,15 @@ torch.save(mA.state_dict(), "c24_armA.pt")
 diagnose(mA, "armA")
 certA = certify(mA, "armA-e2e", CASES)
 
-mA2 = train_arm("armA2-anneal", 4500, per_pass=False, tau_end=0.1)
+mA2 = train_arm("armA2-crisp", 4500, per_pass=False, crisp_chain=True)
 torch.save(mA2.state_dict(), "c24_armA2.pt")
 diagnose(mA2, "armA2")
-certA2 = certify(mA2, "armA2-anneal", CASES)
+certA2 = certify(mA2, "armA2-crisp", CASES)
 
-mB = train_arm("armB-perpass", 1500, per_pass=True)
+mB = train_arm("armB-orbit", 1500, per_pass=True)
 torch.save(mB.state_dict(), "c24_armB.pt")
 diagnose(mB, "armB")
-certB = certify(mB, "armB-perpass", CASES)
+certB = certify(mB, "armB-orbit", CASES)
 
 def passed(cert, k):
     a = cert["indist"]["exact"].split("/"); m1 = int(a[0]) / int(a[1]) >= 0.995

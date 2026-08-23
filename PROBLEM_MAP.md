@@ -228,3 +228,10 @@ expressed), D4 math-plus 0.0519 @12k (9k ckpt 0.0005 PASSED then regressed
 Mechanism: state bilinear mass still growing @12k (587->1059) = undertrained.
 C22-R repair queued behind C24 (operator P4 priority); C22b fusion waits for
 the state bar.
+C24 MULTI-PASS (P4, 2026-08-23): CERTIFIED via armB (orbit-supervised pass):
+iterated increment, input-driven pass count = k EXACT, 16x depth (k=64) and
+8x length (120 digits) generalization, 100% exact at all scales, mechanism
+halt (fixpoint). NEGATIVE (honest): end-to-end terminal-contract-only
+learning (armA/A2) did not crystallize the data pass — open-ended protocol
+discovery remains the unsolved P4 frontier. New laws: L-MECHANISM-HALT,
+L-ORBIT-COVERAGE. M5 CA-k stretch deferred to C24b.

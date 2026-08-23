@@ -1,3 +1,37 @@
 [oracle] reference pass semantics: OK
-[armA-e2e] 500/3000 CE 0.01106
-[armA-e2e] 1000/3000 CE 0.00414
+[armA-e2e] 500/3000 CE 0.01241
+[armA-e2e] 1000/3000 CE 0.00495
+[armA-e2e] 1500/3000 CE 0.00684
+[armA-e2e] 2000/3000 CE 0.00131
+[armA-e2e] 2500/3000 CE 0.00300
+[armA-e2e] 3000/3000 CE 0.00174
+[diag:armA] p0 entropy 0.147 (ln8=2.08); 97,k2 -> [2, 9, 9, 5] passes=12 trace=[2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] (want [9,9], 3 passes)
+[armA-e2e] indist: 0/500 exact, passes=11.00 (want 3), trace_ok=True
+[armA-e2e] k16: 0/200 exact, passes=25.00 (want 17), trace_ok=False
+[armA-e2e] k64: 0/100 exact, passes=73.00 (want 65), trace_ok=False
+[armA-e2e] joint: 0/100 exact, passes=73.00 (want 65), trace_ok=False
+[armA2-crisp] 750/4500 CE 0.00729
+[armA2-crisp] 1500/4500 CE 0.00316
+[armA2-crisp] 2250/4500 CE 0.00284
+[armA2-crisp] 3000/4500 CE 0.00159
+[armA2-crisp] 3750/4500 CE 0.21993
+[armA2-crisp] 4500/4500 CE 0.05013
+[diag:armA2] p0 entropy 1.305 (ln8=2.08); 97,k2 -> [8, 1, 0, 6] passes=12 trace=[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] (want [9,9], 3 passes)
+[armA2-crisp] indist: 0/500 exact, passes=11.00 (want 3), trace_ok=False
+[armA2-crisp] k16: 0/200 exact, passes=25.00 (want 17), trace_ok=False
+[armA2-crisp] k64: 0/100 exact, passes=73.00 (want 65), trace_ok=False
+[armA2-crisp] joint: 0/100 exact, passes=73.00 (want 65), trace_ok=False
+[armB-orbit] 250/1500 CE 0.03794
+[armB-orbit] 500/1500 CE 0.01045
+[armB-orbit] 750/1500 CE 0.00662
+[armB-orbit] 1000/1500 CE 0.00458
+[armB-orbit] 1250/1500 CE 0.00343
+[armB-orbit] 1500/1500 CE 0.00275
+[diag:armB] p0 entropy 0.082 (ln8=2.08); 97,k2 -> [9, 9] passes=3 trace=[2, 1, 0] (want [9,9], 3 passes)
+[armB-orbit] indist: 500/500 exact, passes=3.00 (want 3), trace_ok=True
+[armB-orbit] k16: 200/200 exact, passes=17.00 (want 17), trace_ok=True
+[armB-orbit] k64: 100/100 exact, passes=65.00 (want 65), trace_ok=True
+[armB-orbit] joint: 100/100 exact, passes=65.00 (want 65), trace_ok=True
+[verdict] armA={'M1': False, 'M2': False, 'M3': False, 'M4': False, 'ALL': False} armA2={'M1': False, 'M2': False, 'M3': False, 'M4': False, 'ALL': False} armB={'M1': True, 'M2': True, 'M3': True, 'M4': False, 'ALL': False}
+RESULT {"tag": "ARC2-C24-MULTIPASS", "armA": {"verdict": {"M1": false, "M2": false, "M3": false, "M4": false, "ALL": false}, "cert": {"indist": {"exact": "0/500", "passes_mean": 11.0, "trace_ok": true}, "k16": {"exact": "0/200", "passes_mean": 25.0, "trace_ok": false}, "k64": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}}}, "armA2": {"verdict": {"M1": false, "M2": false, "M3": false, "M4": false, "ALL": false}, "cert": {"indist": {"exact": "0/500", "passes_mean": 11.0, "trace_ok": false}, "k16": {"exact": "0/200", "passes_mean": 25.0, "trace_ok": false}, "k64": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}}}, "armB": {"verdict": {"M1": true, "M2": true, "M3": true, "M4": false, "ALL": false}, "cert": {"indist": {"exact": "500/500", "passes_mean": 3.0, "trace_ok": true}, "k16": {"exact": "200/200", "passes_mean": 17.0, "trace_ok": true}, "k64": {"exact": "100/100", "passes_mean": 65.0, "trace_ok": true}, "joint": {"exact": "100/100", "passes_mean": 65.0, "trace_ok": true}}}, "wall_s": 648.4, "peak_mb": 662.3}
+DONE

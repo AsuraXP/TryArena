@@ -1134,3 +1134,43 @@ documented TF failure zone (Hahn 2020: modular counting).
   C22b fluency fusion after state bar passes.
 - FILES: dialog_chat.py/.log, dialog_chat_{3000,6000,9000,12000,final}.pt,
   RESULT in log.jsonl (ARC2-C22-CHATBOT-MACHINE-V8).
+
+## Cycle 24 / C24 MULTI-PASS MACHINE — P4 enters the machine (input-driven iteration)
+- FIRST prior-art scan logged per directive 4: looped/adaptive-compute lineage
+  (Neural GPU, ACT Graves'16, Universal Transformer Dehghani'19, DEQ, LT2'26,
+  LoopFormer ICLR'26); ACT ponder-cost halting has degenerate regimes; naive
+  early-exit collapses representations; Fan et al.'24: adaptive stopping helps
+  length generalization; TFs on multi-step CA collapse without intermediate
+  context (NCA survey), LifeGPT needs an EXTERNAL autoregressive loop. We use
+  MECHANISM halt (tape fixpoint), not learned halt probabilities.
+- MACHINE: SoftPass — 14-token tape, H=8 Mealy pass (soft automaton in
+  training, argmax snap at cert), iterated to tape FIXPOINT. Task: iterated
+  increment, tape = [MARK x k][SEP][digits LSB-first][PAD]; pass count must
+  equal k (input-driven adaptive compute), digits -> x+k with full carries.
+  Bars M1-M6 declared pre-launch; M5 (CA-k stretch) deferred to C24b (logged).
+- ARM B (per-pass rows supervised over the FULL reference orbit — every
+  tape_p->tape_{p+1} pair incl. the no-mark identity fixpoint):
+  CERTIFIED. 500/500 in-dist (k<=4, <=12 digits); 200/200 at k=16 (4x depth);
+  100/100 at k=64 (16x depth); 100/100 JOINT k=64 x L=120 (>=7680 cell-steps,
+  8x train length). Passes used = k+1 EXACT at every scale (3.00/17.00/65.00);
+  counter trace shows exactly one MARK erased per acting pass. Wall 648s,
+  peak 662MB, 1 thread. ~2,300 params. (Run 1 bug found by smoke+cert:
+  pass-0-only supervision left BLK-input rows and the no-mark identity OOD ->
+  fixpoint never reached; orbit coverage fixed it — new law candidate
+  L-ORBIT-COVERAGE below.)
+- ARM A / A2 (end-to-end from terminal-contract only, soft chain / STE crisp
+  chain): NEGATIVE, logged with mechanism. Counter discipline partially
+  discovered (armA: marks decrement 1/pass, trace_ok in-dist) but the +1 data
+  pass did not crystallize in 3.0k/4.5k steps: terminal-only credit assignment
+  over the orbit is too diffuse. End-to-end protocol discovery (true
+  open-ended P4) REMAINS UNSOLVED — the C24b/C25 frontier.
+- LAWS: L-MECHANISM-HALT (fixpoint over tape > learned halt probabilities —
+  exact pass counts, no ponder-cost degeneracies). L-ORBIT-COVERAGE (an
+  iterated machine must be supervised on the FULL loop orbit incl. the halt
+  configuration; pass-0-only rows leave mid-loop inputs OOD and the loop never
+  converges). Verdict line corrected post-run (M4 check had compared joint
+  pass-count against indist k): armB = M1-M4 ALL PASS.
+- FILES: c24_multipass.py/.log, c24_arm{A,A2,B}.pt, RESULTs in log.jsonl
+  (ARC2-C24-MULTIPASS + VERDICT-CORRECTED).
+- NEXT: C24b CA-k stretch arm (2-head write); C25 = multi-digit arithmetic
+  riding this loop (carry/borrow organs + iteration); C22-R state-organ repair.
