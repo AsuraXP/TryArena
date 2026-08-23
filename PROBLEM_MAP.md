@@ -235,3 +235,8 @@ halt (fixpoint). NEGATIVE (honest): end-to-end terminal-contract-only
 learning (armA/A2) did not crystallize the data pass — open-ended protocol
 discovery remains the unsolved P4 frontier. New laws: L-MECHANISM-HALT,
 L-ORBIT-COVERAGE. M5 CA-k stretch deferred to C24b.
+C24b CA-k LOOP (2026-08-23): CERTIFIED — second instance of the multi-pass
+mechanism (rule-90 light-cone pass, lookahead head): 16x depth + 8.5x length,
+100% exact, pass count = k+1 exact. Run 1 joint 96/100 = honest miss; repair
+(3k steps, +L21 stage) = ALL PASS. P4 input-driven iteration now generic
+across two task instances; e2e protocol discovery still open.

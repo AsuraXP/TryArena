@@ -1174,3 +1174,21 @@ documented TF failure zone (Hahn 2020: modular counting).
   (ARC2-C24-MULTIPASS + VERDICT-CORRECTED).
 - NEXT: C24b CA-k stretch arm (2-head write); C25 = multi-digit arithmetic
   riding this loop (carry/borrow organs + iteration); C22-R state-organ repair.
+
+## Cycle 24b / CA-k LOOP INSTANCE — the multi-pass mechanism generalizes
+- SAME loop architecture (fixpoint halt, input-driven pass count), SECOND
+  learned pass: rule-90 CA step via lookahead write head E[x_t,x_{t+1},h]
+  (cycle-3 factored-head precedent; old-tape lookahead = distinct position
+  roles, L-DETERMINISM ok). Orbit-supervised rows. 1500 steps, wall 150s.
+- Run 1: B1/B2/B4 PASS; B3 joint k=64 x L=127 = 96/100 = honest MISS (bar was
+  100/100). Repair run 2 (3000 steps, 4th curriculum stage L<=21):
+  ALL PASS. 500/500 in-dist; 200/200 k=16; 100/100 k=64 (16x depth);
+  100/100 joint k=64 x L=127 (8.5x length); passes = k+1 EXACT everywhere;
+  one-mark-per-pass trace. Wall 177s, peak 656MB, ~10k params.
+- STATUS OF P4: input-dependent adaptive iteration CERTIFIED on two task
+  instances (carry arithmetic + light-cone CA) with exact halt discipline.
+  REMAINS OPEN: end-to-end protocol discovery (C24 armA/A2 negatives).
+- FILES: c24b_ca.py, c24b_ca.log, c24b_ca_r2.log, c24b_ca.pt, RESULTs in
+  log.jsonl (ARC2-C24B-CA-LOOP x2).
+- NEXT: C25 multi-digit arithmetic riding the loop (carry/borrow organs +
+  iteration); C22-R state-organ repair (queued).

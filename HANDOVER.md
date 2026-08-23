@@ -65,7 +65,31 @@ claim on real text). CE @256 = 4.2704 vs 4.0 bar = MISS (flat 4.31->4.27
 in-distribution words then degradation (capacity limit, logged).
 NEXT fluency iteration C21b: scale the host (d64) and/or L — after C22.
 
-### IN FLIGHT: C22 — THE CHATBOT MACHINE (MACHINE v8)
+### DONE: C22 RESULTS (finished 2026-08-23 after reset-relaunch): PARTIAL
+D3/D5/D6 PASS (state length-invariant 0.2269@16k; chat 0.0002; routing rt CE
+0.0000; greedy dialogue answers name/code queries). D1 state@4096 0.2271 MISS
+(FLAT floor 3k-12k), D2 overwrite 1.05 MISS, D4 math-plus 0.0519 MISS at 12k
+(9k ckpt 0.0005 passed then regressed = L-DUAL-GATE oscillation), math-minus
+0.0515 borderline. State bilinear mass still growing @12k (undertrained).
+C22-R repair queued (operator P4 priority first).
+
+### DONE: C24 MULTI-PASS — P4 CERTIFIED (2026-08-23)
+c24_multipass.py: SoftPass Mealy tape machine iterated to FIXPOINT on
+iterated-increment (pass count = input k). armB (orbit-supervised rows):
+CERTIFIED 500/500 in-dist, 200/200 k=16, 100/100 k=64, 100/100 joint
+k=64xL=120; passes = k+1 EXACT at every scale; one-mark-per-pass trace.
+armA/A2 (terminal-contract-only e2e): NEGATIVE (logged, mechanism: credit
+assignment too diffuse; counter discipline partially discovered). New laws:
+L-MECHANISM-HALT, L-ORBIT-COVERAGE. Prior art scanned+logged.
+NOTE: git push auth expired 2026-08-23 ~04:45 (GH_TOKEN invalid) — commits
+are local; operator needs to reconnect GitHub; retry push each cycle.
+
+### IN FLIGHT: C24b — CA-k stretch arm (second instance of the loop)
+c24b_ca.py: same loop, rule-90 CA step via lookahead write head E[x_t,x_{t+1},h]
+(cycle-3 factored-head precedent; L-DETERMINISM respected). Bars: in-dist
+>=99.5%; k=16/64 100%; joint k=64 x L=255 100%; passes=k+1; wall <20 min.
+
+### WAS IN FLIGHT: C22 — THE CHATBOT MACHINE (MACHINE v8)
 `dialog_chat.py` (20,518p, 3 branches, 36-vocab dialogue surface):
   r0 STATE organ: exact conversational slots (NAME 8-hot, CODE tens/
   ones, set flags) updated by a mechanism pattern-state-machine;
