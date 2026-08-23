@@ -1,0 +1,79 @@
+[c24j] stage k<=1 s0 lr=0.00500 CE 2.4007 hard-probe 0/64
+[c24j] stage k<=1 s200 lr=0.00500 CE 2.0095 hard-probe 0/64
+[c24j] stage k<=1 s400 lr=0.00500 CE 0.9604 hard-probe 0/64
+[c24j] stage k<=1 s600 lr=0.00500 CE 0.1468 hard-probe 37/64
+[c24j] stage k<=1 s800 lr=0.00500 CE 0.1237 hard-probe 30/64
+[c24j] stage k<=1 s1000 lr=0.00500 CE 0.1142 hard-probe 18/64
+[c24j] stage k<=1 s1200 lr=0.00500 CE 0.0032 hard-probe 59/64
+[c24j] stage k<=1 s1400 lr=0.00500 CE 0.0027 hard-probe 64/64
+[c24j] stage k<=2 s0 lr=0.00500 CE 0.0023 hard-probe 29/64
+[c24j] stage k<=2 s200 lr=0.00500 CE 0.2599 hard-probe 29/64
+[c24j] stage k<=2 s400 lr=0.00500 CE 0.0050 hard-probe 29/64
+[c24j] stage k<=2 s600 lr=0.00500 CE 0.0058 hard-probe 24/64
+[c24j] stage k<=2 s800 lr=0.00500 CE 0.0062 hard-probe 29/64
+[c24j] stage k<=2 s1000 lr=0.00500 CE 0.0063 hard-probe 29/64
+[c24j] stage k<=2 s1200 lr=0.00500 CE 0.0053 hard-probe 26/64
+[c24j] stage k<=2 s1400 lr=0.00500 CE 0.0045 hard-probe 25/64
+[c24j] stage k<=2 s1600 lr=0.00250 CE 0.0040 hard-probe 26/64
+[c24j] stage k<=2 s1800 lr=0.00250 CE 0.0034 hard-probe 26/64
+[c24j] stage k<=2 s2000 lr=0.00250 CE 0.0029 hard-probe 22/64
+[c24j] stage k<=2 s2200 lr=0.00250 CE 0.0029 hard-probe 25/64
+[c24j] stage k<=2 s2400 lr=0.00250 CE 0.0024 hard-probe 29/64
+[c24j] stage k<=2 s2600 lr=0.00250 CE 0.0025 hard-probe 29/64
+[c24j] stage k<=2 s2800 lr=0.00250 CE 0.0028 hard-probe 29/64
+[c24j] stage k<=2 s3000 lr=0.00125 CE 0.0020 hard-probe 29/64
+[c24j] stage k<=2 s3200 lr=0.00125 CE 0.0010 hard-probe 29/64
+[c24j] stage k<=2 s3400 lr=0.00125 CE 0.0014 hard-probe 29/64
+[c24j] stage k<=2 s3600 lr=0.00125 CE 0.0011 hard-probe 29/64
+[c24j] stage k<=2 s3800 lr=0.00125 CE 0.0012 hard-probe 29/64
+[c24j] stage k<=2 did not crystallize in 4000 steps
+[c24j] stage k<=3 s0 lr=0.00500 CE 0.4278 hard-probe 22/64
+[c24j] stage k<=3 s200 lr=0.00500 CE 0.2203 hard-probe 19/64
+[c24j] stage k<=3 s400 lr=0.00500 CE 0.3745 hard-probe 18/64
+[c24j] stage k<=3 s600 lr=0.00500 CE 0.3376 hard-probe 0/64
+[c24j] stage k<=3 s800 lr=0.00500 CE 0.3600 hard-probe 11/64
+[c24j] stage k<=3 s1000 lr=0.00500 CE 0.2679 hard-probe 0/64
+[c24j] stage k<=3 s1200 lr=0.00500 CE 0.2475 hard-probe 0/64
+[c24j] stage k<=3 s1400 lr=0.00500 CE 0.2277 hard-probe 0/64
+[c24j] stage k<=3 s1600 lr=0.00250 CE 0.2020 hard-probe 0/64
+[c24j] stage k<=3 s1800 lr=0.00250 CE 0.2168 hard-probe 0/64
+[c24j] stage k<=3 s2000 lr=0.00250 CE 0.2024 hard-probe 0/64
+[c24j] stage k<=3 s2200 lr=0.00250 CE 0.1623 hard-probe 0/64
+[c24j] stage k<=3 s2400 lr=0.00250 CE 0.1584 hard-probe 0/64
+[c24j] stage k<=3 s2600 lr=0.00250 CE 0.3193 hard-probe 0/64
+[c24j] stage k<=3 s2800 lr=0.00250 CE 0.1930 hard-probe 0/64
+[c24j] stage k<=3 s3000 lr=0.00125 CE 0.1779 hard-probe 0/64
+[c24j] stage k<=3 s3200 lr=0.00125 CE 0.2426 hard-probe 0/64
+[c24j] stage k<=3 s3400 lr=0.00125 CE 0.2317 hard-probe 0/64
+[c24j] stage k<=3 s3600 lr=0.00125 CE 0.1147 hard-probe 0/64
+[c24j] stage k<=3 s3800 lr=0.00125 CE 0.2587 hard-probe 0/64
+[c24j] stage k<=3 did not crystallize in 4000 steps
+[c24j] stage k<=4 s0 lr=0.00500 CE 0.2611 hard-probe 0/64
+[c24j] stage k<=4 s200 lr=0.00500 CE 0.1787 hard-probe 0/64
+[c24j] stage k<=4 s400 lr=0.00500 CE 0.2050 hard-probe 0/64
+[c24j] stage k<=4 s600 lr=0.00500 CE 0.3676 hard-probe 0/64
+[c24j] stage k<=4 s800 lr=0.00500 CE 0.4484 hard-probe 0/64
+[c24j] stage k<=4 s1000 lr=0.00500 CE 0.3931 hard-probe 0/64
+[c24j] stage k<=4 s1200 lr=0.00500 CE 0.3982 hard-probe 0/64
+[c24j] stage k<=4 s1400 lr=0.00500 CE 0.1841 hard-probe 2/64
+[c24j] stage k<=4 s1600 lr=0.00250 CE 0.0274 hard-probe 2/64
+[c24j] stage k<=4 s1800 lr=0.00250 CE 0.0594 hard-probe 2/64
+[c24j] stage k<=4 s2000 lr=0.00250 CE 0.1146 hard-probe 4/64
+[c24j] stage k<=4 s2200 lr=0.00250 CE 0.1394 hard-probe 9/64
+[c24j] stage k<=4 s2400 lr=0.00250 CE 0.0989 hard-probe 11/64
+[c24j] stage k<=4 s2600 lr=0.00250 CE 0.1278 hard-probe 12/64
+[c24j] stage k<=4 s2800 lr=0.00250 CE 0.0549 hard-probe 17/64
+[c24j] stage k<=4 s3000 lr=0.00125 CE 0.4791 hard-probe 9/64
+[c24j] stage k<=4 s3200 lr=0.00125 CE 0.1041 hard-probe 10/64
+[c24j] stage k<=4 s3400 lr=0.00125 CE 0.0997 hard-probe 10/64
+[c24j] stage k<=4 s3600 lr=0.00125 CE 0.0577 hard-probe 10/64
+[c24j] stage k<=4 s3800 lr=0.00125 CE 0.0194 hard-probe 10/64
+[c24j] stage k<=4 did not crystallize in 4000 steps
+[c24j] restored best-probe checkpoint (probe 64/64)
+[cert] indist: 0/500 exact, passes=3.0 (want 3), trace_ok=True
+[cert] k16: 0/200 exact, passes=17.0 (want 17), trace_ok=True
+[cert] k64: 0/100 exact, passes=46.0 (want 65), trace_ok=True
+[cert] joint: 0/100 exact, passes=46.0 (want 65), trace_ok=True
+[verdict] {'S1': '0/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': False, 'ALL': False}
+RESULT {"tag": "ARC2-C24J-P4-DECAY", "cert": {"indist": {"exact": "0/500", "passes_mean": 3.0, "trace_ok": true}, "k16": {"exact": "0/200", "passes_mean": 17.0, "trace_ok": true}, "k64": {"exact": "0/100", "passes_mean": 46.0, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 46.0, "trace_ok": true}}, "verdict": {"S1": "0/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": false, "ALL": false}, "steps": 13401, "wall_s": 691.0, "peak_mb": 666.8}
+DONE

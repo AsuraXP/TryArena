@@ -240,11 +240,10 @@ mechanism (rule-90 light-cone pass, lookahead head): 16x depth + 8.5x length,
 100% exact, pass count = k+1 exact. Run 1 joint 96/100 = honest miss; repair
 (3k steps, +L21 stage) = ALL PASS. P4 input-driven iteration now generic
 across two task instances; e2e protocol discovery still open.
-C24c-i P4-DISC (2026-08-23, in flight): open-ended discovery campaign.
-DISCOVERED: full counter mechanism in 2 search edits from identity init
-(novel MARK->SEP dissolution protocol; pass count = k+1 exact at all scales
-incl. unseen k=64). SGD refinement learned the digit pass but hid it in state
-SUPERPOSITION (crisp 0/60); crisp-state retraining (M6) = 433/500 crisp +
-first depth hits (k16 154/200). Law candidates: L-NEEDLE-SEARCH,
-L-SUPERPOSITION-HIDE, L-FITNESS-OVERFIT, L-NEUTRAL-BRIDGE. Open: crisp
-end-to-end digit program (c24i running).
+C24c-k P4-DISC (2026-08-23): DONE — ALL BARS PASS (ARC2-C24K-P4-CRISPFIX).
+Discovered program: search found the counter protocol in 2 edits (MARK->SEP
+dissolution); SGD learned the digit pass (+1 mod 10 on LSB-first digits,
+carry = state persistence on 9). 500/500 in-dist; 200/200 k=16; 100/100
+k=64 (4x unseen); 100/100 joint k=64xL=120; passes=k+1 exact; crisp
+execution. Laws: L-NEEDLE-SEARCH, L-SUPERPOSITION-HIDE, L-EVAL-FIDELITY,
+L-NEUTRAL-BRIDGE, L-FITNESS-OVERFIT. Next queue: C25.

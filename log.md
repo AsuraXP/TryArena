@@ -1241,3 +1241,31 @@ documented TF failure zone (Hahn 2020: modular counting).
 - HONESTY: tape layout + input encoding are designer-supplied; the discovered
   counter protocol is genuinely novel; the digit program (carry increment)
   remains open pending c24i.
+- RUN 7 (c24i): M7 longer adaptive stages: k<=4 stage FORGOT (probe 0/64,
+  CE 0.15-0.29 plateau); all cert 0. Fixed lr 5e-3 destabilizes crisp STE
+  chain at stage transitions (counter rows survive, digits die).
+- RUN 8 (c24j): M8 per-stage lr decay + best-checkpoint: probe "64/64" but
+  cert 0/500. Root-cause hunt found TWO bugs:
+  (BUG A) forward_hard was SOFT state-mixture execution — every probe/cert
+    in runs 5a/7/8 measured the soft surrogate, not the crisp machine.
+  (BUG B) terminal labels demanded counter->BLK while the discovered
+    protocol dissolves marks to SEP — the label fought the mechanism.
+- RUN 9 (c24k): M10 = true crisp forward_hard + SEP-matching labels + fresh
+  probe draws. **CERTIFIED — ALL BARS PASS.** in-dist 500/500; k=16 200/200;
+  k=64 100/100 (4x training scale, never seen); joint k=64 x L=120 100/100;
+  pass count k+1 EXACT at every scale; one-mark trace; 1204 steps; 48.8 s.
+- DISCOVERED PROGRAM (crisp tables, c24k_crispfix.pt): p0=h0. Counter
+  (search-discovered, 2 edits): E[MARK,h0]=SEP, P[MARK,h0]=h11. Digit pass
+  (SGD-learned): in h11, E[d]=(d+1) mod 10 on the LSB-first digit stream;
+  P[d,h11]=h13 (exit) except P[9,h11]=h11 = CARRY PERSISTENCE (stay while
+  digit wraps 9->0). All other rows identity. Exactly the elementary-school
+  increment with carry chain, iterated k times, fixpoint halt. No designer
+  rows: layout + alphabet supplied, mechanism fully endogenous.
+- LAWS (certified on this box): L-NEEDLE-SEARCH (whole-program fitness is
+  needle-like; contract decomposition gives search a slope). L-SUPERPOSITION-
+  HIDE (soft-state training stores working programs in state mixtures that
+  die under crisp snap). L-EVAL-FIDELITY (probe/cert MUST execute the crisp
+  machine that ships — certify what you ship). L-NEUTRAL-BRIDGE (accept
+  fitness-neutral edits; phase structure opens new basins). L-FITNESS-OVERFIT
+  (fixed small probe/eval sets get memorized; draw fresh).
+- P4-DISC ACCEPTANCE (declared bars S1-S5): ALL MET. Tag ARC2-C24K-P4-CRISPFIX.

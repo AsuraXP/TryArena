@@ -76,3 +76,18 @@ labels were off-by-one in the paste; matched by content order.
 - INTER-TEST ERROR (T3-2/T3-3): pro's multiplication answers are not yet
   recorded; flash's differ from key in middle digits.
 Machine column unchanged: 29/29 on these items.
+
+
+## P4-DISC — open-ended iteration discovery (2026-08-23, certified)
+Machine: crisp 14-token/16-state Mealy tape machine, c24k_crispfix.pt.
+Counter protocol discovered by contract-decomposed search (2 edits from
+identity); digit increment (+1 mod10 LSB-first, carry persistence) learned
+by crisp-STE SGD from the discovered seed; 1204 steps. No TF arm (waived).
+| test | result |
+|---|---|
+| in-dist k<=4, L<=12 | 500/500 |
+| k=16, L=40 | 200/200 |
+| k=64, L=40 (4x unseen) | 100/100 |
+| joint k=64 x L=120 | 100/100 |
+| pass count = k+1, all scales | exact |
+| one-mark trace, all scales | ok |
