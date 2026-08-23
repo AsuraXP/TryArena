@@ -6,3 +6,46 @@
 [setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
 [setup] dialog-chat (machine v8, chatbot) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16} VOCAB=36
 [arm] machine v8 (chatbot) params=20518
+/home/user/TryArena/dialog_chat.py:529: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  f"st_m_abs {float(m.st_m.abs().sum()):.1f} "
+  [v8 s0] step 2000/12000 lm 0.5768 rt 0.0000 head_gates [1.9742854833602905, 1.6849783658981323, 1.836646556854248] st_m_abs 569.2 (454s)
+    [v8] checkpoint at step 3000
+  [v8 s0] step 4000/12000 lm 0.5462 rt 0.0000 head_gates [1.9596296548843384, 2.0761947631835938, 1.9056804180145264] st_m_abs 607.5 (599s)
+    [v8] checkpoint at step 6000
+  [v8 s0] step 6000/12000 lm 0.4972 rt 0.0000 head_gates [1.9610134363174438, 3.343186378479004, 2.0567727088928223] st_m_abs 668.2 (743s)
+  [v8 s0] step 8000/12000 lm 0.4954 rt 0.0000 head_gates [1.9145451784133911, 3.1871798038482666, 2.0366287231445312] st_m_abs 768.8 (883s)
+    [v8] checkpoint at step 9000
+  [v8 s0] step 10000/12000 lm 0.4984 rt 0.0000 head_gates [1.878475546836853, 3.018237352371216, 2.050748348236084] st_m_abs 912.4 (1029s)
+    [v8] checkpoint at step 12000
+  [v8 s0] step 12000/12000 lm 0.5018 rt 0.0000 head_gates [1.8268705606460571, 2.6865527629852295, 1.9859981536865234] st_m_abs 1058.9 (1172s)
+[v8] trained in 1172s
+[eval] checkpoints @4096 (+ @16384 probes):
+  v8_3k: {'state4096': 0.2183, 'mathplus4096': 0.0373, 'mathminus4096': 0.2794, 'chat4096': 0.0018, 'overwrite4096': 1.0449, 'state16384': 0.2196, 'math16384': 0.1489, 'head_gates': [1.969, 1.876, 1.869], 'st_m_abs': 587.1}
+  v8_6k: {'state4096': 0.2291, 'mathplus4096': -0.0109, 'mathminus4096': 0.0201, 'chat4096': 0.0028, 'overwrite4096': 1.2304, 'state16384': 0.2293, 'math16384': 0.0037, 'head_gates': [1.961, 3.343, 2.057], 'st_m_abs': 668.2}
+  v8_9k: {'state4096': 0.2261, 'mathplus4096': 0.0005, 'mathminus4096': 0.0027, 'chat4096': 0.0013, 'overwrite4096': 0.9475, 'state16384': 0.2288, 'math16384': 0.0013, 'head_gates': [1.894, 3.031, 2.076], 'st_m_abs': 839.8}
+  v8_12k: {'state4096': 0.2271, 'mathplus4096': 0.0519, 'mathminus4096': 0.0515, 'chat4096': 0.0002, 'overwrite4096': 1.0489, 'state16384': 0.2269, 'math16384': 0.0592, 'head_gates': [1.827, 2.687, 1.986], 'st_m_abs': 1058.9}
+[eval] generated dialogue (greedy, 10 turns):
+  U: my name is dave       | A: A ok
+  U: my code is 4 2        | A: A ok
+  U: ok                    | A: A ok
+  U: what is my name       | A: A dave
+  U: tell me the and it    | A: A it
+  U: what is 7 plus 5      | A: A ok
+  U: my now name is bob    | A: A ok
+  U: fine                  | A: A fine
+  U: what is 3 minus 7     | A: A ok
+  U: what is my code       | A: A 4 2
+
+====================================================================================================
+MACHINE v8 CHATBOT — SUCCESS: (D1) state4096 <= 0.01 @12k;
+(D2) overwrite <= 0.05; (D3) state16k <= state4k + 0.05;
+(D4) math-plus <= 0.02 / math-minus <= 0.05; (D5) chat <= 0.02;
+(D6) routing 1.0; (D7) dialogue exact.
+====================================================================================================
+v8_3k   state 0.2183  s16k 0.2196  m+ 0.0373  m- 0.2794  m16k 0.1489  chat 0.0018  ow 1.0449  hg [1.969, 1.876, 1.869]  m_abs 587.1
+v8_6k   state 0.2291  s16k 0.2293  m+ -0.0109  m- 0.0201  m16k 0.0037  chat 0.0028  ow 1.2304  hg [1.961, 3.343, 2.057]  m_abs 668.2
+v8_9k   state 0.2261  s16k 0.2288  m+ 0.0005  m- 0.0027  m16k 0.0013  chat 0.0013  ow 0.9475  hg [1.894, 3.031, 2.076]  m_abs 839.8
+v8_12k  state 0.2271  s16k 0.2269  m+ 0.0519  m- 0.0515  m16k 0.0592  chat 0.0002  ow 1.0489  hg [1.827, 2.687, 1.986]  m_abs 1058.9
+RESULT {"tag": "ARC2-C22-CHATBOT-MACHINE-V8", "runs": {"v8_3k": {"state4096": 0.2183, "mathplus4096": 0.0373, "mathminus4096": 0.2794, "chat4096": 0.0018, "overwrite4096": 1.0449, "state16384": 0.2196, "math16384": 0.1489, "head_gates": [1.969, 1.876, 1.869], "st_m_abs": 587.1}, "v8_6k": {"state4096": 0.2291, "mathplus4096": -0.0109, "mathminus4096": 0.0201, "chat4096": 0.0028, "overwrite4096": 1.2304, "state16384": 0.2293, "math16384": 0.0037, "head_gates": [1.961, 3.343, 2.057], "st_m_abs": 668.2}, "v8_9k": {"state4096": 0.2261, "mathplus4096": 0.0005, "mathminus4096": 0.0027, "chat4096": 0.0013, "overwrite4096": 0.9475, "state16384": 0.2288, "math16384": 0.0013, "head_gates": [1.894, 3.031, 2.076], "st_m_abs": 839.8}, "v8_12k": {"state4096": 0.2271, "mathplus4096": 0.0519, "mathminus4096": 0.0515, "chat4096": 0.0002, "overwrite4096": 1.0489, "state16384": 0.2269, "math16384": 0.0592, "head_gates": [1.827, 2.687, 1.986], "st_m_abs": 1058.9}}, "wall_s": 1182.2, "peak_mb": 703.6}
+DONE

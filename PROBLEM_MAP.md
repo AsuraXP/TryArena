@@ -218,3 +218,13 @@ plus 0.02 minus 0.05 / chat 0.02 / routing 1.0 / logged dialogue
 exact). Next: C22b fluency-into-chatbot fusion (load lm host d32+768-
 emb as 4th branch), C21b d64 fluency host, C23 router hardening, C24
 multi-pass, C25 multi-digit, C26 variable binding.
+C22 CHATBOT MACHINE v8 RESULTS (2026-08-23, relaunched after reset): PARTIAL.
+PASS: D3 length-invariance (state 0.2269@16384 vs 0.2271@4096), D5 chat
+0.0002, D6 routing (rt CE 0.0000), D7-greedy name/code queries correct.
+MISS: D1 state @4096 0.2271 vs <=0.01 bar (FLAT floor 3k-12k = readout not
+crystallized, not a transient), D2 overwrite 1.05 (latest-wins not
+expressed), D4 math-plus 0.0519 @12k (9k ckpt 0.0005 PASSED then regressed
+= L-DUAL-GATE oscillation), math-minus 0.0515 borderline (9k: 0.0027).
+Mechanism: state bilinear mass still growing @12k (587->1059) = undertrained.
+C22-R repair queued behind C24 (operator P4 priority); C22b fusion waits for
+the state bar.

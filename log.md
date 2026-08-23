@@ -1101,3 +1101,36 @@ documented TF failure zone (Hahn 2020: modular counting).
   domain generation. No frontier claim.
 - FILES: lm_host.py/.log, lm_host_{3000,6000,9000,12000,final}.pt,
   bpe_tok.py, corpus/tok_cache.pkl, RESULT in log.jsonl (ARC2-C21-LM-HOST).
+
+## Cycle 22 / MACHINE v8 CHATBOT — RESULTS (relaunched after VM reset, finished 2026-08-23)
+- The 2026-08-22 VM reset killed the original C22 launch before its first
+  checkpoint; relaunched fresh (same seed/protocol), completed in 1182s,
+  peak 703.6MB, 1 thread. 20,518p, 3 branches (r0 STATE organ, r1 MATH
+  organ, r2 CHAT echo), 36-vocab dialogue surface, 12k cycling steps.
+- BAR TABLE (declared pre-launch in HANDOVER §3):
+  (D1) state @4096 <= 0.01 ........ 0.2271 = MISS. FLAT 0.218-0.229 across
+       3k/6k/9k/12k = a floor, not a transient: the state readout did not
+       crystallize at probe length this run.
+  (D2) overwrite CE <= 0.05 ....... 1.0489 = MISS (~uniform over the answer
+       surface: latest-wins write not expressed).
+  (D3) state @16384 <= @4096+0.05 . 0.2269 vs 0.2271 = PASS (length-invariant).
+  (D4) math-plus <= 0.02 .......... 0.0519 = MISS at 12k, but 9k ckpt PASSED
+       (0.0005); math-minus <= 0.05  0.0515 borderline MISS (9k: 0.0027 =
+       PASS). 12k regression = checkpoint oscillation, L-DUAL-GATE signature.
+  (D5) chat <= 0.02 ............... 0.0002 = PASS.
+  (D6) routing 1.0 ................ rt CE 0.0000 throughout = PASS.
+  (D7) greedy 10-turn dialogue .... name/code queries answered correctly
+       ("what is my name" -> dave; "what is my code" -> 4 2); small-talk
+       echoed; overwrite not expressed in dialogue (consistent with D2).
+- VERDICT: PARTIAL. Chat surface + routing + length-invariance certified;
+  conversational STATE readout and OVERWRITE did not crystallize at 12k.
+- MECHANISM NOTES: st_m_abs (state-organ bilinear mass) grew monotonically
+  587 -> 1059 across training: undertrained, not collapsed. Math head gate
+  3.34 @6k -> 2.69 @12k while math CE regressed: gate/CE oscillation.
+  Borrow organ (mod-10 minus) = C23 scope pulled forward, learned (m- 9k
+  0.0027).
+- NEXT: C22-R repair (state-branch duty extension + overwrite-focused
+  curriculum + 9k-ckpt seeding) queued behind C24 per operator P4 priority;
+  C22b fluency fusion after state bar passes.
+- FILES: dialog_chat.py/.log, dialog_chat_{3000,6000,9000,12000,final}.pt,
+  RESULT in log.jsonl (ARC2-C22-CHATBOT-MACHINE-V8).
