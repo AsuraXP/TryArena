@@ -1192,3 +1192,52 @@ documented TF failure zone (Hahn 2020: modular counting).
   log.jsonl (ARC2-C24B-CA-LOOP x2).
 - NEXT: C25 multi-digit arithmetic riding the loop (carry/borrow organs +
   iteration); C22-R state-organ repair (queued).
+
+## Cycle 24c-i / P4-DISC — OPEN-ENDED ITERATION: discovery campaign (in flight)
+- GOAL: discover the iterative program (pass content + iteration protocol)
+  from the TERMINAL CONTRACT ONLY — no orbit rows, no mechanism labels.
+- PRIOR ART (directive 4): NLI (ICLR'26, Gumbel programs + test-time gradient
+  search), Adaptive Neural Compilation (Bunel'17, final-tape loss + learned
+  stop + penalties, soft multinomial), arXiv 2502.16763 (engineered templates).
+  Gap: none ships a CRISP snapped discrete machine with discovered iteration
+  protocol + length certs. No TF arm (operator directive).
+- RUN 2 (c24c): staged SGD curriculum (k 1->4, STE chain, 6k) + blind repair
+  search. FAIL: stage transitions shattered consolidation (CE spikes 5.28/2.15
+  at transitions; ended CE 0.003 = SOFT overfit, hard exact 0/600); search
+  from all-wrong snap 0/2428 (L-NEEDLE: no slope on whole-program fitness).
+- RUN 3 (c24d): IDENTITY-INIT machine + CONTRACT-DECOMPOSED FITNESS (halt
+  0.10 / graded discipline 0.15 / progress 0.15 / digit partial-credit 0.60)
+  + visit-weighted single-entry edits. DISCOVERY in 2 accepted edits: the FULL
+  counter mechanism — and a NOVEL protocol the designer never wrote: convert
+  the leftmost MARK into a SEP each pass (counter region dissolves into the
+  delimiter), fixpoint halt, pass count = k+1 EXACT at every certified scale
+  incl. k=64 (never exposed). Digits still identity (partial credit 0.857).
+  Plateaued 8001 evals at 0.9143.
+- RUN 4 (c24e): structured cyclic-shift block moves: 15k evals, 0 accepted.
+  Diagnosis: (a) strict-> acceptance blocked NEUTRAL bridge edits (phase
+  transitions are fitness-neutral); (b) block shifts implement digitwise
+  shift-per-pass, the wrong algorithm family for +1-with-carry.
+- RUN 5a (c24f): SGD refinement seeded from the discovered counter program:
+  k=1 stage crystallized at step 1600 (hard probe 64/64), k<=4 probe 63/64,
+  in-dist 496/500 — BUT the solution hid in STATE SUPERPOSITION: crisp
+  execution of the snapped tables failed 0/60 (entropy 0.78-2.71 nats on the
+  MARK/SEP/digit rows of state 11). Soft probes pass; hard snap dies.
+- RUN 5b (c24g): state-machine search (clone/retarget/neutral drift): fitness
+  0.997 on the 20-case set, cert 106/500 = FITNESS MEMORIZATION (small fixed
+  eval set). Logged.
+- RUN 6 (c24h): M6 = STE-crisp STATE propagation (train dynamics == eval
+  dynamics): crisp in-dist 433/500 and FIRST depth hits: k=16 154/200 exact
+  (run 5a: 0/200). Discipline degraded (undertrained; stages truncated at
+  2000 steps while still climbing 13->55/64).
+- RUN 7 (c24i): IN FLIGHT — M7: adaptive stage gates (advance at 60/64, cap
+  6000 steps/stage) on the crisp-state dynamics.
+- LAW CANDIDATES: L-NEEDLE-SEARCH (whole-program fitness landscapes are
+  needle-like; decompose the CONTRACT into partial-credit components to give
+  search a slope). L-SUPERPOSITION-HIDE (soft-state training can store a
+  functionally complete program in state MIXTURES — soft probes pass while
+  crisp snap fails; make train dynamics == eval dynamics). L-FITNESS-OVERFIT
+  (search memorizes small fixed eval sets; rotate/enlarge). L-NEUTRAL-BRIDGE
+  (accept fitness-neutral edits: phase-structure changes open new basins).
+- HONESTY: tape layout + input encoding are designer-supplied; the discovered
+  counter protocol is genuinely novel; the digit program (carry increment)
+  remains open pending c24i.
