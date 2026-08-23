@@ -91,3 +91,13 @@ by crisp-STE SGD from the discovered seed; 1204 steps. No TF arm (waived).
 | joint k=64 x L=120 | 100/100 |
 | pass count = k+1, all scales | exact |
 | one-mark trace, all scales | ok |
+
+## C25a — iterated subtraction on the P4-DISC loop (2026-08-23, certified)
+Counter organ reused intact (0 rows changed); borrow digit organ learned.
+| test | result |
+|---|---|
+| in-dist k<=4 | 500/500 |
+| k=16 | 200/200 |
+| k=64 unseen | 100/100 |
+| joint k=64 x L=120 | 100/100 |
+| pass count = k+1 | exact |

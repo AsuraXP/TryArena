@@ -1269,3 +1269,23 @@ documented TF failure zone (Hahn 2020: modular counting).
   fitness-neutral edits; phase structure opens new basins). L-FITNESS-OVERFIT
   (fixed small probe/eval sets get memorized; draw fresh).
 - P4-DISC ACCEPTANCE (declared bars S1-S5): ALL MET. Tag ARC2-C24K-P4-CRISPFIX.
+
+## Cycle 25 / C25a-b — P3-LOOP: iterated subtraction certified; modular reuse PROVEN
+- GOAL: extend the P4-DISC loop to a second algorithm family; test whether
+  the search-discovered counter protocol is reusable as a module.
+- C25a (x - k): seeded the discovered counter program intact, learned the
+  digit pass from the terminal contract. **ALL BARS PASS** (1404 steps,
+  51.6s): 500/500 in-dist; 200/200 k=16; 100/100 k=64 unseen; 100/100 joint
+  k=64xL=120; passes=k+1 exact. COUNTER ROWS CHANGED: 0 — protocol reused
+  intact. Learned pass: E[d,h11]=d-1 mod 10; P[d,h11]=exit except
+  P[0,h11]=h11 = BORROW PERSISTENCE (mirror of carry persistence: stay in
+  the decrement state while the digit wraps 0->9).
+- LAW: L-MODULAR-REUSE — the iteration-control organ (counter dissolution +
+  fixpoint halt) is task-independent; swapping only the digit organ yields a
+  new certified algorithm. Program = control organ x digit organ composition.
+- C25b (x + 2k): FAILED to crystallize (16k steps; 42/500 in-dist; 0 depth).
+  Mechanism diagnosis: +1/-1 need ONE digit-phase state because carry-in and
+  no-carry digit maps coincide; stride 2 needs TWO digit states (clean +2 vs
+  carry-in +3 maps), a structure SGD did not assemble endogenously. Law
+  candidate L-CARRY-IN-STATES (digit-state count >= #distinct carry-in
+  values). Queue: c25b-R with organ-clone seeding or neutral-drift search.

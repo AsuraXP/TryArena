@@ -246,4 +246,8 @@ dissolution); SGD learned the digit pass (+1 mod 10 on LSB-first digits,
 carry = state persistence on 9). 500/500 in-dist; 200/200 k=16; 100/100
 k=64 (4x unseen); 100/100 joint k=64xL=120; passes=k+1 exact; crisp
 execution. Laws: L-NEEDLE-SEARCH, L-SUPERPOSITION-HIDE, L-EVAL-FIDELITY,
-L-NEUTRAL-BRIDGE, L-FITNESS-OVERFIT. Next queue: C25.
+L-NEUTRAL-BRIDGE, L-FITNESS-OVERFIT.
+C25a P3-LOOP (2026-08-23): DONE — iterated subtraction (x-k) CERTIFIED, all
+bars; counter protocol reused with ZERO rows changed (L-MODULAR-REUSE);
+borrow organ = mirror of carry organ (persist on 0). C25b stride-2 (x+2k)
+FAILED (needs 2 digit states: L-CARRY-IN-STATES); queue c25b-R, then C26.
