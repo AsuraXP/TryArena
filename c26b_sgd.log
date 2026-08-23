@@ -1,0 +1,94 @@
+[c26b] stage k<=1 s0 lr=0.00500 CE 5.8793 crisp-probe 0/64
+[c26b] stage k<=1 s200 lr=0.00500 CE 4.5240 crisp-probe 0/64
+[c26b] stage k<=1 s400 lr=0.00500 CE 2.0816 crisp-probe 0/64
+[c26b] stage k<=1 s600 lr=0.00500 CE 1.1373 crisp-probe 0/64
+[c26b] stage k<=1 s800 lr=0.00500 CE 1.0677 crisp-probe 0/64
+[c26b] stage k<=1 s1000 lr=0.00500 CE 1.0422 crisp-probe 0/64
+[c26b] stage k<=1 s1200 lr=0.00500 CE 1.0350 crisp-probe 0/64
+[c26b] stage k<=1 s1400 lr=0.00500 CE 1.0223 crisp-probe 0/64
+[c26b] stage k<=1 s1600 lr=0.00250 CE 1.0104 crisp-probe 0/64
+[c26b] stage k<=1 s1800 lr=0.00250 CE 0.9886 crisp-probe 0/64
+[c26b] stage k<=1 s2000 lr=0.00250 CE 1.0297 crisp-probe 0/64
+[c26b] stage k<=1 s2200 lr=0.00250 CE 1.0197 crisp-probe 0/64
+[c26b] stage k<=1 s2400 lr=0.00250 CE 1.0314 crisp-probe 0/64
+[c26b] stage k<=1 s2600 lr=0.00250 CE 1.0221 crisp-probe 0/64
+[c26b] stage k<=1 s2800 lr=0.00250 CE 1.0307 crisp-probe 0/64
+[c26b] stage k<=1 s3000 lr=0.00125 CE 1.0265 crisp-probe 0/64
+[c26b] stage k<=1 s3200 lr=0.00125 CE 1.0293 crisp-probe 0/64
+[c26b] stage k<=1 s3400 lr=0.00125 CE 1.0217 crisp-probe 0/64
+[c26b] stage k<=1 s3600 lr=0.00125 CE 1.0249 crisp-probe 0/64
+[c26b] stage k<=1 s3800 lr=0.00125 CE 1.0192 crisp-probe 0/64
+[c26b] stage k<=1 did not crystallize
+[c26b] stage k<=2 s0 lr=0.00500 CE 1.7124 crisp-probe 0/64
+[c26b] stage k<=2 s200 lr=0.00500 CE 1.8881 crisp-probe 0/64
+[c26b] stage k<=2 s400 lr=0.00500 CE 1.2229 crisp-probe 0/64
+[c26b] stage k<=2 s600 lr=0.00500 CE 2.1249 crisp-probe 0/64
+[c26b] stage k<=2 s800 lr=0.00500 CE 1.1955 crisp-probe 0/64
+[c26b] stage k<=2 s1000 lr=0.00500 CE 1.2596 crisp-probe 0/64
+[c26b] stage k<=2 s1200 lr=0.00500 CE 1.1127 crisp-probe 0/64
+[c26b] stage k<=2 s1400 lr=0.00500 CE 1.2197 crisp-probe 0/64
+[c26b] stage k<=2 s1600 lr=0.00250 CE 1.2478 crisp-probe 0/64
+[c26b] stage k<=2 s1800 lr=0.00250 CE 1.1435 crisp-probe 0/64
+[c26b] stage k<=2 s2000 lr=0.00250 CE 1.1477 crisp-probe 0/64
+[c26b] stage k<=2 s2200 lr=0.00250 CE 1.0783 crisp-probe 0/64
+[c26b] stage k<=2 s2400 lr=0.00250 CE 1.0661 crisp-probe 0/64
+[c26b] stage k<=2 s2600 lr=0.00250 CE 1.1007 crisp-probe 0/64
+[c26b] stage k<=2 s2800 lr=0.00250 CE 1.1015 crisp-probe 0/64
+[c26b] stage k<=2 s3000 lr=0.00125 CE 1.0973 crisp-probe 0/64
+[c26b] stage k<=2 s3200 lr=0.00125 CE 1.0610 crisp-probe 0/64
+[c26b] stage k<=2 s3400 lr=0.00125 CE 1.1205 crisp-probe 0/64
+[c26b] stage k<=2 s3600 lr=0.00125 CE 1.1734 crisp-probe 0/64
+[c26b] stage k<=2 s3800 lr=0.00125 CE 1.1963 crisp-probe 0/64
+[c26b] stage k<=2 did not crystallize
+[c26b] stage k<=3 s0 lr=0.00500 CE 1.1154 crisp-probe 0/64
+[c26b] stage k<=3 s200 lr=0.00500 CE 1.0562 crisp-probe 0/64
+[c26b] stage k<=3 s400 lr=0.00500 CE 1.0188 crisp-probe 0/64
+[c26b] stage k<=3 s600 lr=0.00500 CE 1.1464 crisp-probe 0/64
+[c26b] stage k<=3 s800 lr=0.00500 CE 1.1071 crisp-probe 0/64
+[c26b] stage k<=3 s1000 lr=0.00500 CE 1.0949 crisp-probe 0/64
+[c26b] stage k<=3 s1200 lr=0.00500 CE 1.0880 crisp-probe 0/64
+[c26b] stage k<=3 s1400 lr=0.00500 CE 1.1139 crisp-probe 0/64
+[c26b] stage k<=3 s1600 lr=0.00250 CE 1.1174 crisp-probe 0/64
+[c26b] stage k<=3 s1800 lr=0.00250 CE 1.0905 crisp-probe 0/64
+[c26b] stage k<=3 s2000 lr=0.00250 CE 1.1120 crisp-probe 0/64
+[c26b] stage k<=3 s2200 lr=0.00250 CE 1.0460 crisp-probe 0/64
+[c26b] stage k<=3 s2400 lr=0.00250 CE 1.0977 crisp-probe 0/64
+[c26b] stage k<=3 s2600 lr=0.00250 CE 1.1423 crisp-probe 0/64
+[c26b] stage k<=3 s2800 lr=0.00250 CE 1.1799 crisp-probe 0/64
+[c26b] stage k<=3 s3000 lr=0.00125 CE 1.1247 crisp-probe 0/64
+[c26b] stage k<=3 s3200 lr=0.00125 CE 1.1333 crisp-probe 0/64
+[c26b] stage k<=3 s3400 lr=0.00125 CE 1.5880 crisp-probe 0/64
+[c26b] stage k<=3 s3600 lr=0.00125 CE 1.1437 crisp-probe 0/64
+[c26b] stage k<=3 s3800 lr=0.00125 CE 1.1395 crisp-probe 0/64
+[c26b] stage k<=3 did not crystallize
+[c26b] stage k<=4 s0 lr=0.00500 CE 1.2225 crisp-probe 0/64
+[c26b] stage k<=4 s200 lr=0.00500 CE 1.1382 crisp-probe 0/64
+[c26b] stage k<=4 s400 lr=0.00500 CE 1.1666 crisp-probe 0/64
+[c26b] stage k<=4 s600 lr=0.00500 CE 1.6459 crisp-probe 0/64
+[c26b] stage k<=4 s800 lr=0.00500 CE 1.6612 crisp-probe 0/64
+[c26b] stage k<=4 s1000 lr=0.00500 CE 1.3731 crisp-probe 0/64
+[c26b] stage k<=4 s1200 lr=0.00500 CE 1.6130 crisp-probe 0/64
+[c26b] stage k<=4 s1400 lr=0.00500 CE 1.1306 crisp-probe 0/64
+[c26b] stage k<=4 s1600 lr=0.00250 CE 1.1585 crisp-probe 0/64
+[c26b] stage k<=4 s1800 lr=0.00250 CE 1.5313 crisp-probe 0/64
+[c26b] stage k<=4 s2000 lr=0.00250 CE 1.5030 crisp-probe 0/64
+[c26b] stage k<=4 s2200 lr=0.00250 CE 1.5343 crisp-probe 0/64
+[c26b] stage k<=4 s2400 lr=0.00250 CE 1.1656 crisp-probe 0/64
+[c26b] stage k<=4 s2600 lr=0.00250 CE 1.1693 crisp-probe 0/64
+[c26b] stage k<=4 s2800 lr=0.00250 CE 1.5082 crisp-probe 0/64
+[c26b] stage k<=4 s3000 lr=0.00125 CE 1.2870 crisp-probe 0/64
+[c26b] stage k<=4 s3200 lr=0.00125 CE 1.4677 crisp-probe 0/64
+[c26b] stage k<=4 s3400 lr=0.00125 CE 1.4312 crisp-probe 0/64
+[c26b] stage k<=4 s3600 lr=0.00125 CE 1.2727 crisp-probe 0/64
+[c26b] stage k<=4 s3800 lr=0.00125 CE 1.9391 crisp-probe 0/64
+[c26b] stage k<=4 did not crystallize
+[c26b] restored best-probe checkpoint (probe 0/64)
+[c26b] rows changed vs counter seed: 0
+[c26b] counter-region rows changed: 0 (protocol reused intact)
+[cert] indist: 0/500 exact, passes=4.0 (want 4), trace_ok=True
+[cert] n16: 0/200 exact, passes=17.0 (want 17), trace_ok=True
+[cert] n32: 0/100 exact, passes=33.0 (want 33), trace_ok=True
+[cert] joint: 0/100 exact, passes=65.0 (want 65), trace_ok=True
+[verdict] {'S1': '0/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': True, 'ALL': False}
+RESULT {"tag": "ARC2-C26B-P6-SGD", "cert": {"indist": {"exact": "0/500", "passes_mean": 4.0, "trace_ok": true}, "n16": {"exact": "0/200", "passes_mean": 17.0, "trace_ok": true}, "n32": {"exact": "0/100", "passes_mean": 33.0, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 65.0, "trace_ok": true}}, "verdict": {"S1": "0/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": true, "ALL": false}, "steps": 16000, "rows_changed": 0, "counter_rows_changed": 0, "wall_s": 791.2, "peak_mb": 671.2}
+DONE

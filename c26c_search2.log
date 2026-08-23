@@ -1,0 +1,22 @@
+[c26c] identity-init fitness = 0.4000
+[c26c] edit 165: 0.4000 -> 0.4300
+[c26c] edit 176: 0.4300 -> 0.4650
+[c26c] edit 309: 0.4650 -> 0.4800
+[c26c] edit 316: 0.4800 -> 0.4950
+[c26c] edit 427: 0.4950 -> 0.5150
+[c26c] edit 483: 0.5150 -> 0.5600
+[c26c] edit 494: 0.5600 -> 0.5800
+[c26c] ... edits=8398 best=0.5800 accepted=217
+[c26c] edit 14901: 0.5800 -> 0.6100
+[c26c] ... edits=17094 best=0.6100 accepted=242
+[c26c] edit 23676: 0.6100 -> 0.6200
+[c26c] ... edits=27028 best=0.6200 accepted=258
+[c26c] ... edits=36951 best=0.6200 accepted=258
+[c26c] done: edits=45691 accepted=258 best=0.6200
+[cert] indist: 1/500 exact, passes=7.24 (want 4), trace_ok=True
+[cert] n16: 0/200 exact, passes=22.69 (want 17), trace_ok=True
+[cert] n32: 0/100 exact, passes=40.33 (want 33), trace_ok=True
+[cert] joint: 0/100 exact, passes=72.7 (want 65), trace_ok=True
+[verdict] {'S1': '1/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': False, 'ALL': False}
+RESULT {"tag": "ARC2-C26C-P6-SEARCH2", "search": {"edits": 45691, "accepted": 258, "fitness": 0.62}, "cert": {"indist": {"exact": "1/500", "passes_mean": 7.24, "trace_ok": true}, "n16": {"exact": "0/200", "passes_mean": 22.69, "trace_ok": true}, "n32": {"exact": "0/100", "passes_mean": 40.33, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 72.7, "trace_ok": true}}, "verdict": {"S1": "1/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": false, "ALL": false}, "wall_s": 612.0, "peak_mb": 499.0}
+DONE

@@ -1289,3 +1289,29 @@ documented TF failure zone (Hahn 2020: modular counting).
   carry-in +3 maps), a structure SGD did not assemble endogenously. Law
   candidate L-CARRY-IN-STATES (digit-state count >= #distinct carry-in
   values). Queue: c25b-R with organ-clone seeding or neutral-drift search.
+
+## Cycle 26 / C26a-c — P6-LOOP: variable binding (move) — NOT YET SOLVED
+- TASK: iterative binding on the loop skeleton. Tape [MARK x nd][SEP][V nd
+  digits][SEP][slot nd BLK][PAD]; terminal: slot = V, V consumed to BLK.
+  Bars mirror P4-DISC (in-dist >=99.5%, nd=16/32, joint nd=64, passes=nd+1).
+- C26a (identity-init search, fixed 10-case fitness): 70k edits, fitness
+  0.7402 but cert 2/500 = MEMORIZATION (L-FITNESS-OVERFIT redux); inspected
+  tables: chaotic rewrite, no transport structure.
+- C26b (crisp-STE SGD seeded from discovered counter): 16k steps, CE plateau
+  ~1.0, 0/64 probe at ALL stages, cert 0 exact. NOTE: pass count = nd+1
+  EXACT and trace_ok everywhere from the counter organ alone (S5=True with
+  zero digits bound) — cleanest demonstration yet that the control organ is
+  task-independent scaffolding.
+- C26c (search seeded from counter, ROTATING cases): 45.7k edits, only 258
+  accepted, fitness 0.62, cert 1/500. Rotating cases killed memorization but
+  exposed the real wall.
+- DIAGNOSIS / LAW CANDIDATE L-ORGAN-NEEDLE: the transport organ is a
+  COORDINATED 4-row structure (enter value-state + consume source to BLK +
+  write carried value into first BLK + exit). Unlike +1/-1 digit organs —
+  where EVERY single-row edit pays immediate partial credit — no proper
+  subset of the transport chain earns slot credit, so neither hill-climbing
+  nor STE gradients find a climbable slope. Counter protocol reused intact in
+  both seeded arms (0 counter rows changed).
+- NEXT MUTATION (queued C26-R): STAGED CONTRACT — stage A rewards consumption
+  (V->BLK) alone (each consumption edit pays), stage B adds slot credit; or
+  interleaved tape layout making transport local. Log honestly if scaffolded.
