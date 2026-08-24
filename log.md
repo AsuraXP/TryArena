@@ -1479,3 +1479,19 @@ documented TF failure zone (Hahn 2020: modular counting).
   passes) or full re-synthesis under a single-path constraint.
 - CAMPAIGN (25+ runs): protocol+discipline SOLVED at all scales; accuracy
   plateau 326/500 + 9/200. Bars unmet. Binding re-graded: PLATEAU-BLOCKED.
+
+## Cycle 37 / C37 — P6 binding: single-path fresh synthesis (escape route a)
+- Mutation: fitness penalty on passes consuming >1 source digit (f_single);
+  full re-synthesis from CLEAN counter seed + bank + macros + depth pool
+  (no plateau-table lineage).
+- RESULT: climbs to fitness 0.9698; cert 154/500 in-dist, 1/200 depth,
+  S5 true (trace ok; passes drift slightly above nd+1: idle extra passes).
+  Fresh single-path lineage ALSO plateaus — below the merged lineage's
+  326/500 but with cleaner structure (no parallel paths).
+- VERDICT: binding PLATEAU-BLOCKED v4 — 30+ runs, every method (blind
+  search, staged contracts, SGD, trajectory scaffolding, state banks,
+  macro-moves, CEGIS repair, recombination, single-path synthesis) mapped.
+  Protocol+discipline SOLVED; accuracy plateau 154-326/500 vs bar 498/500.
+- SCHEDULING: active slot moves to C22-R (chatbot state repair, queued
+  since C22). Binding queued for a fundamentally new attack (new tape
+  geometry OR larger state space OR value-encoded transport states).
