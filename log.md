@@ -1355,3 +1355,17 @@ documented TF failure zone (Hahn 2020: modular counting).
   longer stage-B warm-started from c26r3_searched.pt, and as stretch:
   per-pass intermediate targets for the STE chain (trajectory curriculum,
   logged as scaffolding if used).
+- C26r4 RESULT (resume run after scaffold label bug fix — stacked labels had
+  a stray unsqueeze, IndexError; fixed, stages A/B skipped via warm tables):
+  stage C no crystallize (best 14/64); scaffold fallback = PER-PASS FULL
+  TRAJECTORY SUPERVISION also FAILED to crystallize (CE 3.9-6.6 oscillation,
+  probe 0-4/64, best 8/64); cert 0 exact everywhere.
+- CAMPAIGN TALLY (8 runs): a 2/500 | b 0 | c 1/500 | r 11/500 | r2 0 |
+  r3 39/500 (BEST) | r4 0. Every known shaping tried: staged contract,
+  interleaving, order shaping, value-separation bonus, full trajectory
+  scaffolding. CONCLUSION: C26 BLOCKED at current machinery — the crisp STE
+  chain cannot assemble value-transport even with per-pass targets. Re-open
+  only with new machinery (neutral-drift table search with value-state
+  cloning, larger state space, or a different tape encoding). Law:
+  L-TRAJECTORY-INSUFFICIENT (even full per-pass supervision does not unblock
+  organ-level needles; the barrier is optimization, not information).
