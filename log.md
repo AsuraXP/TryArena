@@ -1442,3 +1442,21 @@ documented TF failure zone (Hahn 2020: modular counting).
 - CAMPAIGN STATE (17 runs): protocol+discipline SOLVED at all scales;
   accuracy 250-326/500 in-dist; depth <= 9/200. Bars unmet; trajectory:
   39 -> 326 (8x) in one cycle. Next: cert-geometry census on c29h tables.
+
+## Cycle 31-33 / C31-c33 — P6 binding: census, split acceptance, RECOMBINATION
+- RECOVERY: another VM reset mid-cycle; restored from origin (bc5341c), torch
+  reinstalled, tree clean.
+- C31 (repair v2, narrow CEGIS census on c29h): per-digit census = failures
+  concentrated in d0/d1 (+d4/d7 at scale); 68 repair cells; fitness 0.9906
+  but cert 204/500 (below seed) — train-draw overfit again.
+- C32 (train/val split acceptance): val gate frozen at 0.9021 — accepted
+  edits never lifted the held-out pool; cert 219/500, S5 True. Lesson:
+  local edits inside the current basin move train fitness, not structure.
+- C33 (RECOMBINATION: digit-family + bank-BLK rows from accuracy-champion
+  c29f merged onto discipline-champion c29h): **326/500 in-dist AND 9/200
+  depth AND trace_ok=True at all scales** — Pareto-best table found by
+  crossover of two discovered programs, zero training. LAW CANDIDATE
+  L-RECOMBINE (when two programs each hold half the solution on disjoint
+  row-sets, crossover beats further hill-climbing).
+- CHAMPION: c33_merge.pt. Open: in-dist 326->498, depth 9->200. Next:
+  depth-failure census on the merged tables -> depth-focused repair.
