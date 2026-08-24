@@ -1405,3 +1405,13 @@ documented TF failure zone (Hahn 2020: modular counting).
 - NEXT DIAGNOSTIC (queued C29d): per-digit error census on fresh cases —
   if errors concentrate in 1-2 digit rows, targeted micro-search on those
   rows alone may close the gap.
+- C29d (targeted repair hill-climb on diagnosed rows): fitness 0.9264 (best
+  ever) but cert UNCHANGED 17/500, depth 0 — the 14 accepted edits did not
+  touch cert trajectories. Root cause: diagnosis came from nd=1 pass-1
+  traces; cert cases are nd=2..4 where scan states differ. Law candidate
+  L-TRACE-GEOMETRY: repair proposals must be derived from the same case
+  geometry that certification exercises.
+- CYCLE 29 TOTAL (5 runs): binding PROTOCOL SKELETON solved at all scales
+  with clean seeds (S5 true); accuracy wall persists (17-39/500 in-dist,
+  depth 0 across ALL 11 attempts). The census tool (per-digit write
+  accuracy) is banked for the next attempt.
