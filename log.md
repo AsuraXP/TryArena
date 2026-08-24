@@ -1369,3 +1369,17 @@ documented TF failure zone (Hahn 2020: modular counting).
   cloning, larger state space, or a different tape encoding). Law:
   L-TRAJECTORY-INSUFFICIENT (even full per-pass supervision does not unblock
   organ-level needles; the barrier is optimization, not information).
+
+## Cycle 28 / C25bR — stride-2 with organ cloning: depth wall confirmed
+- Mutation: seed digit phase from the LEARNED +1 ADD organ (c24k) + clone
+  h11->h12; fix best-ckpt tracking (> to >= so ties take the latest stage).
+- RESULT: k<=1 crystallized at s200 (64/64 crisp); k>=2 plateaus 16-40/64,
+  cert 0 exact all scales. The single-pass stride-2 program learned at k=1
+  does not compose: its digit phase is k-DEPENDENT (trajectory through the
+  dissolved counter region differs with k: 1 SEP vs 2+ SEPs before digits).
+- LAW CANDIDATE L-PHASE-INVARIANCE: digit organs must be invariant to the
+  counter region's dissolution history; learners otherwise key on the number
+  of converted SEPs and break at depth. Same family as L-CARRY-IN-STATES:
+  stride-2 needs (a) two digit maps (clean/carry-in) AND (b) phase-invariant
+  entry. Both open. c25b-R closed; queue: phase-invariance shaping or a
+  dedicated entry-state move.
