@@ -1460,3 +1460,22 @@ documented TF failure zone (Hahn 2020: modular counting).
   row-sets, crossover beats further hill-climbing).
 - CHAMPION: c33_merge.pt. Open: in-dist 326->498, depth 9->200. Next:
   depth-failure census on the merged tables -> depth-focused repair.
+
+## Cycle 34-36 / C34-c36 — P6 binding: the 326/9 PLATEAU established
+- RECOVERY: VM reset #4; restored from origin (c9d02da), torch reinstalled.
+- DEPTH CENSUS on merged champion: at depth ONLY digits 0 and 9 fail
+  (289/309 fails); in-dist adds d1/d4/d7. Errors spread over positions
+  (i.i.d.-like: exact decays ~ p^nd).
+- TRATRACE DUMP exposed the mechanism family: h13 ("exit") is itself a
+  second transport path (spontaneous consume+write via bank states), and
+  its rows corrupt d0->d2, d9->d8. Multiple PARALLEL transport paths exist.
+- FOUR INDEPENDENT ESCAPE ATTEMPTS, all landing on the SAME numbers
+  (326/500, 9/200, S5 true): c34 census repair + depth-val macros; c35
+  h13-identity fix; c36 boundary-token (d0/d9/b0/b9 rows) search with val
+  gate. Val gates frozen every time.
+- LAW: L-PLATEAU-ATTRACTOR — redundant parallel transport paths form a
+  global accuracy attractor; local/row-level edits cannot escape it.
+  Escaping likely needs single-path synthesis (penalize multi-consume
+  passes) or full re-synthesis under a single-path constraint.
+- CAMPAIGN (25+ runs): protocol+discipline SOLVED at all scales; accuracy
+  plateau 326/500 + 9/200. Bars unmet. Binding re-graded: PLATEAU-BLOCKED.
