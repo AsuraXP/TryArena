@@ -1383,3 +1383,25 @@ documented TF failure zone (Hahn 2020: modular counting).
   stride-2 needs (a) two digit maps (clean/carry-in) AND (b) phase-invariant
   entry. Both open. c25b-R closed; queue: phase-invariance shaping or a
   dedicated entry-state move.
+
+## Cycle 29 / C29-c — P6 binding: new machinery (state bank + transport macros)
+- PRIOR ART (Phase-1 mandate): AutumnSynth (MIT) uses STATE SPLITTING in its
+  heuristic automaton synthesizer — validates the hypothesis family; gap
+  holds (no contract-driven table hill-climbing, no macro-moves). PushGP
+  simplification (ACM), NTM copy literature surveyed. No TF arm (directive).
+- C29 (bank + macros seeded from r3 tables): fitness 0.49, cert 0 — r3
+  tables too polluted for macros to land. LAW REFINEMENT: macro-moves need a
+  clean seed (L-SEED-CLEANLINESS).
+- C29b (CLEAN counter seed + 8-state bank cloned from dominant entry state +
+  M-TRANSPORT-MACRO proposing the whole per-value chain as ONE mutation):
+  fitness 0.9209 (best ever); S5 TRUE AT ALL SCALES (pass count nd+1 exact,
+  trace perfect — the clean seed preserved protocol discipline); indist
+  17/500. PROTOCOL SKELETON SOLVED, accuracy gap remains.
+- C29c (crisp STE SGD refinement from c29b): probe 38/64, indist 8/500,
+  depth 0, discipline still perfect. CE oscillation 0.55-0.87.
+- CAMPAIGN TALLY (10 runs): best in-dist exact remains r3 39/500; best
+  structural result c29b/c (perfect protocol at all scales). Wall is now
+  PRECISE: per-digit write accuracy (~80% partial on train, ~3% exact fresh).
+- NEXT DIAGNOSTIC (queued C29d): per-digit error census on fresh cases —
+  if errors concentrate in 1-2 digit rows, targeted micro-search on those
+  rows alone may close the gap.
