@@ -1315,3 +1315,43 @@ documented TF failure zone (Hahn 2020: modular counting).
 - NEXT MUTATION (queued C26-R): STAGED CONTRACT — stage A rewards consumption
   (V->BLK) alone (each consumption edit pays), stage B adds slot credit; or
   interleaved tape layout making transport local. Log honestly if scaffolded.
+
+## Cycle 26-R / C26r-r3 — P6 binding: staged-contract campaign (in flight)
+- PRIOR ART (Phase-1 mandate): AGCL automaton-guided subgoal curricula
+  (2304.05271); Turing Programs "every algorithm = iterative copy with local
+  mods" (2407.03310, TF+Hard-ALiBi, trajectories GIVEN); TAIL (2507.13332,
+  TM-CoT distillation); Chomsky benchmark Tape-RNN (2207.02098, hand-wired
+  tape actions); RL-NTM (RepeatCopy needs direct-access controller). GAP:
+  none discovers the iteration protocol endogenously; none does staged-
+  contract credit assignment for discrete table synthesis. No TF arm
+  (operator directive).
+- MUTATION H-C26R: (a) INTERLEAVED LAYOUT [V1 _ V2 _ ...] makes each write
+  target adjacent to its source; (b) STAGED CONTRACT: Stage A rewards
+  CONSUMPTION only, Stage B adds slot credit, Stage C crisp-STE SGD.
+- C26r run 1: MEASUREMENT BUG — src/tgt indices off by one; stage A measured
+  target cells (trivially BLK) = false fitA 1.0; full pipeline ran on wrong
+  cells. Caught by inspection; fixed and rerun. (L-EVAL-FIDELITY strikes
+  again: audit positions, not just scores.)
+- C26r run 2 (fixed): fitA=1.0 but INSPECTION showed a CHAOTIC attractor —
+  mass-conversion, not orderly consumption; slot credit capped 0.59, cert
+  11/500, no depth. New law candidate L-CHAOS-SHORTCUT: terminal-only credit
+  admits destructive mass-rewrite attractors.
+- C26r2 (order shaping): reward gradual consumption (consumed fraction tracks
+  p/(nd+1)). Stage A climbed to 0.9468 = ORDERED CONSUMPTION ORGAN DISCOVERED
+  (reusable); but stage B REGRESSED to 0.42 — diagnosis: stage-A search
+  collapsed all digit-consume transitions into ONE entry state, destroying
+  the value identity stage B needs.
+- C26r3 (value-separation bonus): stage A additionally rewarded for distinct
+  entry states per consumed digit value. SMOKE: stage B slope dramatically
+  better (0.66 in 400 edits vs 0.50). Full run IN FLIGHT.
+- LAW CANDIDATES this campaign: L-ORGAN-NEEDLE, L-CHAOS-SHORTCUT,
+  L-VALUE-SEPARATION (transport organs need explicit pressure to keep
+  per-value states distinct; shared-state collapse is the default).
+- C26r3 RESULT: best binding cert yet — in-dist 39/500 (vs 11 r2, 2 r1-smoke,
+  0 c26a-c), but stage weights conflicted (order vs separation: fitA 0.84),
+  stage B 0.43, depth 0/200, SGD no crystallize. Campaign trajectory:
+  exact@indist 0 -> 2 -> 11 -> 39 per mutation; SLOPE EXISTS, bars not met.
+- QUEUED C26R4: rebalanced stage-A weights (order+separation coexist),
+  longer stage-B warm-started from c26r3_searched.pt, and as stretch:
+  per-pass intermediate targets for the STE chain (trajectory curriculum,
+  logged as scaffolding if used).
