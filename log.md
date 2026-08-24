@@ -1415,3 +1415,30 @@ documented TF failure zone (Hahn 2020: modular counting).
   with clean seeds (S5 true); accuracy wall persists (17-39/500 in-dist,
   depth 0 across ALL 11 attempts). The census tool (per-digit write
   accuracy) is banked for the next attempt.
+
+## Cycle 30 / C29e-i — P6 binding: TOKEN-DISTINCTNESS BREAKTHROUGH
+- PRIOR ART (Phase-1 mandate): CEGIS / MaxSAT fault localization (MENTOR
+  AAAI'25; APR for timed systems, Springer) — counterexample-guided repair
+  transferred to Mealy tables (novel application). No TF arm (directive).
+- C29e (CEGIS census + localized hill-climb): fitness gradient real
+  (0.43->0.74) but cert 16/500 unchanged + trace BROKE — cell set too broad
+  (all SEP/BLK rows of failing trajectories). Lesson: localize to digit-visit
+  cells only.
+- C29f (EXTENDED ALPHABET: bound digits get their own token class 14..23;
+  clean counter seed + bank + macros): **BREAKTHROUGH** — in-dist 326/500
+  (8.4x previous best 39), FIRST DEPTH HITS EVER (9/200 at nd=16).
+  Hypothesis confirmed: L-TOKEN-DISTINCTNESS — reusing source tokens for
+  bound values forced position-dependent discrimination; distinct bound
+  tokens make skip/write local.
+- C29g (SGD from c29f): 317/500, but pass discipline broke (early halt).
+- C29h (DEPTH IN FITNESS POOL: nd up to 12): S5 TRUE AT ALL SCALES — pass
+  count nd+1 exact + trace perfect at nd=64. Accuracy 233/500 (discipline
+  vs accuracy trade).
+- C29i (SGD from c29h, lr 2e-3): 250/500 in-dist, S5 kept True, 3/200 depth.
+- LAWS: L-TOKEN-DISTINCTNESS (certified-strong); L-DEPTH-POOL (protocols
+  generalize to depth only if fitness selects at depth, else phase-dependent
+  shortcuts survive = L-PHASE-INVARIANCE operationalized); f_sep unbounded
+  >1 quirk capped.
+- CAMPAIGN STATE (17 runs): protocol+discipline SOLVED at all scales;
+  accuracy 250-326/500 in-dist; depth <= 9/200. Bars unmet; trajectory:
+  39 -> 326 (8x) in one cycle. Next: cert-geometry census on c29h tables.
