@@ -1559,3 +1559,31 @@ documented TF failure zone (Hahn 2020: modular counting).
   original v8 probes were mis-measured). Champion ckpt c22r8.pt (lineage
   v8 -> v9 timing -> v9b -> v9c clamp -> r5/r6/r7/r8). Active queue slot
   now returns to C29 new-machinery results.
+
+## Cycle 39 / C21b — fluency scale-up: NEGATIVE, L-DATA-CEILING banked
+- Operator strategy reset this cycle: WIN CONDITION = one coherent model
+  under the box (fluency + exact state + exact computation); TF comparisons
+  permanently dropped; AFTER coherence, push generalization/reasoning to
+  the absolute limit (the program's founding goal). Queue: C21b (Step A)
+  now, then the reasoning frontier (C26 wall, new machinery).
+- C21b: lm_host d32 -> d64 (35,968p -> 91,648p), 6k steps, else identical.
+  RESULT: ce256 4.40 (3k 4.3958 / 6k 4.3996) — WORSE than d32's 4.2704;
+  ce1024 2.98 (best, context used); ce16384 4.43 = 1.007x ce256 (length
+  invariance HOLDS). Bar 4.0 MISS.
+- DIAGNOSIS: 6k steps x 32 x 256 = 49M token-steps over a 488k train split
+  = ~100 EPOCHS; train CE 1.73 vs val 4.40 = memorization. The ceiling is
+  CORPUS-SIZED, not capacity: doubling width adds memorization capacity,
+  not generalization. C21's "capacity ceiling" reading is superseded.
+- LAW: L-DATA-CEILING — box-scale fluency at ~1MB corpus is data-limited;
+  width scaling under heavy epoch repetition degrades val CE; the honest
+  box-scale claim is a length-invariant fluency ENGINE (ce1024 2.98, no
+  length decay), not bar-4.0 fluency. Fluency fusion (C22b) can carry the
+  d32 engine as-is; further fluency work needs more corpus, not width.
+- ENV: two VM resets MID-CYCLE (torch wiped, git rolled back twice);
+  recovery recipe applied twice (rescue -> FETCH_HEAD reset -> reinstall).
+  Cycle-38 commit re-made + pushed (1708b91), handover pack pushed (c48393c).
+- NEXT (cycle 40): reasoning/generalization frontier — C26 binding wall
+  re-entry with VALUE-ENCODED TRANSPORT (new machine class; prior art:
+  arxiv 2410.14067 complex-SSM copy expressivity linear-vs-exponential;
+  2402.01032 fixed-state copy limits). Discrete table family exhausted
+  (L-PLATEAU-ATTRACTOR; c29f bank also 326/500).

@@ -269,3 +269,12 @@ C25a P3-LOOP (2026-08-23): DONE — iterated subtraction (x-k) CERTIFIED, all
 bars; counter protocol reused with ZERO rows changed (L-MODULAR-REUSE);
 borrow organ = mirror of carry organ (persist on 0). C25b stride-2 (x+2k)
 FAILED (needs 2 digit states: L-CARRY-IN-STATES); queue c25b-R, then C26.
+C21b FLUENCY SCALE-UP (2026-08-25, cycle 39): NEGATIVE. d64 (91,648p)
+ce256 4.40 WORSE than d32 4.2704; ceiling is corpus-limited (1MB, ~100
+epochs, train 1.73 vs val 4.40 = memorization), not capacity. Length
+invariance holds (1.007x). Bar 4.0 not met; honest claim = length-invariant
+fluency engine. L-DATA-CEILING banked. Fluency fusion (C22b) may carry the
+d32 engine as-is. Strategy reset (operator): win = one coherent model under
+the box; after coherence, generalization/reasoning to the absolute limit.
+Next: C26 binding wall re-entry via VALUE-ENCODED TRANSPORT (new machine
+class; discrete table family exhausted, L-PLATEAU-ATTRACTOR).
