@@ -278,3 +278,12 @@ d32 engine as-is. Strategy reset (operator): win = one coherent model under
 the box; after coherence, generalization/reasoning to the absolute limit.
 Next: C26 binding wall re-entry via VALUE-ENCODED TRANSPORT (new machine
 class; discrete table family exhausted, L-PLATEAU-ATTRACTOR).
+C26 BINDING WALL (2026-08-25, cycle 40): BROKEN by new machine class
+VALUE-ENCODED TRANSPORT (VET): control Mealy (5 states) x mechanism value
+register. All bars PERFECT: 500/500 in-dist; 200/200 nd=16 (was 9/200);
+100/100 nd=32 & nd=64-joint (were 0/100); passes=nd+1 exact; one-mark
+trace; stretch exact at nd=128/256/512 (depth-unlimited by construction).
+Diagnosis: wall = joint (flags x value) state encoding budget in discrete
+tables, not task hardness. LAW: L-VALUE-CHANNEL. Grading: WALL-BROKEN-
+PENDING-DISCOVERY — existence proof hand-derived; cycle 41 = discoverability
+(search/SGD inside VET class) before full cert, per P4 standard.

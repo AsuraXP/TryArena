@@ -1,6 +1,6 @@
 # ARC-2 HANDOVER — read this first, then log.md
-_LAST UPDATED: cycle 38 (2026-08-24) — C22-R chatbot repair CERTIFIED, all 7
-bars. If you are a new agent, your entry point is HANDOVER_PROMPT.md (paste-
+_LAST UPDATED: cycle 40 (2026-08-25) — C26 binding wall BROKEN by
+value-encoded transport (VET); cycle 41 = discoverability run. If you are a new agent, your entry point is HANDOVER_PROMPT.md (paste-
 ready) or this file; then read the last 2-3 blocks of log.md and
 PROBLEM_MAP.md; then run verify_suite.py (must be 35/35)._
 _Canonical state handoff for a new agent (written 2026-08-22, cycle ~C19).

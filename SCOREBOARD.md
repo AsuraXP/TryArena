@@ -118,3 +118,16 @@ family, long-window + overwrite-distance fine-tunes, organ gain x2.4.
 | D7 dialogue exact | exact | dave/it/1-2/fine/6/4-2 PASS |
 Robust: overwrite 0.0387-0.0392 over 6 seeds and at 8192 (2x train len);
 state -0.056..-0.089 over seeds. verify_suite 35/35.
+
+## C26-R — binding wall BROKEN: value-encoded transport (2026-08-25, cycle 40)
+New machine class VET: control Mealy (5 states) x mechanism-owned value
+register. Hand-derived existence proof; discoverability run = cycle 41.
+| test | result | previous best |
+|---|---|---|
+| S1 in-dist nd<=4 | 500/500 | 326/500 (plateau) |
+| S2 nd=16 | 200/200 | 9/200 |
+| S3 nd=32 | 100/100 | 0/100 |
+| S4 joint nd=64 | 100/100 | 0/100 |
+| S5 passes=nd+1, one-mark trace | exact | drifted |
+| stretch nd=128/256/512 | exact | n/a |
+Depth-unlimited by construction. L-VALUE-CHANNEL banked.

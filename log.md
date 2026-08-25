@@ -1587,3 +1587,38 @@ documented TF failure zone (Hahn 2020: modular counting).
   arxiv 2410.14067 complex-SSM copy expressivity linear-vs-exponential;
   2402.01032 fixed-state copy limits). Discrete table family exhausted
   (L-PLATEAU-ATTRACTOR; c29f bank also 326/500).
+
+## Cycle 40 / C26-R — BINDING WALL BROKEN: value-encoded transport (VET)
+- MACHINE (new class): control Mealy h (FIVE states: mark/digit phase bits +
+  carry) x MECHANISM-OWNED value register r in {0..9, bottom}. Value is
+  written to r at the consume trigger, read at the next cell; control NEVER
+  carries value. Organ pattern applied to the tape machine. Searched params
+  this run: 0 (hand-derived existence proof; discoverability test = next).
+- MECHANISM DIAGNOSIS of the wall: per-pass program must jointly encode
+  (mark-flag, digit-flag, carried value); the value carry alone needs 10
+  control sub-states whose joint 10-row needle the table search never hit;
+  state budget (H=24) cannot scale the joint encoding with depth -> the
+  326/500 attractor and 0/100 at depth (c26/c29/c31-c37 all, incl. bank).
+- RESULT (ARC2-C40-VET, 6.9s wall): S1 500/500 | S2 nd=16 200/200 (was 9/200)
+  | S3 nd=32 100/100 (was 0/100) | S4 joint nd=64 100/100 (was 0/100) |
+  S5 passes=nd+1 EXACT at nd=1..64 + one-mark trace. STRETCH: exact at
+  nd=128/256/512 — depth-unlimited by construction (no depth-dependent
+  resource in the machine).
+- PRIOR ART (logged per directive): arxiv 2410.14067 (complex/register
+  parameterizations express copy with LINEAR resources where fixed real
+  state needs exponential; copy acc 93% vs 80% real) — motivates register
+  channels for transport; arxiv 2402.01032 (fixed-state copy limits) —
+  confirms why pure finite state plateaued. GAP: neither builds the
+  register as a mechanism-owned organ inside a discovered-program
+  campaign; VET does.
+- GRADING: C26 bars met under the VET class (the logged re-entry gate:
+  value-encoded transport — satisfied). CAVEAT (honesty): existence proof
+  is hand-derived; P4 standard requires DISCOVERABILITY — cycle 41 runs
+  search/SGD inside the VET class; C26 graded WALL-BROKEN-PENDING-
+  DISCOVERY until then.
+- LAW: L-VALUE-CHANNEL — when a finite-state program must transport a
+  k-valued quantity across tape distance, factoring the value into a
+  mechanism-owned channel (register/phase/continuous) collapses the state
+  budget from O(k x phases) to O(phases); table-plateau walls of the
+  "joint encoding" kind are representation artifacts, not task hardness.
+  (Refines L-PLATEAU-ATTRACTOR scope: it governs the discrete-table family.)
