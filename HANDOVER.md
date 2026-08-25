@@ -1,4 +1,8 @@
 # ARC-2 HANDOVER — read this first, then log.md
+_LAST UPDATED: cycle 38 (2026-08-24) — C22-R chatbot repair CERTIFIED, all 7
+bars. If you are a new agent, your entry point is HANDOVER_PROMPT.md (paste-
+ready) or this file; then read the last 2-3 blocks of log.md and
+PROBLEM_MAP.md; then run verify_suite.py (must be 35/35)._
 _Canonical state handoff for a new agent (written 2026-08-22, cycle ~C19).
 Everything here is on disk in this repo and pushed to GitHub branch
 `arena/01a02263-tryarena`. `log.md` (34 cycle blocks) is the full historical
@@ -194,6 +198,16 @@ state x query joint term (bilinear over exact one-hot features);
 zero-init the interaction; keep its inputs exact (full-rank gradient
 from step 1). L-ENCODING: task hardness class is representation-
 relative (carry became a KR-mode automaton under the right encoding).
+Cycle-38 (C22-R) laws: L-ORACLE-COMPLETE (probe oracles must subtract ALL
+irreducible entropy, incl. iid turn-choice at stream positions),
+L-EMIT-TIMING (organ outputs must fire at the scored prediction position;
+emit/update off-by-one silently zeroes an organ), L-DECAY-DRIFT
+(unregularized organs + short windows let host SSM decays drift to ~1 and
+heads blow up — clamp decays when organs own persistence),
+L-TRAIN-LENGTH-MISMATCH (organ push calibrates to train-window difficulty;
+long-window fine-tune + distance curricula for long-range bars),
+L-ORGAN-GAIN (bilinear push margins can be set by scaling the table, then
+recalibrated).
 
 ## 6. PROTOCOL CONSTANTS
 dCE vs analytic oracle (oracle = exact generation entropy per token;
