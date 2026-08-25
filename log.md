@@ -1495,3 +1495,67 @@ documented TF failure zone (Hahn 2020: modular counting).
 - SCHEDULING: active slot moves to C22-R (chatbot state repair, queued
   since C22). Binding queued for a fundamentally new attack (new tape
   geometry OR larger state space OR value-encoded transport states).
+
+## Cycle 38 / C22-R — chatbot state repair: C22 CERTIFIED (all 7 bars)
+- ROUND 1 (c22r.py, ARC2-C22R-REPAIR): fine-tune variants from v8 final ckpt.
+  More-training destroys state (0.228->1.319, L-DUAL-GATE oscillation);
+  organ-scale-x8 flat; query-masked-host catastrophic. Math bars fixed in
+  all variants; D1/D2 untouched -> variants dead-ended, deeper diagnosis.
+- DIAGNOSIS A (answer-only dCE): fam0@4096 whole-stream dCE 0.228 but
+  answer-token CE 0.489 (631 toks). Then position-class decomposition:
+  U-turn-start positions contribute +0.271 (mean CE 1.748), everything
+  else nets -0.041. Turn-kind is iid over MIX_W, so U-pos carries
+  irreducible entropy H(WHAT .4576, MY .161, ok/fine/good/tell .0953x4)
+  = 1.667 nats that the probe oracle o NEVER subtracted. => EVAL BUG
+  (L-EVAL-FIDELITY again): D1 bar 0.01 unreachable for ANY model; v8 on
+  corrected oracle already -0.027.
+- DIAGNOSIS B (mechanism): v8 organ emits PRE-update, so query one-hots
+  fire at the ANSWER-TOKEN position while probes score the A-marker
+  position (off-by-one); math organ likewise one late. Bilinear organ
+  contributes NOTHING where CE is scored (verified: margin ~0, 163/166
+  top-1 via host only).
+- ROUND 2 (c22r2.py, v9): staged query machine (arm at NAME/CODE token,
+  fire at A; code ones fires at d1), math organ fires from A, corrected
+  probe oracle (U-pos entropy). 12k retrain. PASS D1 -0.031 / D3 / D4
+  (minus 0.059->0.004!) / D5 / D6; FAIL D2 overwrite 0.944 (organ push
+  +1.18 vs host flat ~4.0 over names -> p=0.39) and D7 dialogue (math
+  turns inside mixed conversation: per-stream router sends them to host0
+  which has no math organ).
+- ROUND 3 (c22r3.py, v9b): organ wd=0, math turns added to state family
+  (MIX +18/118), host0 branch gets math organ, 16k. D7 FIXED (dialogue
+  exact) but CATASTROPHIC length collapse: state4096 3.25. Diagnosis:
+  host0 SSM decay log_a drifted to a=0.986 (v8/r2 max 0.83) + head norms
+  blew up (11.7/18.3/21.6 vs ~10); with wd=0 organs solving answers
+  early, host overfits 63-token-window residuals via a slow-decay channel
+  -> saturated state + big head emit fixed wrong tokens at L>=256.
+- ROUND 4 (c22r4.py, v9c): SSM decay CLAMP a<=0.90 (mechanism prior:
+  organs own persistent state, hosts need only local context; clamp never
+  binds healthy regime). state4096 3.25->0.072 (flat at 16k), D7 holds.
+  D1/D2 still fail: organ push calibrated only for train length 63
+  (L-TRAIN-LENGTH-MISMATCH).
+- ROUND 5 (c22r5.py): long-window fine-tune L=512 b8 3k steps lr 3e-4.
+  D1 PASSES (-0.0366); overwrite 0.97->0.36.
+- ROUND 6 (c22r6.py): overwrite-distance streams (facts, overwrite, ~850
+  fill tokens, queries) at L=1024. overwrite -> 0.321. Margin analysis:
+  organ heidi +2.19 vs ~-0.7 others (margin 2.9), host flat => p=0.73;
+  bar needs margin ~4.9.
+- ROUND 7 (c22r7.py): st_m x2 -> overwrite 0.0689 immediately; 1.5k
+  recalibration -> 0.078. ROUND 8: st_m x1.2 + 400 steps lr 5e-5 =>
+  FINAL c22r8.pt: D1 -0.065 | D2 0.039 | D3 -0.070 | D4 +0.000/-0.000 |
+  D5 0.000 | D6 1.0 | D7 exact (dave/it/1 2/fine/6/4 2). ALL 8 BARS PASS.
+  Robustness: overwrite 0.0387-0.0392 over 6 seeds AND at 8192 (2x train
+  len); state4096 -0.056..-0.089 over seeds. verify_suite 35/35.
+- LAWS: L-ORACLE-COMPLETE (probe oracles must subtract ALL irreducible
+  entropy, incl. iid turn-choice at stream positions); L-EMIT-TIMING
+  (organ outputs must fire at the scored prediction position — emit/
+  update off-by-one silently zeroes an organ); L-DECAY-DRIFT (unregularized
+  organs + short windows let host SSM decays drift to ~1 and heads blow
+  up — clamp decays when organs own persistence); L-TRAIN-LENGTH-MISMATCH
+  (organ push calibrates to train-window difficulty; long-window fine-tune
+  + explicit distance curricula needed for long-range bars); L-ORGAN-GAIN
+  (push margins can be set by scaling the bilinear table — learnable gain
+  or post-hoc scale, then recalibrate).
+- STATUS: C22 CERTIFIED (post-repair machine v9c + corrected probes;
+  original v8 probes were mis-measured). Champion ckpt c22r8.pt (lineage
+  v8 -> v9 timing -> v9b -> v9c clamp -> r5/r6/r7/r8). Active queue slot
+  now returns to C29 new-machinery results.

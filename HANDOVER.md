@@ -73,6 +73,22 @@ D3/D5/D6 PASS (state length-invariant 0.2269@16k; chat 0.0002; routing rt CE
 0.0515 borderline. State bilinear mass still growing @12k (undertrained).
 C22-R repair queued (operator P4 priority first).
 
+### DONE: C22-R CHATBOT REPAIR (cycle 38, 2026-08-24): CERTIFIED — ALL BARS
+Champion c22r8.pt (machine v9c, 20,518p): D1 state4096 -0.065 | D2 overwrite
+0.039 | D3 16k -0.070 | D4 math +0.000/-0.000 | D5 chat 0.000 | D6 routing
+1.0 | D7 dialogue exact (dave/it/1 2/fine/6/4 2); robust across seeds and at
+8192. Two latent defects fixed: (a) probe oracle never subtracted iid
+turn-choice entropy at U positions (1.667 nats — D1 bar was unreachable for
+ANY model; v8 already -0.027 corrected); (b) organ emit off-by-one (query
+one-hots fired at answer-token pos, probes score A-marker pos) — fixed with
+staged query machine firing at A. Then: SSM decay clamp a<=0.90 (fixed
+length-collapse from log_a drift to 0.986), math turns added to state family
++ math organ in host0 branch (fixed D7 dialogue), long-window + overwrite-
+distance fine-tunes + st_m gain x2.4 (fixed D2 margin). Scripts c22r.py ..
+c22r8.py; ckpts c22r2..c22r8.pt; tags ARC2-C22R*-REPAIR in log.jsonl.
+Laws: L-ORACLE-COMPLETE, L-EMIT-TIMING, L-DECAY-DRIFT,
+L-TRAIN-LENGTH-MISMATCH, L-ORGAN-GAIN.
+
 ### DONE: C24 MULTI-PASS — P4 CERTIFIED (2026-08-23)
 c24_multipass.py: SoftPass Mealy tape machine iterated to FIXPOINT on
 iterated-increment (pass count = input k). armB (orbit-supervised rows):
@@ -113,10 +129,12 @@ c24b_ca.py: same loop, rule-90 CA step via lookahead write head E[x_t,x_{t+1},h]
   d32 + 768-emb as a 4th branch with its own alphabet; router 4-way;
   dialogue + prose mixed). Then C21b (d64 fluency host).
 
-### QUEUE (renumbered after C21 took the LM slot)
-C22b fluency-into-chatbot fusion | C23 router hardening (StickyMoE) |
-C21b d64 fluency host | C24 P4 multi-pass | C25 full multi-digit |
-C26 P6 variable binding.
+### QUEUE (as of cycle 38, 2026-08-24)
+ACTIVE: C29 new-machinery results (post-P4-DISC + C25a certifications).
+C22-R chatbot repair DONE (certified cycle 38). C26 binding PLATEAU-BLOCKED
+v4 — queued for re-entry ONLY with fundamentally new attack (new tape
+geometry / larger state space / value-encoded transport). Then: C22b
+fluency-into-chatbot fusion | C23 router hardening | C21b d64 fluency host.
 
 ### C23 — router hardening (StickyMoE-style load/consistency) + borrow organ
 (subtraction: c=(a-b-borrow) mod 10, 1-bit exact transition, same pattern

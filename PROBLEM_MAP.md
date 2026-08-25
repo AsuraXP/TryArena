@@ -228,6 +228,24 @@ expressed), D4 math-plus 0.0519 @12k (9k ckpt 0.0005 PASSED then regressed
 Mechanism: state bilinear mass still growing @12k (587->1059) = undertrained.
 C22-R repair queued behind C24 (operator P4 priority); C22b fusion waits for
 the state bar.
+C22-R CHATBOT REPAIR (2026-08-24, cycle 38): CERTIFIED — all 7 bars D1-D7 on
+champion c22r8.pt (machine v9c, 20,518p). Two latent defects fixed, five
+compounding. (1) EVAL BUG: probe oracle never subtracted the iid turn-choice
+entropy at U-turn-start positions (H=1.667 nats) — D1 bar 0.01 unreachable
+for any model; v8 was already -0.027 on corrected oracle. (2) MECHANISM BUG:
+v8 organ emitted PRE-update so query one-hots fired at the answer-TOKEN
+position while probes score the A-marker position (off-by-one) — bilinear
+organ contributed nothing where CE is scored. Round-2 v9 staged query machine
+(arm at NAME/CODE, fire at A; code-ones at d1) + math organ from A + corrected
+oracle: PASS D1/D3/D4/D5/D6; math-minus fixed 0.059->0.004. Rounds 3-8 then
+fixed: length collapse (host0 SSM decay log_a drift to 0.986 + head blowup ->
+CLAMP a<=0.90, organs own persistence), D7 dialogue math (math turns into
+state family + math organ in host0 branch), long-range organ push (long-window
+L512/L1024 fine-tune + overwrite-distance curricula + st_m gain x2.4 total).
+FINAL: D1 -0.065 | D2 0.039 | D3 -0.070 | D4 -0.000/0.000 | D5 0.000 |
+D6 1.0 | D7 exact (dave/it/1-2/fine/6/4-2). Robust over seeds and at 8192.
+New laws: L-ORACLE-COMPLETE, L-EMIT-TIMING, L-DECAY-DRIFT,
+L-TRAIN-LENGTH-MISMATCH, L-ORGAN-GAIN. Champion c22r8.pt. Next: C22b fusion.
 C24 MULTI-PASS (P4, 2026-08-23): CERTIFIED via armB (orbit-supervised pass):
 iterated increment, input-driven pass count = k EXACT, 16x depth (k=64) and
 8x length (120 digits) generalization, 100% exact at all scales, mechanism

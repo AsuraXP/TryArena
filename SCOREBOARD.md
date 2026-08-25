@@ -101,3 +101,20 @@ Counter organ reused intact (0 rows changed); borrow digit organ learned.
 | k=64 unseen | 100/100 |
 | joint k=64 x L=120 | 100/100 |
 | pass count = k+1 | exact |
+
+## C22-R — chatbot state machine repair (2026-08-24, cycle 38, CERTIFIED)
+Machine v9c champion c22r8.pt (20,518p). Fixed an eval defect (probe oracle
+never subtracted iid turn-choice entropy at U positions, H=1.667) and a
+mechanism defect (organ emit off-by-one); plus decay-clamp, math-in-state-
+family, long-window + overwrite-distance fine-tunes, organ gain x2.4.
+| bar | threshold | result |
+|---|---|---|
+| D1 state @4096 (corrected) | <=0.01 | -0.0651 PASS |
+| D2 overwrite @4096 | <=0.05 | 0.0389 PASS |
+| D3 state @16384 | <=D1+0.05 | -0.0704 PASS |
+| D4 math-plus / math-minus | <=0.02 / <=0.05 | -0.0004 / 0.0002 PASS |
+| D5 chat @4096 | <=0.02 | 0.0001 PASS |
+| D6 routing | 1.0 | 1.0 PASS |
+| D7 dialogue exact | exact | dave/it/1-2/fine/6/4-2 PASS |
+Robust: overwrite 0.0387-0.0392 over 6 seeds and at 8192 (2x train len);
+state -0.056..-0.089 over seeds. verify_suite 35/35.
