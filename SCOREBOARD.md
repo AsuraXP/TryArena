@@ -134,3 +134,15 @@ Depth-unlimited by construction. L-VALUE-CHANNEL banked.
 Cycle 41: DISCOVERED from blank genome in 877 evals/20s; same genome
 certifies all bars. C26 BINDING CERTIFIED (VET class). Laws:
 L-VALUE-CHANNEL, L-DISCOVERABILITY-BY-CLASS.
+
+## Cycle 42 — reasoning frontier probe 1: reversal binding (2026-08-25)
+Task tgt_i <- d_{nd-1-i}. VERDICT: NEGATIVE, PROVABLE class barrier.
+Theorem L-TRANSPORT-DIRECTION: single-head LTR tape machines move values
+monotonically rightward; reversal needs leftward transport for half the
+pairs => unsolvable in VET (any single-head LTR class) at any budget.
+Empirics: 12,023-eval VET+counter search stalls at 0.3985/1.000
+(rightward-feasible ceiling 0.556); pure-leftward tgt0 = 6/30 vs
+rightward targets 20/30, 13/20, 8/10. Generalization ledger updated:
+reversal = structural FAIL on this class (not optimization). Next attack
+(cycle 43): LIFO/bidirectional geometry (machine-v6 stack organ, second
+head, or tape rotation).

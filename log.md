@@ -1646,3 +1646,50 @@ documented TF failure zone (Hahn 2020: modular counting).
 - Queue now: C22b fluency fusion (coherent-model win condition) OR the
   reasoning-frontier stretch (VET-class generalization beyond identity
   transport: permutations/indirection — the next reasoning wall).
+
+## Cycle 42 / reasoning frontier probe 1 — REVERSAL BINDING: provable
+  class barrier (L-TRANSPORT-DIRECTION), negative certified (ARC2-C42-REVBIND)
+
+After the C26 unlock the endgame was restated: "push generalization and
+reasoning to the absolute limit — the goal from the start, was and will
+be." First probe: REVERSAL binding (tgt_i <- d_{nd-1-i}), same cert
+style as C26 (exact matches, passes=nd+1, depth generalization).
+
+- PART 1 (hand derivation). Tried VET + an exact counter channel (count
+  remaining MARKs into a countdown, release at zero). Pass geometry worked
+  out by hand: left->right consume releases correctly for the FIRST half
+  of passes (release at the rightmost unfilled tgt, countdown c0 = #MARK
+  - #BLK-marks); the SECOND half needs each digit to travel LEFT of its
+  source — already passed by the head in that pass. Every staging variant
+  (consumed-digit slots, mark region, re-pickup passes) fails the same
+  way: when the value is finally carried, its target lies behind the head.
+- THEOREM (L-TRANSPORT-DIRECTION). In any multi-pass machine whose head
+  sweeps left-to-right writing only at/ahead of itself, a value's tape
+  position is monotone non-decreasing over the whole run (each pass writes
+  at-or-ahead of the head; later passes restart from the far left, so a
+  value never appears further left than its leftmost historical position).
+  Reversal pairs digit j with tgt (nd-1-j); for j > (nd-1)/2 the target
+  is LEFT of the source. => Reversal is unsolvable in the VET class — in
+  fact in ANY single-head LTR-tape class — at ANY control-state or
+  register budget. Clean machine-class separation: C26 binding is
+  transport-free (targets mirror sources); reversal is transport-leftward.
+  (Prior-art echo: arxiv 2402.01032 fixed-state copy limits; the
+  directionality form is new to this project.)
+- PART 2 (empirics, c42_rb.py). 12,023-eval hill-climb over VET+counter
+  genomes on the reversal fitness (train nd=2/3/4, 30 tapes): best =
+  0.3985 vs 1.000 needed; rightward-feasible pairing ceiling = 0.556.
+  Per-position smoking gun: rightward-reachable targets partial
+  (tgt1 20/30, tgt2 13/20, tgt3 8/10) while tgt0 — filled by the LAST
+  digit = pure leftward transport — 6/30. Barrier is structural, not an
+  optimization miss. NEGATIVE CERTIFIED; wall 4.0 min, 0.5 GB.
+- VALUE OF THE METHOD: the theorem was derived BEFORE running the search;
+  the search then measured exactly the predicted ceiling shape. Derive
+  before running converts a would-be plateau campaign (cycles 29-37 cost)
+  into a 4-minute certified negative.
+- NEXT ATTACK (cycle 43, queued): leftward transport requires LIFO or
+  bidirectional geometry — the machine-v6 stack organ (push/pop = reversal
+  by construction), a second head, or tape rotation. Exact-reversal cert
+  there = next reasoning-frontier result. Note for honesty: no re-weighting
+  of the current tape class can ever solve reversal; the probe is closed.
+- Laws banked: +L-TRANSPORT-DIRECTION (proved + measured; class-separation
+  law). Total laws ~27. verify_suite 35/35. Files: c42_rb.py/.log.

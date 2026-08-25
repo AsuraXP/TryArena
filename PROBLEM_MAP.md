@@ -288,3 +288,14 @@ tables, not task hardness. LAW: L-VALUE-CHANNEL. Cycle 41: DISCOVERED by search 
 perfect. C26 BINDING CERTIFIED under the VET class. PLATEAU-BLOCKED v4
 verdict VACATED (representation artifact, not task hardness). Laws:
 L-VALUE-CHANNEL, L-DISCOVERABILITY-BY-CLASS. C29 objective achieved.
+CYCLE 42 (2026-08-25) — REASONING FRONTIER probe 1: REVERSAL binding
+(tgt_i <- d_{nd-1-i}) = NEGATIVE, PROVABLY. Theorem L-TRANSPORT-DIRECTION:
+single-head left-to-right tape machines transport values monotonically
+RIGHTWARD (writes only at/ahead of head; passes restart from the left),
+so any permutation needing leftward moves — reversal needs them for half
+the pairs — is unsolvable in the VET class (indeed ANY single-head LTR
+class) at any state/register budget. Measured: 12,023-eval VET+counter
+search stalls at 0.3985 (rightward-feasible ceiling 0.556); the pure-
+leftward target tgt0 = 6/30 while rightward targets partial. CLOSED; do
+NOT retry on this class. Next attack (cycle 43): LIFO / bidirectional
+geometry (machine-v6 stack organ push/pop, second head, or tape rotation).

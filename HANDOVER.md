@@ -1,6 +1,8 @@
 # ARC-2 HANDOVER — read this first, then log.md
-_LAST UPDATED: cycle 40 (2026-08-25) — C26 binding wall BROKEN by
-value-encoded transport (VET); cycle 41 = discoverability run. If you are a new agent, your entry point is HANDOVER_PROMPT.md (paste-
+_LAST UPDATED: cycle 42 (2026-08-25) — C26 binding CERTIFIED (cycles 40-41,
+VET class); cycle 42 reasoning-frontier probe 1: reversal binding proven
+unsolvable on single-head LTR tape classes (L-TRANSPORT-DIRECTION);
+cycle 43 queued = LIFO/bidirectional geometry attack. If you are a new agent, your entry point is HANDOVER_PROMPT.md (paste-
 ready) or this file; then read the last 2-3 blocks of log.md and
 PROBLEM_MAP.md; then run verify_suite.py (must be 35/35)._
 _Canonical state handoff for a new agent (written 2026-08-22, cycle ~C19).
@@ -9,8 +11,13 @@ Everything here is on disk in this repo and pushed to GitHub branch
 record; this file is the index + in-flight state + directives + pitfalls._
 
 ## 1. WHAT THIS PROGRAM IS
-Beat the transformer — architecturally, not by budget — on a constrained
-box: 2 CPU cores, ~4GB RAM, 1-thread torch, everything runs in the sandbox.
+(Operator reframe, cycles 38-40): the win condition is ONE coherent single
+model on this hardware (real-language fluency + exact state memory + exact
+computation, <=2 cores/~4GB). Transformer comparisons are dropped as a goal
+(cited from old logs only). Active endgame (cycles 40+, operator): "push
+generalization and reasoning to the absolute limit — the goal from the
+start, was and will be." Constrained box: 2 CPU cores, ~4GB RAM, 1-thread
+torch, everything runs in the sandbox.
 We build heterogeneous machines: a shared embedding table + learned
 per-example router over ISOLATED branches, each branch = a small linear
 SSM host (d16) + an EXACT MEMORY ORGAN (a small learned readout over
@@ -133,12 +140,20 @@ c24b_ca.py: same loop, rule-90 CA step via lookahead write head E[x_t,x_{t+1},h]
   d32 + 768-emb as a 4th branch with its own alphabet; router 4-way;
   dialogue + prose mixed). Then C21b (d64 fluency host).
 
-### QUEUE (as of cycle 38, 2026-08-24)
-ACTIVE: C29 new-machinery results (post-P4-DISC + C25a certifications).
-C22-R chatbot repair DONE (certified cycle 38). C26 binding PLATEAU-BLOCKED
-v4 — queued for re-entry ONLY with fundamentally new attack (new tape
-geometry / larger state space / value-encoded transport). Then: C22b
-fluency-into-chatbot fusion | C23 router hardening | C21b d64 fluency host.
+### QUEUE (as of cycle 42, 2026-08-25)
+ACTIVE ENDGAME: generalization & reasoning to the absolute limit (operator
+directive; the goal "from the start, was and will be"). C26 binding
+CERTIFIED under VET (cycles 40-41: hand-derived + discovered from blank
+genome in 877 evals; all bars perfect; depth-unlimited). Cycle 42 probe:
+reversal binding NEGATIVE — provable class barrier L-TRANSPORT-DIRECTION
+(single-head LTR tape machines move values only rightward; reversal needs
+leftward transport for half the pairs). NEXT (cycle 43): LIFO /
+bidirectional geometry attack on reversal — machine-v6 stack organ
+(push/pop = reversal), second head, or tape rotation; exact-reversal cert
+there is the next frontier result. THEN: C22b fluency fusion (coherent-
+model win condition) | further reasoning probes (indirection, nested
+binding). C21b d64 CLOSED NEGATIVE (corpus-limited); fluency = honest
+length-invariant engine at box scale.
 
 ### C23 — router hardening (StickyMoE-style load/consistency) + borrow organ
 (subtraction: c=(a-b-borrow) mod 10, 1-bit exact transition, same pattern
@@ -172,7 +187,7 @@ still loses. Hahn TACL-2020 finite-ops bound is the mechanism.
 Standalone certs (the bar the machine must match internally): echo
 -0.2935; SRAM 0.0217-0.0270 (4,353p); mod7 0.0025-0.0071; dyck-3 0.0068.
 
-## 5. LAWS (16; one line each; full proofs/derivation in log.md)
+## 5. LAWS (27; one line each; full proofs/derivation in log.md)
 L-LINEAR-HOST: sub-quadratic linear hosts are length-invariant,
 near-oracle on finite-state tasks. L-ROUTING-BEATS-FUSION: per-example
 routing over isolated experts beats one fused model. L-STACK-NECESSITY:
@@ -208,6 +223,18 @@ L-TRAIN-LENGTH-MISMATCH (organ push calibrates to train-window difficulty;
 long-window fine-tune + distance curricula for long-range bars),
 L-ORGAN-GAIN (bilinear push margins can be set by scaling the table, then
 recalibrated).
+Cycle-39-42 laws: L-DATA-CEILING (fluency ceiling at box scale = corpus
+size, not model capacity — d64 did not beat d32 on 1MB; ~100 epochs =
+memorization), L-VALUE-CHANNEL (factoring carried values into mechanism-
+owned channels collapses state budget O(k x phases) -> O(phases); table
+plateaus of joint-encoding kind are representation artifacts — broke the
+C26 wall), L-DISCOVERABILITY-BY-CLASS (a program hard-to-impossible for
+one machine class can be O(10^3)-eval-trivial for a correctly factored
+class), L-TRANSPORT-DIRECTION (single-head LTR tape machines transport
+values monotonically rightward; any permutation needing leftward moves —
+reversal needs them for half the pairs — is unsolvable in that class at
+ANY state/register budget; theorem + measured ceiling 0.3985 vs feasible
+0.556).
 
 ## 6. PROTOCOL CONSTANTS
 dCE vs analytic oracle (oracle = exact generation entropy per token;
@@ -282,6 +309,10 @@ fluency engine (C21: CE @16384 = 1.007x @256 at 35,968p) — a
 capability no TF on this box can even allocate at 16k. Honest
 negatives logged: ring not modulus-general (mod5/6 zero-shot 4.4/3.4);
 subtraction not zero-shot (6.13 — defines the borrow organ, now built
-into C22). Open for everyone: P4 open-ended iteration. In flight: C22
-chatbot machine (state + math + echo in conversation); next: C22b
-fluency fusion, C21b d64 fluency host.
+into C22). C26 binding CERTIFIED under VET (cycles 40-41): value-encoded
+transport breaks the discrete-table plateau — depth-unlimited exact
+binding, discovered from blank genome in 877 evals. Cycle 42: reversal
+binding proven unsolvable on single-head LTR tape classes
+(L-TRANSPORT-DIRECTION, theorem + 0.3985 measured ceiling). Active
+endgame: generalization/reasoning frontier; next attack = LIFO/
+bidirectional geometry (cycle 43).
