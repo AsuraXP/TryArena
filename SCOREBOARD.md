@@ -131,3 +131,6 @@ register. Hand-derived existence proof; discoverability run = cycle 41.
 | S5 passes=nd+1, one-mark trace | exact | drifted |
 | stretch nd=128/256/512 | exact | n/a |
 Depth-unlimited by construction. L-VALUE-CHANNEL banked.
+Cycle 41: DISCOVERED from blank genome in 877 evals/20s; same genome
+certifies all bars. C26 BINDING CERTIFIED (VET class). Laws:
+L-VALUE-CHANNEL, L-DISCOVERABILITY-BY-CLASS.

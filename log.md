@@ -1622,3 +1622,27 @@ documented TF failure zone (Hahn 2020: modular counting).
   budget from O(k x phases) to O(phases); table-plateau walls of the
   "joint encoding" kind are representation artifacts, not task hardness.
   (Refines L-PLATEAU-ATTRACTOR scope: it governs the discrete-table family.)
+
+## Cycle 41 / C26-R — DISCOVERABILITY CONFIRMED: C26 fully certified (VET)
+- SEARCH from BLANK genome (Ph hold-state, Eh identity) inside the VET
+  class: PERFECT train fitness in 877 EVALS / 20s (the discrete-table
+  family needed 55,626 edits across 30+ runs and never broke 326/500).
+  Discovered genome certifies ALL bars: S1 500/500, S2 200/200 nd=16,
+  S3 100/100 nd=32, S4 100/100 nd=64 joint, S5 passes=nd+1 exact +
+  one-mark trace (ARC2-C41-VETSEARCH; ckpt c41_vet_searched.pt).
+- VET class definition note (honesty): register read/write PORTS are
+  architectural (write at phase states {A,B}, read at carry state) — the
+  search wires Ph/Eh; ports are the organ-placement choice, analogous to
+  giving the stack task a stack organ.
+- GRADING: C26 BINDING — CERTIFIED under the VET machine class. Constructed
+  (cycle 40) + discovered (cycle 41) + all bars perfect + depth-unlimited
+  (nd=512 stretch exact). The PLATEAU-BLOCKED v4 verdict is VACATED: the
+  wall was a representation artifact of the discrete-table family
+  (L-PLATEAU-ATTRACTOR scope refined accordingly).
+- LAW: L-DISCOVERABILITY-BY-CLASS — a program hard-to-impossible for one
+  machine class can be O(10^3)-eval-trivial for a correctly factored class;
+  discoverability is a property of the class, not of search effort.
+- C29 (new machinery for binding) CLOSED: its objective is achieved by VET.
+- Queue now: C22b fluency fusion (coherent-model win condition) OR the
+  reasoning-frontier stretch (VET-class generalization beyond identity
+  transport: permutations/indirection — the next reasoning wall).
