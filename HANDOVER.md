@@ -2,9 +2,11 @@
 _LAST UPDATED: cycle 42 (2026-08-25) — C26 binding CERTIFIED (cycles 40-41,
 VET class); cycle 42 reasoning-frontier probe 1: reversal binding proven
 unsolvable on single-head LTR tape classes (L-TRANSPORT-DIRECTION);
-cycle 43 queued = LIFO/bidirectional geometry attack. If you are a new agent, your entry point is HANDOVER_PROMPT.md (paste-
-ready) or this file; then read the last 2-3 blocks of log.md and
-PROBLEM_MAP.md; then run verify_suite.py (must be 35/35)._
+cycle 43 queued = LIFO/bidirectional geometry attack. PRIMARY ENTRY POINT for new agents: RESUME.md (the single authoritative
+handover document — full achievement record, explicit do-not-re-verify
+list, and the exact cycle-43 continuation plan). Then read the last 3
+blocks of log.md and PROBLEM_MAP.md; then run verify_suite.py ONCE
+(must be 35/35)._
 _Canonical state handoff for a new agent (written 2026-08-22, cycle ~C19).
 Everything here is on disk in this repo and pushed to GitHub branch
 `arena/01a02263-tryarena`. `log.md` (34 cycle blocks) is the full historical
