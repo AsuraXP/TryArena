@@ -1808,3 +1808,76 @@ stages frozen, each stage under its own fitness.
   distance analysis classifies solvability per geometry).
 - Wall 155.7s, 497MB, 1 thread. verify_suite 35/35.
   Files: c44_vets_search.py/.log, c44_vets_discovered.pt.
+CYCLE 45 (2026-08-26) — REASONING FRONTIER probe 3: ARBITRARY
+PERMUTATIONS on LIFO geometry (VET+S mechanism + G1/G2 control-
+generalized push/pop) = CLASSIFIED at both levels + 3 laws banked.
+TASK: tgt_i := d_{pi[i]} for ANY pi in S_n, value-agnostic control.
+MACHINE = C43/C44 verbatim + G1 (push: DIG with Eh==ACT_BLK, any
+state — the C44 genome is a fixed point) + G2 (pop: BLK with
+Eh==COND_R, s odd, c <= P-1, any state).
+PART A (exact combinatorics): DFS over pass schedules (each pass:
+push a nonempty tape-ordered subset OR wait; C43 gate; 1 pop/pass).
+L-LIFO-COMPLETENESS: ALL of S_n reachable at the schedule level —
+24/24 @ n=4 (min passes 6x2, 7x22), 120/120 @ n=5 (min 7-9). Wait
+passes are FIRST-CLASS: the gate c <= P-1 opens as c decays, so
+parking a source and draining it later is legal. Forensics: the
+first model (consecutive nonempty blocks only) UNDER-approximated
+(21/24, missed [2,0,1,3]) — exposed when the search DISCOVERED
+[2,0,1,3] with A=0; the earlier "left-rotation A-unreachable"
+claim is VOID.
+PART B (control level): staged 6-stage discovery (M1/M2/P/Q1/Q2/R,
+stall 400, 5% blank restarts, reset op p=0.4) x 3 independent
+seeds (best-keep), ~500-1800 evals/pi. n=4 BATTERY (all 24 pi):
+14/24 REALIZED — 12 exact (best=1.0, verified 60/60) + 2
+effective ([1,2,0,3], [2,1,3,0]: verified 60/60, best_full 0.948
+= trace/timing components only; correctness exact). 10/24
+PLATEAU: 9 at exactly 0.4167 + 1 at 0.3933 (verified <= 0.117)
+— a UNIVERSAL ATTRACTOR (the "reversal skeleton": all sources
+cleared, targets partially filled, wrong pop order). n=8: head-
+front pi=[0,7,...,1] DISCOVERED ver=1.0 (17 passes = 2n+1; A-min
+10); two-block swap pi=[3,2,1,0,7,6,5,4] NOT realized (0.300
+after 1505 ev x3 seeds) — consistent with the state-budget
+boundary. n=5 sample: 2/6 realized.
+S1b (length generalization): the n=4 [0,3,2,1] control implements
+the HEAD-FRONT family pi_n = [0, n-1, ..., 1] at n=4,8,16,32
+(passes 9,17,33,65 = 2n+1; 20-tape exact at each n); the n=8 S3a
+control generalizes identically (fx=1.0 at n=16/32). Negative
+control: reversal control on head-front pi_8 = 0.0. NECESSITY
+PROBE: n=4 [1,3,2,0] control on the n=8 embedding [1,7,6,5,4,3,2,
+0] = 0.0 (predicted: middle pop triggers at c = P-1, P < n-1 ->
+pass m = n-P+2 depends on n).
+LAW L-LIFO-COMPLETENESS: the schedule level (LIFO + C43 gate +
+wait-passes) is ALL of S_n; the control level is a strict subset.
+LAW L-STATE-BUDGET (control layer): the per-pass state trajectory
+is a composition of the 5-state (symbol,state) rows over the tape
+symbol pattern; the pass number is encoded by the mark count
+(state at SEP entry = mark-chain orbit, <= 5 phases); a
+parked-then-pushed source re-enters a push state only through
+that orbit -> the boundary set (10/24 @ n=4) needs >= 6 distinct
+phase states -> not expressible. Evidence: the universal 0.4167
+attractor + 3-seed plateaus + the state-count argument (structural
+account, not a formal proof). LAW L-LIFO-UNIQUENESS (REFINED):
+length-generalizing nontrivial families = exactly the schedules
+whose gate events are n-INVARIANT (trigger at c = n-k for fixed
+k, or at c = 0): reversal (n+2 passes) + head-front (2n+1 passes);
+both verified with ONE control for n=4..32. All other families
+need length-specific controls (necessity probe 0.0).
+PATCH LOG (5): (1) consecutive-blocks model missed wait-passes
+(21/24) -> DFS-with-waits (24/24); (2) all-pushed shortcut
+evaluated pass m+1 (reversal 7 vs 6) -> evaluate from m; (3)
+single-stream search fragile ([0,3,2,1] plateaued 0.4167 on one
+seed stream, 1.0 on another) -> discover_multi (3 seeds) + reset
+operator + stall 400; (4) S1b cap artifact: score cap nd+12 <
+2n+1 at n=16 gave a FALSE 0.0 that briefly "falsified" head-front
+generalization -> cap parameter (3n+4); (5) def-time default arg
+capM=2*n+2 NameError -> None default.
+VERDICT: C45 CLOSED. Arbitrary permutations on the LIFO machine
+= classified: schedule-complete, control-restricted to a
+structurally characterized subset (14/24 @ n=4), exactly two
+length-generalizing nontrivial families. A clean, citable class-
+separation datum at the same scale where 796k TFs lose on
+attention allocation. NEXT: frontier probe 4 = indirection /
+nested binding (VET register organ under the discovered control).
+Wall 124.0s, 499MB, 1 thread. verify_suite 35/35.
+Files: c45_perm.py/.log, c45_perm_discovered.pt (S2 found genomes +
+S3a + A sets).

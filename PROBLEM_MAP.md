@@ -335,3 +335,26 @@ gradient all-or-nothing scoring and a vacuous per-pass hole).
 Companion process law: decompose to 2-entry needles before scaling
 budget. Total laws ~29. NEXT: probe 3 = arbitrary permutations
 (transport-distance analysis classifies solvability per geometry).
+CYCLE 45 (2026-08-26) — REASONING FRONTIER probe 3: ARBITRARY
+PERMUTATIONS on VET+S = CLASSIFIED. Two-level result. (A)
+SCHEDULE level (exact DFS enumeration, wait-passes first-class):
+ALL of S_n reachable — 24/24 @ n=4, 120/120 @ n=5, min passes
+6-9 (L-LIFO-COMPLETENESS). Forensics: first model (consecutive
+blocks only) under-approximated 21/24; search discovered
+[2,0,1,3] with A=0, exposing the bug. (B) CONTROL level (5-state
+value-agnostic (symbol,state) table; staged 6-stage discovery x
+3 seeds): STRICT SUBSET — 14/24 @ n=4 (12 exact + 2 effective,
+all verified 60/60; 10 plateau at a universal 0.4167 attractor
+= reversal skeleton), 2/6 @ n=5, n=8 head-front DISCOVERED
+(2n+1 passes), n=8 two-block NOT realized (0.300 @ 1505ev x3)
+(L-STATE-BUDGET: pass number = mark-count chain <= 5 phases;
+boundary pi need >= 6 distinct phase states — structural
+argument + plateau evidence). Length generalization: exactly TWO
+nontrivial universal families — reversal (n+2) and head-front
+(2n+1), both n-invariant-gate schedules, one control verified
+n=4..32 each; necessity probe [1,3,2,0]@n8-embedding = 0.0
+confirms the rest are length-specific (L-LIFO-UNIQUENESS,
+refined). Patch log: 5 items incl. an S1b cap artifact (nd+12 <
+2n+1 at n=16) that briefly falsified head-front generalization.
+Total laws ~32. NEXT: probe 4 = indirection / nested binding
+(VET register organ under the discovered control).
