@@ -318,3 +318,20 @@ unaffected. NEXT: C44 discovery re-entry (enlarged / staged /
 contract-decomposed search, c24c-k precedent), then probe 3 =
 arbitrary permutations (transport-distance analysis classifies
 solvability per geometry).
+CYCLE 44 (2026-08-26) — VET+S DISCOVERABILITY: CERTIFIED. Staged
+contract-decomposed hill-climb (c24c P4-DISC precedent) from blank
+genome discovers the reversal program in 266 evals (M1 4, M2 91, Sa
+165, Sb 6) vs 27,555 evals/0.8350 FAIL for C41-protocol undirected
+search (C43 ARM-B). Discovered genome passes ALL C43 bars: 500/500
+in-dist, 200/200 nd=16, 100/100 nd=32/64, passes=nd+2 + one-mark
+trace, stretch exact nd=512. L-DISCOVERABILITY-BY-CLASS confirmed
+for the LIFO class. Basin: k=1 7/8, k=2 8/8, k=4 8/8 (attractor-
+stable). LAW: L-CONTRACT-PURITY — stage fitnesses must enforce the
+PER-PASS invariants downstream stages depend on: graded, cumulative,
+structurally closed, precondition-bearing; terminal properties admit
+lazy/parasitic solutions (3 instances forensically caught this
+cycle: SEP-destroyer, lazy-scan, invariant-drift; plus zero-
+gradient all-or-nothing scoring and a vacuous per-pass hole).
+Companion process law: decompose to 2-entry needles before scaling
+budget. Total laws ~29. NEXT: probe 3 = arbitrary permutations
+(transport-distance analysis classifies solvability per geometry).

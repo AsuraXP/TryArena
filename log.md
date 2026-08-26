@@ -1745,3 +1745,66 @@ reversal/rotation (two-pointer; Gries-Mills block swap, arxiv
   solvability per geometry).
 - Laws banked: +L-LIFO-OVERHEAD. Total laws ~28. verify_suite 35/35.
   Files: c43_rev.py/.log, c43_vets_searched.pt (best ARM-B genome).
+## Cycle 44 / C43 ARM-B re-entry — VET+S DISCOVERABILITY: CERTIFIED via
+  staged contract-decomposed search (ARC2-C44-VETS-DISC)
+
+C43: reversal certified under VET+S (hand-derived control); ARM-B
+undirected hill-climb (C41 protocol) stalled at 0.8350 @ 27,555 evals.
+This cycle: convert the hand-derived control into a DISCOVERED
+program. Method (c24c P4-DISC precedent): staged contract-decomposed
+hill-climb over the 120-entry control genome from blank, prior
+stages frozen, each stage under its own fitness.
+
+- DISCOVERY PIPELINE (blank genome, seed 44):
+  M1 (MARK rows; one-mark-per-pass; graded trace)          4 evals
+  M2 (SEP rows; per-pass scan invariant)                  91 evals
+  S.a (DIG x state-2; source-clearing ramp; cumulative)  165 evals
+  S.b (BLK x state-2; 1-entry pop needle; full fitness)    6 evals
+  TOTAL 266 evals (~6s) -> train fitness 1.0. Comparators: C41
+  undirected VET-binding discovery 877 evals; C43 ARM-B undirected
+  same task: 27,555 evals, 0.8350, FAILED.
+- D3 (discovered genome, full C43 bars): ALL PASS — S1 500/500
+  in-dist, S2 200/200 nd=16, S3 100/100 nd=32, S4 100/100 nd=64,
+  S5 passes=nd+2 + one-mark trace, stretch exact to nd=512.
+  L-DISCOVERABILITY-BY-CLASS CONFIRMED for the LIFO class.
+- D4 basin profile (k-entry perturbations, 30s re-climb): k=1 7/8
+  (max 163 evals); k=2 8/8 (max 1680); k=4 8/8 (max 999). Wide,
+  attractor-stable basin.
+- PHASE-4 PATCH LOG (5 iterations; 3 distinct parasitic-solution
+  classes caught by forensics — the real content of this cycle):
+  (1) joint 103-row stage-2 search stalled on the 10-entry ramp
+      (0.2389 @ 353s) -> sub-contract decomposition S.a/S.b.
+  (2) stage-1 M contract discovered a SEP-DESTROYING solution
+      (Eh[SEP,2]=BLK): terminal trace/P checks passed, but the
+      mechanism's post-SEP s-indexing died -> no pop could ever
+      fire. Fix: structural precondition in the stage fitness.
+  (3) repaired fitness admitted a LAZY contract (scan deferred to
+      pass 2, abandoned by pass 3; terminal P==nd still passed).
+      Fix: per-pass scan invariant (state 2 on all post-SEP cells
+      in every pass).
+  (4) all-or-nothing per-case scoring gave ZERO gradient (56k evals
+      at 0.0 — partial entry progress never accepted) -> graded
+      components with continuous scan feedback.
+  (5) 17-row M contract still too joint (27k evals, 0.7000) ->
+      M1/M2 decomposition into 2-entry needles.
+  (6) first M2 fitness VACUOUSLY satisfied by SEP destruction
+      (post=0 passes uncounted) -> per-pass existence requirement.
+  (7) Sa (fc-only, a terminal property) let Ph[DIG,2] drift,
+      silently breaking the frozen M2 scan invariant (case-
+      dependent partial reversals, best-pop 0.5933) -> CUMULATIVE
+      stage fitness: every stage re-scores ALL upstream invariants.
+- LAW: L-CONTRACT-PURITY — staged search is sound only when each
+  stage fitness enforces the PER-PASS invariants that downstream
+  stages depend on: graded (zero-gradient trap), cumulative
+  (invariant-drift trap), structurally closed (vacuous-hole trap),
+  precondition-bearing (lazy-solution trap). Terminal properties
+  admit parasitic solutions. Companion process law: decompose to
+  2-entry needles before scaling the budget.
+- VERDICT: C44 CLOSED — the VET+S reversal program is now a
+  DISCOVERED machine, certified at full depth (nd=512). The C43
+  ARM-B negative was a SEARCH-METHOD boundary, not a
+  discoverability boundary.
+- NEXT: frontier probe 3 = arbitrary permutations (transport-
+  distance analysis classifies solvability per geometry).
+- Wall 155.7s, 497MB, 1 thread. verify_suite 35/35.
+  Files: c44_vets_search.py/.log, c44_vets_discovered.pt.
