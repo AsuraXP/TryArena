@@ -358,3 +358,40 @@ refined). Patch log: 5 items incl. an S1b cap artifact (nd+12 <
 2n+1 at n=16) that briefly falsified head-front generalization.
 Total laws ~32. NEXT: probe 4 = indirection / nested binding
 (VET register organ under the discovered control).
+CYCLE 46 (2026-08-26) — REASONING FRONTIER probe 4: INDIRECTION /
+NESTED BINDING on VET+S (C45 mechanism + RSET peek / REM emit /
+ACT_CLR + ADIG index class, 44 symbols) = CLASSIFIED. 1-hop
+T_i := V_{a_i}: REALIZABLE at n=4 (certified hand control,
+400/400 exact, tables intact, passes 2n) and LOCKED there over
+n=3..9 (fx 0.000 at all other n, 40-tape sweeps) —
+L-INDIRECTION-N4-LOCK; the earlier derived MOD-5 STRIDE exclusion
+is REFUTED by the sweep (n=9, L%5=1 like working n=4, fails
+identically; the L%5=0 cases fail by entry alignment, and co-
+phased blocks would bind when the entry hits 3 — the per-digit
+ADIG rows disambiguate, no reader exclusivity needed) — realiz-
+ability at n!=4 (incl. n=3) is formally OPEN. 2-hop T2_i :=
+V_{I_{a_i}}: UNREALIZABLE (L-INDIRECTION-DEPTH-1: the
+intermediate value must be re-exposed to address table 2; at the
+T1->V boundary the V entry is data-independent and the written
+BDIG_v is invisible (Mealy-on-original); the only forward value
+channel is the 5-value state (5 < 10 digits), r is opaque) —
+derived, structural. DISCOVERY: 1-hop n=4 NOT found in 23,925
+evals x 3 seeds (best 0.5017, ver 0.000) — plateau forensics:
+MARK/SEP rows blank (no mark discipline, no entry), fs unstable
+across tape sets (0.225 vs 0.717) = coincidental write
+collisions, zero structural components; the ~100-entry needle is
+INTRINSICALLY COUPLED (branch + RSET + REM must coexist for any
+gradient) so staged decomposition is impossible — L-INDIRECTION-
+UNDISCOVERABILITY: capability/discoverability separation (the
+same search infrastructure finds the 5-entry LIFO needle in 266
+evals, C44). Laws banked: OPACITY (r/S value-opaque; tape digits
+only value-visible memory), REDUNDANCY (n^2 table replication per
+reader at the 5-state budget), OVERHEAD (2n passes: RSET
+selectivity forces T-state to hit the REM-eligible 0 shared with
+cleared marks — cf. L-LIFO-OVERHEAD), N4-LOCK, DEPTH-1,
+UNDISCOVERABILITY. Patch log: 6 items incl. RSET-hold bug
+(re-peeked whole chain -> r = last V), stale-register trace
+harness, impossible 4-stage decomposition, hill-climb
+star-degeneracy on zero plateaus (fixed by plateau walk), and the
+mod-5 refutation. Total laws ~38. NEXT: probe 5 = induction /
+recursion.

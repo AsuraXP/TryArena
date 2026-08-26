@@ -1881,3 +1881,108 @@ nested binding (VET register organ under the discovered control).
 Wall 124.0s, 499MB, 1 thread. verify_suite 35/35.
 Files: c45_perm.py/.log, c45_perm_discovered.pt (S2 found genomes +
 S3a + A sets).
+CYCLE 46 (2026-08-26) — REASONING FRONTIER probe 4: INDIRECTION /
+NESTED BINDING on the VET+S tape machine (C45 mechanism + 3 new
+actions: 3 RSET peek / 4 REM emit / 5 ACT_CLR, + ADIG0..9 index
+class = 44 symbols) = CLASSIFIED: 1-hop realizable at n=4
+(CERTIFIED hand control, 400/400), locked there over n=3..9, 2-hop
+derived unrealizable, discovery intractable at box scale.
+TASKS: 1-hop (array dereference) T_i := V_{a_i}; 2-hop (nested
+binding) T1_i := I_{a_i}, T2_i := V_{I_{a_i}}; value-agnostic: ONE
+control for EVERY digit assignment.
+MACHINE: C45/C44 mechanism + RSET (peek: r := digit, cell intact)
++ REM (BLK and r!=BOT -> write BDIG0+r, r := BOT) + ACT_CLR;
+ADIG_d index digits. r is value-OPaque to (symbol,state) control;
+Mealy-on-pre-write transition. 1-hop layout: [MARK^n][SEP]
+[A_i][V x n REPLICATED][T_i] x i=0..n-1 [PAD], block L = n+2.
+B_S1 REGRESSION: C44 reversal genome under the extended mechanism
+= 1.0 at n=4/8/16 (new actions unused by the genome -> fixed
+point; backward compatible).
+B_S2 HAND 1-HOP n=4 (C40-style existence proof): 400/400 random
+(a,V) EXACT, A/V tables INTACT (peek, not consume), halted,
+passes = 8 = 2n. Rows: MARK [2,3,4,0,1]/CLR@0; SEP [2,3,2,1,0];
+ADIG_d: s=3 -> 3-d (per-digit branch = the ADDRESS), else -> 4
+(absorb); DIG_d: [1,2,3,4,0] + RSET@3 (ADVANCE not hold — holding
+re-peeks the whole chain); BLK identity + REM@{0,1,2,4}. B_S6
+REPEATED INDEXES (a_i in {0,1} heavy collision): 200/200 — read-
+only indirection, up to 4 readers on one V cell.
+LAW L-INDIRECTION-OVERHEAD (banked, cf. L-LIFO-OVERHEAD C43):
+passes = 2n (n mark-clears + n-1 spurious REM cleanups): the
+RSET-selectivity constraint (h_a = 3-a) forces the T-state 2-a to
+hit 0, the cleared mark cells stay BLK at state 0 and share the
+REM-eligible state; r (the last branch block's peek) is often
+non-BOT when they are visited -> one BDIG rewrite each (BDIG then
+inert). Structural price at the 5-state budget.
+N-SWEEP -> LAW L-INDIRECTION-N4-LOCK (empirical, REVISED this
+cycle): hand control fx over n=3..9 (40 tapes each) = {n3:0.000,
+n4:1.000, n5:0.000, n6:0.000, n7:0.000, n8:0.000, n9:0.000} —
+realizable IFF n=4 within the constructed family. The EARLIER
+DERIVED MOD-5 STRIDE LAW IS REFUTED by the sweep: n=9 (L=11,
+L%5=1, the SAME class as working n=4's L=6%5=1) fails identically
+-> the stride is not the obstruction; the L%5=0 cases (n=3,8) fail
+for ENTRY-ALIGNMENT reasons (all A-cells co-phase, but the
+mark-chain x SEP entry orbit never routes them to branch-state 3
+for those n) — and co-phased blocks would bind correctly WHEN the
+entry hits 3 (the per-digit ADIG rows disambiguate; no reader
+exclusivity is needed). The real lock = the coupling of the
+mark-clear chain duration x SEP entry orbit x period-2 selection
+cascade: it aligns at n=4 only. 1-hop realizability at n!=4
+(including n=3) remains formally OPEN (another entry family may
+unlock it) — logged as open, not as a theorem.
+B_S3 DISCOVERABILITY 1-HOP n=4: 23,925 evals (2-stage M1+Q
+pipeline, plateau walk, 3 seeds — ARM-B class budget) best=0.5017,
+ver=0.000 -> NOT DISCOVERED. Forensics: the plateau genome is a
+random action scatter — MARK and SEP rows BLANK (no mark
+discipline, no entry phase), no branch structure; fs UNSTABLE
+across tape sets (0.225 on the 101-set vs 0.717 on the search
+set) = coincidental write collisions, not structure; 29/30 tapes
+halt at ~11 passes with zero marks consumed. The indirection
+needle (~100 coupled entries: branch + RSET + REM must COEXIST
+for any fx/fs gradient — no partial-credit path exists) is
+intrinsic to the task, so the C44 staged decomposition is
+impossible and box-scale search (the same infrastructure that
+finds the 5-entry LIFO needle in 266 evals, C44) builds ZERO
+structural components in 24k evals x 3 seeds. LAW
+L-INDIRECTION-UNDISCOVERABILITY (box scale): capability /
+discoverability SEPARATION — the machine CAN do 1-hop indirection
+(certified hand control), search CANNOT find it.
+B_S4 1-HOP n=3: 8,435 evals best=0.6689, ver=0.000 (same null
+structure: MARK/SEP blank) + constructed family fx=0.000 (n-sweep)
+-> no control in family or budget; realizability at n=3 formally
+OPEN (mod-5 non-existence proof refuted — honesty clause).
+B_S5 2-HOP n=3: 8,402 evals best=0.3617, ver=0.000 + LAW
+L-INDIRECTION-DEPTH-1 (derived, stands): the intermediate v =
+I_{a_i} must be re-exposed to address the second table; at the
+T1->V boundary the V entry state is Ph[BLK,s] (data-independent)
+and the written BDIG_v is invisible (Mealy-on-original); the only
+value channel forward is the 5-value state (5 < 10 digits) and r
+is opaque — no value channel can carry v -> depth >= 2
+UNREALIZABLE at the 5-state budget, no state-budget loophole.
+Search consistent (plateau, zero verification).
+PATCH LOG (6): (1) DIG RSET row held state 3 ([1,2,3,3,0]) ->
+every later V cell re-peeked -> r = always the last V -> hand
+0/200 -> advance to 4 ([1,2,3,4,0]); (2) manual-trace harness
+passed a STALE register (masked the pass-8 anomaly) -> registers
+must be propagated between passes in traces; (3) blank_genome
+2-tuple unpacked as 4 -> crash; (4) 4-stage decomposition
+IMPOSSIBLE (no fx/fs gradient until branch+RSET+REM coexist —
+intrinsically coupled needle) -> 2-stage M1+Q; (5) hill-climb
+star-degeneracy: strict-improvement-only acceptance on a zero
+plateau explores only the 1-3-entry star around the start (the
+817-eval "negative" was INVALID) -> PLATEAU WALK (accept equal
+p=0.5) + parameterized stall cap (S3: 8000 -> ~24k evals);
+(6) MOD-5 derivation refuted by the n-sweep (n=9 witness) ->
+replaced by empirical N4-LOCK + open question; B_S4 re-framed
+from "excluded" to "no control in family/budget, formally open".
+VERDICT: C46 CLOSED. Indirection / nested binding on the
+5-state VET+S machine = classified: 1-hop REALIZABLE at n=4 only
+within the constructed family (certified, 400/400, tables intact,
+2n passes), locked over n=3..9, 2-hop UNREALIZABLE (derived,
+structural), and DISCOVERY intractable at box scale — a clean
+capability/discoverability separation with a banked overhead law
+and a refuted derivation logged with its refutation witness.
+NEXT: frontier probe 5 = induction / recursion.
+Wall 251.8s (canonical run), 494.9MB, 1 thread. verify_suite
+35/35. Files: c46_indir.py/.log, c46_indir_discovered.pt (S3/S4/
+S5 plateau genomes + hand1).
+PUSH STATE (C46): local tip 062a5b9 (C46) > c608c53 (C45) > origin e59bdaa (C44) — push blocked (GH_TOKEN expired; operator must reconnect GitHub in Arena). Retried this cycle, same failure.
