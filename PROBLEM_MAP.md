@@ -425,3 +425,57 @@ before any claim. Prior art: 1C vs 2C separation (Minsky;
 Hartmanis-Stearns unary squares), cited. NEXT: C48 = attempt a
 genuine value-agnostic MUL hand control via the tape-orbit
 construction (or bank the barrier); then C22b fluency fusion.
+CYCLE 48 (2026-08-26) — REASONING FRONTIER probe 6: DEPTH-2
+INDUCTION / value-agnostic MUL on VET+S = BARRIERED at scale 2..12:
+certified unrealizable outside the 4-pair T1 corner {(2,2), (2,3),
+(3,2), (4,2)} (T1: fills <= a+4 or m via L1 mark-pass budget
+[312.5M classes x2] + L2 one-fill/pass + L3 tail max-prefix 4
+[500k combos]; T2 mode-P: <= a+b+10); corner empirically blocked
+(0.883 value-defective plateau: the (2,4) attractor is exact for
+v=0..7 and dead at v=8 — a dead digit row; off-pair +-1 noise).
+Rank-1 CERTIFIED realizable: (a,1) REPEAT a<=4 (mod-5 edge);
+(1,2..4) ONESHOT per-b (front-clock transient, Ph[BLK] = F) + ONE
+JOINT control (B_S4d witness: F=[2,0,3,4,4] 4-closed-and-fixed,
+G={0,1,2,3}, PhDIG=[1,2,0,0,0], s0=0 — prefix confinement); (1,5)
+unreachable (max fill 4). L-POP-COLLISION (new): the pop channel
+cannot target the output region (emptied template steals pops,
+first-eligible-BLK rule; POP-LOOP forensics 0/75, 100 template
+fills) — REM is the only output writer. L-INDUCTION-FOUR: every
+realizable data-value loop runs to at most 4. Total laws ~41.
+NEXT: C22b fluency fusion.
+CYCLE 49 (2026-08-26) — C22b FLUENCY FUSION: ONE COHERENT MODEL
+UNDER THE BOX — WIN. FusionBot (single nn.Module, 68,738p = 1/11.6 of
+the 796k TF): the entire C22-R champion (v9c, 20,518p) FROZEN on the
+dialog surface (all 8 D bars re-measured through the fusion within
+1e-4: D1 -0.0651 D2 0.0389 D3 -0.0704 D4 -0.0004/0.0002 D5 0.0001
+D6 1.0 D7 exact) + the d32 fluency engine (lm_host_final.pt, 768 BPE,
+STOCK SSM forward, a_max 0.923 as trained) as the 4th branch + a
+LEARNED surface-router row 3 over the frozen 16-dim champion front
+(b3 init -5; never steals a dialog stream: route_d 1.0 throughout;
+4-way routing 32/32). Smoke: both surfaces BIT-EXACT vs their
+standalone models at init (maxdiff 0.00). The engine carried as-is
+and improved: fused vs standalone ce 4.3155/4.3199 @256,
+2.1938/2.2153 @1024, 4.299/4.3547 @16384 (0.996x = length-invariant
+inside the fused model). Honest boundary: bar-4.0 fluency NOT
+claimed (L-DATA-CEILING). Operator win condition (fluency + exact
+state + exact computation in one parameter set) MET. Files:
+c22b_fusion.py/.log, c22b_stage1.pt.
+CYCLE 50 (2026-08-26) — C49 INDUCTION CORNER RESOLUTION: the C48
+rank-2 corner is CLOSED at the certified level. T1' SHARP (replaces
+the loose C48 "a+P" bound): total REM-mode fills = max(r, K') <=
+max(a, 4) — each r-phase fill shifts the front index by 1 (the
+filled BDIG prefix walks F), so r-phase fills do NOT add to the
+tail run; K' = L3 open prefix (machine-re-verified max 4, 500k
+classes). Exact a*b <=> a*b <= max(a,4) <=> ONLY (2,2) in 2..12.
+(2,2) REALIZED (hand: both marks clear pass 1, tail fold d=0,
+F=[1,2,3,4,4], G={0,1,2,3}; 100/100 + value sweep 10/10, passes 5,
+contiguous) AND DISCOVERED (hybrid v-deterministic search: 0.5
+exact + 0.5 partial credit over all 10 values — 3,363 evals, ver
+1.0/1.0 all values; the C48 protocol lands on a trace-1.0 dead-
+row attractor, v=8, ver 0.9). (2,3)/(3,2)/(4,2) CERTIFIED
+unrealizable (T1'; (2,3) also by mode-P pop-steal 5<6). COMPLETE
+realizable value-agnostic MUL at scale 2..12 = rank-1 family +
+(2,2) = 7 cells; (2,3) search consistency 0.583 < 1.0. L-DEAD-ROW-
+ATTRACTOR (new search law, extends L-CONTRACT-PURITY to per-value
+invariants + partial credit). Total laws ~44. Files:
+c49_corner.py/.log, c49_corner_discovered.pt.

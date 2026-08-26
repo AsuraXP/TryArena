@@ -2143,3 +2143,240 @@ remote (local-only commits c608c53/062a5b9/9f05185/46810e1 lost, SHAs
 unrecoverable); 318 files restored from origin tip e59bdaa; C45-C47
 re-committed from preserved working tree (3 commits above/next, file
 contents + logs verbatim). GH auth now working — push every cycle.
+CYCLE 48 (2026-08-26) — REASONING FRONTIER probe 6: DEPTH-2
+INDUCTION / value-agnostic MUL(a,b) on the VET+S machine =
+BARRIERED at scale 2 <= a,b <= 12 (certified outside the 4-pair
+T1 corner; corner empirically blocked). The realizable induction
+family is RANK-1, certified — including a NEW one-control joint
+for (1,2), (1,3), (1,4).
+
+TASK: [MARK^a][SEP][DIG_v^b][BLK^m][PAD] -> exactly a*b output
+fills of v, value-agnostic in (a,b,v) — the C47 OPEN question.
+
+PART 1 — machine-checked derived theory (negatives certified; the
+checked space SOUNDLY over-approximates the control class):
+  L1 MARK-PASS BUDGET: 312.5M (Ph[BLK], Ph[MARK], mask) classes
+  for a=2 and a=3: the r>0 phase lasts <= a passes, or never
+  clears (r constant -> fills 0 or m). [a=2: 244.7M no-clear
+  classes; a=3: 244.0M.]
+  L2 (structural): <= 1 REM-fill/pass — RSET fires only on
+  template DIGs (before output); the first REM drains r; nothing
+  refills it later in the pass.
+  L3 FRONT-CLOCK TAIL: 500k (F, H0, G) combos: the constant-r
+  tail is a consecutive-open prefix (MEASURED MAX 4 — t + (d-1)
+  <= 4 since t + d <= 5 states) or region-full m (open cycle ->
+  overproduction; 113,400 region-full classes).
+  T1 (MODE-R CEILING): fills <= a + 4 or m => exact a*b
+  IMPOSSIBLE when a*(b-1) > 4 — certified for 113 of the 121
+  (a,b) in 2..12. T1 corner = {(2,2), (2,3), (3,2), (4,2)}.
+  T2 (MODE-P BOUND): push-mode controls: <= a + b + 10 output
+  fills (REM prefix <= 6; pops <= b, of which <= 1 output-
+  targeted by L-POP-COLLISION; post-push clock <= a + 4) =>
+  excluded when (a-1)(b-1) > 11 (thin strip, subsumed by T1
+  outside a=2).
+PART 2 — L-POP-COLLISION (NEW law, forensics): the first POP-LOOP
+hand attempt (push all b template DIGs, pop b times) fails 0/75:
+the emptied template cells are BLK at s = 1.. and STEAL the pops
+(first-eligible-BLK rule); template-region fills = 100. => the
+pop channel CANNOT target the output for q >= 2 pushes; REM is
+the only output writer. Kills the S-emptiness-loop hypothesis for
+output writing.
+PART 3 — rank-1 positives (hand controls, certified):
+  (a,1) = REPEAT-a: a <= 4, fx 1.0 x100 (C47 regression); a=5
+  edge 4/5 (mod-5 collision).
+  (1,b) = ONESHOT per-b (front-clock transient: F = 0->1->...->b
+  ->b, REM armed {0..b-1}, Ph[BLK] MUST equal F — forensics: with
+  Ph[BLK][3] != F[3] the walk jumped back into an armed state and
+  over-filled): b = 2..4 fx 1.0 x100, passes = b+1.
+  (1, b in 2..4) JOINT — ONE control, value-agnostic in v AND b
+  (B_S4d machine witness, realized): F = [2,0,3,4,4] (state 4
+  closed AND FIXED — the prefix-confinement condition: once the
+  front reaches 4, every later cell is also 4 and no REM fires
+  past the front, so the checker's front-only dynamics match the
+  tape; the first unconstrained witness F = [2,0,3,4,0] fails it
+  — fills skip the front and over-run, caught by SMOKE), G =
+  {0,1,2,3}, PhDIG = [1,2,0,0,0], s0 = 0 (phases d0(b) =
+  (2,0,1) for b = (2,3,4)): fx 1.0 x100 each, passes = b+1.
+  (1,5): NOT achievable by any control (B_S4d: exact-5 false,
+  max fill 4) — the count-4 ceiling.
+PART 4 — B_S4d (1,b) phase check (345 d0-tuples x 3125 F x 32 G,
+prefix-confinement enforced): per-b exact: b=2,3,4 YES; b=5 NO;
+joint (1,2..4): YES (the witness above) — REFUTES my pre-run
+"per-b only" prediction (logged as correction).
+PART 5 — B_S5 corner search (2-stage plateau-walk x 3 seeds,
+C44/C45 method):
+  joint {(2,2), (3,2)}: best trace-fitness 1.0, verified fx
+  0.883/0.883 (joint 0.883) — NOT discovered (4,959 evals).
+  joint {(2,3), (2,4)}: 0.883/0.883 — NOT discovered (2,742).
+  single (2,4): ver 0.883, gen 19/50 — overfit attractor (3,325).
+  ATTRACTOR FORENSICS (0.883 = 53/60): the (2,4) attractor
+  computes 8/8 exactly for v = 0..7 and DIES at v = 8 (0/8 — a
+  DEAD DIGIT ROW: per-digit template rows, row 8 broken; the
+  C47 v=6-defect class, relocated); off-pair geometries: +1
+  overfill noise ((2,2): 5/4, 6/4; (2,3): 7/6) or underfill
+  ((3,2): 3-5/6). The joint (2,2)+(3,2) attractor overfits to
+  (2,2) (8/10 v-exact) and fails (3,2) entirely (0/10). => the
+  corner is empirically blocked: the only attractor class is
+  value-defective (dead row) + geometry-noisy (+-1) — the C47
+  overfit signature, defect now identified.
+
+VERDICT: depth-2 value-agnostic MUL(a,b), a,b >= 2, = BARRIERED on
+the VET+S 44-symbol machine at scale 2 <= a,b <= 12: certified
+unrealizable outside the 4-pair T1 corner (T1 ceiling a+4 + T2
+bound a+b+10 + L-POP-COLLISION), corner empirically undiscoverable
+(0.883 value-defective plateau). Realizable induction family =
+RANK-1: {(a,1): a <= 4} (REPEAT, mod-5 edge at 5) x {(1,b): b in
+2..4} (ONESHOT; one joint control for all three) + REPEAT k <= 4;
+every realizable data-value loop runs to AT MOST 4
+(L-INDUCTION-FOUR). EXP(a,b) (true depth-2) out a fortiori (C47
+gen 4/40 stands).
+
+Laws banked: L-INDUCTION-FOUR, L-INDUCTION-RANK1, L-POP-COLLISION
+(+ T1/T2/L1/L2/L3 machinery). Total laws ~41.
+Files: c48_depth2.py/.log, c48_depth2_discovered.pt.
+Prior art (searched 2026-08-26): Chistikov, Notes on Counting with
+Finite Machines (FSTTCS 2014, LIPIcs vol 29) — deterministic PDAs
+count to n / modulo n with Theta(log n) states: a 5-state
+controller cannot count beyond what the stack materializes, and
+one materialized count gives one loop — which here cannot even
+target the output (L-POP-COLLISION). Counter machines:
+multiplication = nested loop over two operands = two independent
+counters (2CM universal, Minsky; 1CM computes n^2/a*b as
+recognition — C47 sources retained: ResearchGate 263873086,
+Springer 10.1007/978-3-031-34326-1_11).
+NEXT: C22b fluency fusion — the certified capability map closes.
+
+[2026-08-26] PUSH INCIDENT (C48): GH_TOKEN expired mid-cycle ("no longer
+longer valid" / "terminal prompts disabled"); commit 4b847de (C48) is
+local-only until GitHub is reconnected; file state persists in the
+workspace. Retry push on the next cycle once auth is restored.
+
+## Cycle 49 / C22b — FLUENCY FUSION: ONE COHERENT MODEL UNDER THE BOX
+- WIN (operator strategy reset): fluency + exact state + exact
+  computation in a single parameter set, measured.
+- DESIGN (c22b_fusion.py, FusionBot, single nn.Module, 68,738p):
+  (1) DIALOG side = the ENTIRE C22-R champion (machine v9c, 20,518p:
+  3 clamped-SSM hosts, state organ, math organ, dual-gated heads,
+  learned 3-way router) loaded VERBATIM from c22r8.pt and FROZEN —
+  D1-D7 invariant under fusion by construction, re-measured anyway.
+  (2) TEXT side = the d32 fluency engine (lm_host_final.pt, 768 BPE,
+  tied emb + SSM host + head) loaded VERBATIM, trainable, STOCK SSM
+  forward (a_max 0.923 as trained — the dialog-side clamp is the
+  L-DECAY-DRIFT fix and does not belong to the engine).
+  (3) SURFACE ROUTER: the champion's 16-dim router front (Linear
+  48->16, GELU) + its 3 output rows, all FROZEN, + ONE learned row
+  (w3, b3; b3 init -5 so it cannot steal a dialog stream) read over
+  the first 3 tokens of each surface's own front (dialog: champion
+  emb rows frozen; text: new trainable 768x16 front).
+- SMOKE (pre-training): dialog forward BIT-EXACT vs the standalone
+  champion (maxdiff 0.00, routing argmax identical); text forward
+  BIT-EXACT vs the standalone d32 LM (maxdiff 0.00). Both surfaces
+  are exactly the pre-fusion models at init.
+- STAGE 1: 2000 duty-cycled steps (L-DUTY), batch 32, AdamW 3e-3,
+  clip 1.0: odd = text LM CE + 0.5 route CE (target 3), even =
+  dialog route CE (target 0/1/2) — 220s. Route_t 0.31->0.84 (batch),
+  route_d 1.00 throughout (row 3 never steals a dialog stream),
+  b3 -5.0 -> -3.04.
+- EVAL (c22b_fusion.log, tag ARC2-C22B-FUSION, wall 233.7s,
+  peak 955.8 MB) — ALL 13 BARS PASS:
+  F1 champion bars through the fused model: D1 -0.0651 | D2 0.0389 |
+  D3 -0.0704 (<= D1+0.05) | D4 -0.0004/0.0002 | D5 0.0001 |
+  D6 3-way routing 1.0 | D7 dialogue exact (dave / 1 2 / 6 / 4 2) —
+  each within 1e-4 of the champion's own numbers (identical to the
+  champion within rounding; the frozen dialog stack is re-measured,
+  not assumed).
+  F2 4-way surface routing 32/32 (24 dialog fam-argmax + 8 text->3).
+  F3 ce256 carry: fused 4.3155 <= standalone 4.3199 + 0.10 — the
+  engine carried over AND IMPROVED at every length:
+  fused vs standalone: ce256 4.3155/4.3199, ce1024 2.1938/2.2153,
+  ce4096 4.1409/4.2063, ce16384 4.299/4.3547.
+  F4 length invariance inside the fused model: ce16384 4.299 =
+  0.996x ce256 (no length decay; better than training length).
+  F5 generation through the fused model logged (prose: ~15 coherent
+  words then corpus-scale degradation; code: "def add(a, b): return
+  x = 5" then degradation — the C21 capacity signature, unchanged).
+  F6 single model: one nn.Module, one state_dict (c22b_stage1.pt),
+  68,738p total (48,274 stage-1 trainable; 20,464 frozen champion) =
+  1/11.6 of the C15 protocol TF (796k).
+- HONEST BOUNDARY (unchanged, L-DATA-CEILING): bar-4.0 fluency is NOT
+  claimed — val ce256 ~4.3 vs ln 768 = 6.644 (2.4x under uniform),
+  the 1MB corpus is the ceiling. Claim = a length-invariant fluency
+  ENGINE carried as-is inside one coherent model.
+- STATUS: the operator's win condition (one coherent model under the
+  box: fluency + exact state + exact computation) is MET and measured
+  at box scale. Files: c22b_fusion.py/.log, c22b_stage1.pt.
+- NEXT: retry the C48 push (GH_TOKEN expired — operator reconnect);
+  then the post-coherence program: generalization/reasoning to the
+  absolute limit (C49+ probes on the fused or VET+S classes).
+
+## Cycle 50 / C49 — INDUCTION CORNER RESOLUTION: the C48 corner is
+## closed at the certified level (one cell realized + discovered, the
+## rest certified impossible by the SHARP bound T1')
+- T1' (SHARP REM-MODE CEILING — the C48 "a + P" bound was loose):
+  once the marks are cleared, the tail front at total-fill k is
+  F^k(d) (d = the tail fold, F = Ph[BLK] = Ph[BDIG]): each fill
+  appends one BDIG that walks F once, SHIFTING the front index by
+  exactly 1. With K' = the consecutive open prefix of the F-orbit
+  from d (L3 machine-checked, max K' = 4, re-verified this cycle
+  over 500k clock classes) and r = the number of r-phase (off-
+  orbit) fills (<= a by L1 + L2): total fills = r + max(0, K' - r)
+  = max(r, K') <= max(a, 4). The a in C48's "a + 4" never ADDS —
+  r-phase fills only shift k. Never-clear branch: fills 0 or m
+  (L1 + L3). EXACT a*b (m > a*b) <=> a*b <= max(a, 4) <=> (a,b) =
+  (2,2) is the ONLY rank-2 survivor in 2..12. Mode-P residual for
+  (2,3): 4 REM + 1 output-targeted pop (L-POP-COLLISION: odd-s
+  emptied template cells steal pops; even-s push pops at output s=5
+  — a skipped fill — and a 2nd push re-introduces an odd-s
+  template BLK) = 5 < 6.
+- B_1 (2,2) HAND CONTROL (REALIZED): both marks clear in pass 1
+  (Eh[MARK] armed at 0 and Ph[MARK][0]=1); tail fold d = 0
+  (Ph[SEP] all->0, PhDIG constant 0); pass-1 front = d = 0 (the
+  r-phase fill is the orbit START — r = 0 off-orbit fills); clock
+  F = [1,2,3,4,4], G = {0,1,2,3} (K' = 4, 4 closed-and-fixed,
+  prefix confinement). Fills at F^k(0), k = 0..3 (passes 1..4);
+  pass 5 front closed, no writes => identity => halt. VERIFIED:
+  100/100 exact (random v), value sweep 10/10, passes = 5 exactly,
+  fill positions [0,1,2,3] contiguous, mark trace [2,0,...]. Total
+  = max(r=0, K'=4) = 4 = a*b. Value-agnostic (no row depends on v).
+- B_2 CORNER ENUMERATION: T1' survivors in 2..12 = [(2,2)] only.
+  (2,3), (3,2), (4,2) CERTIFIED unrealizable (T1': 6,6,8 > max(2,4),
+  max(3,4), max(4,4); (2,3) additionally by the mode-P bound 5<6).
+  THE COMPLETE realizable value-agnostic MUL set at scale 2..12 =
+  {(a,1): a<=4} x {(1,b): b in 2..4, one joint control (C48)} +
+  {(2,2)} = 7 CELLS.
+- B_3 (2,2) DISCOVERABILITY — two arms, one new law:
+  (a) C48 protocol (2-stage M1+Q x 3 seeds, 3,156 evals): best
+      trace fitness 1.0 but verified 0.9 — forensics: 9/10 values
+      4/4, v=8 DEAD (0/4, halt pass 2): the trace fitness cannot
+      see per-digit rows at all; the value-sampled exact fitness
+      under-samples one dead row => the search stops on a dead-
+      row attractor. L-DEAD-ROW-ATTRACTOR (new; the per-digit
+      table replication of C46 REDUNDANCY is the structural cause).
+  (b) HYBRID v-deterministic protocol (M1 same; Q = 0.5 exact +
+      0.5 partial credit averaged over ALL 10 values explicitly,
+      x 2 seeds): DISCOVERED — best 1.0 in 3,363 evals, verified
+      1.0/1.0, all 10 values 4/4 incl. v=8. Pure-exact vdet
+      (iteration 1, logged ARC2-C49-CORNER-B3B) collapsed to 0.0:
+      the all-or-nothing landscape has no gradient — partial credit
+      restores it. Extends L-CONTRACT-PURITY (C44) to PER-VALUE
+      invariants + the partial-credit requirement.
+- B_4 (2,3) CONSISTENCY: short search (1 seed, 2,903 evals) stays
+  at verified 0.583 — the empirical ceiling agrees with the
+  certification (no conflict between proof and search).
+- VERDICT: the induction frontier (probes 5-7, C47-C49) is CLOSED
+  at the certified level: depth-1 realizable (REPEAT k<=4, ONESHOT
+  (1,b) b<=4 joint, both value-agnostic); rank-2 = exactly (2,2)
+  (realized AND discovered); everything else in 2..12 certified
+  unrealizable (T1' + T2 + L-POP-COLLISION). L-INDUCTION-FOUR is
+  the SAME bound as the fill count (max(r, K') <= 4): every
+  realizable data-value loop runs to at most 4.
+- Laws banked: T1'-SHARP, L-INDUCTION-CORNER-CLOSED, L-DEAD-ROW-
+  ATTRACTOR (+ T2/L1/L2/L3 machinery). Total laws ~44.
+- Files: c49_corner.py/.log, c49_corner_discovered.pt.
+- NEXT: the post-coherence program — the certified capability map
+  is complete for the induction axis; remaining frontier options:
+  (i) data-dependent control / open-ended protocol discovery (the
+  C24 open item) on the VET+S class; (ii) division/GCD multi-pass
+  algorithms; (iii) the fused model's chatbot axis at longer
+  contexts. Operator's standing goal: reasoning to the absolute
+  limit.
