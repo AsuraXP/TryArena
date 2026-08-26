@@ -1693,3 +1693,55 @@ style as C26 (exact matches, passes=nd+1, depth generalization).
   of the current tape class can ever solve reversal; the probe is closed.
 - Laws banked: +L-TRANSPORT-DIRECTION (proved + measured; class-separation
   law). Total laws ~27. verify_suite 35/35. Files: c42_rb.py/.log.
+## Cycle 43 / reasoning frontier probe 2 — REVERSAL via VET+S (LIFO):
+  capability CERTIFIED (all bars, stretch nd=512); discoverability
+  NEGATIVE at C41 budget (ARC2-C43-REVBIND-VETS)
+
+C42 closed the single-head LTR tape class for reversal PROVABLY
+(L-TRANSPORT-DIRECTION). This cycle: the minimal class extension that
+restores leftward transport — VET+S = VET + a MECHANISM-OWNED PERSISTENT
+LIFO stack channel (the machine-v6 stack organ ported into the tape
+class; same organ pattern as VET's register: exact mechanism state +
+tiny control table). Prior art logged BEFORE implementing (directive
+4): pushdown-transducer reversal — push-all-then-pop-all is the
+canonical LIFO reversal construction (classical PDA theory); in-place
+reversal/rotation (two-pointer; Gries-Mills block swap, arxiv
+2601.00979 — the tape-rotation geometry queued as backup, not adopted).
+
+- DERIVATION FIRST (cycle-42 protocol): pass 1 pushes all digits +
+  clears sources (pop blocked at every target: c = nd > P-1); passes
+  2..nd+1 each pop exactly ONE value at the first empty target
+  (fire = s-odd & not-fired & c <= P-1 & stack-nonempty; f-blocks the
+  rest of the pass); pass nd+2 = fixpoint halt. Hand genome = 3
+  functional states (mark-eat / pre-SEP / slot-scan).
+- SMOKE caught a real off-by-one before launch (law-index forensics,
+  pitfall 9): post-SEP cell index starts at 0 -> source cells s-EVEN,
+  TARGET cells s-ODD; the first draft's parity put BDIGs on source
+  cells. Fixed, re-verified.
+- ARM A (capability): ALL BARS. S1 500/500 in-dist (nd=2..4); S2
+  200/200 nd=16; S3 100/100 nd=32; S4 100/100 nd=64-joint; S5
+  passes = nd+2 exact + one-mark trace (spot nd=1,2,4,8,16,32,64);
+  stretch EXACT to nd=512 (5/5 at 128/256/512, passes 130/258/514 —
+  depth-unlimited by construction). 50s wall.
+- BAR DEVIATION (honest): passes = nd+2, not C40/C41's nd+1.
+  Intrinsic to the geometry: LIFO output order (right-to-left) is the
+  REVERSE of head target order (left-to-right) — the push pass cannot
+  emit (its first target is passed before the last push). LAW:
+  L-LIFO-OVERHEAD — the one-pass price of escaping
+  L-TRANSPORT-DIRECTION.
+- ARM B (discoverability, C41 protocol blank genome, 450s / 27,555
+  evals): NEGATIVE. Best train fitness 0.8350 (peak 0.8817 mid-run);
+  best genome cert: S1 115/500, S2/S3/S4 = 0/200, 0/100, 0/100
+  (one-mark-trace discipline True). VET binding was discovered at 877
+  evals (C41); reversal's joint mark+scan+pop discipline exceeds that
+  budget. NOT a capability negative — ARM A stands. Precedent:
+  P4-DISC needed multi-arm campaigns (c24c..k).
+- VERDICT: REVERSAL CERTIFIED under VET+S. The C42 wall was a
+  property of the LINEAR-TAPE CLASS, not of the task: one mechanism
+  LIFO channel restores leftward transport at ANY depth.
+- NEXT: C44 = discovery re-entry (enlarged / staged / contract-
+  decomposed search per c24c-k precedent); then frontier probe 3 =
+  arbitrary permutations (transport-distance analysis classifies
+  solvability per geometry).
+- Laws banked: +L-LIFO-OVERHEAD. Total laws ~28. verify_suite 35/35.
+  Files: c43_rev.py/.log, c43_vets_searched.pt (best ARM-B genome).

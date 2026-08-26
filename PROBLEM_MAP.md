@@ -299,3 +299,22 @@ search stalls at 0.3985 (rightward-feasible ceiling 0.556); the pure-
 leftward target tgt0 = 6/30 while rightward targets partial. CLOSED; do
 NOT retry on this class. Next attack (cycle 43): LIFO / bidirectional
 geometry (machine-v6 stack organ push/pop, second head, or tape rotation).
+CYCLE 43 (2026-08-26) — REASONING FRONTIER probe 2: REVERSAL via
+VET+S (VET + mechanism-owned persistent LIFO stack = machine-v6 stack
+organ in the tape class) = capability CERTIFIED, ALL bars: 500/500
+in-dist, 200/200 nd=16, 100/100 nd=32/64-joint, passes=nd+2 exact +
+one-mark trace (spot nd=1..64), stretch EXACT to nd=512 (depth-
+unlimited by construction). C42's L-TRANSPORT-DIRECTION wall broken
+by the minimal class extension (one new mechanism channel): the wall
+was a property of the linear-tape class, not of the task. LAW:
+L-LIFO-OVERHEAD (n = nd+2, not nd+1 — LIFO output order is the reverse
+of head target order; the push pass cannot emit; the one-pass price of
+leftward transport). Smoke caught a real parity off-by-one pre-launch
+(post-SEP index starts at 0: sources s-even, targets s-odd). ARM B
+discoverability NEGATIVE at C41 budget (27,555 evals, best train
+fitness 0.8350; best genome S1 115/500, S2-S4 0, trace discipline
+True) — joint mark+scan+pop discipline beyond that budget; capability
+unaffected. NEXT: C44 discovery re-entry (enlarged / staged /
+contract-decomposed search, c24c-k precedent), then probe 3 =
+arbitrary permutations (transport-distance analysis classifies
+solvability per geometry).
