@@ -1986,3 +1986,160 @@ Wall 251.8s (canonical run), 494.9MB, 1 thread. verify_suite
 35/35. Files: c46_indir.py/.log, c46_indir_discovered.pt (S3/S4/
 S5 plateau genomes + hand1).
 PUSH STATE (C46): local tip 062a5b9 (C46) > c608c53 (C45) > origin e59bdaa (C44) — push blocked (GH_TOKEN expired; operator must reconnect GitHub in Arena). Retried this cycle, same failure.
+CYCLE 47 (2026-08-26) — REASONING FRONTIER probe 5: INDUCTION /
+RECURSION (unary data-dependent iteration) on the VET+S machine
+(C46 extended mechanism) = OPEN this cycle: prior art + derived
+theory + task definitions + sound harness (no capability claims
+yet — witness construction next cycle, the C42 protocol).
+PRIOR ART (searched 2026-08-26): reversal-bounded two-way PDA ==
+reversal-bounded counter machine over bounded languages
+(ResearchGate 263873086); one-counter automata and the unary
+squares (Springer 10.1007/978-3-031-34326-1_11; 1C machines
+decide {a^{n^2}}); Minsky: 2-counter machines are universal,
+1-counter strictly weaker.  VET+S = one-way 1-counter (LIFO
+stack: destructive push, one pop/pass) + 1 register (a value
+mailbox — NO increment/decrement) + length-bounded mark orbit ->
+strictly inside the 1-counter class.
+DERIVED LAWS (structural arguments, each with its refutation
+witness — C46 lesson: derive, then TEST, never assume):
+- L-INDUCTION-PUSH-BOUND: ACT_BLK is the only push and it is
+  destructive; P <= input DIG count; total pops <= P -> the pop
+  channel writes at most (input digit count) cells.  Refutation:
+  a control popping more than the input has DIGs.
+- L-INDUCTION-REGISTER-BROADCAST: RSET is non-destructive; one
+  template cell broadcasts to UNBOUNDED output cells (one per
+  pass) — the C46 PEEK generalized.
+- L-INDUCTION-GATING (the crux, found while designing the
+  witness): a data-dependent count K needs a one-output-per-pass
+  loop gated to EXACTLY K passes; the only per-pass countdowns
+  are (a) the mark orbit (5-cycle: clean for K <= 4; K=5
+  collides with K=0 at state 0) and (b) the pop channel (bounded
+  by the push bound); the non-destructive template loop is
+  SELF-SUSTAINING (never stops when the mark countdown ends) ->
+  un-gated repetition is inexpressible.
+- L-INDUCTION-DEPTH-2 (hypothesis): a^b, a*b, n^2-as-transduction
+  need TWO independent live counters (the outer count persists
+  while the inner runs to zero and re-materializes per outer
+  step); the machine has one bounded/destructive stack + one
+  mailbox register -> UNREALIZABLE (structural shadow of the
+  1C-vs-2C separation).
+TASKS: B_S1 harness soundness (DONE: C44 reversal 20/20 under
+this mechanism) - B_S2 REPEAT(k,v)=v^k, k in 1..4, depth-1
+witness (IN PROGRESS) - B_S3 REPEAT discoverability (IN
+PROGRESS) - B_S4 MUL(a,b) (IN PROGRESS; either outcome refines
+the boundary, logged honestly) - B_S5 EXP(a,b) predicted plateau
+(derived unrealizable) - B_S6 REPEAT at k=5, the mod-5
+collision boundary (expected failure — the measured edge of the
+mark-orbit gate).
+NEXT: build + debug the REPEAT witness (the C47 hand1); then the
+search bars. File: c47_induct.py (SMOKE green: mechanism +
+harness soundness only).
+CYCLE 47 (2026-08-26) — REASONING FRONTIER probe 5: INDUCTION /
+RECURSION (unary data-dependent iteration) on the VET+S machine
+(C46 extended mechanism) = CLOSED: depth-1 induction CERTIFIED
+(hand control, value-agnostic), the derived channel-decoupling
+bound REFUTED by tape-orbit forensics, product/exponent NOT
+certified (search found geometry-specific overfit attractors only),
+2 new laws banked + 1 refutation logged.
+PRIOR ART (searched 2026-08-26, cited in file header): reversal-
+bounded 2-way PDA == reversal-bounded counter machine over bounded
+languages (ResearchGate 263873086); 1-counter automata and the
+unary squares (Springer 10.1007/978-3-031-34326-1_11); Minsky
+2-counter = universal. VET+S = one-way 1-counter (destructive
+push) + 1 mailbox register + length-bounded mark orbit — but the
+TAPE itself is evolving value-visible memory the counter-model
+misses (see L-INDUCTION-TAPE-ORBIT).
+RESULTS (canonical run 39.2s / 494.7MB, 1 thread):
+- B_S1: C44 reversal under the C47 mechanism: 1.0 @ n=4/8/16
+  (harness sound).
+- B_S2: REPEAT(k,v) = v^k, k in 1..4: HAND CONTROL CERTIFIED —
+  400/400 exact, fully value-agnostic (all v), passes = k+1
+  ({1:2, 2:3, 3:4, 4:5}), value channel = register broadcast
+  (RSET non-destructive template + REM armed at states {1,2,3,4},
+  disarmed at state 0 = the mark-orbit countdown r remaining).
+  k=5 edge: outputs 4/5 (r=5 orbits to state 0 — the mod-5
+  collision; L-INDUCTION-GATING edge measured, as derived).
+  => DEPTH-1 INDUCTION (a single data-value countdown) is
+  REALIZABLE.
+- B_S3: REPEAT discoverability: best=0.85 @ 8,476 ev (2-stage
+  M1+Q, plateau walk, 3 seeds), verified 0.183 on 60 fresh -> NOT
+  DISCOVERED (the search does not find the clean 64-entry REPEAT
+  needle at this budget — contrast with C44's 266-eval LIFO
+  needle; the REPEAT needle's per-region invariants give a
+  gradient but the joint state-flow timing (orbit x REM-arm) is
+  still too coupled for this search at box scale).
+- B_S4: MUL(2,3)=6 and MUL(3,3)=9: search finds controls with
+  in-sample best=1.0 (1,736 / 1,924 ev) and same-geometry ver
+  0.883 / 0.867 — BUT the geometry-DIVERSE generalization bar
+  (5 geoms x 10 v each) gives 24/50 and 15/50: OVERFIT
+  ATTRACTORS, not computations.
+- B_S5: EXP(2,3)=8: best=0.955 @ 5,402 ev, same-geometry ver
+  0.883, generalization 4/40 -> overfit attractor.
+FORENSICS (the cycle's core finding): the "MUL(3,3) solution"
+fills exactly 9 cells = one REM write per pass for 9 passes (P=0,
+S=0 — NO pushes, NO pops, marks never cleared: the MARK row is
+identity in the discovered genome). Generalizing that SAME
+genome: (3,3)/m=17 -> 9, (2,3)/m=14 -> 7, (3,2)/m=12 -> 7,
+(2,2)/m=10 -> 6, (4,3)/m=20 -> 10, (3,4)/m=22 -> 11, (1,3)/m=11
+-> 6: fill ~= m/2 (the output region's own length). The "EXP(2,3)
+solution" fills 12-14 at m=14-16 (~m-2) for 8-9 of 10 digits.
+=> the fill count is an EMERGENT function of the GEOMETRY (a,b,m,
+v), and the search's 9 (=a*b at (3,3)) / 8 (=a^b at (2,3), for
+8-9 of 10 digits) matches are COINCIDENCES of m=17 ~= 2*9 and
+m=14 ~= 8+6: classic overfit attractors (C44 L-CONTRACT-PURITY
+pattern, subtler: the target is met by the attractor's emergent
+count, not by a computation). The same-geometry ver~0.87 in the
+first two runs was a VERIFY-DESIGN artifact — verify must be
+geometry-DIVERSE (now B_S4/B_S5 generalization bars; the C45 S1b
+technique formalized as a standing verify rule).
+LAW L-INDUCTION-TAPE-ORBIT (banked, replaces the REFUTED
+channel-decoupling bound): the machine's countdown resource is
+the (symbol,state) trajectory over the EVOLVING tape — filled
+output cells (BDIG rows with nontrivial Ph) re-route the state
+flow each pass, so the REM broadcast self-sustains until the
+orbit's fixed point; the fill count is a function of the whole
+geometry, and REM writes can far exceed a, b, and a+b (9 at
+(3,3), 14 at m=16 — the derived {a,b,a+b} bound is REFUTED).
+The classical 1C-vs-2C separation (prior art) applies to counter
+MACHINES whose memory is the counters; here the tape is a value-
+visible evolving memory, so the machine's inductive power is
+bounded by the STATE-ORBIT period over tape configurations, not
+by counter count.
+LAW L-INDUCTION-DEPTH-1 (banked, certified): a single data-value
+countdown (k in 1..4, mark-orbit gated) is REALIZABLE with a
+value-agnostic control; the mod-5 edge (k=5 -> 4 outputs) is
+structural (the 5-state orbit).
+HONEST STATUS OF THE FRONTIER: the machine does data-dependent
+iteration of depth 1 (CERTIFIED); depth-2 (a*b, a^b as genuine
+(a,b)-uniform computations) is UNSETTLED — the search only finds
+single-geometry attractors at this budget, and the tape-orbit
+mechanism suggests value-agnostic product controls MIGHT be
+hand-constructible (the orbit length is a function of the
+geometry, so a control routing the orbit to exactly a*b passes
+may exist) — OPEN, candidate C48 target (hand construction of a
+genuine MUL control; if it works, the frontier advances one more
+notch; if a construction barrier is found, that too is banked).
+PATCH LOG (4): (1) C44 reversal SMOKE layout (interleaved
+DIG/BLK, not contiguous — 0/20 -> 20/20); (2) trace index
+guard (early halt -> short mark trace); (3) UNCAPPED fs
+rewards overproduction (best=1.13 > 1.0 parasitic) -> capped
+min(filled,k)/k (C44 L-CONTRACT-PURITY); (4) score_gen output
+offset a+2 (REPEAT) vs a+1+b (b template DIGs) — the shifted
+window briefly "refuted" the channel bound on the WRONG geometry
+(caught before any claim; C45 partA lesson, second instance).
+VERDICT: C47 CLOSED. Induction/recursion on the 5-state VET+S
+machine = classified at the certified level: depth-1 REALIZABLE
+(hand-certified, value-agnostic, formula + edge), depth-2
+UNSETTLED (overfit-attractor search evidence + refuted bound +
+new tape-orbit law pointing the way). NEXT: C48 = attempt a
+genuine value-agnostic MUL hand control (the tape-orbit
+construction); if blocked, bank the barrier; then C22b fluency
+fusion remains the last axis.
+Wall 39.2s (canonical), 494.7MB, 1 thread. verify_suite 35/35.
+Files: c47_induct.py/.log, c47_induct_discovered.pt (S3/S4a/S5
+attractor genomes + hand REPEAT).
+INCIDENT (2026-08-26, post-C47): workspace re-cloned; .git rebuilt from
+remote (local-only commits c608c53/062a5b9/9f05185/46810e1 lost, SHAs
+unrecoverable); 318 files restored from origin tip e59bdaa; C45-C47
+re-committed from preserved working tree (3 commits above/next, file
+contents + logs verbatim). GH auth now working — push every cycle.

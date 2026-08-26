@@ -395,3 +395,33 @@ harness, impossible 4-stage decomposition, hill-climb
 star-degeneracy on zero plateaus (fixed by plateau walk), and the
 mod-5 refutation. Total laws ~38. NEXT: probe 5 = induction /
 recursion.
+CYCLE 47 (2026-08-26) — REASONING FRONTIER probe 5: INDUCTION /
+RECURSION (unary data-dependent iteration) on VET+S = CLOSED at
+the certified level. Depth-1 induction REALIZABLE and CERTIFIED:
+REPEAT(k,v) = v^k, k in 1..4, hand control 400/400 value-
+agnostic, passes = k+1, k=5 fails at the mod-5 collision (4/5,
+L-INDUCTION-GATING edge measured). Depth-2 (a*b, a^b as
+(a,b)-uniform computations) UNSETTLED: search (2-stage M1+Q,
+plateau walk, 3 seeds) found OVERFIT ATTRACTORS only — in-sample
+best=1.0, same-geometry ver ~0.87, but geometry-diverse
+generalization 4-24/40-50; forensics: the "MUL(3,3) solution"
+fills ~m/2 of the output region (9 at m=17 = 3*3 by coincidence;
+7 at (2,3)/m=14, 10 at (4,3)/m=20), pure REM broadcast (no
+push/pop, marks never cleared) — the fill count is an emergent
+function of the GEOMETRY, not the value product. REFUTED: the
+derived channel-decoupling bound (totals in {a,b,a+b}) — the
+TAPE-ORBIT mechanism self-sustains REM writes far beyond a+b
+(9, 14 measured). New laws: L-INDUCTION-TAPE-ORBIT (countdown =
+the (symbol,state) trajectory over the EVOLVING tape; filled
+BDIG cells re-route the state each pass; the classical 1C-vs-2C
+counter separation does not transfer because the tape is value-
+visible evolving memory) + L-INDUCTION-DEPTH-1 (certified).
+Standing verify rule (from the same-geometry ver artifact):
+verify bars must be GEOMETRY-DIVERSE (other (a,b) AND other
+output-region size m), not just fresh values. Patch log: 4 items
+incl. an uncapped-fs overproduction parasite (C44
+L-CONTRACT-PURITY) and a score-offset bug (a+2 vs a+1+b) caught
+before any claim. Prior art: 1C vs 2C separation (Minsky;
+Hartmanis-Stearns unary squares), cited. NEXT: C48 = attempt a
+genuine value-agnostic MUL hand control via the tape-orbit
+construction (or bank the barrier); then C22b fluency fusion.
