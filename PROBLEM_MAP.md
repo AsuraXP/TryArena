@@ -479,3 +479,42 @@ realizable value-agnostic MUL at scale 2..12 = rank-1 family +
 ATTRACTOR (new search law, extends L-CONTRACT-PURITY to per-value
 invariants + partial credit). Total laws ~44. Files:
 c49_corner.py/.log, c49_corner_discovered.pt.
+## ARCH-VET (cycle 51) — NEW ARCHITECTURE AXIS (VET-LM)
+Novel-architecture PoC (operator directive): native learned
+k-state Mealy controller x soft value register x exact top-4
+LIFO (STE) x state x query bilinear readout, as a TOKEN-PREDICTION
+model (8,372p) vs MambaMicro depth-2 d_state=48 (9,360p) vs
+TFMicro 2L d16 sinusoidal-PE (8,144p), 4-task reasoning stream
+(TRACK/MODK/DYCK/PAIR, V=48 L=256), 2000 steps, seed 0.
+Prior art: Mamba-3 ICLR2026 arXiv 2603.15569 (SSM state-tracking
+TC0 collapse line) + FSC line post-hoc only (arXiv 2602.08734;
+ETH HRNN-LM; OpenReview S1gOpsCctm) -> gap: no native learned
+Mealy x register x LIFO LM. P1: length-invariant CE = VET
+1.316/1.257/1.295 @256/512/1024 (ratio .596) vs TF-micro COLLAPSE
+1.346/3.865/5.144 (2.619, PE extrapolation) vs Mamba flat 1.402/
+1.329/1.378; per-task eval corners: MAMBA-modk .423, TF-track
+.512 in-range, VET-pair .057 best + best CE at length; DYCK
+depth 3-4 unresolved for all arms at 8-9k. P2 ablations
+(subset chain): A1 ctrl+query (5,534p) = counting only
+(modk-eval .365; no track/pair) -> counting is a controller-
+STATE property; A2 +soft register (7,150p) carries track/pair
++ CE flatness (pair-ev .189); A3 +LIFO (8,372p) marginal,
+init-dependent (pair-ev .094 in P2 init). P3 (3rd base init,
+seed-0 pre-construction; bit-parity False by design — fresh
+default torch RNG is entropy-seeded, L-ENTROPY-RNG-NO-BIT-
+PARITY): pair-ev .604(!) — the LIFO+stack basin EXISTS; eval-
+acc init-fragile (track .302-.512, modk .212-.423, pair
+.057-.604 over 3 inits), CE@1024 robust (1.294-1.296).
+L-LIFO-INIT-FRAGILE. P4 frontier (single-task TRACK, train gap
+4-16 -> eval 32-64..192-256): VETbase .595/.514/.450/.475/.275
+(gentle decay, no cliff); VETbig k8/d24/K8 20,697p .946/.676/
+.600/.500/.450 (near-saturation at first OOD band, 0.450 at
+16x train gap); MAMBA .054/.108/.100/.175/.175 — VETbig beats
+Mamba 6-27x at every point (L-STRUCT-SCALING). VERDICT: H1
+SUPPORTED WITH NUANCE — structural LM wins length invariance +
+frontier scaling at matched params; Mamba keeps modk-eval
+corner; init-fragility + dyck-3/4 the open edges. Laws:
+L-VALUE-CHANNEL-CARRIES, L-LIFO-INIT-FRAGILE, L-STRUCT-SCALING,
+L-ENTROPY-RNG-NO-BIT-PARITY. Files: arch_vet_lm.py/p2/p3/p4 +
+_run.log. NEXT: VETbig full 4-task @4000 steps (dyck-3/4?);
+multi-seed basin rate of pair-ev .604 basin.

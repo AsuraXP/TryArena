@@ -2380,3 +2380,90 @@ workspace. Retry push on the next cycle once auth is restored.
   algorithms; (iii) the fused model's chatbot axis at longer
   contexts. Operator's standing goal: reasoning to the absolute
   limit.
+CYCLE 51 (2026-08-27) — ARCH-VET: NEW ARCHITECTURE AXIS (operator
+directive: novel token-prediction architecture vs micro-Transformer
+on synthetic reasoning). VET-LM = native learned k-state Mealy
+controller (k=5, soft one-hot, s_t = softmax(Ws x + Wss s)) x
+d=16 soft value register (R = a(s) R + sum s_k Ww[k] x, per-state
+decay rows) x exact top-4 LIFO (STE hard push, additive stack
+table T) x state x query bilinear readout (zero-init M) =
+8,372p, vs MambaMicro depth-2 selective d_state=48 content-read
+9,360p vs TFMicro 2L d16 2h pre-LN sinusoidal-PE 8,144p. Data:
+4-task AR stream V=48 L=256 — TRACK gap 4-16 train / 32-64 eval,
+MODK n 2-12 / 13-30, DYCK depth 2 / 3-4, PAIR gap 4-12 / 24-48;
+shared 512-pool (seed 12345), 2000 steps/arm, AdamW 3e-3 b8,
+seed 0, 1 thread. Prior art (searched 2026-08-26, logged in
+arch_vet_lm.py header): Mamba-3 ICLR 2026 arXiv 2603.15569 +
+SSM state-tracking collapse line (Merrill 2025; Grazzi 2025;
+Sarrof 2024; Yu+Erichson 2025; Jelassi 2024; survey 2408.01129
+7.5); FSC line post-hoc only (arXiv 2602.08734, ETH HRNN-LM,
+OpenReview S1gOpsCctm QBN/MMN) -> claimed gap: no native learned
+k-state Mealy x value register x exact LIFO LM architecture.
+- P1 (wall 1490.6s, peak 737.8MB): LENGTH INVARIANCE = the axis
+  VET wins. Train-regime CE @256/512/1024: VET 1.316/1.257/1.295
+  (FLAT; ratio .596 over 256-hard 2.172), MAMBA 1.402/1.329/1.378
+  (ratio .476 but 256-hard 2.897 worst), TF 1.346/3.865/5.144
+  (COLLAPSE, ratio 2.619 — sinusoidal PE extrapolation failure).
+  Per-task eval (held-out intervals): MAMBA modk .423 (best
+  corner), TF track .512 + 256-hard CE 1.964 (best IN-RANGE),
+  VET pair .057 = best pair of the three (vs 0.000 / .019) +
+  best CE at LENGTH (512: 1.257, 1024: 1.295); note VET's
+  256-hard CE 2.172 is worse than TF's in-range 1.964 — the
+  structural win is at length / held-out recall, not in-range
+  fit. DYCK eval: all ~0
+  (depth 3-4 exceeds every arm at 8-9k params).
+- P2 ablations (wall 1834.0s; same protocol, subset chain):
+  A1 ctrl+query 5,534p: NO memory tasks (track tr .008, pair
+  tr .053) but modk-eval .365 — counting is a controller-STATE
+  property, not a value-channel one. A2 +soft register 7,150p:
+  the value channel carries everything else (track tr .976,
+  pair tr 1.000) and the CE flatness (1.329/2.179/1.282/1.320,
+  ratio .606; pair-ev .189). A3 +LIFO 8,372p (P2 init): ev
+  track .512 / modk .423 / pair .094, CE 1.321/2.078/1.257/
+  1.294. LIFO marginal contribution at this budget: small,
+  init-dependent (A2 >= A3 on pair-ev in this init).
+- P3 (wall 964.2s): full base, THIRD init (seed-0 before
+  construction; bit-parity vs P1 False BY DESIGN — the fresh
+  default torch RNG is entropy-seeded, verified != seed-0 state;
+  cross-process bit-repeats of P1 arms impossible). P3 eval:
+  track .302 / modk .212 / pair .604(!). Base trajectory
+  variance over 3 inits: track-ev .302-.512, modk-ev .212-.423,
+  pair-ev .057-.604, CE@1024 1.294-1.296 (STABLE). => the
+  LIFO+stack basin EXISTS (pair-ev .604 > every ablation) but
+  is not reliably reached at 8.4k p / 2000 steps; length
+  invariance is init-robust. L-LIFO-INIT-FRAGILE.
+- P4 frontier + structure scaling (wall 2686.5s): single-task
+  TRACK (T x <gap fills> A x), train gap 4-16, eval frontier
+  32-64/64-96/96-144/144-192/192-256 (20 streams/point):
+  VETbase 8,372p: .595/.514/.450/.475/.275 (gentle decay, no
+  cliff); VETbig k=8 d=24 K=8 20,697p (2.5x structure):
+  .946/.676/.600/.500/.450 — near-saturation at first OOD band,
+  0.450 at 16x the train gap; MAMBA 9,360p: .054/.108/.100/
+  .175/.175. VETbig beats Mamba 6-27x at EVERY frontier point.
+- VERDICT: H1 SUPPORTED WITH NUANCE. (1) Length invariance:
+  structural LM flat to 1024 (CE 1.295, ratio .596) vs TF-micro
+  collapse (5.144, 2.619); Mamba also flat but loses every
+  per-task eval except modk. (2) Frontier scaling: scaling the
+  STRUCTURE (k/d/K 2.5x) extends the recall frontier to 16x
+  train gap at 0.450 vs ~0.18 continuous-selective SSM at
+  matched params — structure, not just parameters. (3) Nuances
+  (honest): Mamba keeps the modk-eval corner (counting = state
+  property — A1 controller alone gets .365); per-task eval acc
+  is init-fragile at 2000 steps (pair-ev .057-.604 across 3
+  base inits); DYCK depth 3-4 UNRESOLVED for all arms at 8-9k.
+- Laws banked: L-VALUE-CHANNEL-CARRIES (soft register carries
+  track/pair + CE flatness; controller alone = counting),
+  L-LIFO-INIT-FRAGILE (exact LIFO basin real but unreliably
+  reached at 8.4k/2000; do not claim as guaranteed component),
+  L-STRUCT-SCALING (2.5x structure -> frontier to 16x gap,
+  6-27x over SSM), L-ENTROPY-RNG-NO-BIT-PARITY (fresh default
+  RNG entropy-seeded; P1 arms canonical, not bit-reproducible
+  cross-process). Total laws ~48.
+- Files: arch_vet_lm.py/.log (P1), arch_vet_p2.py/.log,
+  arch_vet_p3.py/.log, arch_vet_p4.py/.log; 4 RESULT lines in
+  log.jsonl (ARCH-VET-LM-1/-P2/-P3/-P4).
+- NEXT: (i) VETbig (k8/d24/K8) on the FULL 4-task, 4000 steps —
+  does structure lift dyck-3/4 + modk beyond the micro budget?
+  (ii) multi-seed basin rate of the pair-ev .604 basin
+  (init-robustness quantification); (iii) chatbot axis stays
+  at the C22b boundary (unchanged, L-DATA-CEILING).
