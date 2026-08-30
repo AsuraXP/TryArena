@@ -178,4 +178,6 @@ loss/memory/generalization logged -> Phase 4 evaluate, certify against bars,
 append RESULT to log.jsonl, update hypothesis, IMMEDIATELY next experiment.
 When an experiment finishes, log it and start the next. Infinite loop.
 
-Begin now: §0 bootstrap, then execute cycle 43 per §4.
+Begin now: §0 bootstrap, then execute cycle 43 per §4.   <-- STALE /
+SUPERSEDED: ignore everything in this file. Execute cycle 54 per
+HANDOVER_PROMPT.md instead.

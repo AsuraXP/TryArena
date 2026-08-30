@@ -1,4 +1,8 @@
-# ARC-2 HANDOVER — read this first, then log.md
+# ARC-2 HANDOVER — SUPERSEDED (C42-era, kept for history only)
+# NEW AGENT: read HANDOVER_PROMPT.md (cycle 53 close) instead. Everything
+# below — including any "cycle 43 queued" or open-ended experiment list
+# (RoPE/SSM hybrids, LIFO geometry, etc.) — is STALE; those lines were
+# superseded by cycles 43-53 (see log.md). Do NOT start work from this file.
 _LAST UPDATED: cycle 42 (2026-08-25) — C26 binding CERTIFIED (cycles 40-41,
 VET class); cycle 42 reasoning-frontier probe 1: reversal binding proven
 unsolvable on single-head LTR tape classes (L-TRANSPORT-DIRECTION);
