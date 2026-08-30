@@ -90,3 +90,11 @@ Phase1 cites: Gated DeltaNet 2412.06464 / DeltaNet-2 2605.22791; Titans 2501.006
 - C55e COPYVAR n=3 facts, variable ptr: **CopyGRU 0.938 id / 0.900 OOD**;
   TFCopy 0.25 / 0.30 (~1/3 chance). **L-COPY-OOD-BIND**.
 Chatbot: still L-DATA-CEILING. Next: 2-hop copy chain; param-match TF d.
+
+## Cycle 56 (2026-08-30): 2-hop latent pointer vs TF
+Cite: 2608.07261 2-hop OOD fail; 2503.01544 CRQ depth.
+- C56 ordered hops: both 1.0 id — last-token shortcut.
+- C56b shuffle: HopCopy h2_ood 0.91 vs TF 0.79; h3_zs ~0 both. Still last-rel lookup.
+- C56c + distractor same-r2: **HopCopy 0.71 id / 0.64 OOD**; **TFCopy 0.50/0.50 chance**.
+  h3_zs ~0.05 both. L-HOP-DISTRACTOR: composition needs disambiguation;
+  latent re-query beats 2L TF pointer at fewer params (7.3k vs 12.3k). 3-hop unsolved.

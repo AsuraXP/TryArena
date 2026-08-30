@@ -1,0 +1,43 @@
+=== HopCopy p=7296 ===
+  step 1 loss=3.529 p=7296
+  step 300 loss=0.000 p=7296
+  step 600 loss=0.000 p=7296
+  step 900 loss=0.000 p=7296
+RESULT HopCopy {'params': 7296, 'loss': 9.983764357457403e-07, 'wall': 9.65502405166626, 'h2_id': 1.0, 'h2_ood': 0.775, 'h3_zs': 0.225}
+=== TFCopy p=12264 ===
+  step 1 loss=5.693 p=12264
+  step 300 loss=0.000 p=12264
+  step 600 loss=0.000 p=12264
+  step 900 loss=0.000 p=12264
+RESULT TFCopy {'params': 12264, 'loss': 4.202100171823986e-06, 'wall': 6.1210410594940186, 'h2_id': 1.0, 'h2_ood': 0.6875, 'h3_zs': 0.0}
+RESULT {'tag': 'ARCH-C56-HOPCOPY', 'HopCopy': {'params': 7296, 'loss': 9.983764357457403e-07, 'wall': 9.65502405166626, 'h2_id': 1.0, 'h2_ood': 0.775, 'h3_zs': 0.225}, 'TFCopy': {'params': 12264, 'loss': 4.202100171823986e-06, 'wall': 6.1210410594940186, 'h2_id': 1.0, 'h2_ood': 0.6875, 'h3_zs': 0.0}}
+=== HopCopy p=7296 ===
+  step 1 loss=3.878 p=7296
+  step 300 loss=0.000 p=7296
+  step 600 loss=0.000 p=7296
+  step 900 loss=0.000 p=7296
+  step 1200 loss=0.000 p=7296
+RESULT HopCopy {'params': 7296, 'loss': 2.3841855067985307e-07, 'wall': 13.105437517166138, 'h2_id': 1.0, 'h2_ood': 0.9125, 'h3_zs': 0.0625}
+=== TFCopy p=12264 ===
+  step 1 loss=7.775 p=12264
+  step 300 loss=0.000 p=12264
+  step 600 loss=0.000 p=12264
+  step 900 loss=0.000 p=12264
+  step 1200 loss=0.000 p=12264
+RESULT TFCopy {'params': 12264, 'loss': 3.5911573377234163e-06, 'wall': 8.19645619392395, 'h2_id': 1.0, 'h2_ood': 0.7875, 'h3_zs': 0.05}
+RESULT {'tag': 'ARCH-C56-HOPCOPY', 'HopCopy': {'params': 7296, 'loss': 2.3841855067985307e-07, 'wall': 13.105437517166138, 'h2_id': 1.0, 'h2_ood': 0.9125, 'h3_zs': 0.0625}, 'TFCopy': {'params': 12264, 'loss': 3.5911573377234163e-06, 'wall': 8.19645619392395, 'h2_id': 1.0, 'h2_ood': 0.7875, 'h3_zs': 0.05}}
+=== HopCopy p=7296 ===
+  step 1 loss=3.546 p=7296
+  step 300 loss=0.691 p=7296
+  step 600 loss=0.576 p=7296
+  step 900 loss=0.379 p=7296
+  step 1200 loss=0.596 p=7296
+RESULT HopCopy {'params': 7296, 'loss': 0.5959332585334778, 'wall': 12.074970245361328, 'h2_id': 0.7125, 'h2_ood': 0.6375, 'h3_zs': 0.05}
+=== TFCopy p=12264 ===
+  step 1 loss=5.624 p=12264
+  step 300 loss=0.581 p=12264
+  step 600 loss=0.812 p=12264
+  step 900 loss=0.602 p=12264
+  step 1200 loss=0.816 p=12264
+RESULT TFCopy {'params': 12264, 'loss': 0.8156685829162598, 'wall': 7.814532279968262, 'h2_id': 0.5, 'h2_ood': 0.5, 'h3_zs': 0.075}
+RESULT {'tag': 'ARCH-C56C-HOPDIST', 'HopCopy': {'params': 7296, 'loss': 0.5959332585334778, 'wall': 12.074970245361328, 'h2_id': 0.7125, 'h2_ood': 0.6375, 'h3_zs': 0.05}, 'TFCopy': {'params': 12264, 'loss': 0.8156685829162598, 'wall': 7.814532279968262, 'h2_id': 0.5, 'h2_ood': 0.5, 'h3_zs': 0.075}}

@@ -81,3 +81,7 @@ Chatbot: C22b boundary, L-DATA-CEILING. Controller axis C1–C49 not re-verified
 P6 variable binding: PARTIAL — copy-pointer GRU generalizes to unseen entity IDs
   (0.90 OOD) where vocab-head TF and TF+pointer at d16 do not. Vocab-class binding
   OOD = 0 for all arms. Fixed-position pointer is a false positive.
+
+## CYCLE-56
+2-hop composition: PARTIAL. HopCopy > TFCopy under r2-distractor (0.64 vs 0.50 OOD).
+3-hop zero-shot closed. Shortcut audits mandatory (L-PTR-CONST-POS extended).
