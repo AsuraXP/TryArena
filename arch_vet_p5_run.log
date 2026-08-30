@@ -2,4 +2,25 @@
 arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
 Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
   hist.append((step, round(float(loss), 4)))
-  [P5-VETbig] step 250/4000 loss 1.5835 (154s)
+  [P5-VETbig] step 250/4000 loss 1.5835 (109s)
+  [P5-VETbig] step 500/4000 loss 1.4510 (211s)
+  [P5-VETbig] step 750/4000 loss 1.4224 (328s)
+  [P5-VETbig] step 1000/4000 loss 1.3348 (456s)
+  [P5-VETbig] step 1250/4000 loss 1.3254 (640s)
+  [P5-VETbig] step 1500/4000 loss 1.2085 (756s)
+  [P5-VETbig] step 1750/4000 loss 1.2134 (876s)
+  [P5-VETbig] step 2000/4000 loss 1.2026 (993s)
+  [P5-VETbig] step 2250/4000 loss 1.2066 (1105s)
+  [P5-VETbig] step 2500/4000 loss 1.3067 (1211s)
+  [P5-VETbig] step 2750/4000 loss 1.2292 (1331s)
+  [P5-VETbig] step 3000/4000 loss 1.2600 (1443s)
+  [P5-VETbig] step 3250/4000 loss 1.1278 (1558s)
+  [P5-VETbig] step 3500/4000 loss 1.2037 (1675s)
+  [P5-VETbig] step 3750/4000 loss 1.2443 (1803s)
+  [P5-VETbig] step 4000/4000 loss 1.1442 (1932s)
+[P5] ce={'256_train': 1.287, '256_hard': 2.4026, '512': 1.2322, '1024': 1.2751, '2048': 1.2708}
+[P5] acc(train)={'track': 0.992, 'modk': 0.475, 'dyck': 0.16, 'pair': 1.0}
+[P5] acc(eval)={'track': 0.488, 'modk': 0.212, 'dyck': 0.0, 'pair': 0.717}
+RESULT {"tag": "ARCH-VET-LM-P5", "protocol": "VETbig k=8 d=24 K=8 on full 4-task stream, 4000 steps, same pool/probes as P1 + CE@2048", "params": 20697, "loss_curve": [[250, 1.5835], [500, 1.451], [750, 1.4224], [1000, 1.3348], [1250, 1.3254], [1500, 1.2085], [1750, 1.2134], [2000, 1.2026], [2250, 1.2066], [2500, 1.3067], [2750, 1.2292], [3000, 1.26], [3250, 1.1278], [3500, 1.2037], [3750, 1.2443], [4000, 1.1442]], "ce": {"256_train": 1.287, "256_hard": 2.4026, "512": 1.2322, "1024": 1.2751, "2048": 1.2708}, "acc_train_interval": {"track": 0.9921, "modk": 0.475, "dyck": 0.16, "pair": 1.0}, "acc_eval_interval": {"track": 0.4884, "modk": 0.2115, "dyck": 0.0, "pair": 0.717}, "wall_s": 1946.1}
+DONE
+P5 exit=0
