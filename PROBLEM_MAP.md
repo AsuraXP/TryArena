@@ -85,3 +85,7 @@ P6 variable binding: PARTIAL — copy-pointer GRU generalizes to unseen entity I
 ## CYCLE-56
 2-hop composition: PARTIAL. HopCopy > TFCopy under r2-distractor (0.64 vs 0.50 OOD).
 3-hop zero-shot closed. Shortcut audits mandatory (L-PTR-CONST-POS extended).
+
+## CYCLE-57
+3-hop in-dist: HopCopy 0.81 > TF 0.55. Entity-OOD 3-hop unsolved (~chance).
+Adaptive halt + mixed hops damaged 2-hop. 4-hop ZS closed.

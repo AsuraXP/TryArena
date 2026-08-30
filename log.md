@@ -98,3 +98,10 @@ Cite: 2608.07261 2-hop OOD fail; 2503.01544 CRQ depth.
 - C56c + distractor same-r2: **HopCopy 0.71 id / 0.64 OOD**; **TFCopy 0.50/0.50 chance**.
   h3_zs ~0.05 both. L-HOP-DISTRACTOR: composition needs disambiguation;
   latent re-query beats 2L TF pointer at fewer params (7.3k vs 12.3k). 3-hop unsolved.
+
+## Cycle 57 (2026-08-30): 3-hop + halt
+Cite: Graves ACT 1603.08983; UT 1807.03819; looped TF 2402.00976 (not copied).
+- C57 mixed hops 1-3 + halt: HaltHop 2-hop ID 0.34 (REGRESSED vs C56c 0.71); h3 ~chance; h4 0.06.
+  L-MIXHOP-HURT.
+- C57b train hops=3 only: HopCopy3 **h3_id 0.81** vs TF **0.55**; **h3_ood both ~0.5 chance**.
+  h4_zs 0.02 both. L-HOP-ID-YES-OOD-NO.
