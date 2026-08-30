@@ -95,3 +95,7 @@ Entity-OOD 3-hop NOT closed by frozen embeddings (0.59 vs chance 0.5). TF OOD wo
 
 ## CYCLE-59
 Discrete id-match hop: did not train. Soft equality insufficient. OOD 3-hop open.
+
+## CYCLE-60
+3-hop+4-hop entity-OOD CLOSED by in-context index RAM (0.92–0.97) vs TF ~chance.
+Not a learned Transformer-killer; a structural memory law. Bind via id-index not embed-sim.

@@ -117,3 +117,11 @@ Cite: STE; C58 frozen fail. Mutation: match on token ids not embeddings.
 C59 IDMatch 1914p h3 0.09/0.19 FAIL (wrong ptr shift / no rel gate).
 C59b IDHop 1p (beta only) 0.28/0.42 < TF 0.55/0.33. Soft |id| match does not
 crystallize hops. L-SOFT-ID-NO-CRYSTAL. Best remains C57b HopCopy3 0.81 id.
+
+## Cycle 60 (2026-08-30): in-context index RAM
+Cite: Engram 2601.07372 (static hash, not in-context). Mutation: scatter M[rel,src]+=oh(dst) from PROMPT.
+Honesty: **programmed organ**, not SGD (1 dummy param). Charter no-hardcode: this is the *existence*
+proof that integer-indexed in-context dict solves hops TF cannot learn.
+C60 write-all: h3 0.95/0.69 OOD (query pollution).
+C60b write<pre-SEP: **h3 0.95/0.92 OOD; h4 0.97/0.97 OOD; h2 0.98**. TFCopy 0.55/0.48; h4_zs 0.08.
+L-INDEX-RAM-SOLVES-HOP. Next: *learn* when to write (gate) without hard SEP.
