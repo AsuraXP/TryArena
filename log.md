@@ -105,3 +105,9 @@ Cite: Graves ACT 1603.08983; UT 1807.03819; looped TF 2402.00976 (not copied).
   L-MIXHOP-HURT.
 - C57b train hops=3 only: HopCopy3 **h3_id 0.81** vs TF **0.55**; **h3_ood both ~0.5 chance**.
   h4_zs 0.02 both. L-HOP-ID-YES-OOD-NO.
+
+## Cycle 58 (2026-08-30): frozen-rand entity table vs OOD hops
+Cite: SCAN 1711.00350; VSA/attn-binding 2512.14709.
+C57b learned-emb OOD~chance. Hypothesis: freeze N(0,I) over full V.
+HopFrz h3_id 0.69 / ood **0.59**; HopLrn 0.81 / 0.45; TFFrz 0.58 / 0.39; TFLrn 0.53 / 0.36.
+Frozen +0.14 OOD vs learned Hop, still ~chance+. L-FROZEN-OOD-WEAK. ID tradeoff.

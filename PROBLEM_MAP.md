@@ -89,3 +89,6 @@ P6 variable binding: PARTIAL — copy-pointer GRU generalizes to unseen entity I
 ## CYCLE-57
 3-hop in-dist: HopCopy 0.81 > TF 0.55. Entity-OOD 3-hop unsolved (~chance).
 Adaptive halt + mixed hops damaged 2-hop. 4-hop ZS closed.
+
+## CYCLE-58
+Entity-OOD 3-hop NOT closed by frozen embeddings (0.59 vs chance 0.5). TF OOD worse.

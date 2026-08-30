@@ -1,0 +1,25 @@
+=== HopFrz p=7321 ===
+  step 1 loss=3.961 p=7321
+  step 600 loss=0.709 p=7321
+  step 1200 loss=0.706 p=7321
+  step 1800 loss=0.723 p=7321
+RESULT HopFrz {'params': 7321, 'loss': 0.7234889268875122, 'wall': 26.829011917114258, 'h3_id': 0.6875, 'h3_ood': 0.59375}
+=== HopLrn p=7321 ===
+  step 1 loss=4.006 p=7321
+  step 600 loss=0.689 p=7321
+  step 1200 loss=0.911 p=7321
+  step 1800 loss=0.589 p=7321
+RESULT HopLrn {'params': 7321, 'loss': 0.5887311100959778, 'wall': 26.02906107902527, 'h3_id': 0.8125, 'h3_ood': 0.453125}
+=== TFFrz p=12264 ===
+  step 1 loss=6.442 p=12264
+  step 600 loss=0.720 p=12264
+  step 1200 loss=0.723 p=12264
+  step 1800 loss=0.706 p=12264
+RESULT TFFrz {'params': 12264, 'loss': 0.7061786651611328, 'wall': 14.959491729736328, 'h3_id': 0.578125, 'h3_ood': 0.390625}
+=== TFLrn p=12264 ===
+  step 1 loss=4.599 p=12264
+  step 600 loss=0.856 p=12264
+  step 1200 loss=0.969 p=12264
+  step 1800 loss=0.704 p=12264
+RESULT TFLrn {'params': 12264, 'loss': 0.7043161392211914, 'wall': 13.74410605430603, 'h3_id': 0.53125, 'h3_ood': 0.359375}
+RESULT {'tag': 'ARCH-C58-FROZEN', 'HopFrz': {'params': 7321, 'loss': 0.7234889268875122, 'wall': 26.829011917114258, 'h3_id': 0.6875, 'h3_ood': 0.59375}, 'HopLrn': {'params': 7321, 'loss': 0.5887311100959778, 'wall': 26.02906107902527, 'h3_id': 0.8125, 'h3_ood': 0.453125}, 'TFFrz': {'params': 12264, 'loss': 0.7061786651611328, 'wall': 14.959491729736328, 'h3_id': 0.578125, 'h3_ood': 0.390625}, 'TFLrn': {'params': 12264, 'loss': 0.7043161392211914, 'wall': 13.74410605430603, 'h3_id': 0.53125, 'h3_ood': 0.359375}}
