@@ -116,14 +116,25 @@ TRUTH backed by on-disk checkpoints, logs, and git history.
     readout), 8,372+~530p. Sharp prediction: dyck exact-match stays high
     at depth 3-4 (in-clamp) and degrades only out-of-clamp — the first
     direct attack on the dyck-3/4 open edge.
-- **In flight at handover time:** P5 (VETbig full 4-task @4000 steps +
-  CE@2048) and P6 (3-seed basin rate of the pair-ev .604 basin; seeds
-  111/222/333) were relaunched in the outgoing sandbox ~02:12 UTC
-  2026-08-30 as `OMP_NUM_THREADS=1 python3 -u arch_vet_p5.py` then p6.
-  A fresh sandbox does NOT inherit background processes: check
-  `tail arch_vet_p5_run.log` / `arch_vet_p6_run.log` and
-  `grep -c ARCH-VET-LM-P[56] log.jsonl`. If no RESULT tag: re-run them
-  (deterministic, seed 0 — safe to restart from scratch).
+- **P5/P6 STATUS: NOT COMPLETE — verify, never assume.** P5 (VETbig
+  full 4-task @4000 steps + CE@2048) and P6 (3-seed basin rate of the
+  pair-ev .604 basin; seeds 111/222/333) were started/relaunched
+  several times. The platform RESTARTS CONTAINERS when the chat idles
+  (observed 4x; once it auto-resumed a saved process spec whose stdout
+  no longer reached the log file — a process can sit at 99% CPU while
+  the log is frozen, and auto-resumed processes may lack
+  OMP_NUM_THREADS=1). Rules:
+  * The ONLY completion marker is the RESULT line:
+    `grep -c "ARCH-VET-LM-P5" log.jsonl` and same for P6. The *_run.log
+    files may hold stale/partial runs — ignore them.
+  * Before starting any run: `pgrep -af arch_vet` and KILL strays first
+    (never two concurrent runs); start with OMP_NUM_THREADS=1
+    MKL_NUM_THREADS=1 in the command; verify the log actually advances
+    within ~3 min (first step-250 line) before walking away.
+  * Runs are deterministic (seed 0 / fixed seeds) — safe to restart
+    from scratch at any time.
+  * Background jobs only make progress while the chat session is
+    active; expect them frozen otherwise.
 - **Controller axis (C1–C49): CLOSED at the certified level — do not
   re-verify.** Highlights: five win conditions met; C22b coherent 68,738p
   fused module (fluency + exact state + exact computation, 13/13 bars,

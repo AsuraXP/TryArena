@@ -1,1 +1,5 @@
 [P5] VETbig params=20697
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  hist.append((step, round(float(loss), 4)))
+  [P5-VETbig] step 250/4000 loss 1.5835 (154s)
