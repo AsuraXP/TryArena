@@ -53,3 +53,28 @@ learned dispatch, contextual output, hard inference).
 - Next (cycle 7): P11 LM-host hybrid — mounting the certified organ set inside a
   token-prediction host (detector/router over mixed text streams); division by
   arbitrary-size divisors via IFT (compare-subtract passes) as stretch.
+
+## Cycle 54 (2026-08-30): re-clone recovery + land P5/P6/P7/P8/P9 on reconstructed VET-LM
+- Sandbox was a fresh clone at db74de5 (C7–C53 artifacts absent on this session branch
+  arena/01a0509e-tryarena; origin had no arena/01a038ad-tryarena). Disk of THIS
+  session reconstructed canonical VET-LM from certified C51 spec (not bit-identical
+  weights/param counts). Honesty: VETbase 7240p (spec 8372), VETbig 15851p (spec 20697),
+  MambaMicro 14896p, TFMicro 6032p. Architecture: k-state Mealy × per-state decay
+  register × STE LIFO × zero-init bilinear readout.
+- verify_suite.py 35/35 (VET invariants).
+- P6 (3-seed pair basin, 2000 steps L=128): pair_ev=1.0 all seeds 111/222/333,
+  basin_rate=1.0; track_ev 0.094/0.125/0.094. CE@256 0.57–0.73. **L-EVAL-POSTSEP-TRIVIAL**:
+  PAIR/DYCK labels after SEP are EOS — exact-match 1.0 does NOT certify the C51 pair
+  basin .604. Track remains the honest hard eval (init-fragile, low).
+- P8 VETCAM seeds 0/111: pair_ev=1.0 (same trivial metric); CE@256 0.70/0.55. CAM did
+  not change the TRACK-class signal in this reconstruct. L-LIFO-INIT-FRAGILE still open
+  under a non-trivial pair probe.
+- P9 VETDCC 7770p: dyck_ev=1.0 modk_ev=1.0 (trivial post-SEP / easy mod token). CE@256 0.74.
+  Dyck-3/4 open edge NOT closed — need depth-conditioned exact-match on the BRACKET STREAM.
+- P7 DIV frontier: VETbase acc=0.55 CE@192=0.231; VETbig 0.55 / 0.228; **MAMBA 0.875 / 0.177**.
+  Negative: selective SSM wins integer quotient at this budget. L-DIV-SSM-LEAD.
+- P5 VETbig 4000 steps 4-task: CE@256/512/1024/2048 = 0.614/0.599/0.609/0.569 — **flat,
+  no PE cliff**. Acc TRACK .094/.125, MODK .312/.375, DYCK/PAIR 1.0 (trivial).
+  L-STRUCT-SCALING CE-flatness replicated on reconstruct. Eval-acc remains task-asymmetric.
+- Chatbot axis: no new work; no open-domain world model at this scale (L-DATA-CEILING).
+- Next: non-trivial pair/dyck stream exact-match (fix labels); TRACK multi-seed; GCD.

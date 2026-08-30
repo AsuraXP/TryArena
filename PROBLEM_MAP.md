@@ -66,3 +66,13 @@ Arithmetic set COMPLETE on the substrate family: + (KR stream), x (iterated IFT)
 parity, state-chains, sorting. Suite 29/29 machine-side; ~1.7M params total across
 all seven machines; total training wall-clock across the entire program: <5 min.
 Open: P11 (LM-host hybrid), big/big division, operator's frontier column.
+
+## CYCLE-54 STATUS UPDATE (architecture axis, reconstructed VET-LM)
+P5 VETbig 4-task@4000: CE flat through 2048 (0.57 vs 0.61 in-range) — length invariance
+  holds on reconstruct. TRACK eval-acc ~0.1; MODK ~0.3–0.4.
+P6 basin_rate=1.0 on TRIVIAL post-SEP EOS pair metric — does NOT overturn L-LIFO-INIT-FRAGILE.
+P7 DIV: Mamba 0.875 > VET 0.55 (L-DIV-SSM-LEAD). Counting/quotient still SSM-favored.
+P8 VETCAM: no honest lift vs trivial pair metric.
+P9 VETDCC: dyck-3/4 attack not certified (eval still post-SEP).
+Laws: L-EVAL-POSTSEP-TRIVIAL, L-DIV-SSM-LEAD; L-STRUCT-SCALING CE-flatness replicated.
+Chatbot: C22b boundary, L-DATA-CEILING. Controller axis C1–C49 not re-verified this clone.
