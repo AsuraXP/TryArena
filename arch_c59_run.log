@@ -1,0 +1,13 @@
+=== IDMatch p=1914 ===
+  step 1 loss=68.327 p=1914
+  step 400 loss=20.876 p=1914
+  step 800 loss=6.468 p=1914
+  step 1200 loss=13.535 p=1914
+RESULT IDMatch {'params': 1914, 'loss': 13.535392761230469, 'wall': 1.35910964012146, 'h3_id': 0.09375, 'h3_ood': 0.1875, 'h2': 0.078125}
+=== TFCopy p=12264 ===
+  step 1 loss=3.144 p=12264
+  step 400 loss=0.746 p=12264
+  step 800 loss=0.726 p=12264
+  step 1200 loss=0.782 p=12264
+RESULT TFCopy {'params': 12264, 'loss': 0.7817560434341431, 'wall': 9.183858633041382, 'h3_id': 0.4375, 'h3_ood': 0.5, 'h2': 0.0}
+RESULT {'tag': 'ARCH-C59-IDMATCH', 'IDMatch': {'params': 1914, 'loss': 13.535392761230469, 'wall': 1.35910964012146, 'h3_id': 0.09375, 'h3_ood': 0.1875, 'h2': 0.078125}, 'TFCopy': {'params': 12264, 'loss': 0.7817560434341431, 'wall': 9.183858633041382, 'h3_id': 0.4375, 'h3_ood': 0.5, 'h2': 0.0}}

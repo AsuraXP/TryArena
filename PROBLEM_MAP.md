@@ -92,3 +92,6 @@ Adaptive halt + mixed hops damaged 2-hop. 4-hop ZS closed.
 
 ## CYCLE-58
 Entity-OOD 3-hop NOT closed by frozen embeddings (0.59 vs chance 0.5). TF OOD worse.
+
+## CYCLE-59
+Discrete id-match hop: did not train. Soft equality insufficient. OOD 3-hop open.

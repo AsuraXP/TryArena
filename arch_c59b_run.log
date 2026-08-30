@@ -1,0 +1,11 @@
+=== IDHop ===
+  step 1 loss=208.311 p=1
+  step 400 loss=4.842 p=1
+  step 800 loss=6.200 p=1
+RESULT IDHop {'params': 1, 'loss': 6.2000651359558105, 'wall': 1.3878438472747803, 'h3_id': 0.28125, 'h3_ood': 0.421875}
+=== TFCopy ===
+  step 1 loss=5.131 p=12264
+  step 400 loss=0.761 p=12264
+  step 800 loss=0.572 p=12264
+RESULT TFCopy {'params': 12264, 'loss': 0.5719504952430725, 'wall': 6.2908055782318115, 'h3_id': 0.546875, 'h3_ood': 0.328125}
+RESULT {'tag': 'ARCH-C59B-IDHOP', 'IDHop': {'params': 1, 'loss': 6.2000651359558105, 'wall': 1.3878438472747803, 'h3_id': 0.28125, 'h3_ood': 0.421875}, 'TFCopy': {'params': 12264, 'loss': 0.5719504952430725, 'wall': 6.2908055782318115, 'h3_id': 0.546875, 'h3_ood': 0.328125}}

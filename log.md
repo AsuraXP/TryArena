@@ -111,3 +111,9 @@ Cite: SCAN 1711.00350; VSA/attn-binding 2512.14709.
 C57b learned-emb OOD~chance. Hypothesis: freeze N(0,I) over full V.
 HopFrz h3_id 0.69 / ood **0.59**; HopLrn 0.81 / 0.45; TFFrz 0.58 / 0.39; TFLrn 0.53 / 0.36.
 Frozen +0.14 OOD vs learned Hop, still ~chance+. L-FROZEN-OOD-WEAK. ID tradeoff.
+
+## Cycle 59 (2026-08-30): exact-id addressing
+Cite: STE; C58 frozen fail. Mutation: match on token ids not embeddings.
+C59 IDMatch 1914p h3 0.09/0.19 FAIL (wrong ptr shift / no rel gate).
+C59b IDHop 1p (beta only) 0.28/0.42 < TF 0.55/0.33. Soft |id| match does not
+crystallize hops. L-SOFT-ID-NO-CRYSTAL. Best remains C57b HopCopy3 0.81 id.
