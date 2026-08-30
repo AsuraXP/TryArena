@@ -1,0 +1,15 @@
+=== HASHBIND p=4889 ===
+  step 1 loss=4.127
+  step 150 loss=2.283
+  step 300 loss=2.152
+  step 450 loss=1.880
+  step 600 loss=0.496
+RESULT HASHBIND {'params': 4889, 'loss': 0.4962468445301056, 'wall': 8.632389307022095, 'id': 0.7375, 'ood': 0.0}
+=== TFMicro p=6560 ===
+  step 1 loss=4.562
+  step 150 loss=0.304
+  step 300 loss=0.033
+  step 450 loss=0.011
+  step 600 loss=0.007
+RESULT TFMicro {'params': 6560, 'loss': 0.006689242087304592, 'wall': 3.2669517993927, 'id': 1.0, 'ood': 0.0}
+RESULT {'tag': 'ARCH-C55C-HASHBIND', 'HASHBIND': {'params': 4889, 'loss': 0.4962468445301056, 'wall': 8.632389307022095, 'id': 0.7375, 'ood': 0.0}, 'TFMicro': {'params': 6560, 'loss': 0.006689242087304592, 'wall': 3.2669517993927, 'id': 1.0, 'ood': 0.0}}

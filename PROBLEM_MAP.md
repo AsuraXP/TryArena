@@ -76,3 +76,8 @@ P8 VETCAM: no honest lift vs trivial pair metric.
 P9 VETDCC: dyck-3/4 attack not certified (eval still post-SEP).
 Laws: L-EVAL-POSTSEP-TRIVIAL, L-DIV-SSM-LEAD; L-STRUCT-SCALING CE-flatness replicated.
 Chatbot: C22b boundary, L-DATA-CEILING. Controller axis C1–C49 not re-verified this clone.
+
+## CYCLE-55
+P6 variable binding: PARTIAL — copy-pointer GRU generalizes to unseen entity IDs
+  (0.90 OOD) where vocab-head TF and TF+pointer at d16 do not. Vocab-class binding
+  OOD = 0 for all arms. Fixed-position pointer is a false positive.

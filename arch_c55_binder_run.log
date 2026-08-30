@@ -1,0 +1,30 @@
+=== BINDER p=6337 ===
+  step 1 loss=4.172 p=6337
+  step 200 loss=2.306 p=6337
+  step 400 loss=1.897 p=6337
+  step 600 loss=1.879 p=6337
+  step 800 loss=1.523 p=6337
+RESULT BINDER {'params': 6337, 'loss': 1.5226092338562012, 'wall': 71.20647430419922, 'acc_id': {'BIND': 0.05, 'HOP2': 0.0625, 'ADD1': 0.1}, 'acc_ood': {'BIND': 0.0, 'HOP2': 0.0, 'ADD1': 0.175}}
+=== TFMicro p=6560 ===
+  step 1 loss=4.327 p=6560
+  step 200 loss=1.699 p=6560
+  step 400 loss=1.837 p=6560
+  step 600 loss=1.911 p=6560
+  step 800 loss=1.276 p=6560
+RESULT TFMicro {'params': 6560, 'loss': 1.2761235237121582, 'wall': 4.855327606201172, 'acc_id': {'BIND': 0.025, 'HOP2': 0.025, 'ADD1': 0.075}, 'acc_ood': {'BIND': 0.0, 'HOP2': 0.0, 'ADD1': 0.15}}
+RESULT {'tag': 'ARCH-C55-BINDER', 'BINDER': {'params': 6337, 'loss': 1.5226092338562012, 'wall': 71.20647430419922, 'acc_id': {'BIND': 0.05, 'HOP2': 0.0625, 'ADD1': 0.1}, 'acc_ood': {'BIND': 0.0, 'HOP2': 0.0, 'ADD1': 0.175}}, 'TFMicro': {'params': 6560, 'loss': 1.2761235237121582, 'wall': 4.855327606201172, 'acc_id': {'BIND': 0.025, 'HOP2': 0.025, 'ADD1': 0.075}, 'acc_ood': {'BIND': 0.0, 'HOP2': 0.0, 'ADD1': 0.15}}}
+=== BINDER p=6337 ===
+  step 1 loss=4.170 p=6337
+  step 200 loss=2.791 p=6337
+  step 400 loss=3.083 p=6337
+  step 600 loss=2.370 p=6337
+  step 800 loss=2.729 p=6337
+RESULT BINDER {'params': 6337, 'loss': 2.7285032272338867, 'wall': 68.94309520721436, 'acc_id': {'BIND': 0.05, 'HOP2': 0.0375, 'ADD1': 0.05}, 'acc_ood': {'BIND': 0.0, 'HOP2': 0.0, 'ADD1': 0.1}}
+=== TFMicro p=6560 ===
+  step 1 loss=4.104 p=6560
+  step 200 loss=2.130 p=6560
+  step 400 loss=0.427 p=6560
+  step 600 loss=2.246 p=6560
+  step 800 loss=0.011 p=6560
+RESULT TFMicro {'params': 6560, 'loss': 0.010730816051363945, 'wall': 5.018716096878052, 'acc_id': {'BIND': 1.0, 'HOP2': 1.0, 'ADD1': 0.2875}, 'acc_ood': {'BIND': 0.0, 'HOP2': 0.0, 'ADD1': 0.375}}
+RESULT {'tag': 'ARCH-C55B-BINDER-ANSONLY', 'BINDER': {'params': 6337, 'loss': 2.7285032272338867, 'wall': 68.94309520721436, 'acc_id': {'BIND': 0.05, 'HOP2': 0.0375, 'ADD1': 0.05}, 'acc_ood': {'BIND': 0.0, 'HOP2': 0.0, 'ADD1': 0.1}}, 'TFMicro': {'params': 6560, 'loss': 0.010730816051363945, 'wall': 5.018716096878052, 'acc_id': {'BIND': 1.0, 'HOP2': 1.0, 'ADD1': 0.2875}, 'acc_ood': {'BIND': 0.0, 'HOP2': 0.0, 'ADD1': 0.375}}}

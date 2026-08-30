@@ -78,3 +78,15 @@ learned dispatch, contextual output, hard inference).
   L-STRUCT-SCALING CE-flatness replicated on reconstruct. Eval-acc remains task-asymmetric.
 - Chatbot axis: no new work; no open-domain world model at this scale (L-DATA-CEILING).
 - Next: non-trivial pair/dyck stream exact-match (fix labels); TRACK multi-seed; GCD.
+
+## Cycle 55 (2026-08-30): entity-OOD binding vs micro-TF
+Phase1 cites: Gated DeltaNet 2412.06464 / DeltaNet-2 2605.22791; Titans 2501.00663
+  (surprise mem weak if frozen, 2510.09551); Pointer-Net Vinyals 2015.
+- C55 BINDER (slots+gated-delta+O(S^2) compose) vs TFMicro, full CE: both ~chance answer-acc.
+- C55b answer-only: TF **1.0 in-dist BIND/HOP2, 0.0 entity-OOD**. BINDER did not fit.
+  L-ENTITY-OOD-VOCAB: class-over-V cannot name unseen entity IDs.
+- C55c HASHBIND FWP 0.74 id / 0 ood; TF 1.0 / 0. Same law.
+- C55d copy at FIXED pos=3: both ~1.0 OOD — **L-PTR-CONST-POS** (trivial index).
+- C55e COPYVAR n=3 facts, variable ptr: **CopyGRU 0.938 id / 0.900 OOD**;
+  TFCopy 0.25 / 0.30 (~1/3 chance). **L-COPY-OOD-BIND**.
+Chatbot: still L-DATA-CEILING. Next: 2-hop copy chain; param-match TF d.

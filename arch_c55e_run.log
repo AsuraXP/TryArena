@@ -1,0 +1,15 @@
+=== CopyGRU p=9440 ===
+  step 1 loss=3.537
+  step 200 loss=0.564
+  step 400 loss=0.140
+  step 600 loss=0.357
+  step 800 loss=0.154
+RESULT CopyGRU {'params': 9440, 'loss': 0.15389131009578705, 'wall': 6.499645948410034, 'id': 0.9375, 'ood': 0.9}
+=== TFCopy p=5744 ===
+  step 1 loss=1.944
+  step 200 loss=1.202
+  step 400 loss=1.073
+  step 600 loss=1.190
+  step 800 loss=0.961
+RESULT TFCopy {'params': 5744, 'loss': 0.960823118686676, 'wall': 4.249759912490845, 'id': 0.25, 'ood': 0.3}
+RESULT {'tag': 'ARCH-C55E-COPYVAR', 'CopyGRU': {'params': 9440, 'loss': 0.15389131009578705, 'wall': 6.499645948410034, 'id': 0.9375, 'ood': 0.9}, 'TFCopy': {'params': 5744, 'loss': 0.960823118686676, 'wall': 4.249759912490845, 'id': 0.25, 'ood': 0.3}}

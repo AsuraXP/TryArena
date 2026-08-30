@@ -1,0 +1,15 @@
+=== CopyGRU p=5712 ===
+  step 1 loss=2.702
+  step 100 loss=0.000
+  step 200 loss=0.000
+  step 300 loss=0.000
+  step 400 loss=0.000
+RESULT CopyGRU {'params': 5712, 'loss': 6.228578968148213e-06, 'wall': 1.8295109272003174, 'id': 1.0, 'ood': 1.0}
+=== TFCopy p=5728 ===
+  step 1 loss=4.072
+  step 100 loss=0.000
+  step 200 loss=0.000
+  step 300 loss=0.000
+  step 400 loss=0.000
+RESULT TFCopy {'params': 5728, 'loss': 1.0743396160250995e-05, 'wall': 1.8163282871246338, 'id': 1.0, 'ood': 0.75}
+RESULT {'tag': 'ARCH-C55D-COPYBIND', 'CopyGRU': {'params': 5712, 'loss': 6.228578968148213e-06, 'wall': 1.8295109272003174, 'id': 1.0, 'ood': 1.0}, 'TFCopy': {'params': 5728, 'loss': 1.0743396160250995e-05, 'wall': 1.8163282871246338, 'id': 1.0, 'ood': 0.75}}
