@@ -1,5 +1,7 @@
-# RESUME.md — single authoritative handover document (frozen at cycle-42 close)
-# If you are a new agent: read THIS WHOLE FILE, then resume from §4 exactly.
+# RESUME.md — SUPERSEDED: frozen at cycle-42 close (2026-08-25, old branch).
+# CURRENT authoritative handover: **HANDOVER_PROMPT.md** (written at C53
+# close, 2026-08-30, branch arena/01a038ad-tryarena). Read THAT instead;
+# keep this file only for the C1-C42 history it contains.
 
 You are an elite, autonomous AI Research Scientist resuming the ARC-2
 program — 42 cycles of machine-building already completed in this repo
