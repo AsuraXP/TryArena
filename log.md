@@ -2498,3 +2498,30 @@ seed 0, same pool/probes as P1 + CE@2048:
   fragility is budget-bound), P8 VETCAM (content-addressed LIFO read
   — the basin-smoothing fix at base budget), P9 VETDCC (dyck-3/4 +
   modk attacks), P7 DIV frontier.
+CYCLE 53 (2026-09-02) — ARCH-VET P6: BASIN RATE QUANTIFIED. 3 fresh
+base-budget inits (seeds 111/222/333, torch.manual_seed before
+construction, 2000 steps, same pool/probes as P1):
+- pair-ev: 111 -> .207 | 222 -> .434 | 333 -> .604  (rate >= .5:
+  1/3)
+- track-ev .372-.465, modk-ev .269-.404 (base MATCHES the Mamba
+  corner .423 under some inits — P1's single-sample corner claim
+  softened), dyck-ev 0.000-.018 (still none).
+- CE@1024: 1.2828-1.296 — length invariance now confirmed across
+  ALL 6 base inits (1.28-1.30 band).
+- Combined 6-init sample of the base (P1 fresh .057, P2-A3 .094,
+  P3 .604, P6: .207/.434/.604): basin rate ~= 1/3 at 8,372p;
+  P5 showed 20,697p captures it under plain seed-0 (.717, n=1).
+  L-LIFO-INIT-FRAGILE -> QUANTIFIED: ~1/3 at base budget, ~1.0 at
+  2.5x (L-BASIN-SCALE-CAPTURE). The open question P8 answers: does
+  content-addressed LIFO readout (VETCAM) raise the base-budget
+  basin rate above 1/3 without the 2.5x structure cost?
+- Files: arch_vet_p6_run.log, RESULT tag ARCH-VET-LM-P6.
+- IN FLIGHT: P8 VETCAM (2 seeds, running), then P9 VETDCC, P7 DIV.
+- P10 candidate designed (prior art searched, cites for header):
+  VET-STE-DECOUPLED — push gate with decoupled straight-through
+  temperatures (arXiv 2410.13331: tau_f forward/exploration annealed
+  high->low, tau_b backward/gradient-dispersion moderate; optimal
+  off-diagonal; their 60%-dead-category ST-GS failure = our basin
+  miss; Gumbel-Softmax 1611.01144 annealing recipe; VQ-STE++
+  index-collapse = dead-slot analogue). Tests: schedule fixes basin
+  capture at base budget without structure scaling.

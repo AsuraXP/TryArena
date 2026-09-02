@@ -531,3 +531,14 @@ BUDGET property). DYCK 3-4 still 0.000 even at 2.5x structure +
 attack (exact counter channels). MODK-eval .212 (corner stays
 Mamba's, P1 .423; P9 mod channel also targets it). Files:
 arch_vet_p5_run.log + RESULT ARCH-VET-LM-P5.
+## ARCH-VET P6 (cycle 53) — basin rate quantified
+Base 8,372p, 3 fresh inits (111/222/333): pair-ev .207/.434/.604
+(rate >= .5: 1/3). Full 6-init sample (incl P1/P2-A3/P3): 2/6 reach
+the .6 basin. L-LIFO-INIT-FRAGILE QUANTIFIED ~= 1/3 at base budget
+vs ~1.0 at 2.5x (P5, n=1). CE@1024 stable 1.28-1.30 across ALL 6
+inits (length invariance fully robust). modk-ev .269-.404 (base
+matches Mamba corner under some inits). dyck-ev still 0.00-.018.
+P8 VETCAM = the base-budget basin fix test (running). P10
+candidate: VET-STE-DECOUPLED (arXiv 2410.13331 decoupled
+tau_f/tau_b + 1611.01144 annealing + VQ-STE++ index-collapse
+analogue) — schedule-level fix, no structure cost.
