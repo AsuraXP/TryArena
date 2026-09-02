@@ -2467,3 +2467,34 @@ k-state Mealy x value register x exact LIFO LM architecture.
   (ii) multi-seed basin rate of the pair-ev .604 basin
   (init-robustness quantification); (iii) chatbot axis stays
   at the C22b boundary (unchanged, L-DATA-CEILING).
+CYCLE 52 (2026-09-02) — ARCH-VET P5 FINAL: VETbig (structure at 2.5x
+budget). Run executed by the parallel session (commit aab2e07, wall
+1946s); this session verified the RESULT line and lands the log
+block. VETbig k=8 d=24 K=8, 20,697p, full 4-task stream, 4000 steps,
+seed 0, same pool/probes as P1 + CE@2048:
+- CE FLAT TO 2048: 1.287/2.403/1.232/1.275/1.271 @256tr/256hard/
+  512/1024/2048 — better than base at 1024 (1.295) and extends the
+  invariance axis to 8x train length. Ratio .529 over 256-hard
+  (base .596, P2-A3 .623 — scaling improves the ratio too).
+- acc train: track .992 / modk .475 / dyck .160 / pair 1.000
+- acc eval:  track .488 / modk .212 / dyck 0.000 / pair .717
+- PAIR-EVAL .717 = BEST-IN-PROGRAM: the LIFO+stack basin that the
+  base reached under only 1 of 3 special inits (P3 .604; P1/P2 inits
+  .057/.094) is reached under PLAIN seed-0 at 2.5x structure.
+  L-BASIN-SCALE-CAPTURE (new law): scaling the structure does not
+  just extend the frontier (P4) — it STABILIZES the basin.
+  Init-fragility (L-LIFO-INIT-FRAGILE) is a budget property, not a
+  law of the architecture.
+- DYCK 3-4 STILL 0.000 at 2.5x structure + 2x steps: the open edge
+  is confirmed structural (soft k-state cannot nest 3-4) — P9 VETDCC
+  (exact counter channels) is the designated attack.
+- MODK-EVAL .212 (train .475): the counting corner stays Mamba's
+  (P1 .423); P2-A1 showed counting is a controller-STATE property —
+  P9's exact mod-3 channel also targets this.
+- Files: arch_vet_p5_run.log (full run), RESULT tag ARCH-VET-LM-P5
+  in log.jsonl.
+- NEXT (chain relaunched this session after 5th re-clone recovery):
+  P6 (3-seed basin rate of BASE — context now: if P5 is right, base
+  fragility is budget-bound), P8 VETCAM (content-addressed LIFO read
+  — the basin-smoothing fix at base budget), P9 VETDCC (dyck-3/4 +
+  modk attacks), P7 DIV frontier.

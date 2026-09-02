@@ -518,3 +518,16 @@ L-VALUE-CHANNEL-CARRIES, L-LIFO-INIT-FRAGILE, L-STRUCT-SCALING,
 L-ENTROPY-RNG-NO-BIT-PARITY. Files: arch_vet_lm.py/p2/p3/p4 +
 _run.log. NEXT: VETbig full 4-task @4000 steps (dyck-3/4?);
 multi-seed basin rate of pair-ev .604 basin.
+## ARCH-VET P5 (cycle 52) — VETbig full 4-task @4000
+VETbig k8/d24/K8 20,697p, 4000 steps, seed 0: CE flat to 2048
+(1.287/2.403/1.232/1.275/1.271 @256tr/hard/512/1024/2048, ratio
+.529 — improves on base .596). Eval: track .488 / modk .212 /
+dyck 0.000 / pair .717 = BEST-IN-PROGRAM. Key: the pair basin
+(base: 1 of 3 special inits, .604) is captured under PLAIN seed-0
+at 2.5x structure -> L-BASIN-SCALE-CAPTURE (structure scaling
+stabilizes the basin; L-LIFO-INIT-FRAGILE reclassified as a
+BUDGET property). DYCK 3-4 still 0.000 even at 2.5x structure +
+2x steps -> structural limit of soft k-state; P9 VETDCC designated
+attack (exact counter channels). MODK-eval .212 (corner stays
+Mamba's, P1 .423; P9 mod channel also targets it). Files:
+arch_vet_p5_run.log + RESULT ARCH-VET-LM-P5.
