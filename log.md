@@ -2525,3 +2525,68 @@ construction, 2000 steps, same pool/probes as P1):
   miss; Gumbel-Softmax 1611.01144 annealing recipe; VQ-STE++
   index-collapse = dead-slot analogue). Tests: schedule fixes basin
   capture at base budget without structure scaling.
+CYCLE 54 (2026-09-06) — ARCH-VET P8/P9/P7 (chain executed in this
+session after 5th re-clone recovery; P5/P6 had landed via the
+parallel session on 2026-09-02).
+- P8 VETCAM (content-addressed LIFO READOUT — write path stays
+  exact STE; read = learned-temperature softmax over
+  cos-sim(xt, buf_j) with top-of-stack fallback; 8,373p; seeds
+  0/111, 2000 steps, wall 1445s):
+  seed 0:   CE 1.319/2.220/1.255/1.291 (τ 2.13); acc ev track .372
+            / modk .212 / dyck 0.000 / pair .358
+  seed 111: CE 1.323/2.275/1.261/1.298 (τ 2.45); acc ev track .326
+            / modk .462 / dyck .019 / pair .283
+  HYPOTHESIS (content addressing stabilizes the pair basin)
+  UNSUPPORTED at base budget: basin rate 0/2 vs base 2/6 —
+  L-LIFO-INIT-FRAGILE stands at 8.4k. Side results: seed-111
+  modk .462 BEATS Mamba's .423 corner (content gating may help
+  counting too — single sample, unconfirmed); dyck 0→.019
+  (noise-level). CE flatness intact.
+- P9 VETDCC (VETLM + EXACT mod-3 counter (ONE tok 21) + clamped
+  depth counter D=6 (bracket toks), both reset at T_TASK; 10-dim
+  counter one-hots zero-injected into controller + readout;
+  base 8,902p / big 21,257p; 2000 steps seed 0; wall 1476.7s):
+  SHARP PREDICTION (P9 header) — SPLIT VERDICT:
+  (a) modk CONFIRMED PERFECT: modk train 1.000 / eval 1.000 on
+      BOTH arms — the exact counter channel erases the counting
+      corner (Mamba .423; base .385-.462 across inits). First
+      perfect-score task in the program: zero approximation error
+      by construction. L-EXACT-CHANNEL-PERFECT (new law).
+  (b) dyck FALSIFIED: 0.000 at ALL depths 3-10 on BOTH arms,
+      INCLUDING in-clamp (3-6). Mechanism: the depth counter says
+      "how deep" but not "in what TYPE ORDER" — Dyck-2 completion
+      needs the bracket-type sequence (a content stack), which the
+      soft LIFO does not retain at these budgets. Counter channel
+      necessary, not sufficient. L-DYCK-NEEDS-CONTENT-STACK (new
+      law): exact counting channels do not transfer to exact
+      nesting.
+  pair: base .226 / big .9623 — VETDCC-big = BEST-IN-PROGRAM pair
+  (beats P5 VETbig .717): L-BASIN-SCALE-CAPTURE reinforced, now
+  2/2 big-budget inits in the basin (P5 .717, P9-big .962).
+  CE flat on both arms (1.307/1.263 @1024; big ratio .5 = best).
+- P7 DIVIDE frontier (T T d 1^n A q, d {3,4}, q = n//d as tok
+  39-47; train n 4-12 L=256; eval n 13-16/17-20/21-24, 20 streams
+  each; 3 arms): IDENTICAL frontier on all three architectures:
+  VETbase = VETbig = MAMBA = 0.600/0.450/0.000 — NO architectural
+  separation: the n→q extrapolation boundary is a DATA-RANGE
+  property (train n 4-12, eval to 24, 9-class quotient), not an
+  architecture property at 8-21k params. CE@256trainn ~0.27 (all
+  fit). CE@1024evaln diverges on all arms (VETbase 15.19 / VETbig
+  14.23 / MAMBA 7.52) — length + count double-OOD compounding
+  artifact; needs the L=256 eval-n control to isolate (queued
+  P7b). L-DIV-NO-SEPARATION (negative law: task as designed does
+  not discriminate at this budget).
+- VERDICT: VETDCC-big (21,257p) is now the strongest configuration
+  in the program: pair .962 + modk 1.000 + CE@1024 1.263 (ratio
+  .5) + track .372. The two open edges sharpen into concrete
+  attacks: DYCK needs a CONTENT-exact stack (P10); DIV needs a
+  length-isolation control before it can say anything (P7b).
+- Files: arch_vet_p8_run.log, arch_vet_p9_run.log, arch_vet_p7_run.log;
+  RESULT tags ARCH-VET-LM-P8/-P9/-P7 in log.jsonl.
+- NEXT (C55): P10 = VETDCC + EXACT bracket-type stack (hardwired
+  push on open brackets 29/30, match-check+pop on close 31/32,
+  top-type + match/mismatch features zero-injected; depth cap
+  6): sharp prediction dyck depth 3-6 HIGH, 7-10 collapse
+  (capacity overflow). P7b = DIV eval-n at L=256 (length
+  isolation). Then 2.5x basin multi-seed (quantify
+  L-BASIN-SCALE-CAPTURE beyond n=2).

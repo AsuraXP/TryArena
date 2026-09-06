@@ -542,3 +542,22 @@ P8 VETCAM = the base-budget basin fix test (running). P10
 candidate: VET-STE-DECOUPLED (arXiv 2410.13331 decoupled
 tau_f/tau_b + 1611.01144 annealing + VQ-STE++ index-collapse
 analogue) — schedule-level fix, no structure cost.
+## ARCH-VET P7/P8/P9 (cycle 54) — mutation round 2
+P8 VETCAM (content-addressed LIFO readout, 8,373p, seeds 0/111):
+pair basin NOT stabilized (0/2 vs base 2/6) — L-LIFO-INIT-FRAGILE
+holds at base budget; side: seed-111 modk .462 (beats Mamba's .423
+corner, single sample unconfirmed); CE flat. P9 VETDCC (exact
+mod-3 + depth-6 counters, zero-init injection; 8,902p/21,257p):
+modk 1.000/1.000 BOTH arms = first perfect-score task
+(L-EXACT-CHANNEL-PERFECT); dyck 0.000 at ALL depths 3-10 incl.
+in-clamp on both arms — sharp prediction FALSIFIED: depth counter
+!= type-order stack (L-DYCK-NEEDS-CONTENT-STACK); pair .226
+base / .962 big = best-in-program (L-BASIN-SCALE-CAPTURE now
+2/2 big inits). P7 DIVIDE frontier (train n 4-12, eval 13-24):
+IDENTICAL 0.6/0.45/0.0 on VETbase/VETbig/MAMBA — no separation;
+boundary is data-range not architecture (L-DIV-NO-SEPARATION);
+CE@1024evaln diverges all arms (15.2/14.2/7.5) -> P7b L=256
+control queued. Strongest config: VETDCC-big (pair .962, modk
+1.000, CE@1024 1.263, ratio .5). NEXT: P10 exact bracket-type
+stack (dyck content attack), P7b DIV length isolation, 2.5x basin
+multi-seed.
