@@ -2637,3 +2637,49 @@ on the 7th nested open.
   stochastic-grammar ceiling (30% double-branch draws are not
   state-determined -> a perfect stack user's exact-match is
   bounded < 1.0 — the ceiling can be proven by construction).
+CYCLE 55 cont. — P11 FINAL: single-task stochastic dyck (train
+depth 2, P4/P7 budget, 6 arms, wall ~100min). Exact-match = 0.0
+for ALL arms at all depths (the stochastic-grammar ceiling, now
+EMPIRICALLY CONFIRMED: 30% branch draws + open-type coin flips +
+~10 bracket positions/segment). Per-position CLOSE-type accuracy
+(the stack-use metric — close must match the top type, given
+teacher-forced gold context):
+  VETbase        8,372p:  d3 .657 | d4 .588 | d6 .520 | d8 .481
+  VETDCC-base    8,902p:  d3 .657 | d4 .552 | d6 .447 | d8 .425
+  STACKDCC2-base 9,432p:  d3 .765 | d4 .734 | d6 .618 | d8 .539
+  VETDCC-big    21,257p:  d3 .574 | d4 .548 | d6 .453 | d8 .418
+  STACKDCC2-big 21,817p:  d3 .925 | d4 .852 | d6 .724 | d8 .595
+  MAMBA          9,360p:  d3 .595 | d4 .504 | d6 .397 | d8 .357
+- FINDINGS:
+  (1) THE EXACT CONTENT STACK WORKS: STACKDCC2 beats every
+      non-stack arm at EVERY depth (+11pp d3 / +21pp d4 vs
+      VETDCC-base; +27/+27/+20/+11pp vs VETbig-line). Scaling the
+      structure (base->big) lifts it from .765 to .925 at d3 —
+      L-BASIN-SCALE-CAPTURE generalizes beyond the pair basin.
+      L-EXACT-STACK-CLOSE (new law): with teacher-forced gold
+      context and the exact type stack, close-type prediction
+      approaches 1.0 at d3-4 under 2.5x structure.
+  (2) VETDCC (depth counter alone) CONFIRMS
+      L-DYCK-NEEDS-CONTENT-STACK: it does NOT help close-type
+      (d4 .552 < VETbase .588 — depth info without type order is
+      worthless-to-negative for closing).
+  (3) MAMBA weakest on close-type at every depth (.595/.504/
+      .397/.357) — the continuous state does not track bracket
+      types at these depths either.
+  (4) OPEN-type acc stays ~.24-.34 for all arms: the open type is
+      an IRREDUCIBLE coin flip (t = rng.randrange(2) in emit())
+      — max achievable .50; all arms below it (systematic
+      type bias). The ceiling decomposition is now
+      quantified: exact-match 0.0 = open coin flips + branch
+      draws + compounding, NOT close-type failure.
+- HONEST BOUNDARY: no Transformer control in P11 — the
+  "beat TF on dyck generalization" claim is INCOMPLETE until
+  P12 (TFMicro, the P1 control class, same single-task
+  protocol). If micro-TF matches .925/.852 at d3-4, the dyck
+  axis needs deeper depths (12-16) to separate (Hahn 2020's
+  failure is asymptotic).
+- Files: arch_vet_p11.py/.log, RESULT tag ARCH-VET-LM-P11.
+- NEXT (P12): TFMicro (8,144p) + STACKDCC2-big re-run, same
+  single-task dyck protocol, close/open acc at d3-10. Sharp
+  prediction: STACKDCC2-big close d3-4 (.925/.852) > TFMicro,
+  or L-DYCK-TF-PARITY-AT-MICRO (go deeper).
