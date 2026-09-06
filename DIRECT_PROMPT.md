@@ -16,11 +16,13 @@ DO THIS NOW, IN ORDER:
 3. `git fetch origin arena/01a038ad-tryarena` → reconcile per the GIT
    DISCIPLINE section of HANDOVER_PROMPT.md (re-clone recovery
    included; expect non-FF; never force-push).
-4. Execute the CYCLE 54 PLAN in HANDOVER_PROMPT.md, in order:
-   land P5/P6 (RESULT-tag is the only completion marker; runs are
-   deterministic, kill stray `pgrep -af arch_vet` first,
-   OMP_NUM_THREADS=1), then P8 VETCAM (the LIFO init-fragility fix),
-   P9 VETDCC (the Dyck-3/4 attack), P7 DIV frontier.
+4. Execute the CYCLE PLAN section of HANDOVER_PROMPT.md (currently
+   CYCLE 56), in order: land P12/P7b (RESULT tag is the only
+   completion marker; runs are deterministic, kill stray
+   `pgrep -af arch_vet` first, OMP_NUM_THREADS=1), then P13
+   DETERMINISTIC dyck (converts the P11/P12 dyck win into a
+   measurable exact-match win + capacity frontier), then P14
+   basin multi-seed at 2.5x.
 5. Every cycle: log.md + log.jsonl + PROBLEM_MAP + 35/35 + commit +
    push. New mechanism → internet search + cite in header first.
 
