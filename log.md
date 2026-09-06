@@ -2590,3 +2590,50 @@ parallel session on 2026-09-02).
   (capacity overflow). P7b = DIV eval-n at L=256 (length
   isolation). Then 2.5x basin multi-seed (quantify
   L-BASIN-SCALE-CAPTURE beyond n=2).
+CYCLE 55 (2026-09-06) — ARCH-VET P10: STACKDCC (VETDCC + EXACT
+bracket-type stack channel). Direct attack on
+L-DYCK-NEEDS-CONTENT-STACK (P9: depth counter alone -> dyck 0.000
+all depths). Stack: capacity-6 exact TYPE stack (0=a, 1=b),
+hardwired push on opens 29/30, match-check+pop on closes 31/32,
+per-task reset; 7-dim features [top_empty, top_a, top_b, match,
+mismatch, underflow, overflow] zero-injected into controller +
+readout. Prior art (searched 2026-09-06, cited in header): the
+stack-augmented NN line is all SOFT/learned (Joulin-Mikolov 2015
+arXiv 1503.01007; Stogin 2020 arXiv 2006.03651 soft-stack
+instability; Dusell-Chiang 2023/24/25 arXiv 2511.03547) -> gap =
+EXACT discrete content-stack channel in a learned controller.
+Unit tests: 3/3 closes MATCH on balanced stream, overflow exactly
+on the 7th nested open.
+- STACKDCC-base 9,273p (2000 steps, wall 602s+probes): CE
+  1.298/2.175/1.221/1.266 (flat); acc tr track .992 / modk 1.000 /
+  dyck .184 / pair 1.000; acc ev track .628 / modk 1.000 /
+  dyck .019 / pair .377
+- STACKDCC-big 21,649p: CE 1.275/2.285/1.217/1.258; acc tr all
+  ~1.0 (dyck .168); acc ev track .698 / modk 1.000 / dyck 0.000 /
+  pair .547
+- DYCK FRONTIER — SHARP PREDICTION FALSIFIED: 0.000 at ALL depths
+  3-10 on BOTH arms, including in-capacity (3-6). Diagnoses (both
+  logged honestly):
+  (1) BUDGET: no arm in the program has ever learned dyck beyond
+      ~.22 even at the TRAIN interval (P1 .144, P9 .216) — the
+      4-task mixed stream at 2000 steps starves the dyck family;
+      the SINGLE-TASK protocol is what discriminated P4 (track)
+      and P7 (DIV). L-DYCK-BUDGET-STARVED (new law).
+  (2) LATENCY: P10 injects the PRE-update top at position t, but
+      the prediction at t targets t+1 which needs the
+      POST-update state — one position late (partially
+      reconstructable from (x_t, pre-state) — aggravating, not
+      primary). L-STACK-FEATURE-LATENCY (new law).
+- UNEXPECTED POSITIVE: the stack features lift TRACK-eval to
+  .628/.698 (base/big) vs VETDCC .372 and plain VET .465/.488 —
+  exact channels add general structure beyond their own task
+  (single-init observation, unconfirmed).
+- Files: arch_vet_p10.py/.log, RESULT tag ARCH-VET-LM-P10.
+- NEXT (P11, launched): single-task stochastic dyck (train depth
+  2, P4/P7 budget) x 6 arms (VETbase / VETDCC / STACKDCC2
+  base+big / MAMBA); STACKDCC2 = P10 stack + POST-update top
+  features (10-dim, fixes the latency); eval adds per-position
+  open/close bracket accuracy to SEPARATE stack use from the
+  stochastic-grammar ceiling (30% double-branch draws are not
+  state-determined -> a perfect stack user's exact-match is
+  bounded < 1.0 — the ceiling can be proven by construction).

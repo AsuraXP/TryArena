@@ -561,3 +561,15 @@ control queued. Strongest config: VETDCC-big (pair .962, modk
 1.000, CE@1024 1.263, ratio .5). NEXT: P10 exact bracket-type
 stack (dyck content attack), P7b DIV length isolation, 2.5x basin
 multi-seed.
+## ARCH-VET P10/P11 (cycle 55) — dyck content attack
+P10 STACKDCC (VETDCC + exact type-6 stack, 7 features; 9,273p /
+21,649p): sharp prediction FALSIFIED — dyck 0.000 at ALL depths
+3-10 on both arms (unit tests prove the features are correct).
+Diagnosis: (1) dyck never learned beyond ~.22 even at TRAIN
+interval by ANY arm — mixed-stream budget starvation
+(L-DYCK-BUDGET-STARVED); (2) P10 features one position late
+(pre-top vs needed post-top; L-STACK-FEATURE-LATENCY). Positive:
+track-eval lifts to .628/.698 (channels add general structure).
+P11 (launched): single-task dyck x 6 arms, STACKDCC2 (post-top
+fix, 10 features), per-position open/close accuracy to separate
+stack use from the grammar coin-flip ceiling.
