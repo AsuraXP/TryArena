@@ -3067,3 +3067,36 @@ PROTOCOL (closes open problem 1 of C56 handover).
   also budget-captured and the P14 downgrade is re-scoped to a
   2000-step artifact; if still ~1/3 → dyck OOD is genuinely harder
   than pair (deep-structure routing vs gap routing).
+
+- P17 FINAL (dyck basin at 2x budget): STACKDCC2-big × seeds
+  111/222/333, P11 single-task stochastic dyck, 4000 steps (2×
+  P14's 2000), ctor under seed, P14-identical evals. RESULTS:
+    close_d3 .6635/.7433/.6141 → basin@.678 = 1/3, @.85 = 0/3,
+    mean .674 sd .053 (P14 @2000: .655/.763/.631, 1/3, mean .683)
+    close_d4 .659/.674/.563 | exact 0.0 all depths (ceiling)
+  PREDICTION (b) CONFIRMED — dyck close-type OOD is STRUCTURAL,
+  NOT budget-captured (L-DYCK-BUDGET-NOT-CAPTURED): doubling the
+  budget left the basin at 1/3 with per-seed changes small and
+  NON-monotonic (s111 +.009, s222 -.020, s333 -.017) — in stark
+  contrast to pair on the SAME arm class/budget (P16: 1/3→3/3,
+  mean .497→.767). The type-structure routing through the stack/
+  continuous state does not converge from most inits even at 2×
+  budget, while the gap-routing (pair) does. HONEST VERDICT:
+  (1) the C56 dyck downgrade STANDS and is now re-confirmed at 2×
+  budget: big-config content-stack mean close_d3 .674 ≈ the
+  TFMicro control bar .678 — no reliable win over attention on
+  the depth-2-trained stochastic protocol at any budget tested;
+  the P11 .925 citation is a rare-basin sample (1/3 at 2000 AND
+  4000). (2) The P13D DEPTH-DIVERSE protocol is the only dyck
+  protocol that produced a big win (.92-.94 close d12) — but it
+  is single-seed; its init-robustness is now THE open dyck
+  question. RESULT tag ARCH-VET-LM-P17 in log.jsonl.
+- NEXT (P18): P13D protocol (deep-mixed exact-shape random-type,
+  train depths 2-6) × seeds 111/222/333 on STACKDCC2-big-D12 (the
+  P13D best arm): if close d8/d12 basin >= .85 in >= 2/3 seeds →
+  the depth-diverse dyck win is the robust, certifiable dyck
+  property (re-scoped claim survives multi-seed); if 1/3 → dyck
+  close-type is seed-lottery under EVERY protocol tried and the
+  axis needs a mechanism change (supervised stack-use auxiliary
+  loss / stack-trace supervision) rather than corpus/budget
+  tweaks.
