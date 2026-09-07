@@ -2879,3 +2879,36 @@ frontier attempt) + P7B DIV length isolation.
   111/222/333 VETDCC-big/STACKDCC2-big, P11 protocol — quantifies
   the win's init-robustness regardless of mechanism); P13d =
   deep-mixed stochastic training (the stack-forcing protocol).
+
+- P14 FINAL (basin rate at 2.5x structure, seeds 111/222/333 on the
+  P11 stochastic single-task dyck protocol; ctor under seed; RESUME
+  run after sandbox reboot — completed rows verbatim from the
+  deterministic killed run, missing seeds re-run and reproduced
+  loss curves to the digit, determinism re-verified). CLOSE_d3:
+    STACKDCC2-big: 111=.6548  222=.7632  333=.6305
+                   basin@.678 = 1/3, @.85 = 0/3, mean .683 sd .058
+    VETDCC-big:    111=.6409  222=.2897  333=.4033
+                   basin@.678 = 0/3, @.85 = 0/3, mean .445 sd .146
+  FALSIFIED (prediction a): L-BASIN-SCALE-CAPTURE DOES NOT EXTEND
+  TO THE DYCK AXIS at 2.5x structure — STACKDCC2-big basin rate is
+  1/3 at the TFMicro .678 control bar, NOT >= 3/3. The P11 citation
+  .925/.852 was a LUCKY BASIN (only seed-222-class inits reach the
+  high regime; 2/3 of seeds sit .63-.65 BELOW the micro-TF bar).
+  Mean d4/d6/d8 STACKDCC2 .650/.544/.454 still ABOVE TFMicro
+  .581/.452/.387 (P12) and d3 mean .683 ~ the TF bar — the
+  content-stack advantage survives as a MEAN margin across depths,
+  not as a per-seed certifiable win; combined with P13c's
+  L-WINDOW-NOT-STACK-CANDIDATE, the honest state is: the dyck
+  "structural win" is now a modest multi-depth mean advantage with
+  1/3 basin rate, and the stack channel's causal contribution is
+  still UNPROVEN (never observed doing OOD work under a seed-clean
+  forcing test). VETDCC-big 0/3 (depth counter alone ~chance-to-
+  mediocre across inits) — (b)/(c) hold as means but the headline
+  certified claim must be DOWNGRADED in the handover: replace "dyck
+  .925/.852 > TF .678/.581" with "STACKDCC2-big mean close d3-8
+  above micro-TF with basin 1/3 at .678; citation .925 = basin
+  outlier". RESULT tag ARCH-VET-LM-P14 in log.jsonl.
+- NEXT (P13d): the stack-forcing test (deep-mixed random-type dyck,
+  train depths {2..6}) — the mechanism-level discriminator that can
+  decide whether the content stack is causally usable at all, which
+  now gates whether ANY dyck claim can be rebuilt.

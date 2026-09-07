@@ -641,3 +641,22 @@ stack use from the grammar coin-flip ceiling.
 - OPEN QUEUE (ranked): 1. dyck certifiable win → P13d (stack-
   forcing deep-mixed train) + P14 basin (in flight); 2. basin
   robustness → P14 running; 3-6 unchanged.
+
+## ARCH-VET P14 (cycle 56) — basin rate at 2.5x structure on dyck: 1/3, claim downgraded
+- STACKDCC2-big close_d3 by seed .655/.763/.631 → basin 1/3 at the
+  TFMicro .678 bar, 0/3 at .85. VETDCC-big .641/.290/.403 → 0/3.
+  L-BASIN-SCALE-CAPTURE does NOT extend to the dyck axis; the P11
+  .925 citation = lucky basin (2/3 seeds below micro-TF bar).
+- Content-stack survives only as mean margin (STACKDCC2-big d3/d4/
+  d6/d8 means .683/.650/.544/.454 vs VETDCC .445 and vs TFMicro
+  .678/.581/.452/.387) → downgrade dyck claim to "mean advantage
+  with 1/3 basin".
+- Combined with L-WINDOW-NOT-STACK-CANDIDATE (P13c): the stack
+  channel's causal contribution is UNPROVEN. P13d (deep-mixed
+  random-type, train {2..6}) is the mechanism discriminator: if
+  STACKDCC2 cannot fit deep train segments that VETDCC fails, the
+  stack is not usable by the learned controller at this budget.
+- OPEN QUEUE (ranked): 1. dyck axis → P13d (stack forcing, in
+  flight next); 2. basin on the OTHER certified axes (pair-eval
+  .717/.962 n=2 also needs multi-seed before claiming robustness);
+  3-6 unchanged.
