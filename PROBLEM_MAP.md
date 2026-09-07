@@ -698,3 +698,29 @@ stack use from the grammar coin-flip ceiling.
   .92-.94 close-type d12 init-robust like modk or lucky like pair?);
   3. in-range parity; 4. associative-capacity probe; 5. fusion;
   6. deeper TF dyck d12-16.
+
+## ARCH-VET P16-P18 (cycle 57) — budget/structure basin diagnosis: pair budget-captured, dyck depth-diversity-captured
+- P16: pair-OOD basin @4000 steps = 3/3 at .717 (mean .767 sd .036;
+  P15 @2000 was 1/3). L-PAIR-LOTTERY-BUDGET: the pair lottery was
+  2000-step underconvergence.
+- P17: dyck (depth-2 shallow stochastic protocol) basin @4000 stays
+  1/3 (mean .674 ≈ TFMicro .678). L-DYCK-BUDGET-NOT-CAPTURED:
+  structural, not budget. C56 downgrade of .925 re-confirmed at 2x
+  budget.
+- P18: the DEPTH-DIVERSE protocol (P13D, train depths 2-6) is
+  multi-seed ROBUST: STACKDCC2-big D12 close d12 .984/.950/.973
+  (3/3 @.85 and @.90, mean .969 sd .014, flat to 32x length all
+  seeds). L-DEPTH-DIVERSITY-CAPTURES-DYCK-BASIN. FIRST multi-seed
+  dyck win.
+- MULTI-SEED CERTIFIED TABLE (2.5x structure, seeds 111/222/333):
+  modk 1.0 9/9 (P15+P16) | length-invariance ratio<=.6 8-9/9 |
+  pair gap24-48 >=.717 3/3 @4000 (mean .767) | dyck close-type
+  d12>=.85 3/3 @2000 depth-diverse (mean .969). The 4-task axis
+  now has multi-seed certified wins on ALL families under the right
+  protocol (budget for pair, depth-diversity for dyck).
+- OPEN QUEUE (ranked): 1. P19 = mixed-stream fusion: does the
+  depth-diverse dyck corpus coexist with pair/modk/track in the P9
+  4-task stream (data-level fusion, the pre-fusion question)? 2.
+  in-range parity; 3. associative-capacity probe; 4. VET-LM+corpus
+  fusion (chatbot); 5. deeper TF dyck d12-16 (needs RoPE-TF
+  re-derivation — NOT P1-class).
