@@ -679,3 +679,22 @@ stack use from the grammar coin-flip ceiling.
   in-range parity; 3. associative-capacity probe design; 4.
   fusion pilot; 5. certificates. (dyck-axis problem downgraded:
   mechanism now understood and re-scoped as a VET-family win.)
+
+## ARCH-VET P15 (cycle 57) — basin multi-seed on the full protocol: pair = lottery, counting+invariance robust
+- VETDCC-big pair_eval .302/.302/.887 (basin@.717 1/3); STACKDCC2-
+  big .057/.208/.925 (1/3). L-BASIN-SCALE-CAPTURE FALSIFIED for the
+  pair axis at 2.5x (P9 .962 / P5 .717 = n=1 lucky basins; train
+  pair 1.0 all 6 runs → the lottery is OOD-eval generalization).
+- INIT-ROBUST certified properties (big config): modk eval 1.0 6/6
+  (L-EXACT-CHANNEL-PERFECT), CE@1024/256hard ratio <=.6 5/6
+  (length invariance). Stack organ does not help pair OOD (STACKDCC2
+  mean .396 < VETDCC .497).
+- Strongest-config table DOWNGRADED (pair .96 and dyck .925 are
+  single-seed samples; modk + invariance are the certified pair).
+- OPEN QUEUE (ranked): 1. pair-OOD basin stabilization (train 1.0,
+  eval ~1/3 basin at any scale — the headline reasoning axis; P16 =
+  search prior art → curriculum vs SRAM-style exact assoc readout
+  vs 4000-step); 2. P13D depth-diverse dyck win multi-seed (is the
+  .92-.94 close-type d12 init-robust like modk or lucky like pair?);
+  3. in-range parity; 4. associative-capacity probe; 5. fusion;
+  6. deeper TF dyck d12-16.

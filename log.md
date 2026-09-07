@@ -2977,3 +2977,58 @@ CYCLE 56 CLOSE (2026-09-07) — handover rewritten to C56 state.
   history this cycle: ee5d19c ... fcc7b7b (all on the program
   branch).
 - verify 35/35 maintained at every commit.
+
+CYCLE 57 (2026-09-07) — P15 BASIN MULTI-SEED ON THE FULL CERTIFIED
+PROTOCOL (closes open problem 1 of C56 handover).
+- P15 FINAL: seeds 111/222/333 × {VETDCC-big 21,257p,
+  STACKDCC2-big 21,817p}, P9 4-task protocol (L=256 pool 512 seed
+  12345, 2000 steps), ctor under per-seed manual_seed (SEED HYGIENE
+  LAW), evals CE sweep + task_acc train/eval + dyck d3-6.
+  RESULTS:
+    VETDCC-big:  pair_eval .302/.302/.887  basin@.9 0/3 @.717 1/3
+                 modk 1.0/1.0/1.0 | ratio .533/.585/.413 (3/3<=.6)
+                 track .605/.535/.442 | pair mean .497 sd .276
+    STACKDCC2:   pair_eval .057/.208/.925  basin@.9 1/3 @.717 1/3
+                 modk 1.0/1.0/1.0 | ratio .542/.606/.529 (2/3<=.6)
+                 track .558/.581/.488 | pair mean .396 sd .379
+  TRAIN pair acc 1.0 in ALL 6 runs — the pair TASK is always
+  learned in-train; the lottery is the OOD/EVAL-interval pair
+  generalization, not learning.
+  FINDINGS: (1) L-BASIN-SCALE-CAPTURE FALSIFIED for pair: at 2.5x
+  structure the pair-eval basin rate is 1/3 (both arms) — the
+  certified .962 (P9) / .717 (P5) were n=1 LUCKY BASINS (now
+  confirmed across P15 2/6 at the .717 bar, aggregate ~1/4 over
+  P1/P2/P3/P5/P6/P9/P15 samples). "Scale captures the basin" is
+  FALSE; (2) L-EXACT-CHANNEL-PERFECT IS INIT-ROBUST: modk eval
+  1.0 in 6/6 — the exact mod-3 counter is the architecture's
+  certifiable-by-construction property, not a basin; (3) LENGTH
+  INVARIANCE IS INIT-ROBUST: CE@1024/CE@256-hard ratio <= .6 in
+  5/6 (VETDCC 3/3; STACKDCC2 s222 .606 marginal) — invariance is
+  architecture-level, matching the certified win #1; (4) the stack
+  organ (STACKDCC2) does NOT help pair OOD — it perturbs it worse
+  (mean .396 < VETDCC .497; 2/3 seeds collapse <.21) — consistent
+  with P13D (stack = modest enhancer on dyck, not a general
+  generalization organ); (5) track .44-.60 across all seeds — the
+  track axis is present but OOD-modest at 2000 steps.
+  HONEST DOWNGRADE: the C55-C56 "STRONGEST CONFIG" table (pair .96,
+  modk 1.00, ratio .5, close-d3 .925) is NOT a certified config —
+  only modk 1.0 and ratio <=.6 survive multi-seed; pair .96 and
+  dyck .925 are single-seed luck. The two init-robust certified
+  properties at big config: PERFECT COUNTING (modk 1.0, 6/6) and
+  LENGTH INVARIANCE (ratio <=.6, 5/6) + the depth-diverse dyck
+  close-type family win (P13D, single-seed — its own multi-seed is
+  the P14-style open item). RESULT tag ARCH-VET-LM-P15 in
+  log.jsonl.
+- NEXT (P16): the pair-OOD basin is now the #1 open problem (the
+  "reasoning and generalization" headline axis): train pair acc 1.0
+  but eval-interval generalization collapses in ~2/3 inits at
+  ANY scale tested. Attack options: (a) multi-interval curriculum
+  (train on intervals 0-128 AND 256-512... to force interval-
+  invariant key-value binding — but that changes the OOD semantics:
+  OOD is then within covered intervals, so eval must move further
+  out); (b) pair-specific exact channel (the C12 SRAM organ worked
+  by construction on the 16-key cipher — re-test SRAM-style exact
+  associative memory at big config, multi-seed); (c) longer
+  training (4000 steps P5-style) — does the basin rate improve or
+  is it structural? Search prior art on OOD associative recall
+  basin before choosing.
