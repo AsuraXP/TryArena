@@ -573,3 +573,71 @@ track-eval lifts to .628/.698 (channels add general structure).
 P11 (launched): single-task dyck x 6 arms, STACKDCC2 (post-top
 fix, 10 features), per-position open/close accuracy to separate
 stack use from the grammar coin-flip ceiling.
+
+## ARCH-VET P12/P13/P7B (cycle 56) — dyck TF control + capacity frontier + DIV length isolation
+- P12 LANDED: TFMicro (8,144p) on the P11 single-task stochastic
+  dyck protocol: close-type .678/.581/.452/.387/.345 d3/d4/d6/d8/d10
+  — BELOW STACKDCC2-big (.925/.852/.724/.595 P11 citation; .791/
+  .738/.624/.543/.488 same-session re-run), ABOVE Mamba/VETbase at
+  d3-4. Exact 0.0 all arms (grammar ceiling). P11's dyck win over
+  micro-TF CONFIRMED at matched protocol WITH init-sensitivity
+  caveat (re-run differs from citation; arm ctor RNG order differs
+  between p11/p12 scripts). L-DYCK-TF-PARITY-AT-MICRO not triggered.
+- P13: deterministic dyck (every token state-determined → exact is a
+  real bar). TRAIN-CORPUS LAW L-DETERMINISTIC-SINGLE-STRING-
+  MEMORIZATION: fixed-depth deterministic training = ONE distinct
+  string → all arms memorize (loss ~0.01), exact 0.0 everywhere,
+  capacity D6/D12 indistinguishable on exact. CAPACITY SIGNAL (D12
+  close-type flat ~.67 to d12 vs D6 decay to ~.001) CONFOUNDED by
+  ctor-before-seed-reset (different inits). P13b (queued): depth-
+  mixed train {1,2,3} + matched seed ctor → clean capacity test.
+- P7B: L-DIV-RANGE-NOT-LENGTH. VET length invariance intact to
+  L=1024 (flat acc, no compounding); DIV n21-24 ≈ 0.0 at every
+  length = out-of-train-RANGE counting, not length. DIV axis closed.
+- Protocol law: arm ctor AFTER manual_seed(0) (P13b pattern) so
+  seed-0 = matched init across arms/scripts.
+- OPEN QUEUE (ranked): 1. dyck certifiable win: exact-match ~1.0 in
+  capacity via depth-mixed deterministic training (P13b) — the
+  single open #1 problem; 2. basin multi-seed robustness (P14, 2.5x
+  budget seeds 111/222/333 VETDCC-big/STACKDCC2-big); 3.
+  associative-capacity probe; 4. in-range parity; 5. fusion;
+  6. certificates.
+
+## ARCH-VET P13B (cycle 56) — depth-mixed deterministic dyck, seed-clean capacity test
+- Capacity purity CONFIRMED: D6/D12 bit-identical weights + d1-6
+  identical (capacity = pure runtime buffer). P13's close-type
+  capacity signal was init luck (ctor confound), now conclusively.
+- L-DETERMINISTIC-POSITION-SHORTCUT: fixed-type deterministic
+  grammar is NOT stack-essential OOD — S(d) embeds trained S(3)
+  verbatim; TFMicro OOD close d4/d6 .85/.70 > stack arms .50/.51.
+  Deterministic fixed-type grammar = dead end for the stack-vs-
+  attention separation (problem 1). P13c: fixed shape + random
+  per-node types (kills shortcut; exact depth d → clean D+1
+  overflow boundary).
+- In-train: depth-mixed training induces mastery (close d2/d3 1.0
+  all arms; STACKDCC2-big exact d2 1.0 best). VETDCC-big OOD
+  close below chance (anti-correlates; +L-DYCK-NEEDS-CONTENT-
+  STACK).
+- OPEN QUEUE (ranked): 1. dyck certifiable win → P13c (fixed-shape
+  random-type exact-depth capacity frontier); 2. basin robustness
+  → P14 (111/222/333, P11 stochastic protocol); 3-6 unchanged.
+
+## ARCH-VET P13C (cycle 56) — exact-depth random-type dyck: stack channel never forced
+- Capacity-frontier predictions FALSIFIED (D6 and D12 identical,
+  both collapse at d3; capacity 12 irrelevant) → D_STACK buffer not
+  the binding frontier. Root cause: depth-2 train corpus is
+  K-window-solvable (VETDCC w/o type stack also scores d2 1.0) →
+  no arm ever forced to drive the stk channel → no LIFO policy
+  learned → d3+ fails for all arms.
+- L-WINDOW-NOT-STACK-CANDIDATE (synthesis P11-P13c): all prior
+  "stack wins" are consistent with the K=8 content window + fixed
+  structure, NOT the exact type-stack doing OOD work (never
+  observed under seed-clean tests). The P11 .925 claim needs a
+  mechanism-level test.
+- P13d (queued): train on DEEP stochastic dyck (target depths 3-6
+  mixed) so train segments genuinely nest >2 → window fails in
+  train → stack must engage → VETDCC-big is the discriminating
+  control (must fail in-train deep segments).
+- OPEN QUEUE (ranked): 1. dyck certifiable win → P13d (stack-
+  forcing deep-mixed train) + P14 basin (in flight); 2. basin
+  robustness → P14 running; 3-6 unchanged.

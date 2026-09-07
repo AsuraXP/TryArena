@@ -2683,3 +2683,199 @@ teacher-forced gold context):
   single-task dyck protocol, close/open acc at d3-10. Sharp
   prediction: STACKDCC2-big close d3-4 (.925/.852) > TFMicro,
   or L-DYCK-TF-PARITY-AT-MICRO (go deeper).
+
+
+CYCLE 56 (2026-09-06) — P12 LAND + P13 DETERMINISTIC DYCK (capacity
+frontier attempt) + P7B DIV length isolation.
+- P12 FINAL (TF control, closes P11's gap): SAME single-task
+  stochastic dyck protocol as P11 (train depth 2, L=256 pool 256
+  seed 12345, 2000 steps seed 0). TFMicro (8,144p = exact P1
+  control class) close-type .678/.581/.452/.387/.345 at d3/d4/d6/
+  d8/d10 — ABOVE Mamba (.595/.504/.397/.357) and VETbase (.657/
+  .588/.520/.481) at d3-4 but BELOW STACKDCC2-big (.925/.852/.724/
+  .595, P11). Same-session STACKDCC2-big re-run measured LOWER
+  close-type (.791/.738/.624/.543/.488 d3/d4/d6/d8/d10) than P11's
+  cited .925/.852 — the two scripts construct their arm lists
+  differently (P11 6 arms, P12 2 arms → different RNG position at
+  ctor despite the same per-arm manual_seed(0) training reset), so
+  the two runs are DIFFERENT inits, not a protocol mismatch: the
+  dyck win magnitude is init-sensitive at the seed-0 budget.
+  Robustness question is exactly P14's (multi-seed basin);
+  P13's D6/D12 confound (same ctor-before-reset bug) makes seed
+  hygiene a standing protocol fix (construct arms after reset). Exact-match 0.0 ALL
+  arms = grammar ceiling (open coin flips), reconfirmed for TF.
+  Verdict: micro-TF does NOT match STACKDCC2-big on dyck
+  close-type at matched single-task budget (L-DYCK-TF-PARITY-AT-
+  MICRO NOT triggered); the P11 dyck win stands WITH a basin
+  caveat. RESULT tag ARCH-VET-LM-P12 in log.jsonl.
+- P13 (deterministic dyck + capacity frontier): replaced the
+  stochastic grammar (unlearnable open coin flips → exact-match
+  ceiling 0.0 by construction) with the DETERMINISTIC grammar
+  emit(d)=[a]emit(d-1)[c_a][b]emit(d-1)[c_b] where every token is
+  state-determined → exact-match is a MEASURABLE ~1.0 bar. Arms:
+  STACKDCC2-big D6 vs D12 (equal 21,817p — capacity is a buffer
+  size), VETDCC-big (21,257p), TFMicro (8,144p). Train depth 2,
+  L=256 pool 256 seed 12345, 2000 steps. RESULT: train loss ~0.01
+  (near-perfect fit) but exact-match 0.0 at ALL depths d3-12 for
+  every arm; close-type DISSOCIATES by capacity: D6 decays
+  .482/.200/.095/.016/.004/.001 while D12 stays FLAT ~0.67 to
+  d12 (.839/.750/.730/.675/.673/.671); VETDCC-big decays to chance
+  .486; TFMicro ~chance .55/.50/.60 at d3-6. TWO findings:
+  (1) L-DETERMINISTIC-SINGLE-STRING-MEMORIZATION (new law): with a
+  deterministic grammar at a FIXED train depth, all 256 depth-2
+  segments are the SAME string → the corpus is ONE periodic pattern
+  → every arm memorizes the period (loss ~0.01) and NO arm learns
+  the stack algorithm → exact-match 0.0 in and out of capacity.
+  The stochastic grammar's coin flips were what forced stack-use in
+  P11; the deterministic grammar needs DEPTH-MIXED training to
+  force it (P13b). (2) L-CAPACITY-CONTENT-TRACE (candidate law,
+  CONFOUNDED): D12's flat ~0.67 close-type to d12 vs D6's decay to
+  ~0.001 shows the D_STACK buffer tracks type content OOD even
+  under memorization — BUT P13 constructed the arms BEFORE the
+  per-arm manual_seed(0) reset, so D6 and D12 had DIFFERENT random
+  inits → capacity confounded with basin luck; d3-6 are both
+  in-capacity yet differ (.482 vs .839) which capacity alone cannot
+  explain. P13b re-tests with arms constructed under manual_seed(0)
+  (bit-identical D6/D12 weights; d1-6 must match exactly; d7+
+  dissociates purely at the overflow boundary). Exact-match 0.0 in
+  P13 is thus NOT a capacity statement (in-capacity d3-6 failed
+  too) — it is the single-string corpus ceiling. RESULT tag
+  ARCH-VET-LM-P13 in log.jsonl.
+- Files: arch_vet_p12.py/.log (run log), arch_vet_p13.py/.log,
+  arch_vet_p13b.py (queued: depth-mixed + seed-clean capacity test),
+  arch_vet_p7b.py/.log.
+- NEXT (P13b): deterministic dyck DEPTH-MIXED train {1,2,3} (256
+  distinct streams — degeneracy fix) with D6/D12 bit-identical
+  init; then P14 basin multi-seed (VETDCC-big/STACKDCC2-big at
+  2.5x budget, seeds 111/222/333) for the dyck robustness claim.
+
+- P7B FINAL (DIV length isolation): the SAME trained VETbase
+  (8,372p, exactly P7's) at each n-band, at L=n_hi+8 (P7's single-
+  block protocol) vs L=256 vs L=1024 (multi-block length stress,
+  20 streams). Results (acc, blocks):
+    n13-16: L24 .600(20) | L256 .437(263) | L1024 .495(1058)
+    n17-20: L28 .300(20) | L256 .443(221) | L1024 .395(881)
+    n21-24: L32 .000(20) | L256 .026(195) | L1024 .011(755)
+  VERDICT: L-DIV-RANGE-NOT-LENGTH (closes the DIV axis). The
+  length-invariance of the VET host is INTACT: acc is roughly FLAT
+  from L=256 to L=1024 (no compounding error across ~36 blocks —
+  per-block error is length-constant). The 0.0 at n21-24 is the
+  SAME at every length → DIV's out-of-train-range failure is a
+  COUNT-RANGE failure (the exact-count organ trained on n<=12 does
+  not extrapolate the count range), identical across VETbase/
+  VETbig/Mamba per P7. NOT a length-invariance violation; the
+  P7 0.6/0.45/0.0 frontier was never a length effect. Honest
+  caveat: single-block L=hi+8 numbers differ slightly from P7's
+  citations (.600 vs .6, .300 vs .45 at n17-20 — new eval seeds;
+  20 blocks is small n); multi-block values carry the conclusion.
+  RESULT tag ARCH-VET-LM-P7B in log.jsonl.
+- SEED-HYGIENE PROTOCOL LAW (new, from P12-P13): p*.py arm loops
+  construct all arms BEFORE the per-arm torch.manual_seed(0), so
+  "seed 0" means different inits across scripts/arms. Future arm
+  loops MUST construct each model after manual_seed(0) inside the
+  loop (P13b does this) so "seed 0" is a true matched init.
+
+- P13B FINAL (depth-mixed deterministic dyck, seed-clean capacity
+  test): fixes BOTH P13 flaws — (1) depth-mixed train corpus d in
+  {1,2,3} per segment (256 DISTINCT streams, degeneracy fixed:
+  P13 had 1); (2) arms constructed UNDER manual_seed(0) inside the
+  arm loop (P13 built the list before the reset → D6/D12 had
+  different inits). CAPACITY-PURITY CHECKS PASS: D6 and D12
+  trained to BIT-IDENTICAL weights (loss curves 0.1446/0.1499/
+  0.1168/0.1452 identical), d1-6 exact diff 0.0, d1-6 close diff
+  0.0 → capacity is a pure runtime buffer, and in-capacity
+  behavior is seed-confound-free. RESULTS (exact d1-12; close
+  d1/2/3/4/6/8/10/12):
+    STACKDCC2-big D6=D12: exact 0.0, 1.0, .875, then 0.0 d4-12;
+        close 0.0, 1.0, 1.0, .50, .508, .471, .462, .461
+    VETDCC-big:           exact 0.0, .941, .50, then 0.0;
+        close 0.0, .980, 1.0, .383, .286, .278, .264, .260
+    TFMicro (d<=6):       exact .361, .706, .50, then 0.0;
+        close .361, .961, 1.0, .850, .698
+  FINDINGS: (1) depth-mixed deterministic training induces IN-TRAIN
+  structural mastery (close d2/d3 = 1.0 ALL arms; STACKDCC2-big
+  exact d2 1.0/d3 .875 = best in-train; stack machinery gives the
+  tightest in-train fit). (2) L-DETERMINISTIC-POSITION-SHORTCUT
+  (new law): the fixed-type deterministic grammar is NOT a
+  stack-essential OOD test — S(d) embeds S(d-1)...S(3) verbatim at
+  aligned block boundaries, so OOD close-type is reachable by
+  positional pattern matching; TFMicro (the attention control)
+  OOD close-type d4/d6 = .85/.70, ABOVE both stack arms (.50/.51)
+  and VETDCC (.38/.29) — the transformer exploits the embedded-
+  substring route the stack users don't. (3) Capacity dissociation
+  is UNOBSERVABLE on this grammar: with bit-identical D6/D12 and
+  no stack-use forced OOD, d7-12 close-type is ~chance for both
+  (.46) — the D6 overflow boundary never matters because the model
+  is not using the stack at depth >3 at all. (4) VETDCC-big
+  (depth counter, no type content) OOD close-type falls BELOW
+  chance (.26-.38) — the depth counter without type order actively
+  anti-correlates on OOD deterministic dyck (adds to
+  L-DYCK-NEEDS-CONTENT-STACK). (5) The P13 close-type capacity
+  signal (D12 flat .67 vs D6 decay) is NOT reproduced under seed-
+  clean D6/D12 → it was init/basin luck (P13's ctor confound),
+  now conclusively. RESULT tag ARCH-VET-LM-P13B in log.jsonl.
+  VERDICT for problem 1 (dyck certifiable win): deterministic
+  FIXED-type grammar is a dead end for separating stack from
+  attention (positional shortcut, TF wins OOD). Next attack P13c:
+  FIXED SHAPE + RANDOMIZED per-node TYPES (P11's type coins, no
+  branch draws): exact depth d per segment (clean D+1 overflow
+  boundary) + random types (kills the position shortcut, forces
+  stack use in train and OOD). Close-type is the measurable axis
+  (exact-match remains impossible with random open types — the
+  quantified ceiling stands).
+- Files: arch_vet_p13b.py/.log (run log), RESULT tag
+  ARCH-VET-LM-P13B.
+- NEXT (P13c then P14): P13c = fixed-shape random-type dyck
+  (exact-depth capacity frontier, the architecture-separating
+  test); P14 = basin multi-seed 111/222/333 on the P11 stochastic
+  single-task protocol (VETDCC-big/STACKDCC2-big, 2000 steps).
+
+- P13C FINAL (exact-depth random-type dyck, capacity frontier v3):
+  fixed P13 shape S(d) (nesting exactly d → clean D+1 overflow
+  boundary) + per-node type coins (closes match their open's type →
+  no position shortcut for closes). Train depth 2 random-type,
+  L=256 pool 256 seed 12345 (256 DISTINCT streams), 2000 steps
+  seed 0, ctor under manual_seed(0). CLOSE-TYPE by depth (primary
+  metric; exact ~0 by construction — random open types):
+    arm         d2    d3    d4    d5    d6    d8   d10   d12
+    STACKDCC2  1.0  .170  .113  .103  .089  .023  .005  .0007
+      D6 = D12 (bit-identical weights; capacity check passes;
+      D12 d7 .039 vs D6 d7 .037 = noise)
+    VETDCC-big 1.0  .438  .179  .159  .107  .026  .008  .001
+    TFMicro    1.0  .518  .377  .452  .373   (d<=6)
+  FALSIFIED (b)+(c): NO arm holds close-type >= .85 at d3-6;
+  D6 collapses IN CAPACITY at d3 (.17) and D12 collapses
+  IDENTICALLY (capacity 12 changes nothing, d7-12 ~0 with no
+  overflow) → the D_STACK buffer is NOT the binding frontier.
+  ROOT CAUSE (the decisive observation): VETDCC-big — which has NO
+  type stack — also scores d2 close-type 1.0 → the depth-2 train
+  corpus (S(2), max nesting 2) is K-WINDOW-SOLVABLE: every close's
+  matching open is within a few tokens, so the K=8 content window
+  (present in VETDCC and STACKDCC2 alike) resolves all in-train
+  closes WITHOUT the type stack. No arm is ever forced to drive
+  the stk channel during training → no learned LIFO policy exists
+  → d3+ (root closes ~15+ tokens from their opens) fails for
+  everyone. TFMicro ~chance at d3-6 (.38-.52) — its position
+  embedding could in principle pair fixed-offset opens/closes (the
+  fixed SHAPE is still position-addressed for attention), but 2000
+  steps from d2-only training did not learn it either.
+  RETROSPECTIVE (P11-P13c synthesis, L-WINDOW-NOT-STACK-CANDIDATE):
+  every protocol so far that "induced stack use" was actually
+  window-solvable in train: stochastic dyck realized segments are
+  mostly shallow chains (window-solvable at depth <= K); fixed
+  deterministic = position shortcut; exact-shape random-type at d2
+  = window-solvable. The exact type-stack channel has NEVER been
+  observed doing OOD work under a seed-clean test → the P11 ".925
+  stack win" is plausibly a K-window/structure effect, not the
+  stack channel. Next attack P13d: FORCE the stack in training by
+  training on DEEP random-type/shape segments (stochastic dyck at
+  target depths 3-6 mixed, so some train segments genuinely nest
+  >2 with closes beyond window reach → only the stk channel can
+  fit the loss; VETDCC-big then becomes the discriminating control
+  — it must FAIL in-train deep segments if the stack is really the
+  mechanism doing the work). RESULT tag ARCH-VET-LM-P13C in
+  log.jsonl. Files: arch_vet_p13c.py/.log.
+- NEXT (P14 then P13d): P14 basin multi-seed launched (seeds
+  111/222/333 VETDCC-big/STACKDCC2-big, P11 protocol — quantifies
+  the win's init-robustness regardless of mechanism); P13d =
+  deep-mixed stochastic training (the stack-forcing protocol).
