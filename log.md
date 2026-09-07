@@ -3100,3 +3100,48 @@ PROTOCOL (closes open problem 1 of C56 handover).
   axis needs a mechanism change (supervised stack-use auxiliary
   loss / stack-trace supervision) rather than corpus/budget
   tweaks.
+
+- P18 FINAL (depth-diverse dyck multi-seed — the P13D win's
+  robustness test): STACKDCC2-big D12 × seeds 111/222/333 on the
+  P13D deep-mixed exact-shape random-type protocol (train depths
+  2-6, 2000 steps, ctor under seed). RESULTS:
+    close d6 (in-train): 1.0 / .968 / .986   basin@.90 = 3/3
+    close d8:  .988 / .954 / .976
+    close d12: .984 / .950 / .973   basin@.85 = 3/3, @.90 = 3/3
+    mean d12 .969 sd .014 | mean d8 .972 | all seeds flat d6→d12
+    (<2.5pp drop over 32x length to L=16396 every seed)
+  PREDICTION (a) CONFIRMED — L-DEPTH-DIVERSITY-CAPTURES-DYCK-
+  BASIN: the depth-diverse protocol captures the dyck close-type
+  basin ACROSS INITS (3/3 at the .85/.90 bars, tight sd .014) —
+  the first multi-seed dyck win in the program. This closes the
+  dyck-axis question with the scope honestly fixed: the certified
+  dyck property is CLOSE-TYPE tracking on exact-shape RANDOM-TYPE
+  segments trained depth-diverse {2..6}, length-invariant to 32x,
+  at 2.5x structure (STACKDCC2-big D12). Contrast confirms the
+  mechanism: depth-2-only training of the SAME architecture is a
+  1/3 basin at ANY budget (P14/P17: mean close_d3 .674-683 ≈ TF
+  .678), i.e. the win's cause is the depth-diverse curriculum
+  (Zhou et al. 2023 reproduced), not the stack channel per se
+  (VETDCC-no-stack also reaches .89-.90 single-seed, P13D; the
+  stack adds the top ~5-8pp). Whole-segment exact remains ~0 by
+  construction (random open-type coins), and the fixed-type
+  deterministic grammar remains position-shortcuttable — the
+  honest boundary. RESULT tag ARCH-VET-LM-P18 in log.jsonl.
+  Certified multi-seed table (2.5x structure, seeds 111/222/333):
+    PERFECT COUNTING modk 1.0 — 9/9 (P15+P16)
+    LENGTH INVARIANCE CE ratio <=.6 — 8/9 (P15), 3/3 (P16)
+    PAIR OOD gap24-48 >=.717 — 3/3 @4000 (P16, mean .767)
+    DYCK CLOSE-TYPE d12 >=.85 — 3/3 (P18, mean .969, 32x length)
+  vs the shrunken single-seed citations (.925 dyck 1/3-basin on
+  the shallow protocol; .962 pair 1/3@2000). The four-task axis
+  now has MULTI-SEED certified wins on all four families when the
+  right protocol is used (budget for pair; depth-diversity for
+  dyck).
+- NEXT (C58): in-range parity + the associative-capacity probe
+  remain; the biggest open architectural question now is whether
+  the depth-diverse curriculum finding transfers (a) to the OTHER
+  VET families on the MIXED 4-task stream (the P13D single-task
+  corpus vs the P9 4-task stream — does depth-diverse dyck training
+  coexist with the other tasks?) and (b) to the fluency/chatbot
+  axis. P19 = mixed-stream depth-diverse dyck × pair/modk/track:
+  the fusion question at the data level.
