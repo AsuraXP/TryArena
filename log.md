@@ -2959,3 +2959,21 @@ frontier attempt) + P7B DIV length isolation.
   a RE-SCOPED win with the mechanism understood; the next
   unanswered problem is #2 basin-on-other-certified-axes / in-range
   parity / fusion).
+
+CYCLE 56 CLOSE (2026-09-07) — handover rewritten to C56 state.
+- HANDOVER_PROMPT.md updated: C56 executed chain P12/P7B/P13/P13B/
+  P13C/P14/P13D all LANDED (155 log.jsonl lines); dyck claim
+  re-scoped (C55 ".925/.852 stack win" → lucky basin, P14 1/3; new
+  certified statement = depth-diverse-training close-type frontier,
+  L-DEPTH-DIVERSITY-LEVER, VET-family d12 .92-.94 flat to 32x
+  length, TF below); OPEN PROBLEMS re-ranked (1 = basin robustness
+  on the OTHER certified axes, 2 = in-range parity, 3 = assoc
+  capacity, 4 = fusion, 5 = certificates-closed-for-dyck, 6 =
+  deeper TF dyck); CYCLE 57 plan written (P15 = basin multi-seed on
+  pair/modk/CE/track protocol at big config).
+- Sandbox reboot mid-P14 recovered: torch reinstall, git recovery
+  (mixed reset to FETCH_HEAD preserving disk diff), determinism
+  re-verified (resumed s222 reproduced loss to the digit). Push
+  history this cycle: ee5d19c ... fcc7b7b (all on the program
+  branch).
+- verify 35/35 maintained at every commit.
