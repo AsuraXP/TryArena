@@ -3032,3 +3032,38 @@ PROTOCOL (closes open problem 1 of C56 handover).
   training (4000 steps P5-style) — does the basin rate improve or
   is it structural? Search prior art on OOD associative recall
   basin before choosing.
+
+- P16 FINAL (pair-OOD basin budget test): VETDCC-big × seeds
+  111/222/333 at 4000 steps (2× P15's 2000; P5 budget), ctor under
+  seed, P9 protocol, P15-identical evals. RESULTS:
+    pair_eval .7925/.7925/.717 → basin@.717 = 3/3 (P15 @2000:
+    .302/.302/.887 → 1/3), @.9 = 0/3, mean .767 sd .036
+    modk 1.0/1.0/1.0 | ratio .457/.538/.448 (3/3 ≤ .6)
+    track .953/.767/.349 (s333 track REGRESSED .442→.349 while its
+    pair rose .887→.717 — mixed-stream budget trade, noted)
+  PREDICTION (a) CONFIRMED — L-PAIR-LOTTERY-BUDGET: the pair-OOD
+  lottery is a 2000-STEP UNDERCONVERGENCE artifact, NOT an init-
+  structural property. Every seed discovers the long-gap (24-48)
+  key-value recall routing given 2× budget: basin 1/3→3/3 at .717,
+  mean .497→.767, sd .276→.036, and the two formerly-collapsed
+  seeds converge to the SAME .7925. Loss @4000 (~1.11-1.12) is
+  measurably below the @2000 plateau (~1.17): the OOD routing is
+  learned in the 2000-4000 window. Honest re-reading of the
+  historical spread: P5 .717 (VETbig 4000 steps) and P9 .962
+  (VETDCC-big 2000 steps) were both real single-seed samples of a
+  budget-dependent landscape; at 4000 steps the big-config pair
+  claim is basin 3/3 at .717 with tight sd (.036), and the .962
+  regime needs >4000 steps or a lucky init — L-BASIN-SCALE-CAPTURE
+  REINSTATED as L-BASIN-BUDGET-CAPTURE: 2.5× structure + 2× budget
+  captures the pair basin across inits. Cumulative init-robust
+  properties at 2.5× + 4000 steps: modk 1.0 (9/9 across P15+P16),
+  length-invariance ratio ≤.6 (8/9), pair OOD ≥.717 (3/3, mean
+  .767). RESULT tag ARCH-VET-LM-P16 in log.jsonl.
+- NEXT (P17): the SAME budget test on the dyck axis — P14's 1/3
+  basin (STACKDCC2-big close_d3 .655/.763/.631 @2000) may be the
+  same underconvergence artifact. STACKDCC2-big × seeds 111/222/333
+  at 4000 steps on the P11 single-task stochastic dyck protocol:
+  if close_d3 basin@.678 hits 3/3 → the dyck "mean-margin win" is
+  also budget-captured and the P14 downgrade is re-scoped to a
+  2000-step artifact; if still ~1/3 → dyck OOD is genuinely harder
+  than pair (deep-structure routing vs gap routing).
