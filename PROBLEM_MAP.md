@@ -660,3 +660,22 @@ stack use from the grammar coin-flip ceiling.
   flight next); 2. basin on the OTHER certified axes (pair-eval
   .717/.962 n=2 also needs multi-seed before claiming robustness);
   3-6 unchanged.
+
+## ARCH-VET P13D (cycle 56) — deep-mixed random-type dyck: depth-diversity is the lever
+- STACKDCC2-big D6/D12 (bit-identical weights) in-train d4-6
+  .983/.994/.980; OOD flat d7-12 .92-.98 (D12) / .92-.96 (D6) —
+  length-invariant to 32x (L=16396). VETDCC (no stack) .89-.96;
+  TFMicro .66-.85 d3-6 (below all VET arms, length-bound).
+- L-CONTINUOUS-STATE-CARRIES-DYCK: the discrete type-stack is a
+  +3-9pp enhancer, NOT the indispensable organ; capacity is not a
+  cliff (D6 keeps .92+ past overflow; D12-D6 gap only 1-2pp).
+- Depth-diverse training (d4-6) induced deep generalization in ALL
+  arms (vs P13c depth-2 train: all fail) → Zhou et al. 2023
+  training-depth-diversity reproduced at micro scale. Dyck axis
+  re-scoped win: depth-generalizing, length-invariant close-type
+  tracking in the VET family > micro-TF.
+- OPEN QUEUE (ranked): 1. basin robustness on OTHER certified axes
+  (pair-eval .717/.962 is n=2 seed-0 — multi-seed needed); 2.
+  in-range parity; 3. associative-capacity probe design; 4.
+  fusion pilot; 5. certificates. (dyck-axis problem downgraded:
+  mechanism now understood and re-scoped as a VET-family win.)

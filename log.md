@@ -2912,3 +2912,50 @@ frontier attempt) + P7B DIV length isolation.
   train depths {2..6}) — the mechanism-level discriminator that can
   decide whether the content stack is causally usable at all, which
   now gates whether ANY dyck claim can be rebuilt.
+
+- P13D FINAL (deep-mixed exact-shape random-type dyck — the stack-
+  forcing discriminator). TRAIN depths weighted-deep (effective
+  corpus depth 4-6: 256/256 streams contain d>=4 segments; S(5)/S(6)
+  at 124-252 tokens fill the L=256 stream), L=256 pool 256 seed
+  12345, 2000 steps seed 0, ctor under manual_seed(0) (D6/D12
+  bit-identical weights, capacity purity re-verified: d1-6 eval
+  identical). CLOSE-TYPE by depth (in-train d4-6 BOLD; OOD beyond):
+    arm            d2     d3     d4     d5     d6     d8     d10    d12
+    STACKDCC2 D6  .669   .857  .983   .994   .980   .935   .929   .920
+    STACKDCC2 D12 .669   .857  .983   .994   .980   .966   .946   .943
+    VETDCC-big    .706   .862  .960   .934   .903   .900   .896   .892
+    TFMicro       .485   .659  .815   .845   .841   (d<=6)
+  TRAIN LOSS @2000: STACKDCC2 0.481 vs VETDCC 0.587 (0.106 nats —
+  the stack channel materially helps fit the deep corpus).
+  FINDINGS: (1) THE LEVER WAS TRAINING-DEPTH DIVERSITY, NOT THE
+  STACK: P13c (depth-2 train) → ALL arms fail d3 (.17-.52);
+  P13d (depth 4-6 train) → ALL arms master d4-6 (.81-.99) and
+  generalize OOD. Zhou et al. 2023 (arXiv 2310.13349) reproduced
+  at micro scale. (2) L-CONTINUOUS-STATE-CARRIES-DYCK (refines
+  L-WINDOW-NOT-STACK-CANDIDATE): VETDCC-big with NO type-stack
+  reaches .96/.90 in-train/OOD — the VET continuous state + depth
+  features + K-window do most of the random-type close-tracking.
+  The discrete stack is a real but MODEST enhancer: +3-9pp
+  (d6 .980 vs .903; d12 .920 vs .892) and -0.106 nats train loss
+  — NOT the indispensable organ P11's framing implied. (3)
+  CAPACITY IS NOT A CLIFF (falsifies P13's sharp prediction b/c):
+  D6 holds .92-.96 far past its D=6 overflow depth; D12 exceeds
+  D6 by only 1-2pp at d7-12 (.943 vs .920 at d12) — the overflowed
+  type is partially carried by the continuous state. (4) LENGTH
+  INVARIANCE EXTENDS TO DEPTH: close-type flat from d7 (L=524) to
+  d12 (L=16396) — 32x length, <3pp drop for D12 — for all VET
+  arms. (5) micro-TF below every VET arm at every comparable depth
+  (.66-.85 d3-6 vs .86-.99) and cannot evaluate d7+ (sin-PE length
+  confound). VERDICT: the dyck axis now has a defensible
+  re-scoped claim: DEPTH-DIVERSE TRAINING INDUCES DEPTH-GENERALIZ-
+  ING, LENGTH-INVARIANT CLOSE-TYPE TRACKING IN THE VET FAMILY
+  (STACKDCC2-big-D12 d12 close-type .943, D6 .920, VETDCC .892 vs
+  micro-TF length-bound below); the exact stack organ contributes
+  but is not capacity-cliffed, and the continuous-state family
+  effect (not the discrete organ) is the certified mechanism.
+  RESULT tag ARCH-VET-LM-P13D in log.jsonl.
+- NEXT: HANDOVER claim rewrite (dyck win re-scoped per P12/P14/
+  P13a-d), then re-rank the open queue (dyck-axis problem 1 is now
+  a RE-SCOPED win with the mechanism understood; the next
+  unanswered problem is #2 basin-on-other-certified-axes / in-range
+  parity / fusion).
