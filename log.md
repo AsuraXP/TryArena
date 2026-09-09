@@ -3145,3 +3145,50 @@ PROTOCOL (closes open problem 1 of C56 handover).
   coexist with the other tasks?) and (b) to the fluency/chatbot
   axis. P19 = mixed-stream depth-diverse dyck × pair/modk/track:
   the fusion question at the data level.
+
+---
+
+## CYCLE 58 CLOSE — ARCH-VET P19/P19B (mixed-stream fusion + vanilla control)
+
+- P19 (mixed-stream fusion — the C57-close queue #1): trained STACKDCC2-big
+  D12 (21,817p, the P18 dyck-certified arm) on a custom 4-task stream whose
+  dyck family emits EXACT-SHAPE RANDOM-TYPE segments at depth 2..6 weighted
+  d-1 (P13D/P18 grammar) inside the otherwise-vanilla P9 track/modk/pair
+  stream. Seeds 111/222/333, ctor under per-seed manual_seed, pool 512
+  L=256, 4000 steps batch 8 (the P16 certified 4-task budget). RESULT:
+    dyck close d12: .9563/.9535/.9621  → basin 3/3 @.85 AND @.90,
+      mean .9573 sd .004 (d6 in-train 1.0/.992/.974; d3-d12 all >=.857)
+    modk eval 1.0 ×3/3 | pair eval .377/.868/.283 → 1/3 | CE ratio
+    1024/256hard .798/.873/.856 → 0/3
+  PREDICTION (a) CONFIRMED — L-MIXED-DEPTH-DIVERSE-DYCK-OK: the depth-
+  diverse dyck win SURVIVES data-level fusion (mean d12 .957 vs P18
+  single-task .969 = -1.2pp). PREDICTION (b) FALSIFIED: naive equal-rate
+  mixing breaks the certified pair/ratio properties on this arm.
+- P19B (vanilla-corpus control, same arm/seeds/budget, P9 gen_stream pool):
+  the arm x corpus confound split, 2x2 attribution:
+    dyck close d12: .504/.791/.751 → 0/3 @.85, mean .682 (chance-ish)
+      vs P19 mix 3/3 .957 → the CORPUS (depth-diverse dyck in the mix)
+      carries the deep-dyck basin, not single-task isolation; vanilla
+      depth-2 training stays 0/3-deep on the SAME arm at 4000 steps
+      (L-DEPTH-DIVERSITY-CAPTURES-DYCK-BASIN re-confirmed corpus-level).
+    modk eval 1.0 ×3/3 (12/12 across P19+P19B; counting is immune).
+    pair eval .509/.698/.925 → 1/3 @.717 (mean .711) ≈ P19 1/3 (mean .509)
+      → the P19 pair failure is NOT corpus-caused: STACKDCC2-big @4000 is
+      intrinsically pair-OOD-lottery 1/3 on the VANILLA corpus too
+      (vs VETDCC-big 3/3 @4000, P16). NEW BANKED ARM NEGATIVE: the P16
+      pair-budget win is VETDCC-big-specific.
+    CE ratio .508/.564/.501 → 3/3 <=.6 (vs P19 0/3) → the deep-dyck mix
+      BREAKS the certified length-invariance CE ratio (corpus effect;
+      deep d5/d6 segments = 50-100% of a 256 stream starve/rebalance the
+      other families and inflate hard-interval-256 CE relative to long-
+      stream CE).
+  FUSION TAKEAWAY (queue #1 answered): depth-diverse dyck is corpus-
+  compatible for its OWN axis at -1.2pp, but NAIVE data-level fusion is
+  not clean for the other families' certified OOD (ratio 3/3 -> 0/3).
+  The fusion route must be per-family BUDGETED/SCHEDULED (controlled
+  token shares / segment-size caps / task curriculum), not equal-rate
+  mixing — the C59 pilot for VET-LM+corpus fusion must inherit that.
+  Certified multi-seed table unchanged for the certified configs (modk
+  9/9+3/3, invariance P16 3/3 + P19B 3/3, pair 3/3 VETDCC-big@4000,
+  dyck close 3/3 depth-diverse P18 .969 / P19-mix .957). RESULT tags
+  ARCH-VET-LM-P19 and ARCH-VET-LM-P19B in log.jsonl; 35/35 verify.

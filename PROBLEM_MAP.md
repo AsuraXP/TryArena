@@ -724,3 +724,36 @@ stack use from the grammar coin-flip ceiling.
   in-range parity; 3. associative-capacity probe; 4. VET-LM+corpus
   fusion (chatbot); 5. deeper TF dyck d12-16 (needs RoPE-TF
   re-derivation — NOT P1-class).
+
+## ARCH-VET P19/P19B (cycle 58) — mixed-stream fusion: dyck survives, naive mix breaks the other families' OOD
+- P19 (mixed-stream depth-diverse dyck x track/modk/pair, STACKDCC2-big D12
+  @4000, seeds 111/222/333): dyck close d12 .9563/.9535/.9621 = 3/3 @.85
+  (mean .9573, -1.2pp vs P18 single-task) — L-MIXED-DEPTH-DIVERSE-DYCK-OK,
+  the depth-diverse dyck win survives data-level fusion. modk 1.0 3/3.
+  BUT pair .377/.868/.283 (1/3) and CE ratio .798/.873/.856 (0/3) —
+  prediction (b) falsified: naive equal-rate mixing is not clean.
+- P19B (same arm/seeds/budget, VANILLA P9 corpus — the arm x corpus 2x2):
+  dyck d12 .504/.791/.751 (0/3, mean .682) vs P19 3/3 .957 — the CORPUS
+  carries deep-dyck (vanilla depth-2 training stays 0/3-deep at 4000 on
+  this arm; L-DEPTH-DIVERSITY-CAPTURES-DYCK-BASIN re-confirmed corpus-
+  level, not single-task-training). modk 1.0 3/3 (12/12 across P19/P19B).
+  pair .509/.698/.925 (1/3, mean .711) — pair OOD stays 1/3 on vanilla
+  too: NEW BANKED ARM NEGATIVE — STACKDCC2-big @4000 is pair-lottery 1/3;
+  the P16 pair-budget win is VETDCC-big-SPECIFIC. ratio .508/.564/.501
+  (3/3 <=.6) vs P19 0/3 — the deep-dyck mix BREAKS the certified length-
+  invariance ratio (corpus effect: d5/d6 segments = 50-100% of a 256
+  stream starve the other families / inflate hard-256 CE).
+- FUSION LAW (answers queue #1): depth-diverse dyck is corpus-compatible
+  for its own axis (-1.2pp), but NAIVE equal-rate data fusion is not clean
+  for pair/ratio OOD; the certified configs must be reached per-family
+  (budget for pair on VETDCC-big, depth-diverse corpus for dyck, 3/3 ratio
+  survives only without the deep-dyck mix). Multi-task fusion therefore
+  needs per-family token budgets/scheduling, not one shared mix — the
+  VET-LM+corpus (chatbot) fusion pilot (queue #4) inherits this.
+- OPEN QUEUE (ranked): 1. in-range parity (the last un-run P9 axis); 2.
+  P19c = VETDCC-big x mixdd corpus @4000 (does the pair-carrying arm keep
+  pair 3/3 under the depth-diverse mix? the missing cell of the 2x2);
+  3. scheduled fusion pilot: cap dyck segment size / per-family token
+  shares in one stream and re-test ratio+pair+dyck basins (C59 head);
+  4. VET-LM+corpus fusion (chatbot); 5. associative-capacity probe; 6.
+  deeper TF dyck d12-16 (NOT P1-class).
