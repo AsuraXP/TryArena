@@ -19,9 +19,23 @@ bar-4.0 fluency NOT claimed, L-DATA-CEILING). The end form is ONE
 coherent model that reasons exactly AND is fluent.
 
 **ENVIRONMENT & CONSTRAINTS:**
-- Hardware: isolated sandbox, ~2GB RAM, 1 CPU, NO GPU. 1-thread torch
-  (OMP_NUM_THREADS=1). Micro-scale PoCs only (8k-70k params) —
-  architecture math, not production models.
+- Hardware: isolated sandbox, NO GPU. The 1-CPU/2-GB directive is a
+  conservative PLANNING ENVELOPE; measured 2026-09-08 the box has
+  **2 cores / 3.9 GB RAM** (nproc=2). Keep every training run
+  single-threaded (OMP_NUM_THREADS=1) — comparability of all
+  certified numbers depends on it — but run INDEPENDENT runs in
+  parallel: 2 concurrent single-threaded procs each take 29.0 s/40
+  steps, identical to solo (true 2-core parallelism, zero
+  degradation); 3 concurrent degrade 57% — 2 is the optimum.
+  Micro-scale PoCs only (8k-70k params) — architecture math, not
+  production models.
+- **USE arch_vet_runner.py** (cycle 61): `drive --jobs 2` runs a
+  whole seeds x arms sweep with per-run JSON durability
+  (runs/<id>.json) and RESUME (finished run_ids are skipped), then
+  merges ONE RESULT line + log.jsonl. This reclaims the ~50% of the
+  machine that sat idle C51-C60 and makes a wipe cost only the
+  unfinished runs. Screening tip: eval_dyck's d1-12 ladder costs
+  ~4x a 30-step train — trim it for screening runs.
 - Python deps: torch (PyPI wheel) + numpy. **The sandbox re-clones
   periodically and WIPES the pip environment** (happened 5x). If
   `import torch` fails: `pip3 install --break-system-packages torch

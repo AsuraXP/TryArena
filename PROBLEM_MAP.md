@@ -820,3 +820,19 @@ stack use from the grammar coin-flip ceiling.
   in-range parity; 4. associative-capacity probe; 5. VET-LM+corpus
   fusion (chatbot — inherits the fusion wall: modular or
   long-stream only); 6. deeper TF dyck d12-16 (NOT P1-class).
+
+## OPERATIONAL (cycle 61) — parallel harness: the box has 2 cores, use them
+- MEASURED: 2 concurrent single-threaded runs each take 29.0 s for 40
+  steps (identical to solo; wall 31 s, user 60 s = real 2-core
+  parallelism, zero degradation); 3 concurrent -> 45.6 s each
+  (57% slower) = do not exceed 2. Hardware: nproc=2, 3.9 GB RAM
+  (the 1-CPU/2 GB directive is a conservative envelope).
+- arch_vet_runner.py: per-run JSON durability (runs/<id>.json),
+  resumable `drive --jobs 2`, RESULT merge. Runs remain
+  single-threaded, seed-hygienic and bit-identical to the certified
+  protocol -> comparability preserved; only scheduling changed.
+- EVAL-COST: eval_dyck d1-12 (L to 16396) ~= 4x a 30-step train ->
+  screening runs should use a trimmed ladder (d1-8) first.
+- Consequence: 3-seed certifications ~2.9 h -> ~1.6 h; reclaims the
+  ~50% of machine capacity idle for C51-C60. No certified number
+  changes.

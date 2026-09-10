@@ -3311,3 +3311,38 @@ PROTOCOL (closes open problem 1 of C56 handover).
   VETDCC-big vanilla @4000; ratio <=.6 vanilla 3/3 both arms; dyck
   d12 3/3 with d6-in-train, single-task .969 / mixdd .957/.881).
   RESULT tag ARCH-VET-LM-P20 in log.jsonl; 35/35 verify.
+
+---
+
+## CYCLE 61 (in progress) — OPERATIONAL: arch_vet_runner parallel harness (no new science)
+
+Measured on this box 2026-09-08 (why: 8 re-provisions + idle
+hibernation made serialization the dominant cost, not FLOPs):
+  * hardware is 2 CORES / 3.9 GB RAM (the standing 1-CPU/2 GB
+    directive is a conservative planning envelope, not the physical
+    limit; nproc=2, MemTotal 3939 MB).
+  * one 4000-step run @21k params L=256 batch 8 single-threaded =
+    0.72 s/step = 48 min (unchanged, matches P19-P20 logs).
+  * 40 steps, solo = 29.0 s. TWO concurrent single-threaded procs =
+    29.0 s EACH (wall 31 s, user 60 s) -> true 2-core parallelism,
+    ZERO degradation: a free 2.0x we had been leaving idle for 60
+    cycles.
+  * THREE concurrent = 45.6 s each (57% slower) -> 2 is the optimum,
+    do not exceed.
+  * EVAL-COST FINDING: eval_dyck (rt_close_acc d1..d12, L up to
+    16396) costs ~100+ s, i.e. ~4x the cost of a 30-step training
+    run. For cheap screening runs the ladder is the bottleneck ->
+    future screening should trim the ladder (d1..d8) before paying
+    for a full certification.
+NEW CIRCUIT: arch_vet_runner.py — `run` (one corpus:arm:seed =
+one subprocess -> runs/<id>.json) and `drive` (N specs, --jobs 2,
+RESUMABLE: skips run_ids already on disk, merges one RESULT line +
+log.jsonl). Comparability preserved: each training run is the SAME
+single-threaded, seed-hygienic, bit-identical computation as before
+(corpus regenerated deterministically from seed 12345; P14 resume
+precedent) — only the SCHEDULING of independent runs changed.
+Validated end-to-end with a 30-step smoke sweep (tag HARNESS-SMOKE
+in log.jsonl, marked science=false: harness validation only).
+Expected effect: 3-seed certification ~2.9 h -> ~1.6 h; a wipe now
+costs the unfinished runs, not the sweep. NO law changes; certified
+table unchanged; 35/35 verify.
