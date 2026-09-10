@@ -1,0 +1,68 @@
+[P20] sched-pool max-depth histogram: {4: 256, 5: 198, 3: 51, 2: 4, 0: 3}
+[P20] sched-pool bracket-token share: mean 0.408 max 0.482
+[VETDCC-big-sched seed 111] params=21257
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [VETDCC-big-sched-s111] step 250/4000 loss 1.2955 (178s)
+  [VETDCC-big-sched-s111] step 500/4000 loss 1.3673 (358s)
+  [VETDCC-big-sched-s111] step 750/4000 loss 1.2201 (539s)
+  [VETDCC-big-sched-s111] step 1000/4000 loss 1.0830 (724s)
+  [VETDCC-big-sched-s111] step 1250/4000 loss 1.0765 (916s)
+  [VETDCC-big-sched-s111] step 1500/4000 loss 1.0195 (1097s)
+  [VETDCC-big-sched-s111] step 1750/4000 loss 1.0577 (1276s)
+  [VETDCC-big-sched-s111] step 2000/4000 loss 1.0274 (1456s)
+  [VETDCC-big-sched-s111] step 2250/4000 loss 1.0532 (1634s)
+  [VETDCC-big-sched-s111] step 2500/4000 loss 0.9772 (1811s)
+  [VETDCC-big-sched-s111] step 2750/4000 loss 0.9476 (1988s)
+  [VETDCC-big-sched-s111] step 3000/4000 loss 1.0210 (2166s)
+  [VETDCC-big-sched-s111] step 3250/4000 loss 1.0444 (2348s)
+  [VETDCC-big-sched-s111] step 3500/4000 loss 0.9127 (2538s)
+  [VETDCC-big-sched-s111] step 3750/4000 loss 0.9164 (2724s)
+  [VETDCC-big-sched-s111] step 4000/4000 loss 1.0119 (2907s)
+[VETDCC-big-sched s111] ce={'256_train': 2.239, '256_hard': 2.428, '512': 2.279, '1024': 2.317}
+[VETDCC-big-sched s111] acc_eval={'track': 0.605, 'modk': 1.0, 'dyck': 0.0, 'pair': 0.679}
+[VETDCC-big-sched s111] dyck-close: {'close_d1': 0.9479, 'close_d2': 0.9412, 'close_d3': 0.9688, 'close_d4': 0.9812, 'close_d5': 0.9435, 'close_d6': 0.5278, 'close_d7': 0.4724, 'close_d8': 0.4235, 'close_d9': 0.4295, 'close_d10': 0.436, 'close_d11': 0.4243, 'close_d12': 0.4212}
+[VETDCC-big-sched seed 222] params=21257
+  [VETDCC-big-sched-s222] step 250/4000 loss 1.3420 (179s)
+  [VETDCC-big-sched-s222] step 500/4000 loss 1.3879 (361s)
+  [VETDCC-big-sched-s222] step 750/4000 loss 1.2106 (541s)
+  [VETDCC-big-sched-s222] step 1000/4000 loss 1.0817 (722s)
+  [VETDCC-big-sched-s222] step 1250/4000 loss 1.0644 (903s)
+  [VETDCC-big-sched-s222] step 1500/4000 loss 1.0134 (1086s)
+  [VETDCC-big-sched-s222] step 1750/4000 loss 1.0501 (1271s)
+  [VETDCC-big-sched-s222] step 2000/4000 loss 1.0109 (1455s)
+  [VETDCC-big-sched-s222] step 2250/4000 loss 1.0467 (1647s)
+  [VETDCC-big-sched-s222] step 2500/4000 loss 0.9810 (1847s)
+  [VETDCC-big-sched-s222] step 2750/4000 loss 0.9535 (2036s)
+  [VETDCC-big-sched-s222] step 3000/4000 loss 1.0289 (2232s)
+  [VETDCC-big-sched-s222] step 3250/4000 loss 1.0541 (2424s)
+  [VETDCC-big-sched-s222] step 3500/4000 loss 0.9230 (2618s)
+  [VETDCC-big-sched-s222] step 3750/4000 loss 0.9328 (2805s)
+  [VETDCC-big-sched-s222] step 4000/4000 loss 1.0207 (2991s)
+[VETDCC-big-sched s222] ce={'256_train': 2.111, '256_hard': 2.346, '512': 2.246, '1024': 2.366}
+[VETDCC-big-sched s222] acc_eval={'track': 0.814, 'modk': 1.0, 'dyck': 0.0, 'pair': 0.566}
+[VETDCC-big-sched s222] dyck-close: {'close_d1': 0.0, 'close_d2': 0.9412, 'close_d3': 0.9464, 'close_d4': 0.9583, 'close_d5': 0.9556, 'close_d6': 0.869, 'close_d7': 0.876, 'close_d8': 0.8598, 'close_d9': 0.8591, 'close_d10': 0.8529, 'close_d11': 0.8544, 'close_d12': 0.8582}
+[VETDCC-big-sched seed 333] params=21257
+  [VETDCC-big-sched-s333] step 250/4000 loss 1.3144 (180s)
+  [VETDCC-big-sched-s333] step 500/4000 loss 1.3822 (357s)
+  [VETDCC-big-sched-s333] step 750/4000 loss 1.2469 (530s)
+  [VETDCC-big-sched-s333] step 1000/4000 loss 1.0921 (701s)
+  [VETDCC-big-sched-s333] step 1250/4000 loss 1.0837 (876s)
+  [VETDCC-big-sched-s333] step 1500/4000 loss 1.0182 (1044s)
+  [VETDCC-big-sched-s333] step 1750/4000 loss 1.0605 (1215s)
+  [VETDCC-big-sched-s333] step 2000/4000 loss 1.0255 (1384s)
+  [VETDCC-big-sched-s333] step 2250/4000 loss 1.0529 (1552s)
+  [VETDCC-big-sched-s333] step 2500/4000 loss 0.9792 (1724s)
+  [VETDCC-big-sched-s333] step 2750/4000 loss 0.9508 (1899s)
+  [VETDCC-big-sched-s333] step 3000/4000 loss 1.0237 (2070s)
+  [VETDCC-big-sched-s333] step 3250/4000 loss 1.0482 (2240s)
+  [VETDCC-big-sched-s333] step 3500/4000 loss 0.9203 (2415s)
+  [VETDCC-big-sched-s333] step 3750/4000 loss 0.9352 (2594s)
+  [VETDCC-big-sched-s333] step 4000/4000 loss 1.0197 (2771s)
+[VETDCC-big-sched s333] ce={'256_train': 1.93, '256_hard': 2.389, '512': 1.95, '1024': 1.972}
+[VETDCC-big-sched s333] acc_eval={'track': 0.674, 'modk': 1.0, 'dyck': 0.0, 'pair': 0.585}
+[VETDCC-big-sched s333] dyck-close: {'close_d1': 0.0, 'close_d2': 0.9559, 'close_d3': 0.9621, 'close_d4': 0.9833, 'close_d5': 0.9597, 'close_d6': 0.4266, 'close_d7': 0.3976, 'close_d8': 0.3922, 'close_d9': 0.3743, 'close_d10': 0.3715, 'close_d11': 0.3723, 'close_d12': 0.3707}
+[VETDCC-big-sched] SUMMARY {"dyck_close_d6_dist": [0.5278, 0.869, 0.4266], "dyck_close_d12_dist": [0.4212, 0.8582, 0.3707], "basin_dyck_d12_ge_85": 0.3333333333333333, "modk_eval_dist": [1.0, 1.0, 1.0], "basin_modk_eq_1": 1.0, "pair_eval_dist": [0.6792, 0.566, 0.5849], "basin_pair_ge_717": 0.0, "len_ratio_dist": [0.955, 1.009, 0.825], "basin_ratio_le_6": 0.0, "dyck_close_d12_mean": 0.55}
+RESULT {"tag": "ARCH-VET-LM-P20", "protocol": "scheduled-fusion pilot: P9 4-task stream with a per-stream DYCK TOKEN BUDGET cap = 50% of L (depth-diverse pick_depth 2..6 segments emitted only if they fit remaining room AND the remaining dyck budget; every stream is >=50% non-dyck tokens with vanilla P9 train intervals; L=256 ceiling = d5 (127t), d6 (255t) needs L>=1024 \u2014 C61 follow-up if the d5 ceiling under-delivers); arm VETDCC-big x seeds 111/222/333, ctor under manual_seed, pool 512 L=256 seed 12345, 4000 steps batch 8; eval = eval_full + eval_dyck. Target: dyck d12>=.85 + pair>=.717 + ratio<=.6 all >=2/3 (whole-model certification). References: vanilla VETDCC-big pair 3/3 .767 ratio 3/3 (P16); mixdd VETDCC-big dyck 3/3 .881 pair 0/3 ratio 0/3 (P19c); mixdd STACKDCC2-big dyck 3/3 .957 (P19).", "arms": {"VETDCC-big-sched": {"per_seed": {"111": {"ce": {"256_train": 2.2394, "256_hard": 2.4278, "512": 2.2793, "1024": 2.3175}, "acc_train_interval": {"track": 0.9603, "modk": 0.9833, "dyck": 0.0, "pair": 1.0}, "acc_eval_interval": {"track": 0.6047, "modk": 1.0, "dyck": 0.0, "pair": 0.6792}, "len_ratio_1024_over_256hard": 0.955, "loss_curve": [[250, 1.2955], [500, 1.3673], [750, 1.2201], [1000, 1.083], [1250, 1.0765], [1500, 1.0195], [1750, 1.0577], [2000, 1.0274], [2250, 1.0532], [2500, 0.9772], [2750, 0.9476], [3000, 1.021], [3250, 1.0444], [3500, 0.9127], [3750, 0.9164], [4000, 1.0119]], "dyck_close": {"close_d1": 0.9479, "close_d2": 0.9412, "close_d3": 0.9688, "close_d4": 0.9812, "close_d5": 0.9435, "close_d6": 0.5278, "close_d7": 0.4724, "close_d8": 0.4235, "close_d9": 0.4295, "close_d10": 0.436, "close_d11": 0.4243, "close_d12": 0.4212}}, "222": {"ce": {"256_train": 2.1109, "256_hard": 2.3461, "512": 2.2464, "1024": 2.3664}, "acc_train_interval": {"track": 0.9365, "modk": 0.9833, "dyck": 0.0, "pair": 0.9924}, "acc_eval_interval": {"track": 0.814, "modk": 1.0, "dyck": 0.0, "pair": 0.566}, "len_ratio_1024_over_256hard": 1.009, "loss_curve": [[250, 1.342], [500, 1.3879], [750, 1.2106], [1000, 1.0817], [1250, 1.0644], [1500, 1.0134], [1750, 1.0501], [2000, 1.0109], [2250, 1.0467], [2500, 0.981], [2750, 0.9535], [3000, 1.0289], [3250, 1.0541], [3500, 0.923], [3750, 0.9328], [4000, 1.0207]], "dyck_close": {"close_d1": 0.0, "close_d2": 0.9412, "close_d3": 0.9464, "close_d4": 0.9583, "close_d5": 0.9556, "close_d6": 0.869, "close_d7": 0.876, "close_d8": 0.8598, "close_d9": 0.8591, "close_d10": 0.8529, "close_d11": 0.8544, "close_d12": 0.8582}}, "333": {"ce": {"256_train": 1.9299, "256_hard": 2.389, "512": 1.9505, "1024": 1.9716}, "acc_train_interval": {"track": 0.9762, "modk": 1.0, "dyck": 0.0, "pair": 1.0}, "acc_eval_interval": {"track": 0.6744, "modk": 1.0, "dyck": 0.0, "pair": 0.5849}, "len_ratio_1024_over_256hard": 0.825, "loss_curve": [[250, 1.3144], [500, 1.3822], [750, 1.2469], [1000, 1.0921], [1250, 1.0837], [1500, 1.0182], [1750, 1.0605], [2000, 1.0255], [2250, 1.0529], [2500, 0.9792], [2750, 0.9508], [3000, 1.0237], [3250, 1.0482], [3500, 0.9203], [3750, 0.9352], [4000, 1.0197]], "dyck_close": {"close_d1": 0.0, "close_d2": 0.9559, "close_d3": 0.9621, "close_d4": 0.9833, "close_d5": 0.9597, "close_d6": 0.4266, "close_d7": 0.3976, "close_d8": 0.3922, "close_d9": 0.3743, "close_d10": 0.3715, "close_d11": 0.3723, "close_d12": 0.3707}}}, "summary": {"dyck_close_d6_dist": [0.5278, 0.869, 0.4266], "dyck_close_d12_dist": [0.4212, 0.8582, 0.3707], "basin_dyck_d12_ge_85": 0.3333333333333333, "modk_eval_dist": [1.0, 1.0, 1.0], "basin_modk_eq_1": 1.0, "pair_eval_dist": [0.6792, 0.566, 0.5849], "basin_pair_ge_717": 0.0, "len_ratio_dist": [0.955, 1.009, 0.825], "basin_ratio_le_6": 0.0, "dyck_close_d12_mean": 0.55}}}, "wall_s": 8969.0}
+DONE

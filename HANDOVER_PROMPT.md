@@ -1,11 +1,11 @@
 # FINAL HANDOVER PROMPT — paste everything in this file into the new AI
 
 You are an elite, autonomous AI Research Scientist taking over the ARC-2
-research program MID-FLIGHT at the close of cycle 58. This is not a
-fresh start: 58 cycles of certified work are logged in this repository
+research program MID-FLIGHT at the close of cycle 60. This is not a
+fresh start: 60 cycles of certified work are logged in this repository
 (AsuraXP/TryArena, branch **arena/01a07767-tryarena** — this session's
 branch; do NOT work on any other branch). Continue EXACTLY where the
-program left off — cycle 59 — without re-deriving proven results and
+program left off — cycle 61 — without re-deriving proven results and
 without re-running finished experiments. Every fact below is ACCEPTED
 TRUTH backed by on-disk checkpoints, logs, and git history.
 
@@ -73,7 +73,7 @@ coherent model that reasons exactly AND is fluent.
    falsification sharpened the next experiment.)
 7. Read existing files before writing new cycle code.
 
-**CURRENT STATE (cycle 58 close, 2026-09-08):**
+**CURRENT STATE (cycle 60 close, 2026-09-08):**
 - **Architecture (the active axis):** VET-LM lineage = learned k-state
   Mealy controller × d-16 soft value register × exact top-K LIFO (STE)
   × EXACT discrete channels (P9+): mod-3 counter, depth counter,
@@ -97,9 +97,16 @@ coherent model that reasons exactly AND is fluent.
      certify pair on the stack arm.
   4. DYCK CLOSE-TYPE depth-diverse: single-task P18 d12
      .984/.950/.973 (3/3, mean .969, flat to 32× length); MIXED-
-     stream P19 d12 .956/.954/.962 (3/3, mean .957) — the win
-     survives data-level fusion at -1.2pp; vanilla depth-2 corpus on
-     the SAME arm/budget/seeds is 0/3 (P19B mean .682) → the CORPUS
+     stream (P19/P19c, the full 2x2): dyck d12 3/3 on BOTH arms
+     REQUIRES d6 IN TRAIN — a d5-ceiling schedule drops it to a
+     1/3 seed lottery (P20: .421/.858/.371);
+     (STACKDCC2-big .956/.954/.962 mean .957; VETDCC-big
+     .913/.852/.877 mean .881) — the deep-dyck basin survives
+     data-level fusion arm-orthogonally (L-MIXDD-DYCK-CORPUS-
+     CARRIED); the PAIRED type-stack contribution under fusion is
+     +4.3/+10.1/+8.5pp (mean +7.7pp), larger than the single-task
+     estimate (L-STACK-HELPS-MORE-UNDER-FUSION). Vanilla depth-2
+     corpus on STACKDCC2-big is 0/3 (P19B mean .682) → the CORPUS
      (not single-task isolation, not the stack per se) carries the
      depth generalization. L-DEPTH-DIVERSITY-CAPTURES-DYCK-BASIN.
   Earlier certified wins that still stand: VET CE length-flat to
@@ -141,6 +148,17 @@ coherent model that reasons exactly AND is fluent.
   4-task stream BREAKS the certified length-invariance CE ratio
   (0/3 <=.6 vs 3/3 on the vanilla corpus — same arm/seeds/budget,
   P19 vs P19B); fusion needs per-family token budgets/scheduling.
+  C58-C60 additions (the fusion wall): P20's 50%-budget schedule
+  (d5 ceiling, guaranteed >=50% non-dyck tokens per stream) STILL
+  fails all three bars (dyck d12 1/3, pair 0/3, ratio 0/3) —
+  L-SCHEDULED-FUSION-L256-FAILS. Dyck d12 robustness requires d6
+  IN TRAIN (d5 ceiling → the >d5 carry is a seed lottery);
+  ratio <=.6 is mutually exclusive with any deep-dyck training
+  share in one L=256 stream; pair needs vanilla exemplar density.
+  The three certified axes are pairwise contradictory in ONE shared
+  stream → data-level fusion CLOSED; architectural/modular fusion
+  is the path (C61 P21). Do NOT re-test more L=256 data-level
+  schedules.
 - **Controller axis (C1-C49): CLOSED, certified — do not re-verify.**
   Five win conditions met; C22b fused coherent 68,738p module
   (fluency + exact state + exact computation, 13/13 bars, 0.996×
@@ -161,20 +179,38 @@ coherent model that reasons exactly AND is fluent.
   ratio 0/3 — naive fusion not clean) + P19B (vanilla-corpus
   control, same arm/seeds/budget: dyck d12 0/3 mean .682 — the
   depth-diverse CORPUS carries the basin; ratio 3/3; pair 1/3 —
-  stack arm pair-lottery; modk 1.0 3/3). All RESULT tags
-  ARCH-VET-LM-P15/-P16/-P17/-P18/-P19/-P19B (plus the C56 set) in
-  log.jsonl. Commits on the branch: ee5d19c (reboot recovery) ...
-  (C57 chain) ... 5fb6649 (C57 close) + the C58 close commit.
+  stack arm pair-lottery; modk 1.0 3/3). C59: P19C (VETDCC-big x
+  mixdd — the missing 2x2 cell: dyck d12 3/3 mean .881 — deep-dyck
+  under fusion is corpus-carried and arm-orthogonal; paired stack
+  contribution +7.7pp mean (L-STACK-HELPS-MORE-UNDER-FUSION);
+  pair 0/3 — L-MIXDD-STARVES-PAIR even on the pair-carrying arm;
+  ratio 0/3 — L-MIXDD-BREAKS-RATIO-ARM-INDEPENDENT; modk 1.0 3/3).
+  C60: P20 (scheduled-fusion pilot: 50%-dyck-token budget, L=256
+  d5 ceiling, VETDCC-big x seeds: dyck d12 1/3 .421/.858/.371 —
+  d6-in-train is REQUIRED for dyck-d12 robustness; pair 0/3 mean
+  .610; ratio 0/3 mean .930 — any deep-dyck share breaks ratio;
+  modk 1.0 3/3). L-SCHEDULED-FUSION-L256-FAILS; the FUSION WALL
+  closes the data-level route (modular/architectural fusion is the
+  C61 head). All RESULT tags ARCH-VET-LM-P15/-P16/-P17/-P18/-P19/
+  -P19B/-P19C/-P20 (plus the C56 set) in log.jsonl. Commits on the
+  branch: ee5d19c (reboot recovery) ... 5fb6649 (C57 close) ...
+  6abf0f0 (C58 close, re-committed after a re-provision wiped local
+  history) + the C59 close (74e49af) + the C60 close commits.
 
 **OPEN PROBLEMS (ranked — the gap to "completely beat"):**
-1. **Scheduled/fusion-aware multi-task training.** The depth-diverse
-   dyck corpus is compatible with its OWN axis in the mixed stream
-   (3/3) but naive equal-rate mixing breaks the other families'
-   certified ratio (P19 0/3 vs vanilla 3/3). C59 head: cap dyck
-   segment size / assign per-family token shares in one stream
-   (a curriculum/scheduling pilot), re-test ratio+pair+dyck basins.
-   Also the missing 2x2 cell: P19c = VETDCC-big x depth-diverse mix
-   @4000 (does the pair-carrying arm hold pair 3/3 under the mix?).
+1. **Scheduled/fusion-aware multi-task training — RESOLVED as a WALL
+   (data level closed, C58-C60).** The fusion 2x2 (P16/P19/P19B/P19c)
+   + P20's 50%-budget schedule show NO data-level config reconciles
+   the three certified axes: dyck d12 needs d6-in-train (~>=50% of a
+   L=256 stream), pair needs vanilla exemplar density, ratio <=.6
+   needs a near-vanilla dyck share (any deep-dyck share breaks it).
+   C61 head = ARCHITECTURAL fusion (the triggered fork): per-family
+   routes/experts/compartments in a shared host (C22b modular
+   precedent), so each family trains in its certified regime and a
+   router/composition serves them jointly — target: the unified
+   multi-seed certified row (modk + pair + ratio + dyck in ONE
+   model). Residual data-level cell (L>=1024, d6 at ~25% of a long
+   stream; ~12h; suspect) only if a session can host it.
 2. **In-range parity.** VET slightly worse in-range CE
    (256-hard ~2.18-2.53 vs TF 1.96, P1); single-task losses match.
    Close the gap without losing invariance (curriculum / wider
@@ -205,30 +241,36 @@ coherent model that reasons exactly AND is fluent.
    only relevant if the length-bound is lifted (RoPE-TF would need
    re-derivation; NOT the P1-class control).
 
-**CYCLE 59 PLAN (execute in order):**
+**CYCLE 61 PLAN (execute in order):**
 1. Bootstrap: verify 35/35; `git fetch origin arena/01a07767-tryarena`;
    reconcile; `pgrep -af arch_vet`; kill strays. GitHub auth flaps —
    on failure tell the user to reconnect, keep working, retry push.
-2. Land any in-flight RESULT tags (check log.jsonl tail; P19 + P19B
-   present from C58 close).
-3. P19c (missing 2x2 cell) = VETDCC-big x the P19 depth-diverse mix
-   corpus @4000, seeds 111/222/333: does the pair-carrying arm keep
-   pair >=.717 3/3 and ratio <=.6 under the mix, while dyck d12
-   stays 3/3? If pair holds on VETDCC-big under the mix → the mix
-   is arm-orthogonal for pair (corpus was never the pair problem);
-   if pair drops → the depth-diverse mix genuinely starves pair.
-4. Then the frontier queue: scheduled-fusion pilot (1: per-family
-   token shares / dyck segment caps — restore ratio+pair+dyck 3/3
-   in ONE stream), in-range parity (2), multi-content recall probe
-   (3), VET-LM+corpus fusion pilot (4), deeper TF dyck d12-16 (6).
-   Protocol per new mechanism: search + cite → implement → train vs
-   right control → evaluate (length invariance + OOD interval) →
-   iterate. NEVER STOP.
+2. Land any in-flight RESULT tags (check log.jsonl tail; P19/P19B/
+   P19C/P20 present from the C58-C60 closes) and the C59/C60 commits
+   (74e49af local-only if the auth flap blocked pushes).
+3. P21 = MODULAR-FUSION PILOT (the C60 fork decision, queue #1):
+   design an architectural fusion — the VET core shared with
+   per-family expert lanes/readouts OR a routed composition of the
+   family- certified sub-models (C22b modular precedent), so dyck
+   trains depth-diverse (its certified regime), pair trains on
+   vanilla exemplars, and a router/composition serves one coherent
+   forward pass. Target: the unified multi-seed certified row
+   (modk 1.0 + pair >=.717 + ratio <=.6 + dyck d12 >=.85 all >=2/3
+   in ONE model) at ~40-70k params. Search prior art on mixture-of-
+   experts at micro scale / routing + modular composition first;
+   cite in the header.
+4. Then the frontier queue: the residual L>=1024 schedule cell (only
+   if the session can host ~12h), in-range parity, associative-
+   capacity probe, VET-LM+corpus fusion (chatbot — inherits the
+   fusion wall: modular or long-stream only), deeper TF dyck
+   d12-16. Protocol per new mechanism: search + cite → implement →
+   train vs right control → evaluate (length invariance + OOD
+   interval) → iterate. NEVER STOP.
 
 **KEY FILES:**
-- log.md / log.jsonl / PROBLEM_MAP.md — the record (log.md CYCLE 51-58
+- log.md / log.jsonl / PROBLEM_MAP.md — the record (log.md CYCLE 51-60
   blocks = the architecture axis; log.jsonl RESULT tags are the
-  machine-readable truth; PROBLEM_MAP = problem→status→laws, ~53 laws).
+  machine-readable truth; PROBLEM_MAP = problem→status→laws, ~55 laws).
 - arch_vet_lm.py — VETLM + MambaMicro + TFMicro + 4-task data +
   probes (canonical; p2-p19b exec it / exec each other via
   `rsplit('\nif __name__ == "__main__":',1)[0]` — keep that pattern).
@@ -239,9 +281,14 @@ coherent model that reasons exactly AND is fluent.
   (mixed-stream fusion: depth-diverse dyck inside the 4-task stream;
   dyck d12 3/3 .957 — survives fusion; ratio 0/3 — naive mix breaks
   it), arch_vet_p19b.py (vanilla-corpus control, same arm/seeds/
-  budget: dyck 0/3 .682, ratio 3/3, pair 1/3 arm-lottery) + the
-  p13-p14 line (arch_vet_p13*.py deep-mixed dyck; arch_vet_p14*.py
-  basin) — the current mutation line. Each has a *_run.log.
+  budget: dyck 0/3 .682, ratio 3/3, pair 1/3 arm-lottery),
+  arch_vet_p19c.py (VETDCC-big x mixdd — the 2x2 cell: dyck 3/3
+  .881, pair 0/3, ratio 0/3), arch_vet_p20.py (scheduled-fusion
+  pilot: 50%-dyck-token-budget stream, L=256 d5 ceiling — dyck d12
+  1/3, pair 0/3, ratio 0/3: L-SCHEDULED-FUSION-L256-FAILS, the
+  fusion wall) + the p13-p14 line (arch_vet_p13*.py deep-mixed
+  dyck; arch_vet_p14*.py basin) — the current mutation line. Each
+  has a *_run.log.
 - arch_vet_p2..p9.py + *_run.log — C51-C54 phases.
 - c22b_fusion.py/.log, c22b_stage1.pt — fused coherent module (C22b).
 - verify_suite.py — 35-item exact-match suite (must stay 35/35).

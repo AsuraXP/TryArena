@@ -757,3 +757,66 @@ stack use from the grammar coin-flip ceiling.
   shares in one stream and re-test ratio+pair+dyck basins (C59 head);
   4. VET-LM+corpus fusion (chatbot); 5. associative-capacity probe; 6.
   deeper TF dyck d12-16 (NOT P1-class).
+
+## ARCH-VET P19C (cycle 59) — fusion 2x2 completed: no naive config reaches all three certified bars
+- P19C (VETDCC-big x mixdd corpus @4000, seeds 111/222/333): dyck
+  close d12 .9129/.8521/.8772 = 3/3 @.85 (mean .881) — the deep-
+  dyck basin under fusion is corpus-carried and holds WITHOUT the
+  type stack (L-MIXDD-DYCK-CORPUS-CARRIED); pair .547/.623/.340 =
+  0/3 and CE ratio .755/1.075/1.064 = 0/3; modk 1.0 3/3.
+- PAIRED STACK CONTRAST (same corpus/seeds/budget, P19 vs P19c):
+  type stack = +4.3/+10.1/+8.5pp (mean +7.7pp) on dyck d12 —
+  L-STACK-HELPS-MORE-UNDER-FUSION (+7.7pp > the +3-9pp single-task
+  estimate): the explicit type stack earns its keep under stream
+  dilution.
+- 2x2 COMPLETE (basin @4000): pair >=.717 only VETDCC-vanilla 3/3;
+  ratio <=.6 only VANILLA corpus (3/3 both arms, 0/3 both arms
+  mixdd) — L-MIXDD-BREAKS-RATIO-ARM-INDEPENDENT; dyck d12>=.85
+  only DEPTH-DIVERSE corpus (3/3 both arms). L-MIXDD-STARVES-PAIR:
+  deep d5/d6 dyck segments (d5 = half a stream, d6 = whole stream)
+  collapse the other families' exemplar density — even the P16
+  pair-carrying arm drops to 0/3 under the mix.
+- FUSION LAW (queue #1 CLOSED): naive equal-rate data fusion cannot
+  hold dyck+pair+ratio simultaneously on ANY arm; multi-task fusion
+  needs per-family token budgets/scheduling (reserve vanilla-share
+  pair/modk/track exemplar density, controlled depth-diverse dyck
+  share). Inherited by the VET-LM+corpus (chatbot) fusion pilot.
+- OPEN QUEUE (ranked): 1. SCHEDULED-FUSION PILOT: one stream with
+  per-family token shares (dyck share capped so d5/d6 segments do
+  not dominate; pair/modk/track exemplar density held at vanilla
+  levels) x seeds 111/222/333 — target: dyck d12 + pair + ratio
+  basins 3/3 in ONE config (the first whole-model multi-family
+  certification); 2. in-range parity; 3. associative-capacity
+  probe; 4. VET-LM+corpus fusion (chatbot — inherit the scheduled-
+  fusion constraint); 5. deeper TF dyck d12-16 (NOT P1-class).
+
+## ARCH-VET P20 (cycle 60) — scheduled-fusion pilot FAILS at L=256: the fusion wall (data level closed)
+- P20 (VETDCC-big x 50%-dyck-token-budget schedule @4000, seeds
+  111/222/333): dyck d12 .421/.858/.371 = 1/3 (mean .55; d2-5
+  in-train .94-.98, the >d5 carry is a seed lottery), pair
+  .679/.566/.585 = 0/3 (mean .610), ratio .955/1.009/.825 = 0/3
+  (mean .930), modk 1.0 3/3. L-SCHEDULED-FUSION-L256-FAILS.
+- MECHANISM FINDINGS: (a) dyck-d12 robustness REQUIRES d6 in train
+  (d5 ceiling -> 1/3 lottery; d6 in train -> 3/3 in P18/P19/P19c);
+  (b) pair is exemplar-density-limited under deep-dyck streams
+  (0/3 mean .610 vs vanilla 3/3 .767); (c) ratio <=.6 is broken by
+  ANY deep-dyck training share (0/3 mixdd AND 0/3 sched-50%) vs
+  vanilla 3/3 — ratio and depth-diverse dyck are mutually exclusive
+  in one L=256 stream (extends L-MIXDD-BREAKS-RATIO).
+- FUSION WALL (queue #1 CLOSED at the data level): dyck d12 needs
+  d6-in-train (~>=50% of a 256 stream), pair needs vanilla exemplar
+  density, ratio needs a near-vanilla dyck share — pairwise
+  contradictory in ONE shared stream; no data-level schedule
+  reconciles them. FORK DECISION (per C60 plan): fusion must be
+  ARCHITECTURAL (per-family routes/experts/compartments in a shared
+  host — C22b modular precedent), not data-level mixing.
+- OPEN QUEUE (ranked): 1. C61 = modular-fusion pilot design:
+  per-family route/compar- tment architecture (VET core shared,
+  family-specific registers/readouts or gated expert lanes) that
+  trains each family in its certified regime and routes at
+  inference — target the unified multi-seed certified row; 2. the
+  residual L>=1024 schedule cell (d6 @ ~25% of a long stream; ~12h;
+  suspect given finding (c) — run only in a hosting session); 3.
+  in-range parity; 4. associative-capacity probe; 5. VET-LM+corpus
+  fusion (chatbot — inherits the fusion wall: modular or
+  long-stream only); 6. deeper TF dyck d12-16 (NOT P1-class).

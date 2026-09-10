@@ -3192,3 +3192,122 @@ PROTOCOL (closes open problem 1 of C56 handover).
   9/9+3/3, invariance P16 3/3 + P19B 3/3, pair 3/3 VETDCC-big@4000,
   dyck close 3/3 depth-diverse P18 .969 / P19-mix .957). RESULT tags
   ARCH-VET-LM-P19 and ARCH-VET-LM-P19B in log.jsonl; 35/35 verify.
+
+---
+
+## CYCLE 59 CLOSE — ARCH-VET P19C (VETDCC-big x mix corpus: the fusion 2x2 completed)
+
+- P19C (the C59-plan head and the missing 2x2 cell): VETDCC-big
+  (21,257p — the P16 pair-carrying arm, NO type stack) x the SAME
+  P19 mixdd corpus (depth-diverse exact-shape random-type dyck
+  2..6 weighted d-1 in the 4-task stream), seeds 111/222/333,
+  4000 steps, pool 512 L=256 seed 12345, eval = P19's eval_full +
+  eval_dyck. RESULTS:
+    dyck close d12: .9129/.8521/.8772  -> basin 3/3 @.85 (mean
+      .881; d6 .929/.919/.913, d8 .913/.869/.883)
+    pair eval .547/.623/.340  -> 0/3 @.717 (mean .503)
+    CE ratio 1024/256hard .755/1.075/1.064 -> 0/3 <=.6
+    modk eval 1.0 x3/3  (15/15 across P19/P19B/P19C)
+- THE 2x2 (arms x corpus @4000, seeds 111/222/333, basin rates):
+    PAIR >=.717:  VETDCC-vanilla 3/3 (.767, P16) | VETDCC-mixdd
+      0/3 (.503) | STACKDCC2-vanilla 1/3 (P19B) | STACKDCC2-mixdd
+      1/3 (P19)
+    RATIO <=.6:   VETDCC-vanilla 3/3 (P16) | VETDCC-mixdd 0/3 |
+      STACKDCC2-vanilla 3/3 (P19B) | STACKDCC2-mixdd 0/3 (P19)
+    DYCK d12>=.85: VETDCC-mixdd 3/3 (.881) | STACKDCC2-mixdd 3/3
+      (.957) | STACKDCC2-vanilla 0/3 (.682, P19B) | VETDCC-vanilla
+      ~0/3 (depth-2 train collapses d3+, P13C/P14 shallow law)
+- DISCRIMINATIONS RESOLVED: (a) dyck under fusion is corpus-carried
+  and ARM-ORTHOGONAL for the basin bar (VETDCC-big no-stack 3/3,
+  L-MIXDD-DYCK-CORPUS-CARRIED) — but the PAIRED stack contrast on
+  the same corpus/seeds (P19 .9573 vs P19c .8807) puts the type
+  stack's contribution at +4.3/+10.1/+8.5pp per seed, mean +7.7pp
+  — LARGER than the +3-9pp single-task single-seed estimate
+  (L-STACK-HELPS-MORE-UNDER-FUSION): under stream dilution the
+  explicit type stack earns its keep. (b) PAIR: prediction
+  FALSIFIED — even the pair-carrying arm loses pair OOD under
+  equal-rate mixing (0/3 vs vanilla 3/3): L-MIXDD-STARVES-PAIR.
+  The deep d5/d6 dyck segments (a d5 = half a stream, a d6 = a
+  whole stream) collapse the other families' exemplar density;
+  P19's pair failure was NOT just STACKDCC2's intrinsic lottery
+  (P19B) — the corpus starves pair on the arm that carries it.
+  (c) RATIO: 0/3 under mixdd on BOTH arms (vanilla 3/3 both) ->
+  the ratio break under mixing is CORPUS-coupled, arm-independent
+  (L-MIXDD-BREAKS-RATIO-ARM-INDEPENDENT): long deep segments
+  inflate hard-interval-256 CE relative to long-stream CE.
+- FUSION LAW (queue #1 CLOSED): NO arm x corpus config under the
+  naive equal-rate protocols achieves all three certified bars
+  (dyck needs the depth-diverse corpus, pair needs vanilla corpus +
+  VETDCC-big, ratio needs vanilla corpus). Data-level fusion at
+  micro scale therefore REQUIRES per-family token budgets /
+  scheduling (reserve pair/modk/track exemplar density while
+  exposing depth-diverse dyck), NOT one shared equal-rate stream.
+  That scheduled-fusion pilot is the C60 head; the VET-LM+corpus
+  (chatbot) fusion pilot inherits the same constraint. Certified
+  multi-seed table stands unchanged for the certified configs
+  (modk 15/15 across corpora/arms; pair 3/3 VETDCC-big vanilla
+  @4000; ratio <=.6 vanilla 3/3 both arms; dyck d12 3/3
+  depth-diverse single-task .969 / mixdd STACKDCC2 .957 / mixdd
+  VETDCC .881). Minor corner: close_d1 ~0 on seeds 222/333 for
+  BOTH mixdd arms (d1 segments absent from train depths 2..6;
+  not a certified axis — noted, not chased). RESULT tag
+  ARCH-VET-LM-P19C in log.jsonl; 35/35 verify.
+
+---
+
+## CYCLE 60 CLOSE — ARCH-VET P20 (scheduled-fusion pilot: the fusion law hits a wall)
+
+- P20 (the C60-plan head — the fusion-law payoff): VETDCC-big x a
+  SCHEDULED 4-task stream with a per-stream DYCK TOKEN BUDGET =
+  50% of L (depth-diverse pick_depth 2..6 emitted only under the
+  budget; every stream GUARANTEED >=50% non-dyck tokens with
+  vanilla P9 intervals; measured: max-depth histogram d4 x256 /
+  d5 x198 / d3 x51 / d2 x4, bracket-token share mean .408 max .482;
+  L=256 ceiling = d5 — d6 (255t) needs L>=1024, flagged a priori).
+  Seeds 111/222/333, pool 512 L=256, 4000 steps, ctor under seed.
+  RESULTS:
+    dyck close d12: .4212/.8582/.3707  -> basin 1/3 @.85 (mean .55;
+      d2-5 in-train .94-.98 all seeds; d6 .528/.869/.427 — the carry
+      past d5 is a SEED LOTTERY)
+    pair eval .679/.566/.585  -> 0/3 @.717 (mean .610 — above mixdd
+      .503, below vanilla .767)
+    CE ratio 1024/256hard .955/1.009/.825 -> 0/3 <=.6 (mean .930)
+    modk 1.0 x3/3 (18/18 across P19/P19B/P19C/P20)
+- PREDICTIONS FALSIFIED -> L-SCHEDULED-FUSION-L256-FAILS (banked).
+  The 50%-budget schedule did NOT restore any of the three bars.
+- THREE SHARP MECHANISM FINDINGS:
+  (a) DYCK-d12 ROBUSTNESS REQUIRES d6 IN TRAIN: the d5-ceiling
+      schedule made the >train-depth carry a lottery (1/3: one seed
+      carried d5->d12 .858 flat, two collapsed to chance ~.37-.42
+      at d6) vs the 3/3 robustness whenever d6 was in train
+      (P18 .969 / P19 .957 / P19c .881, single-task or mixed).
+      Depth-diverse generalization is robust ONLY with max train
+      depth >= 6 (deep enough that the recursion is forced and
+      stable across inits).
+  (b) PAIR is exemplar-density-limited under deep-dyck streams:
+      sched 0/3 mean .610 (mixdd .503, vanilla 3/3 .767) — deep
+      dyck tokens displace pair exemplars and VETDCC-big cannot
+      recover pair OOD at ~60% exemplar density.
+  (c) RATIO <=.6 is broken by ANY deep-dyck training share tested
+      (mixdd 0/3 mean .842, sched-50% 0/3 mean .930) vs vanilla
+      (dyck d2 only, ~12% share) 3/3 on both arms (P16/P19B) —
+      the ratio axis and depth-diverse dyck are MUTUALLY EXCLUSIVE
+      in one L=256 training stream (L-MIXDD-BREAKS-RATIO extended
+      from equal-rate to the 50%-budget schedule).
+- THE FUSION WALL (queue #1 CLOSED at the data level): NO data-level
+  schedule at L=256 reconciles the three certified axes — dyck d12
+  needs d6-in-train (>=50% of a 256 stream), pair needs vanilla
+  exemplar density, ratio needs a (near-)vanilla dyck share; the
+  constraints are pairwise contradictory in one shared stream. The
+  C60-plan FORK is triggered: the path to "ONE coherent model that
+  reasons exactly AND is fluent" is ARCHITECTURAL fusion (per-family
+  routes/experts/compartments sharing a host — the C22b modular
+  precedent: fused coherent 68,738p module, 13/13 bars), NOT further
+  data-level mixing. Residual open cell: the L>=1024 schedule (d6 at
+  ~25% share of a long stream) is the last data-level test — ~12h,
+  and suspect given (c); run only in a session that can host it.
+  Certified multi-seed table UNCHANGED (the certified rows are the
+  single-regime configs: modk 18/18 across corpora/arms; pair 3/3
+  VETDCC-big vanilla @4000; ratio <=.6 vanilla 3/3 both arms; dyck
+  d12 3/3 with d6-in-train, single-task .969 / mixdd .957/.881).
+  RESULT tag ARCH-VET-LM-P20 in log.jsonl; 35/35 verify.
