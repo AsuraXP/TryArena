@@ -1,0 +1,27 @@
+[setup] unified-add (machine v4) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096} VOCAB=75
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[setup] dialog-chat (machine v8, chatbot) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16} VOCAB=36
+[arm] machine v8 (chatbot) params=20518
+[c22r4] preamble loaded, SSM decay clamped <= 0.9 (0s)
+<stdin>:15: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+[c22r8] st_m x1.2 -> abs 5755.8
+[c22r8] scale-only: overwrite 0.0409  state4096 -0.0599
+[eval-r8] {'state4096': -0.0651, 'state16384': -0.0704, 'mathplus4096': -0.0004, 'mathminus4096': 0.0002, 'chat4096': 0.0001, 'overwrite4096': 0.0389, 'routing': 1.0, 'head_gates': [1.995, 1.472, 1.936], 'st_m_abs': 5757.2}
+  U: my name is dave       | A: A ok
+  U: my code is 4 2        | A: A ok
+  U: ok                    | A: A ok
+  U: what is my name       | A: A dave
+  U: tell me the and it    | A: A it
+  U: what is 7 plus 5      | A: A 1 2
+  U: my now name is bob    | A: A ok
+  U: fine                  | A: A fine
+  U: what is 3 minus 7     | A: A 6
+  U: what is my code       | A: A 4 2
+[bars] {'D1': True, 'D2': True, 'D3': True, 'D4p': True, 'D4m': True, 'D5': True, 'D6': True, 'D7': True}
+RESULT {"tag": "ARC2-C22R8-REPAIR", "changes": ["st_m x1.2 from c22r7.pt", "400 steps L=1024 lr 5e-5"], "scale_only": {"overwrite": 0.0409, "state4096": -0.0599}, "r8": {"state4096": -0.0651, "state16384": -0.0704, "mathplus4096": -0.0004, "mathminus4096": 0.0002, "chat4096": 0.0001, "overwrite4096": 0.0389, "routing": 1.0, "head_gates": [1.995, 1.472, 1.936], "st_m_abs": 5757.2}, "bars": {"D1": true, "D2": true, "D3": true, "D4p": true, "D4m": true, "D5": true, "D6": true, "D7": true}, "wall_s": 181.3}
+DONE

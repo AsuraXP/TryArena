@@ -1,0 +1,24 @@
+[c43] ARM A: hand-derived VET+S control (capability cert)
+[c43-A] S1 500/500 | S2 200/200 | S3 100/100 | S4 100/100 | S5 True trace True | stretch [(128, 5, 130), (256, 5, 258), (512, 5, 514)]
+[c43-A] bars {'S1_ge_498of500': True, 'S2_200of200': True, 'S3_100of100': True, 'S4_100of100': True, 'S5_passes_nd+1': True, 'S5_one_mark_trace': True, 'STRETCH_128/256/512': True} ALL=True (50s)
+[c43-B] blank-genome fitness 0.0500
+  [c43-B] evals 1 best 0.0500 (0s)
+  [c43-B] evals 2000 best 0.3256 (20s)
+  [c43-B] evals 2001 best 0.3256 (20s)
+  [c43-B] evals 4000 best 0.6744 (53s)
+  [c43-B] evals 8000 best 0.7650 (122s)
+  [c43-B] evals 8001 best 0.7650 (122s)
+  [c43-B] evals 14001 best 0.8083 (222s)
+  [c43-B] evals 16000 best 0.8083 (255s)
+  [c43-B] evals 16001 best 0.8083 (255s)
+  [c43-B] evals 18000 best 0.8083 (289s)
+  [c43-B] evals 18001 best 0.8083 (289s)
+  [c43-B] evals 24000 best 0.8817 (390s)
+  [c43-B] evals 24001 best 0.8817 (390s)
+  [c43-B] evals 26000 best 0.8817 (423s)
+  [c43-B] evals 26001 best 0.8817 (423s)
+[c43-B] search done: evals 27555 best 0.8350 (450s)
+[c43-B] S1 115/500 | S2 0/200 | S3 0/100 | S4 0/100 | S5 False trace True | discovered=False
+[c43-B] bars {'S1_ge_498of500': False, 'S2_200of200': False, 'S3_100of100': False, 'S4_100of100': False, 'S5_passes_nd+1': False, 'S5_one_mark_trace': True, 'STRETCH_128/256/512': False}
+RESULT {"tag": "ARC2-C43-REVBIND-VETS", "class": "VET+S (control Mealy x mechanism persistent LIFO stack; C42 L-TRANSPORT-DIRECTION escape via LIFO geometry)", "armA_hand": {"S1_indist": 500, "S2_n16": 200, "S3_n32": 100, "S4_n64": 100, "S5_all_exact": true, "trace_ok": true, "stretch_ok": true, "bars": {"S1_ge_498of500": true, "S2_200of200": true, "S3_100of100": true, "S4_100of100": true, "S5_passes_nd+1": true, "S5_one_mark_trace": true, "STRETCH_128/256/512": true}, "ALL": true}, "armB_search": {"evals": 27555, "train_fitness": 0.835, "wall_s": 502.9, "cert": {"S1_indist": 115, "S2_n16": 0, "S3_n32": 0, "S4_n64": 0, "S5_all_exact": false, "trace_ok": true, "stretch_ok": false, "bars": {"S1_ge_498of500": false, "S2_200of200": false, "S3_100of100": false, "S4_100of100": false, "S5_passes_nd+1": false, "S5_one_mark_trace": true, "STRETCH_128/256/512": false}, "ALL": false, "discovered": false}}, "passes_bar": "n = nd+2 uniformly (nd>=1); L-LIFO-OVERHEAD vs C40/C41 nd+1 \u2014 LIFO output order is the reverse of head target order, push pass cannot emit", "wall_s": 553.0, "peak_mb": 497.7}
+DONE

@@ -1,0 +1,55 @@
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+============================================================================
+AXIS 1: hard tasks (dyck10 + mod7), eval 64/512/2048/4096
+[arm] ssm_d16_1 params=3211 (2500 steps, reference)
+  [ssm ref] step 2000/2500 CE 1.1474 (26s)
+  {'mod7@64': 0.0031, 'mod7@512': 0.0025, 'mod7@2048': 0.0027, 'mod7@4096': 0.0025, 'dyck10@64': 0.2008, 'dyck10@512': 0.2239, 'dyck10@2048': 0.2221, 'dyck10@4096': 0.2238}
+/home/user/TryArena/strong_tf.py:54: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[arm] TF_STRONG params=796571 (10k steps, 8x compute)
+  [tf strong] step 2000/10000 CE 1.0952 (375s)
+  [tf strong] step 4000/10000 CE 1.0686 (775s)
+  [tf strong] step 6000/10000 CE 1.0850 (1175s)
+  [tf strong] step 8000/10000 CE 1.0566 (1546s)
+  [tf strong] step 10000/10000 CE 1.0419 (1935s)
+  {'mod7@64': 0.0068, 'mod7@512': 1.6609, 'mod7@2048': 5.2408, 'mod7@4096': 8.2962, 'dyck10@64': 0.0107, 'dyck10@512': 1.7183, 'dyck10@2048': 2.63, 'dyck10@4096': 3.4188}
+============================================================================
+AXIS 2: Dyck-echo (non-regular), echo-dCE @4096 (true oracle = 0)
+[arm] TF_STRONG (echo vocab) params=793862 (10k steps)
+  [tf strong echo] step 2000/10000 CE 0.6402 (351s)
+  [tf strong echo] step 4000/10000 CE 0.6455 (705s)
+  [tf strong echo] step 6000/10000 CE 0.6601 (1055s)
+  [tf strong echo] step 8000/10000 CE 0.6496 (1413s)
+  [tf strong echo] step 10000/10000 CE 0.6598 (1770s)
+  21.9752
+  0.0106
+
+============================================================================
+STRONG-TF RESULTS (dCE nats/token; 0 = oracle)
+============================================================================
+ssm_d16_1 (3,211p, 2.5k)
+    mod7@64        0.0031
+    mod7@512       0.0025
+    mod7@2048      0.0027
+    mod7@4096      0.0025
+    dyck10@64      0.2008
+    dyck10@512     0.2239
+    dyck10@2048    0.2221
+    dyck10@4096    0.2238
+TF_STRONG (790k, 10k)
+    mod7@64        0.0068
+    mod7@512       1.6609
+    mod7@2048      5.2408
+    mod7@4096      8.2962
+    dyck10@64      0.0107
+    dyck10@512     1.7183
+    dyck10@2048    2.63
+    dyck10@4096    3.4188
+TF_STRONG echo-dCE@4096
+    21.9752
+hero_ref (2,974p) echo-dCE@4096
+    0.0106
+============================================================================
+RESULT {"tag": "ARC2-C11-STRONG-TF", "runs": {"ssm_d16_1 (3,211p, 2.5k)": {"mod7@64": 0.0031, "mod7@512": 0.0025, "mod7@2048": 0.0027, "mod7@4096": 0.0025, "dyck10@64": 0.2008, "dyck10@512": 0.2239, "dyck10@2048": 0.2221, "dyck10@4096": 0.2238}, "TF_STRONG (790k, 10k)": {"mod7@64": 0.0068, "mod7@512": 1.6609, "mod7@2048": 5.2408, "mod7@4096": 8.2962, "dyck10@64": 0.0107, "dyck10@512": 1.7183, "dyck10@2048": 2.63, "dyck10@4096": 3.4188}, "TF_STRONG echo-dCE@4096": 21.9752, "hero_ref (2,974p) echo-dCE@4096": 0.0106}, "note": "TF_STRONG = d128/4L/10k steps (~790k params, 8x micro TF)", "wall_s": 3782.9, "peak_mb": 2001.4}
+DONE

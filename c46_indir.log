@@ -1,0 +1,8 @@
+[c46-B_S1] C44 genome (extended mechanism): {'n4': 1.0, 'n8': 1.0, 'n16': 1.0}
+[c46-B_S2] hand 1-hop n=4: fx=1.0000 fs=1.0000 passes=8
+[c46-B_S6] hand 1-hop n=4 repeated-index: fx=1.0000
+[c46-B_S3] 1-hop n=4 discovered: best=0.5017 ev=23925 ver=0.000
+[c46-B_S4] 1-hop n=3 (no control: family fx=0.000, open): best=0.6689 ev=8435 ver=0.000
+[c46-B_S5] 2-hop n=3 (derived unrealizable): best=0.3617 ev=8402 ver=0.000
+RESULT {"tag": "ARC2-C46-INDIR", "method": "derived state-budget theory (opacity / redundancy / N4-lock / depth-1; the earlier mod-5 stride derivation is REFUTED by the n-sweep) + hand construction (1-hop n=4) + 2-stage discovery (M1 mark chain, Q joint indirection needle, plateau walk) x 3 seeds on C45 mechanism + RSET/REM/CLR + ADIG class", "D": {"B_S1_c44_regression": {"n4": 1.0, "n8": 1.0, "n16": 1.0}, "B_S2_hand1hop_n4": {"fx": 1.0, "fs": 1.0, "passes_witness": 8, "formula": "2n = 8 (L-INDIRECTION-OVERHEAD)"}, "B_S6_hand1hop_repeated": {"fx": 1.0}, "B_S3_1hop_n4_discovered": {"best": 0.5017, "evals": 23925, "verified": 0.0, "discovered": false}, "B_S4_1hop_n3_nocontrol": {"best": 0.6689, "evals": 8435, "verified": 0.0, "prediction": "constructed family fails (hand fx=0.000, n-sweep); no control found in budget (plateau, ver=0.000); realizability at n=3 formally OPEN (mod-5 non-existence proof REFUTED)"}, "B_S5_2hop_n3_derived_unrealizable": {"best": 0.3617, "evals": 8402, "verified": 0.0, "prediction": "plateau (depth-1 ceiling, L-INDIRECTION-DEPTH-1)"}}, "ckpt": "c46_indir_discovered.pt", "wall_s": 251.8, "peak_mb": 494.9}
+DONE

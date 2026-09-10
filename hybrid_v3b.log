@@ -1,0 +1,28 @@
+[setup] hybrid_v3 MoA cfg={'seeds': [0], 'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'n_heads': 4, 'k': 12, 'd_slot': 16, 'route_prefix': 8}
+[run] tf params=100884 mach params=18432 router params=34242
+  [moa] step 500/2500 tf 2.0809 mach 1.1090 router 0.0000 (58s)
+  [moa] step 1000/2500 tf 2.0303 mach 1.0547 router 0.0000 (116s)
+  [moa] step 1500/2500 tf 2.0448 mach 1.0257 router 0.0000 (196s)
+  [moa] step 2000/2500 tf 2.0470 mach 0.9878 router 0.0000 (295s)
+  [moa] step 2500/2500 tf 2.0248 mach 0.9674 router 0.0000 (396s)
+[ckpt] moa_v3_s0.pt saved
+[eval] fuzzy@64: system dCE 0.0376 (tf 0.0376 mach 12.3757) routing acc 1.000
+[eval] fuzzy@512: system dCE 1.0017 (tf 1.0017 mach 12.5559) routing acc 1.000
+[eval] fuzzy@2048: system dCE 1.2101 (tf 1.2101 mach 12.5336) routing acc 1.000
+[eval] fuzzy@4096: system dCE 1.2571 (tf 1.2571 mach 12.5601) routing acc 1.000
+[eval] structured@64: system dCE 1.2715 (tf 14.4215 mach 1.2715) routing acc 1.000
+[eval] structured@512: system dCE 1.2484 (tf 14.4301 mach 1.2484) routing acc 1.000
+[eval] structured@2048: system dCE 1.2237 (tf 14.4354 mach 1.2237) routing acc 1.000
+[eval] structured@4096: system dCE 1.2932 (tf 14.4390 mach 1.2932) routing acc 1.000
+
+====================================================================================================
+RESULTS  dCE = excess CE over analytic oracle (nats/token; 0 = perfect)
+====================================================================================================
+run           fuzzy@64     fuzzy@512    fuzzy@2048   fuzzy@4096   structured@64   structured@512  structured@2048 structured@4096 
+tf_arm        0.0376       1.0017       1.2101       1.2571       14.4215      14.4301      14.4354      14.439       
+mach_arm      12.3757      12.5559      12.5336      12.5601      1.2715       1.2484       1.2237       1.2932       
+BEST-ARM      0.0376       1.0017       1.2101       1.2571       1.2715       1.2484       1.2237       1.2932       
+MOA_SYSTEM    0.0376       1.0017       1.2101       1.2571       1.2715       1.2484       1.2237       1.2932       
+====================================================================================================
+RESULT {"tag": "ARC2-C8-MOA-V3B", "tf_arm": {"fuzzy@64": 0.0376, "fuzzy@512": 1.0017, "fuzzy@2048": 1.2101, "fuzzy@4096": 1.2571, "structured@64": 14.4215, "structured@512": 14.4301, "structured@2048": 14.4354, "structured@4096": 14.439}, "mach_arm": {"fuzzy@64": 12.3757, "fuzzy@512": 12.5559, "fuzzy@2048": 12.5336, "fuzzy@4096": 12.5601, "structured@64": 1.2715, "structured@512": 1.2484, "structured@2048": 1.2237, "structured@4096": 1.2932}, "system": {"fuzzy@64": 0.0376, "fuzzy@512": 1.0017, "fuzzy@2048": 1.2101, "fuzzy@4096": 1.2571, "structured@64": 1.2715, "structured@512": 1.2484, "structured@2048": 1.2237, "structured@4096": 1.2932}, "routing": {"fuzzy@64": 1.0, "fuzzy@512": 1.0, "fuzzy@2048": 1.0, "fuzzy@4096": 1.0, "structured@64": 1.0, "structured@512": 1.0, "structured@2048": 1.0, "structured@4096": 1.0}, "verdict": "WIN: system <= best arm on every (task,length)", "wall_s": 403.8, "peak_mb": 725.2}
+DONE

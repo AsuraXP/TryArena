@@ -1,0 +1,71 @@
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+==============================================================================
+ARM A: ssm_d16_1 (hard tasks) x 5 seeds  [pass: mod7<=0.05, dyck10<=0.30 @4096]
+[arm A] params=3211
+  [ssm s0] step 1000/2500 CE 1.1439 (12s)
+  [ssm s0] step 2000/2500 CE 1.1474 (23s)
+  [A s0] {'mod7@4096': 0.0025, 'dyck10@4096': 0.2238, 'pass': True}
+  [ssm s1] step 1000/2500 CE 1.1516 (13s)
+  [ssm s1] step 2000/2500 CE 1.1355 (26s)
+  [A s1] {'mod7@4096': 0.0056, 'dyck10@4096': 0.2208, 'pass': True}
+  [ssm s2] step 1000/2500 CE 1.1533 (13s)
+  [ssm s2] step 2000/2500 CE 1.1346 (26s)
+  [A s2] {'mod7@4096': 0.0065, 'dyck10@4096': 0.221, 'pass': True}
+  [ssm s3] step 1000/2500 CE 1.1459 (13s)
+  [ssm s3] step 2000/2500 CE 1.1344 (26s)
+  [A s3] {'mod7@4096': 0.0071, 'dyck10@4096': 0.2242, 'pass': True}
+  [ssm s4] step 1000/2500 CE 1.1371 (13s)
+  [ssm s4] step 2000/2500 CE 1.1332 (25s)
+  [A s4] {'mod7@4096': 0.0062, 'dyck10@4096': 0.2214, 'pass': True}
+==============================================================================
+ARM B: echo-organ (Dyck-echo) x 4 seeds  [pass: echo-dCE@4096 <= 0.10]
+[arm B] params=2974
+  [echo s0] step 1000/2500 CE 0.5373 (44s)
+  [echo s0] step 2000/2500 CE 0.5019 (87s)
+  [B s0] {'echo_dce@4096': 0.0106, 'pass': True}
+  [echo s1] step 1000/2500 CE 0.5097 (44s)
+  [echo s1] step 2000/2500 CE 0.5039 (88s)
+  [B s1] {'echo_dce@4096': 0.0102, 'pass': True}
+  [echo s2] step 1000/2500 CE 0.5203 (43s)
+  [echo s2] step 2000/2500 CE 0.5126 (86s)
+  [B s2] {'echo_dce@4096': 0.0113, 'pass': True}
+  [echo s3] step 1000/2500 CE 0.5228 (43s)
+  [echo s3] step 2000/2500 CE 0.5206 (87s)
+  [B s3] {'echo_dce@4096': 0.0095, 'pass': True}
+==============================================================================
+ARM C: tf_rope (hard tasks) x 3 seeds  [same pass bars as arm A]
+/home/user/TryArena/p9_seeds.py:74: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[arm C] params=101723
+  [tf s0] step 1000/2500 CE 1.1286 (39s)
+  [tf s0] step 2000/2500 CE 1.1058 (79s)
+  [C s0] {'mod7@4096': 2.8796, 'dyck10@4096': 3.329, 'pass': False}
+  [tf s1] step 1000/2500 CE 1.1300 (38s)
+  [tf s1] step 2000/2500 CE 1.0798 (77s)
+  [C s1] {'mod7@4096': 5.9113, 'dyck10@4096': 2.7199, 'pass': False}
+  [tf s2] step 1000/2500 CE 1.1287 (38s)
+  [tf s2] step 2000/2500 CE 1.0943 (77s)
+  [C s2] {'mod7@4096': 2.8053, 'dyck10@4096': 1.8736, 'pass': False}
+
+==============================================================================
+P9 SEED SWEEP — pass rates (lottery = 1 - pass rate)
+==============================================================================
+arm A: 5/5 seeds pass -> lottery 0%
+  A_ssm161_s0: {'mod7@4096': 0.0025, 'dyck10@4096': 0.2238, 'pass': True}
+  A_ssm161_s1: {'mod7@4096': 0.0056, 'dyck10@4096': 0.2208, 'pass': True}
+  A_ssm161_s2: {'mod7@4096': 0.0065, 'dyck10@4096': 0.221, 'pass': True}
+  A_ssm161_s3: {'mod7@4096': 0.0071, 'dyck10@4096': 0.2242, 'pass': True}
+  A_ssm161_s4: {'mod7@4096': 0.0062, 'dyck10@4096': 0.2214, 'pass': True}
+arm B: 4/4 seeds pass -> lottery 0%
+  B_echo_s0: {'echo_dce@4096': 0.0106, 'pass': True}
+  B_echo_s1: {'echo_dce@4096': 0.0102, 'pass': True}
+  B_echo_s2: {'echo_dce@4096': 0.0113, 'pass': True}
+  B_echo_s3: {'echo_dce@4096': 0.0095, 'pass': True}
+arm C: 0/3 seeds pass -> lottery 100%
+  C_tf_s0: {'mod7@4096': 2.8796, 'dyck10@4096': 3.329, 'pass': False}
+  C_tf_s1: {'mod7@4096': 5.9113, 'dyck10@4096': 2.7199, 'pass': False}
+  C_tf_s2: {'mod7@4096': 2.8053, 'dyck10@4096': 1.8736, 'pass': False}
+==============================================================================
+RESULT {"tag": "ARC2-C10-P9-SEEDS", "runs": {"A_ssm161_s0": {"mod7@4096": 0.0025, "dyck10@4096": 0.2238, "pass": true}, "A_ssm161_s1": {"mod7@4096": 0.0056, "dyck10@4096": 0.2208, "pass": true}, "A_ssm161_s2": {"mod7@4096": 0.0065, "dyck10@4096": 0.221, "pass": true}, "A_ssm161_s3": {"mod7@4096": 0.0071, "dyck10@4096": 0.2242, "pass": true}, "A_ssm161_s4": {"mod7@4096": 0.0062, "dyck10@4096": 0.2214, "pass": true}, "B_echo_s0": {"echo_dce@4096": 0.0106, "pass": true}, "B_echo_s1": {"echo_dce@4096": 0.0102, "pass": true}, "B_echo_s2": {"echo_dce@4096": 0.0113, "pass": true}, "B_echo_s3": {"echo_dce@4096": 0.0095, "pass": true}, "C_tf_s0": {"mod7@4096": 2.8796, "dyck10@4096": 3.329, "pass": false}, "C_tf_s1": {"mod7@4096": 5.9113, "dyck10@4096": 2.7199, "pass": false}, "C_tf_s2": {"mod7@4096": 2.8053, "dyck10@4096": 1.8736, "pass": false}}, "wall_s": 904.1, "peak_mb": 1349.0}
+DONE

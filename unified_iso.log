@@ -1,0 +1,38 @@
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[arm] isolated mixture of state machines params=13231
+  [iso s0] step 2500/20000 lm 1.3282 rt 0.0000 (185s)
+  [iso s0] step 5000/20000 lm 1.2611 rt 0.0000 (364s)
+  [iso s0] step 7500/20000 lm 1.2090 rt 0.0000 (544s)
+  [iso s0] step 10000/20000 lm 1.1905 rt 0.0000 (728s)
+  [iso s0] step 12500/20000 lm 1.1585 rt 0.0000 (910s)
+  [iso s0] step 15000/20000 lm 1.1555 rt 0.0000 (1093s)
+  [iso s0] step 17500/20000 lm 1.1992 rt 0.0000 (1275s)
+  [iso s0] step 20000/20000 lm 1.1468 rt 0.0000 (1460s)
+[iso] trained in 1460s
+[eval] 10k checkpoint @4096:
+  iso_s0_10k: {'echo': (1.1401, 1.0), 'icl': (0.2904, 1.1218, 1.0), 'mod7': (0.0064, 1.0)}
+[eval] 20k final @4096:
+  iso_s0_20k: {'echo': (1.1064, 1.0), 'icl': (0.0897, 0.2825, 1.0), 'mod7': (0.0024, 1.0)}
+/home/user/TryArena/unified_iso.py:215: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[arm] micro TF (protocol baseline, 20k) params=102893
+  [tf] step 5000/20000 CE 1.4659 (217s)
+  [tf] step 10000/20000 CE 1.4608 (446s)
+  [tf] step 15000/20000 CE 1.4600 (677s)
+  [tf] step 20000/20000 CE 1.4540 (902s)
+  micro_tf_20k: {'echo': (5.0787, 9.3293), 'icl': (4.2623, 2.3787), 'mod7': (2.3877, 2.9182), 'params': 102893}
+
+========================================================================================
+ISOLATED Mixture of State Machines @4096 (dCE; routing acc in parens)
+C13 shared-host knee: echo -0.3019->+1.1277, icl tgt 0.2057->0.4399 @20k
+========================================================================================
+iso_s0_10k    params 13231   echo (1.1401, 1.0)  icl (0.2904, 1.1218, 1.0)  mod7 (0.0064, 1.0)
+iso_s0_20k    params 13231   echo (1.1064, 1.0)  icl (0.0897, 0.2825, 1.0)  mod7 (0.0024, 1.0)
+micro_tf_20k  params 102893  echo (5.0787, 9.3293)  icl (4.2623, 2.3787)  mod7 (2.3877, 2.9182)
+========================================================================================
+RESULT {"tag": "ARC2-C14-ISO-MOE", "runs": {"iso_s0_10k": {"echo": [1.1401, 1.0], "icl": [0.2904, 1.1218, 1.0], "mod7": [0.0064, 1.0], "params": 13231}, "iso_s0_20k": {"echo": [1.1064, 1.0], "icl": [0.0897, 0.2825, 1.0], "mod7": [0.0024, 1.0], "params": 13231}, "micro_tf_20k": {"echo": [5.0787, 9.3293], "icl": [4.2623, 2.3787], "mod7": [2.3877, 2.9182], "params": 102893}}, "wall_s": 2374.5, "peak_mb": 1366.7}
+DONE

@@ -1,0 +1,35 @@
+[setup] unified-add (machine v4) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096} VOCAB=75
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[setup] dialog-chat (machine v8, chatbot) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16} VOCAB=36
+[arm] machine v8 (chatbot) params=20518
+[c22r4] preamble loaded, SSM decay clamped <= 0.9 (0s)
+[c22r5] preamble loaded (0s)
+/home/user/TryArena/c22r5.py:53: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  f"st_m_abs {float(m.st_m.abs().sum()):.1f} "
+  [ft] step 500/3000 lm 0.5377 st_m_abs 2279.9 (137s)
+  [ft] step 1000/3000 lm 0.5311 st_m_abs 2294.7 (273s)
+  [ft] step 1500/3000 lm 0.5213 st_m_abs 2310.2 (407s)
+  [ft] step 2000/3000 lm 0.5200 st_m_abs 2329.7 (540s)
+  [ft] step 2500/3000 lm 0.5333 st_m_abs 2352.4 (674s)
+  [ft] step 3000/3000 lm 0.5236 st_m_abs 2370.6 (809s)
+[ft] done in 809s
+[eval-r5] {'state4096': -0.0366, 'state16384': -0.0401, 'mathplus4096': -0.0009, 'mathminus4096': 0.0007, 'chat4096': 0.0002, 'overwrite4096': 0.3611, 'routing': 1.0, 'head_gates': [1.883, 1.42, 1.861], 'st_m_abs': 2370.6}
+[dialogue]
+  U: my name is dave       | A: A ok
+  U: my code is 4 2        | A: A ok
+  U: ok                    | A: A ok
+  U: what is my name       | A: A dave
+  U: tell me the and it    | A: A it
+  U: what is 7 plus 5      | A: A 1 2
+  U: my now name is bob    | A: A ok
+  U: fine                  | A: A fine
+  U: what is 3 minus 7     | A: A 6
+  U: what is my code       | A: A 4 2
+[bars] {'D1_state_le_0.01': True, 'D2_overwrite_le_0.05': False, 'D3_16k_le_4k+0.05': True, 'D4_mathplus_le_0.02': True, 'D4_mathminus_le_0.05': True, 'D5_chat_le_0.02': True, 'D6_routing_1.0': True, 'D7_dialogue_exact': True}
+RESULT {"tag": "ARC2-C22R5-REPAIR", "changes": ["long-window fine-tune L=512 b8 3k steps lr 3e-4 from c22r4.pt"], "r5": {"state4096": -0.0366, "state16384": -0.0401, "mathplus4096": -0.0009, "mathminus4096": 0.0007, "chat4096": 0.0002, "overwrite4096": 0.3611, "routing": 1.0, "head_gates": [1.883, 1.42, 1.861], "st_m_abs": 2370.6}, "bars": {"D1_state_le_0.01": true, "D2_overwrite_le_0.05": false, "D3_16k_le_4k+0.05": true, "D4_mathplus_le_0.02": true, "D4_mathminus_le_0.05": true, "D5_chat_le_0.02": true, "D6_routing_1.0": true, "D7_dialogue_exact": true}, "wall_s": 816.3}
+DONE

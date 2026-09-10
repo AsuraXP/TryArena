@@ -1,0 +1,14 @@
+[oracle] CA reference pass semantics: OK
+[train] 500/3000 CE 0.00887
+[train] 1000/3000 CE 0.00302
+[train] 1500/3000 CE 0.00228
+[train] 2000/3000 CE 0.00151
+[train] 2500/3000 CE 0.00126
+[train] 3000/3000 CE 0.00088
+[cert] indist: 500/500 exact, passes=3.00 (want 3), trace_ok=True
+[cert] k16: 200/200 exact, passes=17.00 (want 17), trace_ok=True
+[cert] k64: 100/100 exact, passes=65.00 (want 65), trace_ok=True
+[cert] joint: 100/100 exact, passes=65.00 (want 65), trace_ok=True
+[verdict] {'B1': True, 'B2': True, 'B3': True, 'B4': True, 'ALL': True}
+RESULT {"tag": "ARC2-C24B-CA-LOOP", "verdict": {"B1": true, "B2": true, "B3": true, "B4": true, "ALL": true}, "cert": {"indist": {"exact": "500/500", "passes_mean": 3.0, "trace_ok": true}, "k16": {"exact": "200/200", "passes_mean": 17.0, "trace_ok": true}, "k64": {"exact": "100/100", "passes_mean": 65.0, "trace_ok": true}, "joint": {"exact": "100/100", "passes_mean": 65.0, "trace_ok": true}}, "wall_s": 177.3, "peak_mb": 656.1}
+DONE

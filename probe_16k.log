@@ -1,0 +1,37 @@
+[setup] unified-add (machine v4) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096} VOCAB=75
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[probe] machine v4 final ckpt, params=21305, trained at L=63
+    L=8192 rep 0: dCE so far -0.2867 (0s)
+    L=8192 rep 1: dCE so far -0.2921 (0s)
+    L=8192 rep 0: dCE so far 0.1158 (1s)
+    L=8192 rep 1: dCE so far 0.1241 (1s)
+    L=8192 rep 0: dCE so far 0.0035 (0s)
+    L=8192 rep 1: dCE so far 0.0037 (0s)
+    L=8192 rep 0: dCE so far 0.0093 (1s)
+    L=8192 rep 1: dCE so far 0.0097 (1s)
+  L8192: {'echo': (-0.2921, 1.0), 'icl': (0.1241, 0.0118, 1.0), 'mod7': (0.0037, 1.0), 'add': (0.0097, 1.0)}
+    L=16384 rep 0: dCE so far 0.381 (1s)
+    L=16384 rep 1: dCE so far 0.3771 (1s)
+    L=16384 rep 0: dCE so far 0.1356 (2s)
+    L=16384 rep 1: dCE so far 0.13 (2s)
+    L=16384 rep 0: dCE so far 0.0034 (0s)
+    L=16384 rep 1: dCE so far 0.0028 (0s)
+    L=16384 rep 0: dCE so far 0.0091 (1s)
+    L=16384 rep 1: dCE so far 0.0096 (1s)
+  L16384: {'echo': (0.3771, 1.0), 'icl': (0.13, 1.6329, 1.0), 'mod7': (0.0028, 1.0), 'add': (0.0096, 1.0)}
+
+============================================================================================
+CONTEXT-WINDOW PROBE — machine v4 (trained L=63), dCE + routing acc
+@4096 ref (unified_add.log): echo -0.3004 | icl 0.1351|0.1972 | mod7 0.0036 | add 0.0091
+(transient-free 9x ref: icl 0.0072|0.0021) | TF @4096: echo 4.78 | icl 5.39|10.57 |
+mod7 5.63 | add 4.82 — TF cannot run @16384 in 2GB (O(N^2) attention).
+============================================================================================
+L8192  echo (-0.2921, 1.0)  icl (0.1241, 0.0118, 1.0)  mod7 (0.0037, 1.0)  add (0.0097, 1.0)
+L16384 echo (0.3771, 1.0)  icl (0.13, 1.6329, 1.0)  mod7 (0.0028, 1.0)  add (0.0096, 1.0)
+============================================================================================
+RESULT {"tag": "ARC2-C16-CTX-WINDOW-PROBE-16K", "runs": {"L8192": {"echo": [-0.2921, 1.0], "icl": [0.1241, 0.0118, 1.0], "mod7": [0.0037, 1.0], "add": [0.0097, 1.0]}, "L16384": {"echo": [0.3771, 1.0], "icl": [0.13, 1.6329, 1.0], "mod7": [0.0028, 1.0], "add": [0.0096, 1.0]}}, "wall_s": 13.1, "peak_mb": 552.2}
+DONE

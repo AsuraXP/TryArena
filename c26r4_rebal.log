@@ -1,0 +1,107 @@
+[c26r4] seed fitness(stage A) = 0.7851
+[c26r4] A edit 58: 0.7851 -> 0.8077
+[c26r4] A edit 10082: 0.8092 -> 0.8282
+[c26r4] A edit 18969: 0.8331 -> 0.8387
+[c26r4] Stage A done: edits=20000 best=0.8387
+[c26r4] B edit 1: 0.3018 -> 0.4263
+[c26r4] B edit 943: 0.4263 -> 0.4646
+[c26r4] B edit 13531: 0.4646 -> 0.4802
+[c26r4] B edit 13537: 0.4802 -> 0.4911
+[c26r4] B edit 13668: 0.4911 -> 0.5018
+[c26r4] B edit 13669: 0.5018 -> 0.5163
+[c26r4] B edit 15872: 0.5163 -> 0.5685
+[c26r4] Stage B done: edits=35872 best=0.5685
+[c26r4] C stage nd<=1 s0 lr=0.00500 CE 4.0877 crisp-probe 0/64
+[c26r4] C stage nd<=1 s200 lr=0.00500 CE 3.1726 crisp-probe 0/64
+[c26r4] C stage nd<=1 s400 lr=0.00500 CE 2.0804 crisp-probe 0/64
+[c26r4] C stage nd<=1 s600 lr=0.00500 CE 1.6001 crisp-probe 0/64
+[c26r4] C stage nd<=1 s800 lr=0.00500 CE 3.0063 crisp-probe 0/64
+[c26r4] C stage nd<=1 s1000 lr=0.00500 CE 0.9726 crisp-probe 0/64
+[c26r4] C stage nd<=1 s1200 lr=0.00500 CE 0.8009 crisp-probe 0/64
+[c26r4] C stage nd<=1 s1400 lr=0.00500 CE 0.5399 crisp-probe 0/64
+[c26r4] C stage nd<=1 s1600 lr=0.00250 CE 0.6718 crisp-probe 0/64
+[c26r4] C stage nd<=1 s1800 lr=0.00250 CE 0.4218 crisp-probe 0/64
+[c26r4] C stage nd<=1 s2000 lr=0.00250 CE 0.6015 crisp-probe 0/64
+[c26r4] C stage nd<=1 s2200 lr=0.00250 CE 1.4484 crisp-probe 8/64
+[c26r4] C stage nd<=1 s2400 lr=0.00250 CE 1.5153 crisp-probe 0/64
+[c26r4] C stage nd<=1 s2600 lr=0.00250 CE 0.4135 crisp-probe 0/64
+[c26r4] C stage nd<=1 s2800 lr=0.00250 CE 0.9204 crisp-probe 0/64
+[c26r4] C stage nd<=1 s3000 lr=0.00125 CE 0.4716 crisp-probe 0/64
+[c26r4] C stage nd<=1 s3200 lr=0.00125 CE 0.4356 crisp-probe 0/64
+[c26r4] C stage nd<=1 s3400 lr=0.00125 CE 0.2647 crisp-probe 0/64
+[c26r4] C stage nd<=1 s3600 lr=0.00125 CE 0.1694 crisp-probe 0/64
+[c26r4] C stage nd<=1 s3800 lr=0.00125 CE 0.1454 crisp-probe 0/64
+[c26r4] C stage nd<=1 did not crystallize
+[c26r4] C stage nd<=2 s0 lr=0.00500 CE 3.3585 crisp-probe 0/64
+[c26r4] C stage nd<=2 s200 lr=0.00500 CE 2.4875 crisp-probe 0/64
+[c26r4] C stage nd<=2 s400 lr=0.00500 CE 0.6008 crisp-probe 0/64
+[c26r4] C stage nd<=2 s600 lr=0.00500 CE 0.9962 crisp-probe 0/64
+[c26r4] C stage nd<=2 s800 lr=0.00500 CE 0.6868 crisp-probe 6/64
+[c26r4] C stage nd<=2 s1000 lr=0.00500 CE 0.5303 crisp-probe 3/64
+[c26r4] C stage nd<=2 s1200 lr=0.00500 CE 1.0047 crisp-probe 0/64
+[c26r4] C stage nd<=2 s1400 lr=0.00500 CE 0.3830 crisp-probe 0/64
+[c26r4] C stage nd<=2 s1600 lr=0.00250 CE 0.5111 crisp-probe 0/64
+[c26r4] C stage nd<=2 s1800 lr=0.00250 CE 0.5240 crisp-probe 0/64
+[c26r4] C stage nd<=2 s2000 lr=0.00250 CE 0.3078 crisp-probe 0/64
+[c26r4] C stage nd<=2 s2200 lr=0.00250 CE 0.3295 crisp-probe 0/64
+[c26r4] C stage nd<=2 s2400 lr=0.00250 CE 0.2183 crisp-probe 0/64
+[c26r4] C stage nd<=2 s2600 lr=0.00250 CE 0.2943 crisp-probe 0/64
+[c26r4] C stage nd<=2 s2800 lr=0.00250 CE 0.3249 crisp-probe 0/64
+[c26r4] C stage nd<=2 s3000 lr=0.00125 CE 0.2001 crisp-probe 0/64
+[c26r4] C stage nd<=2 s3200 lr=0.00125 CE 0.2777 crisp-probe 0/64
+[c26r4] C stage nd<=2 s3400 lr=0.00125 CE 0.1904 crisp-probe 0/64
+[c26r4] C stage nd<=2 s3600 lr=0.00125 CE 0.2615 crisp-probe 0/64
+[c26r4] C stage nd<=2 s3800 lr=0.00125 CE 0.1428 crisp-probe 0/64
+[c26r4] C stage nd<=2 did not crystallize
+[c26r4] C stage nd<=3 s0 lr=0.00500 CE 2.0132 crisp-probe 4/64
+[c26r4] C stage nd<=3 s200 lr=0.00500 CE 1.5476 crisp-probe 14/64
+[c26r4] C stage nd<=3 s400 lr=0.00500 CE 0.8761 crisp-probe 9/64
+[c26r4] C stage nd<=3 s600 lr=0.00500 CE 0.7190 crisp-probe 7/64
+[c26r4] C stage nd<=3 s800 lr=0.00500 CE 0.6556 crisp-probe 2/64
+[c26r4] C stage nd<=3 s1000 lr=0.00500 CE 0.6930 crisp-probe 0/64
+[c26r4] C stage nd<=3 s1200 lr=0.00500 CE 0.5919 crisp-probe 4/64
+[c26r4] C stage nd<=3 s1400 lr=0.00500 CE 0.6562 crisp-probe 2/64
+[c26r4] C stage nd<=3 s1600 lr=0.00250 CE 0.4748 crisp-probe 6/64
+[c26r4] C stage nd<=3 s1800 lr=0.00250 CE 0.5952 crisp-probe 4/64
+[c26r4] C stage nd<=3 s2000 lr=0.00250 CE 0.6420 crisp-probe 4/64
+[c26r4] C stage nd<=3 s2200 lr=0.00250 CE 0.6817 crisp-probe 3/64
+[c26r4] C stage nd<=3 s2400 lr=0.00250 CE 0.7320 crisp-probe 2/64
+[c26r4] C stage nd<=3 s2600 lr=0.00250 CE 0.5600 crisp-probe 5/64
+[c26r4] C stage nd<=3 s2800 lr=0.00250 CE 0.5139 crisp-probe 2/64
+[c26r4] C stage nd<=3 s3000 lr=0.00125 CE 0.4664 crisp-probe 5/64
+[c26r4] C stage nd<=3 s3200 lr=0.00125 CE 0.4412 crisp-probe 4/64
+[c26r4] C stage nd<=3 s3400 lr=0.00125 CE 0.4533 crisp-probe 3/64
+[c26r4] C stage nd<=3 s3600 lr=0.00125 CE 0.4739 crisp-probe 7/64
+[c26r4] C stage nd<=3 s3800 lr=0.00125 CE 0.5117 crisp-probe 6/64
+[c26r4] C stage nd<=3 did not crystallize
+[c26r4] C stage nd<=4 s0 lr=0.00500 CE 1.9297 crisp-probe 3/64
+[c26r4] C stage nd<=4 s200 lr=0.00500 CE 0.8820 crisp-probe 2/64
+[c26r4] C stage nd<=4 s400 lr=0.00500 CE 0.7776 crisp-probe 1/64
+[c26r4] C stage nd<=4 s600 lr=0.00500 CE 1.2629 crisp-probe 4/64
+[c26r4] C stage nd<=4 s800 lr=0.00500 CE 0.5997 crisp-probe 0/64
+[c26r4] C stage nd<=4 s1000 lr=0.00500 CE 1.3282 crisp-probe 0/64
+[c26r4] C stage nd<=4 s1200 lr=0.00500 CE 0.9932 crisp-probe 1/64
+[c26r4] C stage nd<=4 s1400 lr=0.00500 CE 0.8955 crisp-probe 0/64
+[c26r4] C stage nd<=4 s1600 lr=0.00250 CE 0.7037 crisp-probe 1/64
+[c26r4] C stage nd<=4 s1800 lr=0.00250 CE 0.6422 crisp-probe 2/64
+[c26r4] C stage nd<=4 s2000 lr=0.00250 CE 0.6169 crisp-probe 0/64
+[c26r4] C stage nd<=4 s2200 lr=0.00250 CE 0.6364 crisp-probe 1/64
+[c26r4] C stage nd<=4 s2400 lr=0.00250 CE 0.6253 crisp-probe 1/64
+[c26r4] C stage nd<=4 s2600 lr=0.00250 CE 1.1807 crisp-probe 1/64
+[c26r4] C stage nd<=4 s2800 lr=0.00250 CE 0.6135 crisp-probe 0/64
+[c26r4] C stage nd<=4 s3000 lr=0.00125 CE 0.5389 crisp-probe 4/64
+[c26r4] C stage nd<=4 s3200 lr=0.00125 CE 0.4191 crisp-probe 1/64
+[c26r4] C stage nd<=4 s3400 lr=0.00125 CE 0.6185 crisp-probe 0/64
+[c26r4] C stage nd<=4 s3600 lr=0.00125 CE 0.4984 crisp-probe 6/64
+[c26r4] C stage nd<=4 s3800 lr=0.00125 CE 0.8465 crisp-probe 5/64
+[c26r4] C stage nd<=4 did not crystallize
+[c26r4] restored best-probe checkpoint (14/64)
+[c26r4] stage C fallback: per-pass trajectory curriculum (SCAFFOLD)
+Traceback (most recent call last):
+  File "/home/user/TryArena/c26r4_rebal.py", line 469, in <module>
+    loss = traj_loss(x, nds)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/user/TryArena/c26r4_rebal.py", line 462, in traj_loss
+    msk = (y[p, 0] != PAD)
+           ~^^^^^^
+IndexError: index 1 is out of bounds for dimension 0 with size 1

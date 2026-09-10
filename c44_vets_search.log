@@ -1,0 +1,67 @@
+[c44] STAGE 1a (CONTRACT-M1, 5 rows): blank fitness_M1=0.000
+  [c44-s1a] evals 1 best 0.0000 (0s)
+[c44-s1a] PERFECT at evals 4
+[c44] STAGE 1a done: fitness_M1=1.0000 evals=4 (0s)
+[c44] STAGE 1b (CONTRACT-M2, 5 rows): fitness_M2=0.5000
+  [c44-s1b] evals 1 best 0.5000 (0s)
+[c44-s1b] PERFECT at evals 91
+[c44] STAGE 1b done: fitness_M2=1.0000 evals=91 (1s)
+[c44] STAGE 2a (CONTRACT-S.a, 10 rows, M+S.b frozen): fitness_Sa=0.7500 full=0.1000
+  [c44-s2a] evals 1 best 0.7722 (0s)
+[c44-s2a] PERFECT at evals 165
+[c44] STAGE 2a done: fitness_Sa=1.0000 evals=165 (3s)
+[c44] STAGE 2b (CONTRACT-S.b, 1 rows): full=0.2000
+[c44-s2b] PERFECT at evals 6
+[c44] STAGE 2b done: full=1.0000 evals=6 (3s)
+[c44] D3 discovered-genome bars: {'S1_ge_498of500': True, 'S2_200of200': True, 'S3_100of100': True, 'S4_100of100': True, 'S5_passes_nd+2': True, 'S5_one_mark_trace': True, 'STRETCH_128/256/512': True} S1 500/500 S2 200/200 S3 100/100 S4 100/100 stretch [(128, 5, 130), (256, 5, 258), (512, 5, 514)]
+  [c44-basin-k1-p0] evals 1 best 0.3278 (0s)
+  [c44-basin-k1-p0] evals 1000 best 0.9000 (13s)
+  [c44-basin-k1-p0] evals 1001 best 0.9000 (13s)
+  [c44-basin-k1-p0] evals 2000 best 0.9333 (26s)
+  [c44-basin-k1-p1] evals 1 best 1.0000 (0s)
+[c44-basin-k1-p1] PERFECT at evals 1
+  [c44-basin-k1-p2] evals 1 best 0.8400 (0s)
+[c44-basin-k1-p2] PERFECT at evals 163
+  [c44-basin-k1-p3] evals 1 best 1.0000 (0s)
+[c44-basin-k1-p3] PERFECT at evals 1
+  [c44-basin-k1-p4] evals 1 best 1.0000 (0s)
+[c44-basin-k1-p4] PERFECT at evals 1
+  [c44-basin-k1-p5] evals 1 best 1.0000 (0s)
+[c44-basin-k1-p5] PERFECT at evals 1
+  [c44-basin-k1-p6] evals 1 best 1.0000 (0s)
+[c44-basin-k1-p6] PERFECT at evals 1
+[c44-basin-k1-p7] PERFECT at evals 2
+[c44] basin k=1: 7/8 back to 1.0, evals [1, 163, 1, 1, 1, 1, 2] (85s)
+  [c44-basin-k2-p0] evals 1 best 1.0000 (0s)
+[c44-basin-k2-p0] PERFECT at evals 1
+  [c44-basin-k2-p1] evals 1 best 1.0000 (0s)
+[c44-basin-k2-p1] PERFECT at evals 1
+  [c44-basin-k2-p2] evals 1 best 0.7867 (0s)
+  [c44-basin-k2-p2] evals 1001 best 0.9322 (13s)
+[c44-basin-k2-p2] PERFECT at evals 1680
+  [c44-basin-k2-p3] evals 1 best 0.9061 (0s)
+[c44-basin-k2-p3] PERFECT at evals 760
+  [c44-basin-k2-p4] evals 1 best 1.0000 (0s)
+[c44-basin-k2-p4] PERFECT at evals 1
+  [c44-basin-k2-p5] evals 1 best 1.0000 (0s)
+[c44-basin-k2-p5] PERFECT at evals 1
+[c44-basin-k2-p6] PERFECT at evals 2
+  [c44-basin-k2-p7] evals 1 best 1.0000 (0s)
+[c44-basin-k2-p7] PERFECT at evals 1
+[c44] basin k=2: 8/8 back to 1.0, evals [1, 1, 1680, 760, 1, 1, 2, 1] (116s)
+[c44-basin-k4-p0] PERFECT at evals 634
+  [c44-basin-k4-p1] evals 1 best 0.7872 (0s)
+[c44-basin-k4-p1] PERFECT at evals 87
+  [c44-basin-k4-p2] evals 1 best 0.8400 (0s)
+[c44-basin-k4-p2] PERFECT at evals 558
+  [c44-basin-k4-p3] evals 1 best 0.9322 (0s)
+[c44-basin-k4-p3] PERFECT at evals 347
+[c44-basin-k4-p4] PERFECT at evals 999
+  [c44-basin-k4-p5] evals 1 best 0.6942 (0s)
+[c44-basin-k4-p5] PERFECT at evals 418
+  [c44-basin-k4-p6] evals 1 best 1.0000 (0s)
+[c44-basin-k4-p6] PERFECT at evals 1
+[c44-basin-k4-p7] PERFECT at evals 2
+[c44] basin k=4: 8/8 back to 1.0, evals [634, 87, 558, 347, 999, 418, 1, 2] (156s)
+RESULT {"tag": "ARC2-C44-VETS-DISC", "method": "staged contract-decomposed hill-climb (c24c P4-DISC precedent) over VET+S control tables", "D1_stage1": {"M1_trace": 1.0, "M1_evals": 4, "M2_scan": 1.0, "M2_evals": 91, "pass": true}, "D2_stage2": {"train_fitness": 1.0, "evals": 171, "stage2a_sa": 1.0, "stage2a_evals": 165, "pass": true}, "D3_bars": {"S1_indist": 500, "S2_n16": 200, "S3_n32": 100, "S4_n64": 100, "S5_all_exact": true, "trace_ok": true, "stretch_ok": true, "bars": {"S1_ge_498of500": true, "S2_200of200": true, "S3_100of100": true, "S4_100of100": true, "S5_passes_nd+2": true, "S5_one_mark_trace": true, "STRETCH_128/256/512": true}, "ALL": true}, "D4_basin_profile": {"k1": {"succ": 7, "of": 8, "evals_to_1": [1, 163, 1, 1, 1, 1, 2]}, "k2": {"succ": 8, "of": 8, "evals_to_1": [1, 1, 1680, 760, 1, 1, 2, 1]}, "k4": {"succ": 8, "of": 8, "evals_to_1": [634, 87, 558, 347, 999, 418, 1, 2]}}, "ckpt": "c44_vets_discovered.pt", "wall_s": 155.7, "peak_mb": 497.4}
+DONE

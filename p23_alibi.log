@@ -1,0 +1,31 @@
+[p23] pool 1024
+[p23] alibi s111 params=42672
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [P23-alibi-s111] step 250/6000 loss 0.8222 (7s)
+  [P23-alibi-s111] step 500/6000 loss 0.6278 (14s)
+  [P23-alibi-s111] step 750/6000 loss 0.6390 (21s)
+  [P23-alibi-s111] step 1000/6000 loss 0.5913 (28s)
+  [P23-alibi-s111] step 1250/6000 loss 0.5726 (34s)
+  [P23-alibi-s111] step 1500/6000 loss 0.8217 (40s)
+  [P23-alibi-s111] step 1750/6000 loss 0.7856 (46s)
+  [P23-alibi-s111] step 2000/6000 loss 0.9454 (52s)
+  [P23-alibi-s111] step 2250/6000 loss 1.0074 (59s)
+  [P23-alibi-s111] step 2500/6000 loss 1.1479 (67s)
+  [P23-alibi-s111] step 2750/6000 loss 1.2099 (75s)
+  [P23-alibi-s111] step 3000/6000 loss 1.2506 (82s)
+  [P23-alibi-s111] step 3250/6000 loss 1.1121 (90s)
+  [P23-alibi-s111] step 3500/6000 loss 1.1807 (97s)
+  [P23-alibi-s111] step 3750/6000 loss 1.2305 (105s)
+  [P23-alibi-s111] step 4000/6000 loss 1.1248 (113s)
+  [P23-alibi-s111] step 4250/6000 loss 1.2568 (120s)
+  [P23-alibi-s111] step 4500/6000 loss 1.2901 (126s)
+  [P23-alibi-s111] step 4750/6000 loss 1.2167 (133s)
+  [P23-alibi-s111] step 5000/6000 loss 1.2764 (141s)
+  [P23-alibi-s111] step 5250/6000 loss 1.1855 (149s)
+  [P23-alibi-s111] step 5500/6000 loss 0.4651 (157s)
+  [P23-alibi-s111] step 5750/6000 loss 0.4462 (164s)
+  [P23-alibi-s111] step 6000/6000 loss 0.4692 (171s)
+[TF-alibi s111] ce={'256_train': 1.356, '256_hard': 2.864, '512': 1.454, '1024': 1.772}
+[TF-alibi s111] acc_eval={'track': 0.256, 'modk': 0.212, 'dyck': 0.019, 'pair': 0.132}
