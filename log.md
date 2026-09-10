@@ -3564,3 +3564,50 @@ corpus (a modular TF-of-experts with the same learned gate is the
 next fairness step — it would test whether the win is modularity or
 the VET substrate); TF lr/schedule not tuned (same 3e-3 AdamW as all
 VET arms); dropout 0. RESULT ARCH-VET-LM-P23 in log.jsonl.
+
+## CYCLE 62 (cont.) — ARCH-VET P24: MODULARITY vs SUBSTRATE — Transformer-of-experts under the identical recipe
+
+WHY: after P22 (learned gate suffices) and P23 (monolithic
+length-generalizing TFs pass <=1 bar), the last confound was whether
+the unified row is bought by MODULARITY (which a Transformer could
+also enjoy) or by the VET SUBSTRATE. P24 gives the Transformer the
+same recipe: expert A = TF-NAPE d32 (20,272p) trained ONLY on the
+vanilla P9 pool @4000; expert B = TF-ALiBi d32 (20,272p) trained ONLY
+on the deep-mix dyck pool @2000; the SAME P22 Gate (1,410p) trained by
+the same composed-mixture CE on the same joint pool; hard argmax
+dispatch. Total 41,954p vs VET system 44,484p. Prior art: arXiv
+2410.13964, 2606.14398, 2511.06237 (MoE routing/specialization; none
+does whole-model per-regime TF experts vs a non-attention substrate).
+RESULTS (seeds 111/222):
+  TF-MoE  pair .538/.632  modk .404/.212  ratio .969/1.339
+          dyck d12 .952/.952  joint pair .564/.481 WITH dyck .907/.874
+          gate B-share vanilla .016/.008 | mixdd .61/.63 | deep .99/.98
+          bars_passed_per_seed [1,1]
+  VET-MoE (P22, same gate, same recipe)          bars [4,4]
+READ: (1) the RECIPE transfers — the gate learns the same policy on
+TF experts (B-share profile matches P22 almost exactly) and the
+dedicated TF-ALiBi dyck expert is genuinely good (d12 .952, better
+than any monolithic TF in P23) — so the dyck bar is a MODULARITY
+win the Transformer shares. (2) But the three other bars do NOT
+transfer: the TF generalist expert, even trained alone on the vanilla
+corpus, stays at modk .21-.40, pair .54-.63 and length-ratio ~1-1.3 —
+exactly the P23 monolith numbers. Modularity removed interference; it
+did not give the Transformer a counter, a key-value register, or
+length-invariant state. (3) Therefore the unified row decomposes as:
+dyck d12 = modularity (+ any decent stack-capable expert); pair, modk,
+length-invariance = VET SUBSTRATE (Mealy controller x exact counter
+channels x value-encoded transport).
+NEW LAW: L-SUBSTRATE-NOT-MODULARITY — under an identical modular
+recipe (per-regime experts + learned causal gate, matched ~42-44k
+params, matched data and steps), a Transformer-of-experts passes 1/4
+certified bars (dyck only) on both seeds while the VET-of-experts
+passes 4/4; the pair / modk / length-invariance bars are properties
+of the VET substrate, not of the routing.
+CLAIM STATUS: the four-condition groundbreakingness list is now
+3/4 closed: fair control (P23+P24), learned dispatch (P22), one unified
+model (P21C/P22). Remaining: third-party reproducibility (10-seed +
+CIs + a single reproduce script).
+BOUNDARIES: 2 seeds; TF experts d32 (a d48 monolith already failed in
+P23, and d32 x2 is the params-matched split); TF lr/schedule untuned
+(same as VET arms); TF A expert not swept over PE (NAPE chosen as the
+best in-range P23 arm). RESULT ARCH-VET-LM-P24 in log.jsonl.

@@ -917,3 +917,17 @@ stack use from the grammar coin-flip ceiling.
 - OPEN QUEUE: 1. modular TF-of-experts with the learned gate
   (modularity vs substrate); 2. chatbot expert C; 3. 10-seed
   certification; 4. end-to-end co-adaptation; 5. in-range parity.
+
+## ARCH-VET P24 (cycle 62) — MODULARITY vs SUBSTRATE closed
+- Transformer-of-experts (TF-NAPE d32 vanilla@4000 + TF-ALiBi d32
+  deepmix@2000 + the SAME learned gate; 41,954p): bars [1,1] —
+  dyck d12 .952/.952 passes (modularity win shared by TF), pair
+  .54/.63, modk .40/.21, ratio .97/1.34 fail. VET-of-experts [4,4].
+- L-SUBSTRATE-NOT-MODULARITY: pair / modk / length-invariance are
+  VET substrate properties; dyck at depth is a modularity property.
+- Groundbreakingness conditions: fair control ✓ (P23+P24), learned
+  dispatch ✓ (P22), one unified model ✓ (P21C/P22), third-party
+  reproducibility ✗ (next: 10-seed + CIs + reproduce.sh).
+- OPEN QUEUE: 1. reproduce.sh + 10-seed certification of the unified
+  learned-gate row with CIs; 2. chatbot expert C in the modular frame;
+  3. end-to-end co-adaptation; 4. in-range parity (256-hard CE).
