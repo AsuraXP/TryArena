@@ -3832,3 +3832,34 @@ DECISION: in-range parity axis re-scoped to "CE on det positions"
 wins at 256-train and 1024). Not building a hazard expert now (no
 reasoning content; L-DATA-CEILING-style density work is not the goal).
 RESULT ARCH-VET-LM-P28.
+
+## CYCLE 65 (cont.) — ARCH-VET P29: END-TO-END CO-ADAPTATION under the frozen certified gate = NEGATIVE (no gain, pair erosion)
+
+SETUP: A and B unfrozen, gate G frozen, joint pool, lr 3e-4, 600
+steps; HARD (routed-gradient isolation) vs SOFT (mixture gradient).
+Prior art: DES-MoE arXiv 2509.16882 (gradient isolation by routing
+prevents forgetting under multi-domain fine-tuning).
+                      pair    modk  ratio  d12    det_hard stoch_hard joint_dyck bars
+  s111 frozen         .8585   1.0   .596   .9838  1.312    2.668      .9908      4
+       HARD           .8491   1.0   .504   .9818  1.801    2.795      .979       4
+       SOFT           .8585   1.0   .503   .9823  1.921    2.816      .9724      4
+  s222 frozen         .8774   1.0   .503   .9496  2.172    2.522      .9108      4
+       HARD           .6981   1.0   .532   .9437  2.028    2.382      .9672      3
+       SOFT           .717    1.0   .503   .9442  2.100    2.455      .9633      4 (pair AT bar)
+READ: co-adaptation does NOT improve the deterministic-position CE
+(s111 det 1.31 -> 1.80/1.92 worse; s222 2.17 -> 2.03/2.10 ~flat) and
+ERODES the pair-OOD basin (s222 .877 -> .698/.717 — the certified
+bar). Small consistent gains: joint dyck +.05-.06 (B sees mixdd
+context), ratio s111 .596 -> .50 (A adapts to the 1024 statistics via
+lower 1024 CE). Gradient isolation (HARD) did not protect pair; both
+modes pull expert A toward the joint-pool density (the P28 hazard
+axis) at the expense of its retrieval circuit — the same fusion-wall
+mechanism in miniature (L-FUSION-WALL: shared gradient on
+heterogeneous streams starves the sharp task circuits).
+LAW: L-FROZEN-EXPERTS-ARE-THE-OPTIMUM — under the certified gate,
+per-regime frozen experts dominate co-adapted ones on the certified
+bars; the loss-optimal update direction for the joint pool is the
+hazard/density direction, which trades exactness for CE.
+DECISION: co-adaptation CLOSED (negative, do not retry as-is); the
+canonical system remains frozen-experts + learned gates.
+RESULT ARCH-VET-LM-P29.

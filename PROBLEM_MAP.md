@@ -999,3 +999,14 @@ stack use from the grammar coin-flip ceiling.
   or damage certification?; 2. distribution-shift routing (gate on
   unseen mixture ratios / longer text turns); 3. depth-3 seam of the
   learned gate (s222 det 2.17); 4. results-per-compute write-up.
+
+## ARCH-VET P29 (cycle 65) — co-adaptation NEGATIVE
+- Unfreezing A/B under the frozen gate (lr 3e-4, 600 st, HARD or
+  SOFT): det CE not improved (s111 worse 1.31->1.80), pair-OOD eroded
+  (s222 .877->.698/.717), only joint dyck +.05. L-FROZEN-EXPERTS-
+  ARE-THE-OPTIMUM. Closed.
+- OPEN QUEUE (C66): 1. distribution-shift routing (unseen mixture
+  ratios, longer text turns, L=1024 chatmix) for the hierarchical
+  gate; 2. learned-gate depth-3 seam (s222 det 2.17): gate trained
+  with a det-position-weighted loss; 3. results-per-compute write-up
+  (all certified results < 45 min/run on 2 cores).
