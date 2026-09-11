@@ -931,3 +931,16 @@ stack use from the grammar coin-flip ceiling.
 - OPEN QUEUE: 1. reproduce.sh + 10-seed certification of the unified
   learned-gate row with CIs; 2. chatbot expert C in the modular frame;
   3. end-to-end co-adaptation; 4. in-range parity (256-hard CE).
+
+## ARCH-VET P25 (cycle 62 close) — 10-SEED CERTIFICATION
+- Unified learned-gate system, 10 seeds: bars [4]x10, all-4 rate
+  10/10 (Wilson 95% [.722, 1]); pair .889+-.049, modk 1.0, ratio
+  .499+-.051, dyck d12 .968+-.016; joint pair .999 WITH dyck .942.
+- L-UNIFIED-ROW-10-SEED. reproduce.sh = single-command third-party
+  reproduction (verify 35/35 -> P25 -> summary).
+- All four groundbreakingness conditions closed (P22/P23/P24/P25).
+- OPEN QUEUE (C63): 1. chatbot/fluency expert C in the modular frame
+  (the end-form "exact + fluent" requirement; inherits L-DATA-CEILING);
+  2. in-range parity (256-hard CE); 3. end-to-end co-adaptation;
+  4. distribution-shift routing (gate on unseen stream mixtures);
+  5. associative-capacity probe.

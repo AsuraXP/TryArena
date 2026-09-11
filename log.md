@@ -3611,3 +3611,39 @@ BOUNDARIES: 2 seeds; TF experts d32 (a d48 monolith already failed in
 P23, and d32 x2 is the params-matched split); TF lr/schedule untuned
 (same as VET arms); TF A expert not swept over PE (NAPE chosen as the
 best in-range P23 arm). RESULT ARCH-VET-LM-P24 in log.jsonl.
+
+## CYCLE 62 CLOSE — ARCH-VET P25: 10-SEED CERTIFICATION of the unified learned-gate system (third-party reproducibility condition)
+
+PROTOCOL: seeds 111..1010 (7 new). Per seed: expert A VETDCC-big
+vanilla@4000, expert B STACKDCC2-big D12 deepmix@2000 (ctor under
+manual_seed(seed)), P22 GRU gate 1500 steps on frozen experts, hard
+argmax dispatch; identical bars (pair>=.717, modk=1, ratio<=.6, dyck
+d12>=.85). Durable per-seed JSON in runs/p25_s*.json; Wilson 95% CIs.
+Stage-1 wall: A 1980-2353 s, B 1120-1580 s at 2-concurrent; total
+P25 wall ~6.4 h on the 2-core box.
+RESULTS (n=10):
+  bars_passed_per_seed [4,4,4,4,4,4,4,4,4,4]  all-4 rate 10/10
+  pair     mean .8887 sd .0493  [.8302, .9811]   basin 10/10 CI [.722,1]
+  modk     1.0 x10 (sd 0)                        basin 10/10
+  ratio    mean .499  sd .0507  [.433, .596]     basin 10/10
+  dyck d12 mean .9681 sd .0159  [.944, .9845]    basin 10/10
+  joint heterogeneous pass: pair .9994+-.002 WITH dyck .9417+-.0607
+  track (never certified): .805+-.21 [.349, 1.0] — still the noisy axis
+READ: every basin the program previously reported at 3/3 (P16-P21C)
+holds at 10/10 with the learned dispatcher; the P22 s111 ratio .596
+was the worst of 10 (mean .499), so the marginal-ratio worry is
+retired. The only sub-.85 numbers anywhere are joint dyck on s333/s999
+(.856/.823, still above and near the bar) and track.
+CLAIM STATUS — all four groundbreakingness conditions closed:
+  fair control (P23 monolith + P24 modular TF, both <=1 bar),
+  learned dispatch (P22), one unified model (P21C/P22),
+  third-party reproducibility (P25 10/10 + reproduce.sh + Wilson CIs).
+NEW LAW: L-UNIFIED-ROW-10-SEED — the 44,484p VET-of-experts with a
+1,410p learned causal gate passes all four certified reasoning bars
+on 10/10 independent inits (Wilson 95% lower bound .722 on each bar
+and on the joint all-4 rate).
+BOUNDARIES (honest): 10 seeds bounds the basin rate at >=.72, not
+"always"; the gate is trained in-family; experts frozen; eval sets
+are the fixed program seeds (555/666/777/31415, streams of 24-8);
+in-range parity (256-hard CE 2.5-2.9 vs TF ~2.0) remains open; no
+fluency axis in the unified system yet. RESULT ARCH-VET-LM-P25.

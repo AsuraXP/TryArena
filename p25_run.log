@@ -1,0 +1,102 @@
+[p25 stage1] 14 expert trainings pending: [('A', 444), ('B', 444), ('A', 555), ('B', 555), ('A', 666), ('B', 666), ('A', 777), ('B', 777), ('A', 888), ('B', 888), ('A', 999), ('B', 999), ('A', 1010), ('B', 1010)]
+[p25 stage1] launched A s444
+[p25 stage1] launched B s444
+[p25 stage1] B s444 exit 0 in 1120s
+[p25 stage1] launched A s555
+[p25 stage1] A s444 exit 0 in 1980s
+[p25 stage1] launched B s555
+[p25 stage1] B s555 exit 0 in 1190s
+[p25 stage1] launched A s666
+[p25 stage1] A s555 exit 0 in 2100s
+[p25 stage1] launched B s666
+[p25 stage1] B s666 exit 0 in 1350s
+[p25 stage1] launched A s777
+[p25 stage1] A s666 exit 0 in 2290s
+[p25 stage1] launched B s777
+[p25 stage1] B s777 exit 0 in 1240s
+[p25 stage1] launched A s888
+[p25 stage1] A s777 exit 0 in 2170s
+[p25 stage1] launched B s888
+[p25 stage1] B s888 exit 0 in 1290s
+[p25 stage1] launched A s999
+[p25 stage1] A s888 exit 0 in 2200s
+[p25 stage1] launched B s999
+[p25 stage1] B s999 exit 0 in 1290s
+[p25 stage1] launched A s1010
+[p25 stage1] A s999 exit 0 in 2240s
+[p25 stage1] launched B s1010
+[p25 stage1] B s1010 exit 0 in 1580s
+[p25 stage1] A s1010 exit 0 in 2353s
+[p22 learned s111] pair=0.8585 modk=1.0 ratio=0.596 dyck_d12=0.9838 joint_pair=1.0 joint_dyck=0.9908 B_share={'vanilla': 0.0324, 'mixdd': 0.5446, 'deepdyck': 0.9801} agree=0.648
+[p25 stage2] s111 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+[p22 learned s222] pair=0.8774 modk=1.0 ratio=0.503 dyck_d12=0.9496 joint_pair=0.9936 joint_dyck=0.9108 B_share={'vanilla': 0.0052, 'mixdd': 0.5347, 'deepdyck': 0.9771} agree=0.6579
+[p25 stage2] s222 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+/home/user/TryArena/arch_vet_p22.py:121: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  f"{float(loss):.4f} ({time.time()-t0:.0f}s)", flush=True)
+  [gate s333] step 250/1500 loss 0.9181 (112s)
+  [gate s333] step 500/1500 loss 0.8275 (213s)
+  [gate s333] step 750/1500 loss 0.9887 (315s)
+  [gate s333] step 1000/1500 loss 0.8739 (415s)
+  [gate s333] step 1250/1500 loss 0.9159 (520s)
+  [gate s333] step 1500/1500 loss 0.9739 (624s)
+[p22 learned s333] pair=0.8585 modk=1.0 ratio=0.443 dyck_d12=0.9728 joint_pair=1.0 joint_dyck=0.8556 B_share={'vanilla': 0.0126, 'mixdd': 0.5486, 'deepdyck': 0.9838} agree=0.6385
+[p25 stage2] s333 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+  [gate s444] step 250/1500 loss 1.0576 (114s)
+  [gate s444] step 500/1500 loss 0.8225 (232s)
+  [gate s444] step 750/1500 loss 0.8476 (354s)
+  [gate s444] step 1000/1500 loss 0.8746 (474s)
+  [gate s444] step 1250/1500 loss 0.7393 (590s)
+  [gate s444] step 1500/1500 loss 0.7737 (704s)
+[p22 learned s444] pair=0.9151 modk=1.0 ratio=0.546 dyck_d12=0.9836 joint_pair=1.0 joint_dyck=0.9921 B_share={'vanilla': 0.005, 'mixdd': 0.5331, 'deepdyck': 0.9726} agree=0.6595
+[p25 stage2] s444 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+  [gate s555] step 250/1500 loss 0.9717 (120s)
+  [gate s555] step 500/1500 loss 0.8542 (239s)
+  [gate s555] step 750/1500 loss 0.8600 (356s)
+  [gate s555] step 1000/1500 loss 0.8910 (474s)
+  [gate s555] step 1250/1500 loss 0.8971 (592s)
+  [gate s555] step 1500/1500 loss 0.9764 (711s)
+[p22 learned s555] pair=0.8302 modk=1.0 ratio=0.504 dyck_d12=0.9752 joint_pair=1.0 joint_dyck=0.9816 B_share={'vanilla': 0.0088, 'mixdd': 0.5422, 'deepdyck': 0.9757} agree=0.6505
+[p25 stage2] s555 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+  [gate s666] step 250/1500 loss 0.8875 (115s)
+  [gate s666] step 500/1500 loss 0.7664 (234s)
+  [gate s666] step 750/1500 loss 0.9136 (353s)
+  [gate s666] step 1000/1500 loss 0.8652 (474s)
+  [gate s666] step 1250/1500 loss 0.7953 (594s)
+  [gate s666] step 1500/1500 loss 0.8954 (713s)
+[p22 learned s666] pair=0.934 modk=1.0 ratio=0.433 dyck_d12=0.9459 joint_pair=1.0 joint_dyck=0.9738 B_share={'vanilla': 0.0112, 'mixdd': 0.5503, 'deepdyck': 0.9869} agree=0.6423
+[p25 stage2] s666 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+  [gate s777] step 250/1500 loss 1.0702 (118s)
+  [gate s777] step 500/1500 loss 0.7142 (236s)
+  [gate s777] step 750/1500 loss 0.9983 (357s)
+  [gate s777] step 1000/1500 loss 0.8996 (477s)
+  [gate s777] step 1250/1500 loss 0.7839 (598s)
+  [gate s777] step 1500/1500 loss 0.8918 (718s)
+[p22 learned s777] pair=0.934 modk=1.0 ratio=0.469 dyck_d12=0.969 joint_pair=1.0 joint_dyck=0.9567 B_share={'vanilla': 0.0105, 'mixdd': 0.5524, 'deepdyck': 0.9817} agree=0.6402
+[p25 stage2] s777 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+  [gate s888] step 250/1500 loss 0.9949 (117s)
+  [gate s888] step 500/1500 loss 0.8828 (232s)
+  [gate s888] step 750/1500 loss 0.8077 (349s)
+  [gate s888] step 1000/1500 loss 0.8510 (470s)
+  [gate s888] step 1250/1500 loss 0.8617 (588s)
+  [gate s888] step 1500/1500 loss 1.0426 (707s)
+[p22 learned s888] pair=0.8491 modk=1.0 ratio=0.528 dyck_d12=0.9845 joint_pair=1.0 joint_dyck=0.9948 B_share={'vanilla': 0.0141, 'mixdd': 0.5533, 'deepdyck': 0.9825} agree=0.6393
+[p25 stage2] s888 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+  [gate s999] step 250/1500 loss 0.9926 (114s)
+  [gate s999] step 500/1500 loss 0.8061 (228s)
+  [gate s999] step 750/1500 loss 0.9284 (345s)
+  [gate s999] step 1000/1500 loss 0.7823 (459s)
+  [gate s999] step 1250/1500 loss 0.8420 (571s)
+  [gate s999] step 1500/1500 loss 0.8721 (688s)
+[p22 learned s999] pair=0.8491 modk=1.0 ratio=0.454 dyck_d12=0.944 joint_pair=1.0 joint_dyck=0.8228 B_share={'vanilla': 0.0063, 'mixdd': 0.54, 'deepdyck': 0.9833} agree=0.6526
+[p25 stage2] s999 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+  [gate s1010] step 250/1500 loss 0.9047 (118s)
+  [gate s1010] step 500/1500 loss 0.7267 (235s)
+  [gate s1010] step 750/1500 loss 0.9967 (352s)
+  [gate s1010] step 1000/1500 loss 0.9403 (464s)
+  [gate s1010] step 1250/1500 loss 0.7963 (576s)
+  [gate s1010] step 1500/1500 loss 0.7992 (688s)
+[p22 learned s1010] pair=0.9811 modk=1.0 ratio=0.514 dyck_d12=0.9726 joint_pair=1.0 joint_dyck=0.9383 B_share={'vanilla': 0.0094, 'mixdd': 0.5456, 'deepdyck': 0.9831} agree=0.647
+[p25 stage2] s1010 bars=4 {'pair': True, 'modk': True, 'ratio': True, 'dyck_d12': True}
+[P25] SUMMARY {"n_seeds": 10, "seeds": [111, 222, 333, 444, 555, 666, 777, 888, 999, 1010], "metrics": {"pair": [0.8585, 0.8774, 0.8585, 0.9151, 0.8302, 0.934, 0.934, 0.8491, 0.8491, 0.9811], "modk": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "ratio": [0.596, 0.503, 0.443, 0.546, 0.504, 0.433, 0.469, 0.528, 0.454, 0.514], "dyck_d12": [0.9838, 0.9496, 0.9728, 0.9836, 0.9752, 0.9459, 0.969, 0.9845, 0.944, 0.9726], "joint_pair": [1.0, 0.9936, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "joint_dyck": [0.9908, 0.9108, 0.8556, 0.9921, 0.9816, 0.9738, 0.9567, 0.9948, 0.8228, 0.9383], "track_hard": [0.9535, 0.7674, 0.3488, 0.8837, 0.907, 1.0, 0.7209, 0.907, 0.5581, 1.0]}, "metric_stats": {"pair": {"mean": 0.8887, "sd": 0.0493, "min": 0.8302, "max": 0.9811}, "modk": {"mean": 1.0, "sd": 0.0, "min": 1.0, "max": 1.0}, "ratio": {"mean": 0.499, "sd": 0.0507, "min": 0.433, "max": 0.596}, "dyck_d12": {"mean": 0.9681, "sd": 0.0159, "min": 0.944, "max": 0.9845}, "joint_pair": {"mean": 0.9994, "sd": 0.002, "min": 0.9936, "max": 1.0}, "joint_dyck": {"mean": 0.9417, "sd": 0.0607, "min": 0.8228, "max": 0.9948}, "track_hard": {"mean": 0.8046, "sd": 0.2115, "min": 0.3488, "max": 1.0}}, "bar_basins": {"pair": {"k": 10, "n": 10, "rate": 1.0, "wilson95": [0.722, 1.0]}, "modk": {"k": 10, "n": 10, "rate": 1.0, "wilson95": [0.722, 1.0]}, "ratio": {"k": 10, "n": 10, "rate": 1.0, "wilson95": [0.722, 1.0]}, "dyck_d12": {"k": 10, "n": 10, "rate": 1.0, "wilson95": [0.722, 1.0]}}, "all4": {"k": 10, "n": 10, "rate": 1.0, "wilson95": [0.722, 1.0]}, "bars_passed_per_seed": [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]}
+DONE

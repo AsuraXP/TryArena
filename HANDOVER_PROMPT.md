@@ -1,3 +1,16 @@
+
+## STATE AT CYCLE 62 CLOSE (read first)
+The unified VET-of-experts (44,484p = VETDCC-big A + STACKDCC2-big B +
+1,410p learned causal GRU gate) is CERTIFIED 4/4 bars on 10/10 seeds
+(ARCH-VET-LM-P25; reproduce.sh). Fair Transformer controls at matched
+params/data/steps: monolithic NoPE/ALiBi/NAPE <=1 bar (P23); a
+Transformer-of-experts under the identical recipe = 1 bar, dyck only
+(P24) -> L-SUBSTRATE-NOT-MODULARITY. Learned dispatch suffices (P22).
+CYCLE 63 PLAN: 1. chatbot/fluency expert C inside the modular frame
+with the same gate (3-way); 2. in-range parity; 3. co-adaptation;
+4. distribution-shift routing. Env: torch wiped on every re-provision
+(pip install --break-system-packages torch numpy); git history may be
+flattened -> fetch + `git reset --mixed FETCH_HEAD` (never --hard).
 # FINAL HANDOVER PROMPT — paste everything in this file into the new AI
 
 You are an elite, autonomous AI Research Scientist taking over the ARC-2
