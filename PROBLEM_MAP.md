@@ -944,3 +944,17 @@ stack use from the grammar coin-flip ceiling.
   2. in-range parity (256-hard CE); 3. end-to-end co-adaptation;
   4. distribution-shift routing (gate on unseen stream mixtures);
   5. associative-capacity probe.
+
+## ARCH-VET P26 (cycle 63) — FLUENCY EXPERT C (byte GRU) + 3-way learned gate
+- Routed text CE == C-alone (2.786/2.674; gate 99.6% C on text, 0% C
+  on symbols); chatmix one-pass reasoning modk 1.0, pair .98/.99,
+  dyck .985/.895, track .91/.95; best text model vs TF-NAPE d56
+  (3.17/3.14) and GRU d64x2 (3.34/3.40) monoliths at ~matched params.
+- L-MODALITY-BOUNDARY-IS-FREE. NEGATIVE: L-FLAT-GATE-BLURS-DEPTH —
+  the 3-way gate regresses the length ratio to 1.0 (bars 3/4).
+- chatmix reasoning metric is in-range (does not separate the GRU
+  monolith); OOD bars for 304-vocab controls still owed.
+- OPEN QUEUE (C63): 1. P26B hierarchical gate (modality gate over the
+  certified 2-way gate) -> restore 4/4 + fluency; 2. OOD bars for the
+  fluency controls; 3. 10-seed of the 3-expert system; 4. in-range
+  parity; 5. co-adaptation.

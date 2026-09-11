@@ -3647,3 +3647,62 @@ BOUNDARIES (honest): 10 seeds bounds the basin rate at >=.72, not
 are the fixed program seeds (555/666/777/31415, streams of 24-8);
 in-range parity (256-hard CE 2.5-2.9 vs TF ~2.0) remains open; no
 fluency axis in the unified system yet. RESULT ARCH-VET-LM-P25.
+
+## CYCLE 63 — ARCH-VET P26: FLUENCY EXPERT C IN THE MODULAR FRAME (3-way learned gate, union vocab 48 sym + 256 bytes)
+
+DESIGN: frozen A (VETDCC 21,257p) + frozen B (STACKDCC2 21,817p) +
+NEW C = 1-layer byte GRU d48 (43,600p) trained 4000 steps ONLY on
+text-only streams (corpus_full.txt, first 90%; val = last 10%);
+Gate3 = one-hot(304) -> GRU(8) -> 3 logits (7,563p) trained 1500 steps
+by the composed-mixture CE on a joint pool (vanilla + mixdd + deep-
+dyck + CHATMIX + text). Total 94,237p. Controls on the SAME chatmix
+data, 6000 steps: TF-NAPE d56 monolith (85,872p), GRU d64x2 monolith
+(89,136p). Prior art: arXiv 2604.23108 (MoHGE), 2507.11181, C22b.
+RESULTS (seeds 111/222):
+  text CE/byte, held-out text streams:
+    C-alone 2.786/2.674 | ROUTED 2.786/2.674 (identical: gate sends
+    99.6% of text positions to C, 0% to C on symbolic streams)
+    TF-NAPE monolith 3.170/3.137 | GRU monolith 3.339/3.397
+  chatmix streams (text + reasoning interleaved), ONE pass:
+    unified3  text CE 3.076/2.916  sym CE 1.778/2.065
+              track .909/.946 modk 1.0/1.0 pair .981/.990 dyck .985/.895
+    TF-NAPE   text CE 3.250/3.314  sym CE 1.262/1.254
+              track .691/.436 modk .382/.235 pair .654/.798 dyck .979/.960
+    GRU d64x2 text CE 3.749/3.827  sym CE 1.155/1.157
+              track .946/.946 modk 1.0/1.0 pair .990/.971 dyck .972/.985
+  gate expert-share [A,B,C]: text [.004,0,.996] chatmix [.34,.13,.53]
+    vanilla [.92,.08,0] deepdyck [.03,.97,0]
+  REGRESSION GUARD (symbolic unified row through the 3-way gate):
+    pair .8585/.8774 ✓ modk 1/1 ✓ dyck d12 .9838/.9496 ✓
+    length ratio 1.02/1.00 ✗  -> bars 3/4 (P22 2-way gate: 4/4)
+READ: (1) POSITIVE — the language/symbol boundary is learned
+perfectly from tokens alone; fluency is carried UNDAMAGED into the
+unified system (routed text CE == C-alone to 4 decimals) while all
+in-stream reasoning answers stay exact (modk 1.0, pair .98-.99, dyck
+.90-.98). One parameter set now speaks and reasons; the modular
+frame extends to a heterogeneous (recurrent-LM) expert. (2) The
+unified system is the best text model of the three at ~matched
+params (2.67-2.79 vs 3.14-3.40) — the monoliths pay for reasoning
+with fluency (TF) or for fluency with... the GRU monolith actually
+matches in-range reasoning; NOTE the chatmix reasoning metric is
+IN-RANGE (mixdd train regimes) and therefore does NOT separate
+substrates; the OOD bars (hard intervals, L=1024, d12) remain the
+separator and were not run for the 304-vocab controls (queued).
+(3) NEGATIVE, logged honestly: the 3-way gate REGRESSES the
+length-invariance bar (ratio 1.0 vs .50-.60). Cause visible in the
+share table: B-share on vanilla streams rose to .06-.08 (2-way gate:
+.005-.03); at L=1024 the extra B dispatch on shallow dyck inflates CE.
+The 3-way softmax spreads the depth boundary that the 2-way gate had
+learned sharply. The other three bars are unchanged to 4 decimals.
+NEW LAW: L-MODALITY-BOUNDARY-IS-FREE — a token-only causal gate
+separates byte-language from symbolic-reasoning positions at 99.6%
+with zero cross-leak, so a fluency expert can be added to the
+certified modular system at no cost to fluency or in-stream exactness.
+NEW LAW (negative): L-FLAT-GATE-BLURS-DEPTH — flattening a 3-way
+dispatch over heterogeneous experts blurs the fine-grained
+(depth-3) A/B boundary that a dedicated 2-way gate resolves; the
+length-invariance bar is the casualty (1.0 vs .5).
+NEXT (P26B): HIERARCHICAL gate — Gate-M (modality: C vs {A,B}) on
+top of the certified P22 Gate (A vs B), so the 10-seed row is
+preserved by construction; then run the OOD bars for the 304-vocab
+controls. RESULT ARCH-VET-LM-P26 in log.jsonl; C_s*/G3_s* in p21_ckpt.
