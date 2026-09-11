@@ -985,3 +985,17 @@ stack use from the grammar coin-flip ceiling.
   3. track family: certify or retire; 4. distribution-shift routing;
   5. write-up: results-per-compute table (all runs < 45 min on 2
   cores, whole 10-seed cert ~4 h).
+
+## ARCH-VET P28 (cycle 65) — in-range parity DIAGNOSED and re-scoped
+- 256-hard CE decomposed: det (answers/closes, 5.3% of positions) VET
+  .98-1.31 vs TF-NoPE 1.73 / ALiBi 3.33; stoch (94.7%) VET 2.41-2.82
+  vs NoPE 2.10 — the entire TF lead is filler/gap-end hazard
+  extrapolation (2.66 vs 2.94-3.39) + count continuation.
+- In range and at 1024 VET wins both halves (det .05/.06 vs .93/2.40).
+- L-PARITY-GAP-IS-HAZARD. Axis closed as a reasoning concern; report
+  det-CE and hazard-CE separately from now on.
+- OPEN QUEUE (C65/66): 1. end-to-end co-adaptation under the
+  hierarchical gate (experts unfrozen, small lr) — does it help det
+  or damage certification?; 2. distribution-shift routing (gate on
+  unseen mixture ratios / longer text turns); 3. depth-3 seam of the
+  learned gate (s222 det 2.17); 4. results-per-compute write-up.

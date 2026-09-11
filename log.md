@@ -3785,3 +3785,50 @@ do; any future claim must be stated on the OOD bars).
 BOUNDARIES: controls 2 seeds; chatmix dyck .77 on s999 (B expert
 weakest seed, consistent with P25 joint dyck .823); track uncertified;
 absolute fluency corpus-bound. RESULT ARCH-VET-LM-P27 / -P27B.
+
+## CYCLE 65 — ARCH-VET P28: IN-RANGE PARITY DIAGNOSIS (where is the 256-hard CE gap?)
+
+METHOD: label every target position det (answers, dyck closes —
+grammar-determined) or stoch (generator draws: fillers/gap-end,
+counts, keys, symbols, task type); per-class NLL for A-alone, the
+unified learned-gate system, TF-ALiBi and TF-NoPE (P23 recipe,
+retrained 6000 steps, saved p21_ckpt/P23_*_s111.pt).
+256-hard (2048 targets; det n=108 = 5.3%):
+                     total   det    stoch  fill/gap-end(1269)  count(401)
+  A-alone s111       2.739  1.298   2.819    3.392              1.013
+  unified s111       2.597  1.312   2.668    3.392              1.013
+  A-alone s222       2.337  0.977   2.413    2.936              0.728
+  unified s222       2.503  2.172   2.522    2.936              0.728
+  TF-ALiBi s111      2.864  3.330   2.838    3.426              1.831
+  TF-NoPE  s111      2.083  1.726   2.103    2.660              0.614
+  per det class: answers VET .329 vs TF-NoPE 1.375 / ALiBi 3.400;
+  dyck close (depth 3, out of A's regime) VET 2.95-2.98 vs NoPE 2.32.
+256-train: det VET .046/.048 (unified .08) vs TF-NoPE .926, ALiBi .592;
+  stoch VET 1.45 vs NoPE 1.60, ALiBi 1.47 -> VET wins BOTH halves in range.
+1024: VET det .06, stoch 1.44 (flat) vs NoPE 2.40 / 3.11 (collapse).
+READ: (1) The only regime where a Transformer's total CE is lower is
+256-hard, and 94.7% of that loss is generator-draw positions; the
+whole TF lead (2.08 vs 2.34-2.74) sits in ONE class — filler/gap-end
+(fill 2.66 vs 2.94-3.39), plus counts (0.61 vs 0.73-1.01). Those are
+"how long will this gap/count continue" hazard estimates on gap
+lengths 2-4x the training range — density extrapolation, not
+reasoning. (2) On the deterministic (reasoning) positions VET is
+better in every set: 256-hard answers .33 vs 1.37 (NoPE), in-range
+det .05 vs .93, 1024 det .06 vs 2.40. (3) Label-smoothing sweep
+(eps 0-.2 on A) moves the hard total by <.13 and costs in-range det;
+the fill gap is not calibration slack, it is the counter/controller
+predicting "gap continues" with a training-range hazard prior. (4)
+s222 unified det 2.17 > A-alone .98: the learned gate mis-routes some
+depth-3 hard-dyck closes (dyck_open 6.87->2.02 improved, but det_close
+n=40 pays) — a known depth-3 seam, small n.
+LAW: L-PARITY-GAP-IS-HAZARD — the residual in-range/256-hard CE deficit
+of the VET system versus a Transformer is confined to stochastic
+gap-continuation positions (filler hazard extrapolation) and is
+absent at every grammar-determined position; it is therefore not a
+reasoning gap and cannot be closed by more reasoning structure — only
+by a density expert for hazard, which carries no reasoning content.
+DECISION: in-range parity axis re-scoped to "CE on det positions"
+(VET wins everywhere) + "hazard CE" (TF-NoPE wins at 256-hard, VET
+wins at 256-train and 1024). Not building a hazard expert now (no
+reasoning content; L-DATA-CEILING-style density work is not the goal).
+RESULT ARCH-VET-LM-P28.

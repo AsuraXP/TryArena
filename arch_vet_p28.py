@@ -91,7 +91,7 @@ def nll_by_class(logits_fn, xs, L):
     for b in range(xs.shape[0]):
         x = xs[b, :L + 1].tolist()
         lg = logits_fn(xs[b:b + 1, :L + 1])[0, :L]
-        nll = -F.log_softmax(lg, -1).gather(-1, xs[b, 1:L + 1].unsqueeze(-1)).squeeze(-1).tolist()
+        nll = (-F.log_softmax(lg, -1).gather(-1, xs[b, 1:L + 1].unsqueeze(-1)).squeeze(-1)).tolist()
         for t, c in enumerate(classify(x)):
             a = agg.setdefault(c, [0.0, 0]); a[0] += nll[t]; a[1] += 1
     tot = sum(v[0] for v in agg.values()) / sum(v[1] for v in agg.values())
