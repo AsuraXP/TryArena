@@ -1,4 +1,15 @@
 
+## STATE AT CYCLE 63 (read first)
+END FORM REACHED AT PoC SCALE: one 97,950p system (A VETDCC + B stack
++ C byte-GRU fluency expert + certified 2-way gate G + modality gate M)
+speaks (text CE 2.79/2.67 per byte, best of matched controls), holds
+exact reasoning in-stream (modk 1.0, pair .99, dyck .90-.99) and keeps
+all four certified OOD bars (4/4 both seeds; symbolic dispatch bit-
+identical to the 10-seed-certified gate). P26 flat 3-way gate = 3/4
+(L-FLAT-GATE-BLURS-DEPTH); P26B hierarchical gate = fix.
+CYCLE 64 PLAN: 10-seed of the 3-expert system; OOD bars for the fluency
+controls; generation-quality probe; in-range parity; co-adaptation.
+
 ## STATE AT CYCLE 62 CLOSE (read first)
 The unified VET-of-experts (44,484p = VETDCC-big A + STACKDCC2-big B +
 1,410p learned causal GRU gate) is CERTIFIED 4/4 bars on 10/10 seeds

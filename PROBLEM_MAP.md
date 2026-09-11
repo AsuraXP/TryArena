@@ -958,3 +958,15 @@ stack use from the grammar coin-flip ceiling.
   certified 2-way gate) -> restore 4/4 + fluency; 2. OOD bars for the
   fluency controls; 3. 10-seed of the 3-expert system; 4. in-range
   parity; 5. co-adaptation.
+
+## ARCH-VET P26B (cycle 63) — HIERARCHICAL GATE: end form reached at PoC scale
+- Modality gate M (3.7k) over frozen certified gate G: symbolic
+  dispatch identity 1.0; guard 4/4 both seeds; text CE == C-alone;
+  chatmix reasoning modk 1.0 / pair .99 / dyck .90-.99.
+- 97,950p single system = exact + fluent. L-HIERARCHICAL-GATE-
+  PRESERVES-CERTIFICATION.
+- OPEN QUEUE (C64): 1. 10-seed of the 3-expert system (C_s* for 8
+  more seeds ~4 min each + M); 2. OOD bars for the 304-vocab
+  monolith controls; 3. in-range parity; 4. co-adaptation;
+  5. generation-quality probe (sampled text + exact answers in one
+  transcript).

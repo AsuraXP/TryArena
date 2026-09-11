@@ -1,0 +1,11 @@
+  [gateM s111] step 250/1000 loss 1.2914 (224s)
+  [gateM s111] step 500/1000 loss 0.8302 (443s)
+  [gateM s111] step 750/1000 loss 0.5085 (658s)
+  [gateM s111] step 1000/1000 loss 1.7244 (876s)
+[p26b hier s111] text routed 2.786 (C 2.786) | chatmix {'text_ce': 3.0763, 'sym_ce': 1.8926} | reasoning {'track': 0.9273, 'modk': 1.0, 'pair': 0.9904, 'dyck_close': 0.9846, 'n_close': 325} | share {'text': [0.0, 0.0039, 0.9961], 'chatmix': [0.3389, 0.1357, 0.5254], 'vanilla': [0.9661, 0.0339, 0.0], 'deepdyck': [0.0198, 0.9802, 0.0]} | identity 1.0 | guard {'pair': 0.8585, 'modk': 1.0, 'ratio': 0.596, 'dyck_d12': 0.9838, 'bars': 4}
+  [gateM s222] step 250/1000 loss 1.3634 (215s)
+  [gateM s222] step 500/1000 loss 0.9797 (441s)
+  [gateM s222] step 750/1000 loss 0.5576 (658s)
+  [gateM s222] step 1000/1000 loss 1.9395 (880s)
+[p26b hier s222] text routed 2.6743 (C 2.6743) | chatmix {'text_ce': 2.916, 'sym_ce': 2.3118} | reasoning {'track': 0.9455, 'modk': 1.0, 'pair': 0.9904, 'dyck_close': 0.8954, 'n_close': 325} | share {'text': [0.0, 0.0039, 0.9961], 'chatmix': [0.3484, 0.1262, 0.5254], 'vanilla': [0.9951, 0.0049, 0.0], 'deepdyck': [0.0229, 0.9771, 0.0]} | identity 1.0 | guard {'pair': 0.8774, 'modk': 1.0, 'ratio': 0.503, 'dyck_d12': 0.9496, 'bars': 4}
+[P26B] DONE

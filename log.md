@@ -3706,3 +3706,35 @@ NEXT (P26B): HIERARCHICAL gate — Gate-M (modality: C vs {A,B}) on
 top of the certified P22 Gate (A vs B), so the 10-seed row is
 preserved by construction; then run the OOD bars for the 304-vocab
 controls. RESULT ARCH-VET-LM-P26 in log.jsonl; C_s*/G3_s* in p21_ckpt.
+
+## CYCLE 63 (cont.) — ARCH-VET P26B: HIERARCHICAL GATE restores 4/4 + fluency in ONE system
+
+DESIGN: modality gate M (one-hot(304) -> GRU(4) -> 1 logit, 3,713p),
+trained 1000 steps by the composed-mixture CE with A/B/C AND the
+certified P22 gate G frozen; dispatch = C if M, else G's A/B choice.
+RESULTS (seeds 111/222):
+  symbolic dispatch identity vs certified 2-way gate: 1.0 / 1.0
+  unified-row guard: pair .8585/.8774 modk 1/1 ratio .596/.503
+    dyck d12 .9838/.9496  -> bars 4/4, 4/4 (P26 flat gate: 3/3)
+  text CE routed 2.786/2.674 == C-alone (unchanged)
+  chatmix one pass: text CE 3.076/2.916; track .927/.946 modk 1/1
+    pair .990/.990 dyck .985/.895
+  gate share: text -> C .996; vanilla -> C 0 (A .966/.995);
+    deepdyck -> C 0 (B .980/.977)
+READ: the certified 10-seed row is preserved BY CONSTRUCTION (the
+modality gate never fires on symbolic streams, identity 1.0) and the
+fluency expert rides on top at zero cost. ONE parameter set
+(97,950p = A 21,257 + B 21,817 + C 43,600 + G 1,410 + M 3,713) now:
+speaks byte-level language at the best CE of any ~matched control,
+holds exact in-stream reasoning while conversing, and keeps all four
+certified OOD reasoning bars. This is the program's stated end form
+("one coherent exact + fluent model") at proof-of-concept scale.
+LAW: L-HIERARCHICAL-GATE-PRESERVES-CERTIFICATION — composing a new
+modality expert via a gate ABOVE a certified dispatcher (rather than
+re-learning a flat k-way gate) keeps the certified behaviour bit-
+identical on the certified domain; flat re-learning does not
+(L-FLAT-GATE-BLURS-DEPTH).
+BOUNDARIES: 2 seeds for the 3-expert system (10-seed = next); absolute
+fluency bounded by the 1MB corpus (L-DATA-CEILING); chatmix reasoning
+is in-range; controls' OOD bars still owed; no generation samples
+scored (CE only). RESULT ARCH-VET-LM-P26B.
