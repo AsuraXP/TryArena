@@ -970,3 +970,18 @@ stack use from the grammar coin-flip ceiling.
   monolith controls; 3. in-range parity; 4. co-adaptation;
   5. generation-quality probe (sampled text + exact answers in one
   transcript).
+
+## ARCH-VET P27/P27B (cycle 64) — exact+fluent system 10-SEED CERTIFIED
+- 3-expert hierarchical system: 4/4 bars on 10/10 seeds; dispatch
+  identity 1.0; text CE 2.724+-.045 == C-alone; chatmix modk .996,
+  pair .988, dyck .919+-.068; free-running generation exact .88-.91
+  (modk 1.0, pair .93).
+- Controls (304 vocab, OOD bars): TF-NAPE d56 0/0 bars; GRU d64x2
+  2/1 bars (in-range generation .86-.91 = matches; OOD fails).
+- L-EXACT-FLUENT-10-SEED; L-IN-RANGE-BLIND.
+- OPEN QUEUE (C65): 1. in-range parity (256-hard CE 2.5-2.9 vs TF
+  ~2.0 — the only axis where TF still leads); 2. end-to-end
+  co-adaptation (unfreeze experts under the hierarchical gate);
+  3. track family: certify or retire; 4. distribution-shift routing;
+  5. write-up: results-per-compute table (all runs < 45 min on 2
+  cores, whole 10-seed cert ~4 h).

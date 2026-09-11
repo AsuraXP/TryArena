@@ -3738,3 +3738,50 @@ BOUNDARIES: 2 seeds for the 3-expert system (10-seed = next); absolute
 fluency bounded by the 1MB corpus (L-DATA-CEILING); chatmix reasoning
 is in-range; controls' OOD bars still owed; no generation samples
 scored (CE only). RESULT ARCH-VET-LM-P26B.
+
+## CYCLE 64 — ARCH-VET P27/P27B: 10-SEED CERTIFICATION OF THE EXACT+FLUENT SYSTEM, FLUENCY-CONTROL OOD BARS, FREE-RUNNING GENERATION
+
+P27 (seeds 111..1010; C byte-GRU 4000 steps + modality gate M 1000
+steps trained per seed over the P25 A/B/G; ~25 min/seed):
+  bars_passed_per_seed [4 x10]  all-4 10/10  Wilson95 [.722, 1]
+  guard ratio [.596 .503 .443 .546 .504 .433 .469 .528 .454 .514]
+  symbolic dispatch identity vs certified gate G: 1.0 x10
+  routed text CE == C-alone on every seed: 2.724 +- .045 [2.666, 2.786]
+  chatmix one pass: modk .996 +- .008, pair .9878 x10, dyck .919 +- .068
+    [.768 (s999), .991], track .81-.93
+CONTROLS on the 304-vocab symbolic OOD bars (chatmix-trained, 6000 st):
+  TF-NAPE d56 (85.9k)  s111 pair .321 modk .288 ratio .942 d12 .811  -> 0 bars
+                       s222 pair .434 modk .385 ratio .689 d12 .728  -> 0 bars
+  GRU d64x2  (89.1k)   s111 pair .962 modk .615 ratio .605 d12 .893  -> 2 bars
+                       s222 pair .679 modk .346 ratio .639 d12 .896  -> 1 bar
+  text CE: TF 3.17/3.14, GRU 3.34/3.40 (unified 2.67-2.79)
+P27B FREE-RUNNING GENERATION (greedy continuation from the last
+answer marker in a chatmix transcript, exact-match of the produced
+answer tokens; 42 scored prompts/model, in-range regimes):
+  unified   .905 x8, .881 x2   (modk 1.0 x10, pair .933 x10, track .67-.75)
+  TF-NAPE   .405 / .452        (modk .33, pair .47/.73, track .42/.25)
+  GRU       .905 / .857        (modk 1.0, pair .933, track .75/.58)
+READ: (1) The exact+fluent system is certified at the same 10/10
+level as the symbolic row, with the certified dispatcher preserved
+bit-identically — the end form is now multi-seed. (2) Fair fluency
+controls confirm the P23/P24 pattern on the 304 vocab: the
+Transformer monolith trades everything (0 bars, worst text CE); the
+recurrent monolith matches in-range exactness (generation .86-.91)
+but fails OOD (1-2 bars: modk .35-.62, ratio .61-.64) — the same
+substrate law: in-range behaviour does not separate architectures,
+the OOD bars do. (3) Generation: answers produced autoregressively
+inside a running transcript are exact for modk (1.0) and pair (.93)
+in all 10 seeds; track is the weak family (.67-.75) — the track eval
+has always been the noisy uncertified axis (L=256, 8-symbol
+alphabet, hard gap). (4) Honest: generation probe is in-range and
+the produced text sample is symbolic-only after the answer (the
+prompt ends in a reasoning burst, so the model correctly continues
+reasoning); a text-side sample is not scored.
+LAWS: L-EXACT-FLUENT-10-SEED (3-expert hierarchical system 4/4 on
+10/10 seeds, text CE preserved exactly); L-IN-RANGE-BLIND (in-range
+exactness — chatmix answers, free-running generation — does not
+separate the VET system from a recurrent monolith; only the OOD bars
+do; any future claim must be stated on the OOD bars).
+BOUNDARIES: controls 2 seeds; chatmix dyck .77 on s999 (B expert
+weakest seed, consistent with P25 joint dyck .823); track uncertified;
+absolute fluency corpus-bound. RESULT ARCH-VET-LM-P27 / -P27B.

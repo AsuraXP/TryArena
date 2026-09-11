@@ -58,7 +58,12 @@ def generation_probe(model, n=24, seed=8080):
         # determine family of this task
         j = cut - 2
         while j > 0 and x[j] != T_TASK: j -= 1
-        fam = "track" if x[j + 1] != T_TASK else ("modk" if x[j + 2] == p19.ONE else "pair")
+        # back up over the full run of T_TASKs (task header is 1-3 T's)
+        while j > 0 and x[j - 1] == T_TASK: j -= 1
+        if x[j + 1] != T_TASK: fam = "track"
+        elif x[j + 2] == p19.ONE: fam = "modk"
+        elif x[j + 2] == T_TASK: continue            # dyck: no A_MARK answer
+        else: fam = "pair"
         need = 1 if fam != "pair" else 2
         ctx = torch.tensor(x[:cut]).unsqueeze(0); out = []
         for _ in range(need):
