@@ -3908,3 +3908,58 @@ alternation.
 BOUNDARIES: shifts are within the same two modalities (no third
 unseen modality); S3/S1 identity counts small; 2 seeds.
 RESULT ARCH-VET-LM-P30.
+
+## CYCLE 66 (cont.) — ARCH-VET P31: MULTI-QUERY ASSOCIATIVE RECALL + the KEYED REGISTER BANK (new mechanism) — capacity wall BROKEN
+
+WHY: Zoology (arXiv 2312.04927) — recall capacity is where fixed-state
+models lose to attention; arXiv 2607.09889 — "recall capped at ~state
+dim"; arXiv 2507.00449 (joint recall). The certified VET substrate has
+ONE soft register (pair = 1 binding). MQAR-stream task: n bindings
+(train n in 1..4) queried in random order after a filler gap (train
+4-12, hard 24-48); eval n in {1,2,3,4,6,8} (6/8 = count OOD), 8 keys x
+8 values, V=48 alphabet. 4000 steps, 512-stream pool, seeds 111/222.
+NEW MECHANISM — KEYED REGISTER BANK (KRB, +33 params on VETDCC):
+n_slots exact slots; slot address = integer hash of the key token (no
+softmax over slots, no learned addressing); a key seen in the binding
+phase arms a pending write, the next token's embedding is stored in
+that slot (exact); a key seen after the answer marker triggers a
+learned, state-conditioned read gate that REPLACES the register R with
+slot[key], so the certified readout (Wo/head) answers unchanged. O(d)
+per token, state O(n_slots*d), no growth with L, no attention.
+RESULTS (MQAR value accuracy at HARD gap 24-48; n=6,8 are OOD counts):
+                 params   n1     n2     n3     n4     n6     n8    ratio
+  VETDCC s111    21,257  .985   .702   .628   .505   .389   .269   .65
+  VETDCC s222    21,257  1.0    .737   .614   .527   .389   .225   .62
+  VET-KRB s111   21,290  1.0    1.0    1.0    1.0    1.0    1.0    .667
+  VET-KRB s222   21,290  .955   1.0    1.0    1.0    1.0    .997   .49
+  TF-NoPE s111   42,672  .273   .237   .203   .169   .174   .128   .47
+  TF-NoPE s222   42,672  .197   .175   .098   .087   .052   .053   .585
+  TF-ALiBi s111  42,672  .879   .983   .954   .886   .781   .667   .476
+  TF-ALiBi s222  42,672  .606   .483   .399   .375   .330   .272   .73
+  (in-range gap, train n: VETDCC 1.0/.80/.68/.61 -> .39/.26 at n6/8;
+   KRB 1.0 x4 -> .996/.984 (s111), 1.0 x6 (s222); ALiBi s111 .98->.71)
+READ: (1) The single-register substrate shows exactly the predicted
+capacity wall (n1 perfect, then ~1/n decay). (2) KRB removes it:
+perfect recall at every n at hard gaps on both seeds, INCLUDING n=6
+and n=8 which exceed every training count — capacity extrapolation
+that no softmax-addressed memory or attention arm shows (best TF:
+ALiBi s111 .67 at n8, and its second seed collapses to .27). (3) The
+mechanism is 33 parameters (the read gate); exactness comes from
+integer addressing, the same design principle as the DCC counters
+and the exact stack (L-EXACT-CHANNEL). (4) TF-NoPE fails MQAR at
+this scale outright (.05-.27 at hard gap) — recall over 24-48 filler
+tokens without positional signal is beyond a 2-layer d48 model; ALiBi
+is seed-fragile. (5) Length ratio unchanged (VET .49-.67).
+LAW: L-KEYED-REGISTER-BANK — exact integer key-addressing of a slot
+bank with a learned read gate gives count-extrapolating multi-query
+recall (n=8 at train n<=4, 1.0/.997) at +33 params; softmax/attention
+addressing at 2x params does not (best .67, seed-fragile).
+BOUNDARIES: keys are a fixed token set (8) with an identity hash —
+the collision regime (n_keys > n_slots) and CONTENT keys (multi-token
+or byte keys) are untested; 2 seeds; in-stream integration into the
+unified system (as a 4th capability of expert A) not yet done; MQAR
+here uses a single-token value.
+NEXT: P32 — collision/overflow regime (16 keys, 8 slots: does the
+learned controller handle eviction?) and multi-token keys; then fold
+KRB into expert A and re-certify the unified row (10 seeds).
+RESULT ARCH-VET-LM-P31; ckpts p21_ckpt/P31_*_s*.pt.

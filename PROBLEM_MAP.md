@@ -1024,3 +1024,15 @@ stack use from the grammar coin-flip ceiling.
   compute write-up + REPRO table; 3. new capability axis (queue item
   from C61: associative/multi-content capacity probe — the register
   holds 1 key/value; test 2-4 simultaneous bindings).
+
+## ARCH-VET P31 (cycle 66) — KEYED REGISTER BANK: MQAR capacity wall broken
+- MQAR (n bindings, random-order queries, hard gap 24-48; n=6,8 OOD):
+  VETDCC .99/.70/.63/.51/.39/.27 (1-register wall); VET-KRB 1.0 x6
+  (s111), .955/1.0/1.0/1.0/1.0/.997 (s222); TF-ALiBi .88/.98/.95/
+  .89/.78/.67 (s111) but .61->.27 (s222); TF-NoPE .05-.27.
+- KRB = exact integer key->slot addressing + learned read gate (+33
+  params). L-KEYED-REGISTER-BANK. Count-extrapolating recall.
+- OPEN QUEUE (C67): 1. KRB collision/overflow (16 keys / 8 slots)
+  and multi-token keys; 2. fold KRB into expert A, re-certify the
+  unified row 10-seed with MQAR as a 5th bar; 3. S5 boundary re-lock;
+  4. results-per-compute write-up.
