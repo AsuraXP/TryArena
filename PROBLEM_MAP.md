@@ -1010,3 +1010,17 @@ stack use from the grammar coin-flip ceiling.
   gate; 2. learned-gate depth-3 seam (s222 det 2.17): gate trained
   with a det-position-weighted loss; 3. results-per-compute write-up
   (all certified results < 45 min/run on 2 cores).
+
+## ARCH-VET P30 (cycle 66) — distribution-shift routing ROBUST
+- 7 unseen mixtures (text-heavy, reasoning-only, long turns, L=1024,
+  rapid alternation, deep dyck in text, 10% byte noise): modality
+  .948-.9985, symbolic identity .959-.9992 (large-n cells), text CE
+  leak 0.0000 everywhere, in-stream modk/pair .90-1.0, dyck .83-1.0;
+  gate entropy .05-.13. Weakest = boundary re-lock under dense
+  alternation (S5). L-GRAMMAR-LOCAL-GATE-IS-SHIFT-ROBUST.
+- OPEN QUEUE (C66/67): 1. boundary re-lock: 1-token lookahead-free
+  fix = gate input includes a delimiter-reset (test whether M with
+  h=8 or an explicit U/EOS reset closes S5 to >=.98); 2. results-per-
+  compute write-up + REPRO table; 3. new capability axis (queue item
+  from C61: associative/multi-content capacity probe — the register
+  holds 1 key/value; test 2-4 simultaneous bindings).
