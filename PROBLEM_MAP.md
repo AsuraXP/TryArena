@@ -1036,3 +1036,14 @@ stack use from the grammar coin-flip ceiling.
   and multi-token keys; 2. fold KRB into expert A, re-certify the
   unified row 10-seed with MQAR as a 5th bar; 3. S5 boundary re-lock;
   4. results-per-compute write-up.
+
+## ARCH-VET P32 (cycle 67) — KRB stress: collision / overflow / composite keys
+- Collision (16 keys/8 slots): KRB .93/.91/.82/.82 (n1-4), n8 .69 —
+  graceful, > TF-ALiBi at every n. Overflow (8 keys/4 slots): KRB
+  ~slots/n physics (.56 at n6), TF wins (.77) — attention's real
+  advantage = unbounded state. Composite two-token keys: pair-hash KRB
+  1.0/.93/.90/.90, n8 .68 vs TF .40. Two-table soft combine = no gain.
+- Budget confound: 3000 steps (P31 = 4000) -> R1 .93 not 1.0.
+- OPEN QUEUE (C67/68): 1. TAGGED KRB (key tag per slot, exact
+  tag-match read) at 4000 steps on R1/R2; 2. fold KRB into expert A
+  + unified 10-seed re-cert with MQAR bar; 3. S5 re-lock; 4. write-up.

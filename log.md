@@ -3963,3 +3963,54 @@ NEXT: P32 — collision/overflow regime (16 keys, 8 slots: does the
 learned controller handle eviction?) and multi-token keys; then fold
 KRB into expert A and re-certify the unified row (10 seeds).
 RESULT ARCH-VET-LM-P31; ckpts p21_ckpt/P31_*_s*.pt.
+
+## CYCLE 67 — ARCH-VET P32: KRB under COLLISION / OVERFLOW / COMPOSITE KEYS (seed 111, 3000 steps — NOTE: 3/4 of P31's budget; R1/KRB at 3000 = .93/.83 vs 1.0 at 4000, so all P32 numbers are under-trained relative to P31 by the same factor for every arm)
+
+Prior art: Raven arXiv 2607.25357 (softmax-routed slots), TRIM-KV
+2512.03324 (learned eviction), hashing 1509.05472 (multi-table).
+Hard-gap value acc (n bindings; n beyond the train range = OOD):
+  R1  8 keys/8 slots (collision-free), train n<=4
+    KRB     .964 .944 .905 .930 | n6 .846 n8 .828
+    KRB-2T  .982 .944 .905 .930 | .846 .824
+    VETDCC  .582 .533 .413 .353 | .252 .240
+    TF-AL   .618 .800 .786 .756 | .606 .375
+  R2  16 keys/8 slots (pairs of keys collide), train n<=4
+    KRB     .927 .913 .818 .819 | .717 .694
+    KRB-2T  .909 .913 .818 .813 | .717 .694
+    VETDCC  .400 .326 .349 .331 | .304 .240
+    TF-AL   .691 .772 .746 .806 | .608 .441
+  R3  8 keys/4 slots (overflow), train n<=6
+    KRB     n1 1.0 n2 .822 n3 .762 n4 .686 n5 .596 n6 .557 | n8 .443
+    KRB-2T  identical to KRB (to 4 decimals)
+    VETDCC  .473 .389 .373 .340 .300 .260 | .243
+    TF-AL   .546 .689 .802 .840 .742 .772 | .622
+  R4  composite (a,b) two-token keys, 16 keys/8 slots, train n<=4
+    KRB-PAIR 1.0 .933 .898 .895 | .786 .683
+    VETDCC   .636 .478 .343 .427 | .257 .192
+    TF-AL    1.0  .878 .833 .702 | .538 .404
+READ: (1) COLLISION (R2): KRB degrades gracefully, by ~.10 at n3-4 —
+close to the analytic same-slot collision rate for 2 of 16 keys among
+8 slots — and still beats attention at every n and 2x params. The
+two-table variant did NOT help (identical numbers): the learned
+2-way read combiner collapsed onto table 1 (the controller has no
+signal to know WHICH table is uncorrupted without a tag) -> exact
+multi-table hashing needs a stored key TAG per slot to disambiguate,
+not a soft combiner. (2) OVERFLOW (R3): all exact variants follow the
+physics of 4 slots (~.56 at n6 ≈ live-slot fraction); attention wins
+here (.77-.84 at n4-6) because its "slots" grow with L — this is the
+one regime where the bounded exact memory is the wrong tool, honestly
+recorded. (3) COMPOSITE KEYS (R4): the pair-hash KRB reaches
+1.0/.93/.90/.90 and extrapolates to n8 .68 while TF falls to .40;
+exact addressing generalises to multi-token keys once the hash sees
+the token pair. (4) VETDCC (single register) is at chance-plus in
+every regime, confirming P31.
+LAWS: L-KRB-COLLISION-GRACEFUL (degradation ~ analytic collision
+rate; still > attention); L-KRB-OVERFLOW-IS-PHYSICS (bounded exact
+slots cannot beat a growing cache when live bindings > slots —
+attention's genuine advantage is unbounded state, not addressing);
+L-PAIR-HASH-EXTENDS-KRB (composite keys solved by hashing the pair).
+NEGATIVE: soft two-table combine = no gain (do not retry without tags).
+NEXT (P33): TAGGED KRB — store the key id alongside the value in each
+slot; on read, an exact tag-match test selects the table/slot (turns
+collision into a verified miss); plus a 4000-step R1/R2 retrain to
+remove the budget confound. RESULT ARCH-VET-LM-P32.
