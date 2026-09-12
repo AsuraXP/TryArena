@@ -37,9 +37,10 @@ torch.set_num_threads(1); torch.backends.mha.set_fastpath_enabled(False)
 REPO = os.path.dirname(os.path.abspath(__file__)); os.chdir(REPO)
 import arch_vet_lm as lm, arch_vet_p19 as p19, arch_vet_p9 as p9, arch_vet_p23 as p23, arch_vet_p31 as p31
 V = p19.V; BOS, EOS, A, T = p19.BOS, p19.EOS, p19.A, p19.T_TASK; fill = p19.fill_tok
-K16 = list(range(p19.TRACK, p19.TRACK + 8)) + list(range(p19.KEYS, p19.KEYS + 4)) + list(range(p19.VALS, p19.VALS + 4))   # 16 key tokens
-V8 = list(range(p19.MANS, p19.MANS + 3)) + list(range(p19.BRK, p19.BRK + 4)) + [p19.ONE]                                  # 8 value tokens (disjoint)
-KA = list(range(p19.KEYS, p19.KEYS + 4)); KB = list(range(p19.VALS, p19.VALS + 4))                                          # composite key parts
+# DISJOINT token sets (P33 fix: the P32 original overlapped filler 13-20 / ONE 21 / MANS 25-27 with keys and values)
+K16 = list(range(21, 29)) + list(range(33, 41))                 # 16 key tokens: 21-28, 33-40
+V8 = list(range(41, 48)) + [29]                                 # 8 value tokens: 41-47, 29 (all outside filler 13-20 and keys)
+KA = list(range(33, 37)); KB = list(range(37, 41))                                          # composite key parts
 
 
 def regime(name):
