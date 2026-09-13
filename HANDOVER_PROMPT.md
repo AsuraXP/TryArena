@@ -1,3 +1,18 @@
+## STATE AT CYCLE 68 (read first)
+C64-68 = ARCH-VET P28-P33. P28/29: unified system re-cert + in-range
+parity. P30: routing robust under distribution shift. P31: KEYED
+REGISTER BANK (KRB) breaks the MQAR capacity wall (VETDCC .35 -> 1.0).
+P32: KRB stress (collision/overflow/composite) — WARNING: P32 token sets
+overlapped filler tokens; all P32 numbers are lower bounds, bug fixed in
+arch_vet_p32.py. P33 (clean data, 4000 steps, seed 111): TAGGED KRB
+(cuckoo 2-choice placement, tag-verified read, per-task reset, 21,290p)
+hits the oracle ceiling on collision R2 (n8 .865 vs TF-ALiBi .754 at
+42,672p) and composite R4 (.638); overflow R3 stays slots/n physics.
+NEXT (C69): fold KRB-TAG into expert A; unified 10-seed re-cert with
+MQAR bar; S5 re-lock; results-per-compute write-up; RoPE/ALiBi TF
+control on legacy axes. Session hazard: re-provision wipes torch — fetch
++ mixed reset + `pip install torch numpy`, never reset --hard.
+
 
 ## STATE AT CYCLE 63 (read first)
 END FORM REACHED AT PoC SCALE: one 97,950p system (A VETDCC + B stack

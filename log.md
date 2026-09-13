@@ -4014,3 +4014,56 @@ NEXT (P33): TAGGED KRB — store the key id alongside the value in each
 slot; on read, an exact tag-match test selects the table/slot (turns
 collision into a verified miss); plus a 4000-step R1/R2 retrain to
 remove the budget confound. RESULT ARCH-VET-LM-P32.
+
+
+## CYCLE 68 — ARCH-VET P33: TAGGED KRB (cuckoo-style 2-choice placement + tag-verified read + per-task bank reset) — seed 111, 4000 steps, CLEAN token sets
+
+Prior art: Pagh & Rodler, "Cuckoo Hashing" (2001) — two hash functions,
+displace-on-collision, O(1) verified lookup. Cited in arch_vet_p33.py.
+
+DATA-BUG DISCLOSURE (found this cycle by a pure-python oracle sim of the
+write/read policy): P32's key/value token sets OVERLAPPED filler 13-20 /
+ONE 21 / MANS 25-27, so the oracle itself could only reach .66 on R2.
+Every P32 number — KRB, KRB-2T, VETDCC AND TF-ALiBi — was depressed by
+that bug. Fixed in arch_vet_p32.py (K16 = 21-28 + 33-40, V8 = 41-47 +
+29; KA 33-36, KB 37-40). P32 rows are LOWER BOUNDS ONLY and are NOT
+comparable to P33. TF-ALiBi on clean R2 is far stronger (.94 at n4).
+
+Mechanism (KRBTag, 21,290p = same as KRB): slot = (value, key-tag).
+Write: h1 = k mod S; if occupied by a different tag, try h2 = (5k+3) mod S;
+if both occupied, one kick (displace the h1 resident to its own h2).
+Read: return the value only if the slot tag == query key, else miss.
+Bank cleared on the T_TASK token (per-task reset). Oracle ceilings of
+this exact policy: R2 1/1/.994/.981/.927/.858; R3 1/1/.97/.90/.67/.50;
+R4 1/1/.956/.896/.741/.596. (Mixing hashes helped only R4 — not adopted;
+3 kicks = no gain over 1.)
+
+Hard-gap value acc, n = 1/2/3/4/6/8 (train n<=4 => n6, n8 OOD):
+  R1 collision-free 8k/8s   KRB-TAG  1.0 1.0 1.0  1.0  | 1.0  .993  (mix 1.0)
+  R2 collision 16k/8s       KRB-TAG  1.0 1.0 .992 1.0  | .946 .865  (mix 1.0)
+                            KRB      1.0 1.0 .929 .925 | .854 .764  (mix .950)
+                            TF-ALiBi 1.0 .967 .929 .944| .829 .754  (mix .943, 42,672p)
+  R3 overflow 8k/4s         KRB-TAG  1.0 1.0 .984 .930 | n5 .842 n6 .728 n8 .591 (mix .869)
+  R4 composite 2-tok keys   KRB-TAG  1.0 1.0 .954 .927 | .800 .638  (mix .954)
+
+Read:
+- R2: tagging closes the collision gap. KRB-TAG sits ON the oracle
+  ceiling (.946/.865 vs .927/.858 — within noise, slightly above because
+  the learned host occasionally guesses right on a verified miss).
+  Single-table KRB .854/.764 and TF-ALiBi .829/.754 are tied with each
+  other; KRB-TAG beats TF-ALiBi at every n>=2 with half the params
+  (21,290 vs 42,672). LAW: L-TAG-VERIFIED-READ-HITS-CEILING.
+- R3: still physics. n5-n8 track the oracle (.67/.50 at n6/n8 vs .728/
+  .591 learned) — overflow cannot be fixed by placement; slots/n bounds
+  it. Attention's genuine advantage (unbounded state) stands, as banked
+  in C67 (L-KRB-OVERFLOW-IS-PHYSICS re-confirmed on clean data).
+- R4: composite keys at ceiling (.800/.638 vs oracle .741/.596).
+- R1: 1.0 through n6, .993 at n8 — full length invariance to 2x.
+- Prediction check: predicted "tag turns collisions into verified misses
+  and KRB-TAG reaches the oracle ceiling on R2/R4" — CONFIRMED. Predicted
+  "R3 remains slots/n bound" — CONFIRMED.
+Budget: 6 arms x 4000 steps, 2-concurrent, ~4.5 h wall on the 2-core box.
+FILES: arch_vet_p33.py, p33_a.log, p33_b.log, p21_ckpt/P33_*_s111.pt,
+RESULT ARCH-VET-LM-P33 (x2) in log.jsonl. Single seed — queue 10-seed.
+NEXT: fold KRB-TAG into expert A; unified 10-seed re-cert with the MQAR
+bar; S5 re-lock; results-per-compute write-up.

@@ -1047,3 +1047,15 @@ stack use from the grammar coin-flip ceiling.
 - OPEN QUEUE (C67/68): 1. TAGGED KRB (key tag per slot, exact
   tag-match read) at 4000 steps on R1/R2; 2. fold KRB into expert A
   + unified 10-seed re-cert with MQAR bar; 3. S5 re-lock; 4. write-up.
+
+## ARCH-VET P33 (cycle 68) — TAGGED KRB (cuckoo 2-choice + verified read)
+- P32 DATA BUG: key/value tokens overlapped filler/ONE/MANS; all P32
+  rows (incl. TF) are lower bounds only. Fixed; P33 is on clean sets.
+- R2 collision 16k/8s: KRB-TAG 1/1/.99/1.0, n6 .946, n8 .865 = oracle
+  ceiling; KRB .854/.764 ~ TF-ALiBi .829/.754 (2x params). Tagging
+  closes the collision gap. R4 composite keys: .800/.638 (ceiling).
+- R3 overflow 8k/4s: .728/.591 at n6/n8 — slots/n physics, unchanged;
+  attention's unbounded state remains its real advantage.
+- Single seed 111. OPEN QUEUE (C69): 1. fold KRB-TAG into expert A +
+  unified 10-seed re-cert incl. MQAR bar; 2. S5 re-lock; 3. results-
+  per-compute write-up; 4. RoPE/ALiBi TF control on the legacy axes.
