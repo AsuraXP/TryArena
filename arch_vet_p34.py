@@ -30,6 +30,12 @@ key/write/read timing must be learned); R2 within .10 of KRB-TAG at n8
 if the learned hashes spread keys (usage entropy > 2.5 nats of 2.08 max
 per hash -> report), else collapse -> verified misses -> VETDCC floor.
 Tag ARCH-VET-LM-P34.
+P34b (same cycle) arm FIXH: after LEARN collapsed (key gate open on every
+token; hash used 3-5/8 cells), hashes = FROZEN random projections of the
+token-id one-hot (universal hashing, Carter-Wegman 1979: content-
+addressed, grammar-agnostic, nothing learned) + learned gates + hinge aux
+keeping key-gate rate <= .25. Isolates: is the failure the learned HASH
+or the learned PREDICATES?
 """
 import argparse, json, math, os, random, time
 os.environ.setdefault("OMP_NUM_THREADS", "1")
@@ -54,8 +60,10 @@ def st_gumbel(logits, tau=1.0, hard_noise=True):
 
 
 class KRBLearn(p9.VETDCC):
-    def __init__(self, V, d, slots, k=8, K=8):
-        super().__init__(V, d, k=k, K=K); self.S = slots
+    def __init__(self, V, d, slots, k=8, K=8, fixed_hash=False, key_rate=None):
+        super().__init__(V, d, k=k, K=K); self.S = slots; self.fixed_hash = fixed_hash; self.key_rate = key_rate
+        if fixed_hash:  # universal-hash variant: h(x) = argmax of a frozen random projection of the TOKEN ID one-hot (content-addressed, no grammar knowledge)
+            g = torch.Generator().manual_seed(7); self.register_buffer("HF1", torch.randn(V, slots, generator=g)); self.register_buffer("HF2", torch.randn(V, slots, generator=g))
         self.Wk = nn.Linear(d, 1); self.Wr = nn.Linear(d, 1); nn.init.constant_(self.Wr.bias, -2.0)
         self.Wwr = nn.Linear(d + k + 1, 1)
         self.H1 = nn.Sequential(nn.Linear(d, 16), nn.Tanh(), nn.Linear(16, slots))
@@ -63,7 +71,10 @@ class KRBLearn(p9.VETDCC):
         self.Wread = nn.Linear(d + k, 1); nn.init.constant_(self.Wread.bias, -1.0)
         self.aux = torch.zeros(())
 
-    def hashes(self, e):
+    def hashes(self, e, ids=None):
+        if self.fixed_hash:
+            i1 = self.HF1[ids].argmax(-1); i2 = self.HF2[ids].argmax(-1)
+            return F.one_hot(i1, self.S).float(), i1, F.one_hot(i2, self.S).float(), i2
         noise = self.training
         o1, i1 = st_gumbel(self.H1(e), hard_noise=noise); o2, i2 = st_gumbel(self.H2(e), hard_noise=noise)
         return o1, i1, o2, i2
@@ -75,7 +86,7 @@ class KRBLearn(p9.VETDCC):
         vals = torch.zeros(B, S, d); tags = torch.full((B, S), -1, dtype=torch.long)
         pend = torch.full((B,), -1, dtype=torch.long); pend_oh = torch.zeros(B, S); pend_oh2 = torch.zeros(B, S)
         pend_i1 = torch.zeros(B, dtype=torch.long); pend_i2 = torch.zeros(B, dtype=torch.long)
-        lg = torch.empty(B, L, V); usage1 = torch.zeros(S); usage2 = torch.zeros(S); nkey = 0.0
+        kgsum = 0.0; lg = torch.empty(B, L, V); usage1 = torch.zeros(S); usage2 = torch.zeros(S); nkey = 0.0
         mod_oh = torch.zeros(B, p9.M_MOD); depth_oh = torch.zeros(B, p9.D_CLAMP + 1); mod_oh[:, 0] = 1; depth_oh[:, 0] = 1  # DCC counters inert here (no hand-wired predicates)
         for t in range(L):
             xt = e[:, t]; xid = x[:, t]
@@ -85,8 +96,9 @@ class KRBLearn(p9.VETDCC):
             vals = vals * keep.unsqueeze(-1); tags = torch.where(rs.bool().unsqueeze(-1), torch.full_like(tags, -1), tags)
             # ---- learned key gate + hashes
             kg = st_bern(torch.sigmoid(self.Wk(xt))).squeeze(-1)
-            o1, i1, o2, i2 = self.hashes(xt)
+            o1, i1, o2, i2 = self.hashes(xt, xid)
             if self.training:
+                kgsum = kgsum + torch.sigmoid(self.Wk(xt)).mean()
                 usage1 = usage1 + (o1 * kg.unsqueeze(-1)).sum(0); usage2 = usage2 + (o2 * kg.unsqueeze(-1)).sum(0); nkey = nkey + kg.sum()
             # ---- learned write: previous key pending, current token = value
             has_pend = (pend >= 0).float().unsqueeze(-1)
@@ -100,7 +112,7 @@ class KRBLearn(p9.VETDCC):
                 kick = wm & ~use1 & ~use2
                 if kick.any():
                     occ = t1.clamp(min=0); eo = self.E(occ)
-                    _, a1, _, a2 = self.hashes(eo); alt = torch.where(a1 == pend_i1, a2, a1)
+                    _, a1, _, a2 = self.hashes(eo, occ); alt = torch.where(a1 == pend_i1, a2, a1)
                     mv = kick & (tags[ar, alt] == -1)
                     if mv.any():
                         v2 = vals.clone(); g2 = tags.clone()
@@ -132,6 +144,7 @@ class KRBLearn(p9.VETDCC):
             aux = 0.0
             for u in (usage1, usage2):
                 p = u / (nkey + 1e-6) + 1e-6; aux = aux + (math.log(S) + (p * p.log()).sum())
+            if self.key_rate is not None: aux = aux + 4.0 * F.relu(kgsum / L - self.key_rate)  # hinge: key gate may not fire above key_rate of tokens
             self.aux = aux
         return lg
 
@@ -150,7 +163,7 @@ def diag(m, R):
     """Learned predicates vs truth: key-gate on key tokens / others; hash usage entropy; reset on T."""
     m.eval(); E = m.E(torch.arange(V)); kg = torch.sigmoid(m.Wk(E)).squeeze(-1) > 0.5; rs = torch.sigmoid(m.Wr(E)).squeeze(-1) > 0.5
     keys = set(R["keys"]); kt = torch.tensor([i in keys for i in range(V)])
-    _, i1, _, i2 = m.hashes(E)
+    _, i1, _, i2 = m.hashes(E, torch.arange(V))
     h1k = i1[kt]; h2k = i2[kt]; ent = lambda h: float(-(torch.bincount(h, minlength=m.S).float() / len(h) + 1e-9).mul(torch.log(torch.bincount(h, minlength=m.S).float() / len(h) + 1e-9)).sum())
     return {"key_recall": round(float(kg[kt].float().mean()), 3), "key_fp": round(float(kg[~kt].float().mean()), 3),
             "reset_on_T": bool(rs[p19.T_TASK]), "reset_fp": round(float(rs.float().mean()), 3),
@@ -160,16 +173,17 @@ def diag(m, R):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--jobs", default="R1,R2"); ap.add_argument("--seed", type=int, default=111)
-    ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--lam", type=float, default=0.05); a = ap.parse_args()
+    ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--lam", type=float, default=0.05)
+    ap.add_argument("--arm", default="LEARN"); a = ap.parse_args()  # LEARN = P34 (all learned) | FIXH = universal fixed hash + learned gates + key-rate hinge
     t0 = time.time(); out = {"tag": "ARCH-VET-LM-P34", "protocol": __doc__[:1900], "seed": a.seed, "steps": a.steps, "lam": a.lam, "arms": {}}
     for rn in a.jobs.split(","):
         R = p32.regime(rn); rng = random.Random(12345); pool = [torch.tensor(p32.gen_stream(rng, R, 256)) for _ in range(512)]
-        torch.manual_seed(a.seed); m = KRBLearn(V, 24, R["slots"]); print(f"[p34] {rn}:KRB-LEARN params {p19.n_params(m)}", flush=True)
-        train_arm(f"P34-{rn}-LEARN", m, pool, a.steps, 8, lam=a.lam); m.eval()
+        torch.manual_seed(a.seed); m = KRBLearn(V, 24, R["slots"], fixed_hash=(a.arm == "FIXH"), key_rate=(0.25 if a.arm == "FIXH" else None)); print(f"[p34] {rn}:KRB-{a.arm} params {p19.n_params(m)}", flush=True)
+        train_arm(f"P34-{rn}-{a.arm}", m, pool, a.steps, 8, lam=a.lam); m.eval()
         r = {f"n{n}_hard": p32.acc(m, R, 10, 256 if n <= 4 else 320, random.Random(600 + n), True, n) for n in R["n_eval"]}
         r["n_train_mix_hard"] = p32.acc(m, R, 12, 256, random.Random(700), True, None); r["params"] = p19.n_params(m); r["diag"] = diag(m, R)
-        print(f"[p34 {rn}:KRB-LEARN] {r}", flush=True); out["arms"][rn] = r
-        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P34_{rn}_LEARN_s{a.seed}.pt")
+        print(f"[p34 {rn}:KRB-{a.arm}] {r}", flush=True); out["arms"][f"{rn}:{a.arm}"] = r; out["arm"] = a.arm
+        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P34_{rn}_{a.arm}_s{a.seed}.pt")
     out["wall_s"] = round(time.time() - t0); open("log.jsonl", "a").write(json.dumps(out) + "\n"); print("[P34] DONE", flush=True)
 
 
