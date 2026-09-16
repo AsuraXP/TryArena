@@ -28,6 +28,13 @@ P35 (first run): gate = f(e_t) only -> key_recall 0, BCE .53: the same key
 token is label 1 in write phase and 0 in query phase, so a content-only
 gate saturates at p=.5 and never writes (design flaw, logged). P35b: gate
 = f(s_t, e_t) (controller state = learned context), otherwise identical.
+P35b: predicate LEARNED (write-key recall 1.0, query/filler fp 0; bank
+hits 14/16 queries on a probe stream) but the learned READ gate closed
+(bias -1.85, rg~0): soft-strength writes (w in (.5,1)) blend old/new
+value vectors, so early reads were corrupt and the read gate learned to
+distrust the bank (R1 .57 n4). P35c: value write is HARD (full overwrite
+when the gate fires; gate trains through the hindsight BCE only), read
+gate bias init 0. Nothing else changes.
 PREDICTION: R1 >= .90 n4, >= .80 n8 with key_recall >= .9; R2 >= .80 n4.
 If R1 < .70 n4 threat #3 is closed as a scale limit. Tag ARCH-VET-LM-P35.
 """
@@ -53,7 +60,7 @@ class KRBHind(p9.VETDCC):
     def __init__(self, V, d, slots, k=8, K=8):
         super().__init__(V, d, k=k, K=K); self.S = slots
         g = torch.Generator().manual_seed(7); self.register_buffer("HF1", torch.randn(V, slots, generator=g)); self.register_buffer("HF2", torch.randn(V, slots, generator=g))
-        self.Wk = nn.Linear(d + k, 1); self.Wread = nn.Linear(d + k, 1); nn.init.constant_(self.Wread.bias, -1.0)
+        self.Wk = nn.Linear(d + k, 1); self.Wread = nn.Linear(d + k, 1); nn.init.constant_(self.Wread.bias, 0.0)
         self.kg_logits = None
 
     def forward(self, x):
@@ -79,7 +86,7 @@ class KRBHind(p9.VETDCC):
                     mv = kick & (tags[ar, alt] == -1)
                     if mv.any():
                         v2 = vals.clone(); g2 = tags.clone(); v2[ar[mv], alt[mv]] = vals[ar[mv], i1[mv]]; g2[ar[mv], alt[mv]] = occ[mv]; vals, tags = v2, g2
-                wv = (w.unsqueeze(-1) * F.one_hot(cell, S).float() * wm.float().unsqueeze(-1)).unsqueeze(-1)
+                wv = (F.one_hot(cell, S).float() * wm.float().unsqueeze(-1)).unsqueeze(-1)  # P35c: hard overwrite
                 vals = vals * (1 - wv) + wv * e[:, t].unsqueeze(1)
                 if wm.any():
                     g2 = tags.clone(); g2[ar[wm], cell[wm]] = pk[wm]; tags = g2
@@ -132,8 +139,8 @@ def main():
         train_arm(f"P35-{rn}", m, pool, a.steps, 8, lam=a.lam); m.eval()
         r = {f"n{n}_hard": p32.acc(m, R, 10, 256 if n <= 4 else 320, random.Random(600 + n), True, n) for n in R["n_eval"]}
         r["n_train_mix_hard"] = p32.acc(m, R, 12, 256, random.Random(700), True, None); r["params"] = p19.n_params(m); r["diag"] = diag(m, R)
-        print(f"[p35 {rn}:KRB-HIND] {r}", flush=True); out["arms"][f"{rn}:HINDb"] = r
-        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P35b_{rn}_HIND_s{a.seed}.pt")
+        print(f"[p35 {rn}:KRB-HIND] {r}", flush=True); out["arms"][f"{rn}:HINDc"] = r
+        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P35c_{rn}_HIND_s{a.seed}.pt")
     out["wall_s"] = round(time.time() - t0); open("log.jsonl", "a").write(json.dumps(out) + "\n"); print("[P35] DONE", flush=True)
 
 
