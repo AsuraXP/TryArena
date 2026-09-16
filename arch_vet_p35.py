@@ -24,6 +24,10 @@ verified read with learned soft read gate. Loss = CE + 0.5 BCE(kg, lab).
 Regimes P32 R1/R2 clean, 4000 steps, seed 111. Controls: KRB-TAG (hand-
 wired predicates) R1 1/1/1/1|1/.993, R2 1/1/.99/1|.946/.865; P34b FIXH
 R1 .964/.722/.627/.494|.366/.345; TF-ALiBi R2 .944 n4 / .754 n8.
+P35 (first run): gate = f(e_t) only -> key_recall 0, BCE .53: the same key
+token is label 1 in write phase and 0 in query phase, so a content-only
+gate saturates at p=.5 and never writes (design flaw, logged). P35b: gate
+= f(s_t, e_t) (controller state = learned context), otherwise identical.
 PREDICTION: R1 >= .90 n4, >= .80 n8 with key_recall >= .9; R2 >= .80 n4.
 If R1 < .70 n4 threat #3 is closed as a scale limit. Tag ARCH-VET-LM-P35.
 """
@@ -49,7 +53,7 @@ class KRBHind(p9.VETDCC):
     def __init__(self, V, d, slots, k=8, K=8):
         super().__init__(V, d, k=k, K=K); self.S = slots
         g = torch.Generator().manual_seed(7); self.register_buffer("HF1", torch.randn(V, slots, generator=g)); self.register_buffer("HF2", torch.randn(V, slots, generator=g))
-        self.Wk = nn.Linear(d, 1); self.Wread = nn.Linear(d + k, 1); nn.init.constant_(self.Wread.bias, -1.0)
+        self.Wk = nn.Linear(d + k, 1); self.Wread = nn.Linear(d + k, 1); nn.init.constant_(self.Wread.bias, -1.0)
         self.kg_logits = None
 
     def forward(self, x):
@@ -58,13 +62,13 @@ class KRBHind(p9.VETDCC):
         buf = torch.zeros(B, self.K, d); valid = torch.zeros(B, self.K, dtype=torch.bool)
         vals = torch.zeros(B, S, d); tags = torch.full((B, S), -1, dtype=torch.long)
         H1 = self.HF1[x].argmax(-1); H2 = self.HF2[x].argmax(-1)          # B,L fixed universal hashes
-        kgl = self.Wk(e).squeeze(-1); self.kg_logits = kgl; kg = torch.sigmoid(kgl)
+        kgl_list = []; kg_prev = torch.zeros(B)
         lg = torch.empty(B, L, V)
         mod_oh = torch.zeros(B, p9.M_MOD); depth_oh = torch.zeros(B, p9.D_CLAMP + 1); mod_oh[:, 0] = 1; depth_oh[:, 0] = 1
         for t in range(L):
             xt = e[:, t]; xid = x[:, t]
             if t > 0:   # write value x_t under key x_{t-1} with soft strength kg_{t-1}
-                pk = x[:, t - 1]; w = kg[:, t - 1]; i1 = H1[:, t - 1]; i2 = H2[:, t - 1]
+                pk = x[:, t - 1]; w = kg_prev; i1 = H1[:, t - 1]; i2 = H2[:, t - 1]
                 t1 = tags[ar, i1]; t2 = tags[ar, i2]
                 use1 = (t1 == -1) | (t1 == pk); use2 = ~use1 & ((t2 == -1) | (t2 == pk))
                 cell = torch.where(use1, i1, torch.where(use2, i2, i1))
@@ -80,6 +84,7 @@ class KRBHind(p9.VETDCC):
                 if wm.any():
                     g2 = tags.clone(); g2[ar[wm], cell[wm]] = pk[wm]; tags = g2
             s = F.softmax(self.Ws(torch.cat([xt, mod_oh, depth_oh], -1)) + self.Wss(s), -1)
+            kl = self.Wk(torch.cat([s, xt], -1)).squeeze(-1); kgl_list.append(kl); kg_prev = torch.sigmoid(kl)
             a = (s.unsqueeze(-1) * torch.exp(-F.softplus(self.Alog))).sum(1); R = a * R + torch.einsum("bk,ksd,bd->bd", s, self.Ww, xt)
             i1 = H1[:, t]; i2 = H2[:, t]; m1 = tags[ar, i1] == xid; m2 = tags[ar, i2] == xid
             cand = torch.where(m1.unsqueeze(-1), vals[ar, i1], vals[ar, i2]); hit = (m1 | m2).float().unsqueeze(-1)
@@ -94,6 +99,7 @@ class KRBHind(p9.VETDCC):
                 newer = sum(valid[:, i].float() for i in range(j)) if j else torch.zeros(B); selk[:, j] = valid[:, j].float() * (newer == 0).float()
             selk[:, self.K] = 1.0
             lg[:, t] = logits + torch.einsum("bs,ksv->bv", selk, self.T) + mod_oh @ self.W_mod + depth_oh @ self.W_depth
+        self.kg_logits = torch.stack(kgl_list, 1)
         return lg
 
 
@@ -109,9 +115,9 @@ def train_arm(name, model, pool, steps, batch=8, lr=3e-3, lam=0.5):
 
 @torch.no_grad()
 def diag(m, R):
-    m.eval(); E = m.E(torch.arange(V)); kg = torch.sigmoid(m.Wk(E)).squeeze(-1) > 0.5
-    keys = set(R["keys"]); kt = torch.tensor([i in keys for i in range(V)]); fl = torch.tensor([i in set(p32.FILL) for i in range(V)]) if hasattr(p32, "FILL") else ~kt
-    return {"key_recall": round(float(kg[kt].float().mean()), 3), "key_fp": round(float(kg[~kt].float().mean()), 3), "fill_fp": round(float(kg[fl].float().mean()), 3)}
+    m.eval(); rng = random.Random(900); xs = torch.stack([torch.tensor(p32.gen_stream(rng, R, 256, True, None)[:256]) for _ in range(8)])
+    m(xs); kg = torch.sigmoid(m.kg_logits) > 0.5; keys = set(R["keys"]); isk = torch.tensor([[int(t) in keys for t in p] for p in xs]); wk = isk.clone(); wk[:, 1:] &= xs[:, :-1] != p32.A
+    return {"key_recall": round(float(kg[wk].float().mean()), 3), "query_key_fp": round(float(kg[isk & ~wk].float().mean()), 3), "nonkey_fp": round(float(kg[~isk].float().mean()), 3)}
 
 
 def main():
@@ -126,8 +132,8 @@ def main():
         train_arm(f"P35-{rn}", m, pool, a.steps, 8, lam=a.lam); m.eval()
         r = {f"n{n}_hard": p32.acc(m, R, 10, 256 if n <= 4 else 320, random.Random(600 + n), True, n) for n in R["n_eval"]}
         r["n_train_mix_hard"] = p32.acc(m, R, 12, 256, random.Random(700), True, None); r["params"] = p19.n_params(m); r["diag"] = diag(m, R)
-        print(f"[p35 {rn}:KRB-HIND] {r}", flush=True); out["arms"][f"{rn}:HIND"] = r
-        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P35_{rn}_HIND_s{a.seed}.pt")
+        print(f"[p35 {rn}:KRB-HIND] {r}", flush=True); out["arms"][f"{rn}:HINDb"] = r
+        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P35b_{rn}_HIND_s{a.seed}.pt")
     out["wall_s"] = round(time.time() - t0); open("log.jsonl", "a").write(json.dumps(out) + "\n"); print("[P35] DONE", flush=True)
 
 
