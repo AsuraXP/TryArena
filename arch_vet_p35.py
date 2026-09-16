@@ -53,6 +53,11 @@ step 0). P35e: DROP the learnable read gate; read_on = hit * (1 - kg)
 — both factors are exact-or-hindsight-supervised, nothing to bootstrap.
 PREDICTION: R1 >= .90 n4, >= .80 n8 with key_recall >= .9; R2 >= .80 n4.
 If R1 < .70 n4 threat #3 is closed as a scale limit. Tag ARCH-VET-LM-P35.
+P35f (cycle 71, --arm SEEN): gate input gains the bank's own NOVELTY BIT
+seen_t = 1 iff a tag equal to x_t is already in the bank (O(1) from the
+tag table; the induction-head prefix-match signal, Olsson et al. 2022 /
+aclanthology 2025.findings-naacl.283, without O(N^2)). Grammar-free.
+Targets the R2 query-key fp .78 of P35e. --seeds for multi-seed.
 """
 import argparse, json, os, random, time
 os.environ.setdefault("OMP_NUM_THREADS", "1")
@@ -73,10 +78,10 @@ def hindsight_labels(x, W=128):
 
 
 class KRBHind(p9.VETDCC):
-    def __init__(self, V, d, slots, k=8, K=8):
-        super().__init__(V, d, k=k, K=K); self.S = slots
+    def __init__(self, V, d, slots, k=8, K=8, seen=False):
+        super().__init__(V, d, k=k, K=K); self.S = slots; self.seen = seen
         g = torch.Generator().manual_seed(7); self.register_buffer("HF1", torch.randn(V, slots, generator=g)); self.register_buffer("HF2", torch.randn(V, slots, generator=g))
-        self.Wk = nn.Linear(d + k, 1); self.Wread = nn.Linear(d + k, 1); nn.init.constant_(self.Wread.bias, 0.0)
+        self.Wk = nn.Linear(d + k + (1 if seen else 0), 1); self.Wread = nn.Linear(d + k, 1); nn.init.constant_(self.Wread.bias, 0.0)
         self.kg_logits = None
 
     def forward(self, x):
@@ -107,7 +112,8 @@ class KRBHind(p9.VETDCC):
                 if wm.any():
                     g2 = tags.clone(); g2[ar[wm], cell[wm]] = pk[wm]; tags = g2
             s = F.softmax(self.Ws(torch.cat([xt, mod_oh, depth_oh], -1)) + self.Wss(s), -1)
-            kl = self.Wk(torch.cat([s, xt], -1)).squeeze(-1); kgl_list.append(kl); kg_prev = torch.sigmoid(kl)
+            i1 = H1[:, t]; i2 = H2[:, t]; seen_t = ((tags[ar, i1] == xid) | (tags[ar, i2] == xid)).float().unsqueeze(-1)
+            kl = self.Wk(torch.cat([s, xt] + ([seen_t] if self.seen else []), -1)).squeeze(-1); kgl_list.append(kl); kg_prev = torch.sigmoid(kl)
             a = (s.unsqueeze(-1) * torch.exp(-F.softplus(self.Alog))).sum(1); R = a * R + torch.einsum("bk,ksd,bd->bd", s, self.Ww, xt)
             i1 = H1[:, t]; i2 = H2[:, t]; m1 = tags[ar, i1] == xid; m2 = tags[ar, i2] == xid
             cand = torch.where(m1.unsqueeze(-1), vals[ar, i1], vals[ar, i2]); hit = (m1 | m2).float().unsqueeze(-1)
@@ -145,18 +151,18 @@ def diag(m, R):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--jobs", default="R1,R2"); ap.add_argument("--seed", type=int, default=111)
-    ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--lam", type=float, default=0.5); a = ap.parse_args()
+    ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--lam", type=float, default=0.5); ap.add_argument("--arm", default="HINDe"); a = ap.parse_args()
     t0 = time.time(); out = {"tag": "ARCH-VET-LM-P35", "protocol": __doc__[:1900], "seed": a.seed, "steps": a.steps, "lam": a.lam, "arms": {}}
     for rn in a.jobs.split(","):
         R = p32.regime(rn); rng = random.Random(12345); pool = [torch.tensor(p32.gen_stream(rng, R, 256)) for _ in range(512)]
         xs = torch.stack(pool)[:, :256]; lab = hindsight_labels(xs); keys = set(R["keys"]); isk = torch.tensor([[int(t) in keys for t in p[:256]] for p in pool]); wk = isk.clone(); wk[:, 1:] &= xs[:, :-1] != p32.A
         print(f"[p35] {rn} label stats: P(lab|write-key)={float(lab[wk].mean()):.3f} P(lab|query-key)={float(lab[isk & ~wk].mean()):.3f} P(lab|nonkey)={float(lab[~isk].mean()):.3f}", flush=True)
-        torch.manual_seed(a.seed); m = KRBHind(V, 24, R["slots"]); print(f"[p35] {rn}:KRB-HIND params {p19.n_params(m)}", flush=True)
+        torch.manual_seed(a.seed); m = KRBHind(V, 24, R["slots"], seen=(a.arm == "SEEN")); print(f"[p35] {rn}:KRB-HIND params {p19.n_params(m)}", flush=True)
         train_arm(f"P35-{rn}", m, pool, a.steps, 8, lam=a.lam); m.eval()
         r = {f"n{n}_hard": p32.acc(m, R, 10, 256 if n <= 4 else 320, random.Random(600 + n), True, n) for n in R["n_eval"]}
         r["n_train_mix_hard"] = p32.acc(m, R, 12, 256, random.Random(700), True, None); r["params"] = p19.n_params(m); r["diag"] = diag(m, R)
-        print(f"[p35 {rn}:KRB-HIND] {r}", flush=True); out["arms"][f"{rn}:HINDe"] = r
-        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P35e_{rn}_HIND_s{a.seed}.pt")
+        print(f"[p35 {rn}:{a.arm} s{a.seed}] {r}", flush=True); out["arms"][f"{rn}:{a.arm}"] = r
+        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P35_{rn}_{a.arm}_s{a.seed}.pt")
     out["wall_s"] = round(time.time() - t0); open("log.jsonl", "a").write(json.dumps(out) + "\n"); print("[P35] DONE", flush=True)
 
 
