@@ -1,3 +1,12 @@
+## STATE AT CYCLE 72 (read first)
+P36: ONE system (116,858p) = A+B+C+K+G+GM+GK holds 6/6 bars on 3/3
+seeds: four certified OOD bars + text CE == C-alone + MQAR R2 .92 n4/
+.73 n8 with a LEARNED key predicate (K = P35 SEEN). Adding K cost 3.7k
+gate params / 1000 steps and moved nothing. C73: 10-seed P36 (needs
+`arch_vet_p35.py --jobs R2 --arm SEEN --seed S` for S in 444..1010,
+then `arch_vet_p36.py --seeds ...`), 3-seed ALiBi-TF on legacy axes,
+RESULTS.md. Commit+push after every result (re-provision #6 lost one).
+
 ## STATE AT CYCLE 71 (read first)
 Learned-predicate KRB certified 3/3 seeds (arch_vet_p35.py --arm SEEN):
 R2 .92 n4 / .73 n8 (sd .003), R1 .93/.78, 21,324p. TF-ALiBi control on

@@ -1,0 +1,6 @@
+  [P36-GK-s222] step 250/1000 loss 1.1264 (195s)
+  [P36-GK-s222] step 500/1000 loss 1.8687 (376s)
+  [P36-GK-s222] step 750/1000 loss 1.6904 (563s)
+  [P36-GK-s222] step 1000/1000 loss 0.9560 (745s)
+[p36 s222] bars=6/6 {'pair': 0.8774, 'modk': 1.0, 'ratio': 0.503, 'dyck_d12': 0.9496, 'mqar_routed': {'n4': 0.925, 'n8': 0.7326}, 'mqar_K_alone': {'n4': 0.925, 'n8': 0.7326}} identity=0.9993 Kshare=0.9221 text 2.6743/2.6743 params 116858
+[P36] DONE

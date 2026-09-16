@@ -4231,3 +4231,55 @@ p35g_*.log, p32_tf_R2_s222/333.log. Checkpoints lost to re-provision.
 NEXT (C72): fold KRB-SEEN into expert A of the unified system; unified
 row with MQAR bar (R2 n4 >= .90, n8 >= .70) + ALiBi-TF 3-seed on the
 legacy axes; R4 composite with SEEN; results-per-compute write-up.
+
+
+## CYCLE 72 — ARCH-VET P36: UNIFIED 5-EXPERT SYSTEM (A + B + C + K + hierarchical gates) — 6/6 BARS ON 3/3 SEEDS
+
+Prior art (header): BAR "Train Separately, Merge Together" arXiv
+2604.18473 — independent experts + lightweight router, linear-cost
+addition. Here the same principle with an EXACT-MEMORY expert and a
+certification test, at 116,858p on a 2-core CPU.
+Design: expert K = P35 KRB-SEEN (learned key predicate, frozen, seed-
+matched), gate GK (GRU(4), 3.7k p) above the certified HierGate;
+dispatch K iff GK fires. GK trained 1000 steps on composed-mixture CE
+with everything else frozen; pool = P26B pool + 128 R2 streams.
+
+Per seed (111 / 222 / 333):
+  pair        .8585 / .8774 / .8585   (>=.717)
+  modk        1.0   / 1.0   / 1.0     (=1)
+  ratio       .596  / .503  / .443    (<=.6)
+  dyck d12    .9838 / .9496 / .9728   (>=.85)
+  MQAR R2 n4  .9187 / .925  / .9187   (>=.90)   == K-alone exactly
+  MQAR R2 n8  .7257 / .7326 / .7292   (>=.70)   == K-alone exactly
+  text CE     2.786 / 2.674 / 2.666   == C-alone exactly
+  symbolic dispatch identity vs certified 3-way: .9961 / .9993 / 1.0
+  K-share on R2 streams .922 (the rest = filler positions routed A)
+  bars 6/6 / 6/6 / 6/6.   Total params 116,858 (A 21,257 + B 21,817 +
+  C 43,600 + K 21,324 + G 1,410 + GM 3,713 + GK 3,737).
+
+Read:
+- Prediction "6/6 on 3/3, identity >= .999, K-share >= .95, MQAR within
+  .02 of K-alone" — bars CONFIRMED, MQAR EXACTLY K-alone (0 loss from
+  routing), identity .996-1.0 (s111 .9961 slightly under .999: 0.4% of
+  symbolic positions re-routed, with zero effect on any bar — pair/
+  modk/ratio/dyck are bit-identical to the P26B row), K-share .92 <
+  .95 (filler tokens between bindings go to A, harmless).
+- L-HIERARCHICAL-GATE-PRESERVES-CERTIFICATION re-confirmed for a 4th
+  expert: adding K cost 3,737 gate params + 1000 gate steps (~12 min)
+  and did not move any certified number. Linear-cost expert addition
+  holds at this scale with exact experts.
+- The system now holds in ONE parameter set: four certified OOD
+  reasoning bars, byte-level text at C-alone CE, and multi-query
+  associative recall with a LEARNED write predicate — the MQAR axis
+  where the matched TF-ALiBi control is 1/3-basin (.944/.375/.425 n4).
+- Boundaries: 3 seeds (10-seed owed, ~2.5 h); K is the R2-trained
+  expert (R1/R4 not folded); the hand-wired KRB-TAG ceiling (.865 n8)
+  is not reached by the learned predicate (.73); overflow (R3) is
+  still physics; ALiBi-TF 3-seed control on the legacy four axes still
+  owed (C62 P23 has 2 seeds).
+Budget: 3 seeds x (1000 gate steps + eval) ≈ 40 min wall, 2-concurrent.
+FILES: arch_vet_p36.py, p36_a.log, p36_b.log, p21_ckpt/GK_s*.pt,
+RESULT ARCH-VET-LM-P36 x2 in log.jsonl.
+NEXT (C73): 10-seed P36 (seeds 444-1010 need P35 SEEN K experts:
+7 x 2 arms ≈ 5 h); 3-seed ALiBi-TF on legacy axes; results-per-compute
+write-up (RESULTS.md) with the full certified table.

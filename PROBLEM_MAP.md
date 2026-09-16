@@ -1094,3 +1094,14 @@ stack use from the grammar coin-flip ceiling.
 - OPEN QUEUE (C72): 1. fold KRB-SEEN into expert A + unified row with
   MQAR bar + 3-seed ALiBi-TF on legacy axes; 2. R4 with SEEN; 3. S5
   re-lock; 4. results-per-compute write-up; 5. R3 overflow spill.
+
+## ARCH-VET P36 (cycle 72) — unified 5-expert system, 6/6 bars x 3 seeds
+- A+B+C+K(learned-predicate KRB)+G+GM+GK = 116,858p. pair .86/.88/.86,
+  modk 1, ratio .60/.50/.44, dyck .98/.95/.97, MQAR R2 n4 .92/.93/.92,
+  n8 .73/.73/.73 (== K-alone), text CE == C-alone, identity .996-1.0.
+- Expert addition cost: 3,737 gate params, 1000 steps, no certified
+  number moved (L-HIERARCHICAL-GATE-PRESERVES-CERTIFICATION x4).
+- OPEN QUEUE (C73): 1. 10-seed P36 (train K s444-1010); 2. 3-seed
+  ALiBi-TF on legacy axes; 3. RESULTS.md results-per-compute table;
+  4. learned predicate -> hand-wired ceiling gap (.73 vs .865 n8);
+  5. R3 overflow spill; 6. in-range parity; 7. fluency capacity.
