@@ -4126,3 +4126,66 @@ Read:
 Budget: 4 arms x 4000 steps, ~1.7 h wall each pair, 2-concurrent.
 FILES: arch_vet_p34.py (--arm LEARN|FIXH), p34_a/b.log, p34b_a/b.log,
 RESULT ARCH-VET-LM-P34 x4 in log.jsonl.
+
+
+## CYCLE 70 — ARCH-VET P35 (a-e): HINDSIGHT-SUPERVISED KEY PREDICATE — learned-predicate KRB WORKS (threat #3 substantially answered)
+
+Prior art (in header): Hindsight Memory-PRM arXiv 2608.29605 (hindsight
+credit for memory writes, agent scale); Carter-Wegman 1979 universal
+hashing (frozen random projection = content-addressed hash, no grammar).
+Mechanism KRB-HIND (21,323p): the ONLY learned predicate is a scalar
+key gate kg_t = sigmoid(Wk[s_t, e_t]) trained with a dense self-
+supervised hindsight label lab_t = 1 iff bigram (x_t, x_{t+1}) is a
+FIRST occurrence that recurs verbatim within 128 tokens ("new binding
+that gets queried later"). No key list, no phase marker, no task token,
+no reset, hashes = frozen universal. Measured label quality: P(lab |
+write-phase key) .86/.93, P(lab | query key) 0, P(lab | filler) .20 —
+deliberately noisy. Write = hard overwrite when kg>.5 (tag = raw token
+id); read = tag-verified hit AND (1 - kg) (a key is either being bound
+or being queried). Loss = CE + .5 BCE(kg, lab).
+
+Five variants, R1 8k/8s and R2 16k/8s (clean sets, 4000 steps, s111):
+  P35a gate=f(e_t) only            R1 .50 n4  recall 0    | content-only gate saturates at p=.5 (same token is 1 in write, 0 in query)
+  P35b gate=f(s_t,e_t), soft write R1 .57 n4  recall 1.0  | predicate LEARNED; read gate closed (soft-blend corrupt reads)
+  P35c hard write, read bias 0     R1 .56 n4  recall 1.0  | read gate still 0: write-phase hits inject stale values
+  P35d read *= (1-kg)              R1 .58 n4  recall 1.0  | bank 14/16 correct, 0 stale, rg=0 everywhere; forced rg=1 -> .35 = decoder never trained (BOOTSTRAP failure: no reads -> no decoder -> reads harmful -> gate closes)
+  P35e NO learned read gate; read_on = hit*(1-kg)
+     R1  1.0 1.0 .968 .936 | n6 .842 n8 .780  (mix .941)  recall 1.0, fp 0/0
+     R2  1.0 .978 .937 .894 | n6 .683 n8 .618  (mix .915)  recall 1.0, query-key fp .78 (!)
+Controls (same data): KRB-TAG hand-wired R1 1/1/1/1|1/.993, R2 1/1/.99/
+1|.946/.865; P34b FIXH (ST gates) R1 .494 n4/.345 n8; TF-ALiBi R2
+1/.967/.929/.944|.829/.754 (42,672p); no-bank floor ~.5-.6 n4.
+
+Read:
+- Prediction "R1 >= .90 n4, >= .80 n8, recall >= .9": n4 CONFIRMED
+  (.936), n8 .780 (miss by .02), recall CONFIRMED. "R2 >= .80 n4"
+  CONFIRMED (.894). Learned-predicate KRB > TF-ALiBi at n2/n3 on R2,
+  slightly below at n4 (.894 vs .944), below at n8 (.618 vs .754); at
+  HALF the parameters. Gap to the hand-wired oracle predicate: R1 -.06
+  n4/-.21 n8, R2 -.10 n4/-.25 n8.
+- Where the residual gap comes from (R2 diag): query-key fp .78 — in
+  the 16-key regime the gate also fires on QUERIED keys (the hindsight
+  label is 0 there, but the phase signal in s_t is weaker with 16 keys),
+  which (via 1-kg) suppresses the read at exactly those positions. That
+  is a predicate-precision problem, not a bank problem — next lever is
+  a sharper phase feature (e.g. distance-since-last-recurrence), still
+  grammar-free.
+- LAWS: L-HINDSIGHT-LABEL-LEARNS-KEY-PREDICATE (a bigram-recurrence
+  self-supervised target trains an exact write gate where ST-gradients
+  through tag equality cannot — P34 law stands, this is the way around
+  it). L-READ-GATE-BOOTSTRAP: a learnable read gate in front of an
+  exact bank cannot start from closed; it must be structural (hit AND
+  not-writing) or the value decoder never receives gradient. Three
+  variants (b,c,d) died on exactly this and looked like a predicate
+  failure until the forced-read probe separated them.
+- Novelty status update: the channel architecture (tag-verified bank)
+  now carries BOTH a hand-wired and a learned predicate; the phase
+  markers / key list / task reset are no longer required. Residual
+  hand-wiring: hash = frozen random (not grammar), read = structural.
+Budget: 10 arms x 4000 steps = ~8.5 h wall, 2-concurrent. Single seed.
+FILES: arch_vet_p35.py (final = P35e), p35a_flawed_R*.log, p35b/c/d/e_
+a/b.log, p21_ckpt/P35e_R*_HIND_s111.pt, RESULT ARCH-VET-LM-P35 x5 in
+log.jsonl.
+NEXT (C71): 3-seed P35e R1/R2 + R4 composite; sharper phase feature
+for R2 precision; then fold KRB-HIND into expert A for the unified
+10-seed re-cert.

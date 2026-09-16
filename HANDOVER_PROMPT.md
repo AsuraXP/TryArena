@@ -1,3 +1,16 @@
+## STATE AT CYCLE 70 (read first)
+P35e KRB-HIND: the key predicate is LEARNED (hindsight bigram-recurrence
+self-supervision, no grammar), frozen universal hash, structural read.
+R1 .936 n4/.780 n8, R2 .894 n4/.618 n8 at 21,323p vs TF-ALiBi R2 .944/
+.754 at 42,672p. Threat #3 (hand-wired predicates) substantially
+answered; P34 ST-gate negatives + P35a-d read-gate bootstrap negatives
+banked. C71: 3-seed + R4, sharper phase feature (R2 query-key fp .78),
+fold into expert A, 10-seed unified re-cert with ALiBi-TF on all axes.
+Push has been auth-failing for several cycles: commits are local on
+arena/01a07767-tryarena; retry `git push origin HEAD:arena/01a07767-
+tryarena` first thing. Env: 5th re-provision; `pip install --break-
+system-packages torch numpy` (PyPI).
+
 ## STATE AT CYCLE 69 (read first)
 P34/P34b learned-predicate ablation of KRB-TAG = NEGATIVE twice (all-
 learned .596 n4; fixed universal hash + learned gates .494 n4; both at

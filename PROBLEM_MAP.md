@@ -1071,3 +1071,16 @@ stack use from the grammar coin-flip ceiling.
   self-supervised key target (last predicate attack); 2. fold KRB-TAG
   into expert A + unified 10-seed re-cert w/ MQAR bar + ALiBi-TF on
   legacy axes; 3. S5 re-lock; 4. results-per-compute write-up.
+
+## ARCH-VET P35 (cycle 70) — learned-predicate KRB: POSITIVE (P35e)
+- Hindsight self-supervised key gate (first-occurrence bigram recurs
+  later) + frozen universal hash + structural read (hit AND not-writing):
+  R1 1/1/.97/.94 | n6 .84 n8 .78; R2 1/.98/.94/.89 | .68/.62 (21,323p)
+  vs TF-ALiBi R2 .944/.754 (42,672p), vs hand-wired KRB-TAG R2 .946/.865.
+- P35a-d negatives: content-only gate saturates; learnable read gate
+  in front of an exact bank never bootstraps (L-READ-GATE-BOOTSTRAP).
+- Threat #3 status: predicate SOURCE now learned (key list, phase,
+  reset all gone). Residual: R2 query-key fp .78 costs ~.1 n4/.25 n8.
+- OPEN QUEUE (C71): 1. 3-seed P35e + R4; 2. sharper grammar-free phase
+  feature; 3. fold into expert A + 10-seed unified re-cert w/ ALiBi-TF;
+  4. S5 re-lock; 5. results-per-compute write-up.

@@ -1,0 +1,23 @@
+[p35] R1 label stats: P(lab|write-key)=0.858 P(lab|query-key)=0.000 P(lab|nonkey)=0.203
+[p35] R1:KRB-HIND params 21323
+/home/user/TryArena/arch_vet_p35.py:136: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  if step % 250 == 0: print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P35-R1] step 250/4000 ce 1.9620 bce 0.548 (153s)
+  [P35-R1] step 500/4000 ce 1.8839 bce 0.498 (302s)
+  [P35-R1] step 750/4000 ce 1.8357 bce 0.459 (455s)
+  [P35-R1] step 1000/4000 ce 1.7012 bce 0.453 (618s)
+  [P35-R1] step 1250/4000 ce 1.6912 bce 0.467 (780s)
+  [P35-R1] step 1500/4000 ce 1.6619 bce 0.450 (937s)
+  [P35-R1] step 1750/4000 ce 1.6302 bce 0.470 (1096s)
+  [P35-R1] step 2000/4000 ce 1.6174 bce 0.472 (1253s)
+  [P35-R1] step 2250/4000 ce 1.6214 bce 0.463 (1414s)
+  [P35-R1] step 2500/4000 ce 1.6096 bce 0.459 (1577s)
+  [P35-R1] step 2750/4000 ce 1.5523 bce 0.469 (1731s)
+  [P35-R1] step 3000/4000 ce 1.5782 bce 0.476 (1886s)
+  [P35-R1] step 3250/4000 ce 1.5539 bce 0.479 (2046s)
+  [P35-R1] step 3500/4000 ce 1.5436 bce 0.460 (2202s)
+  [P35-R1] step 3750/4000 ce 1.5548 bce 0.462 (2363s)
+  [P35-R1] step 4000/4000 ce 1.5660 bce 0.471 (2525s)
+[p35 R1:KRB-HIND] {'n1_hard': 1.0, 'n2_hard': 1.0, 'n3_hard': 0.9683, 'n4_hard': 0.9359, 'n6_hard': 0.8415, 'n8_hard': 0.7804, 'n_train_mix_hard': 0.9407, 'params': 21323, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.0}}
+[P35] DONE
