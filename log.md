@@ -4067,3 +4067,62 @@ FILES: arch_vet_p33.py, p33_a.log, p33_b.log, p21_ckpt/P33_*_s111.pt,
 RESULT ARCH-VET-LM-P33 (x2) in log.jsonl. Single seed — queue 10-seed.
 NEXT: fold KRB-TAG into expert A; unified 10-seed re-cert with the MQAR
 bar; S5 re-lock; results-per-compute write-up.
+
+
+## CYCLE 69 — ARCH-VET P34 / P34b: LEARNED-PREDICATE ABLATION of the tagged KRB — NEGATIVE (both arms)
+
+Question (frontier threat #3): does KRB-TAG survive when key-detection,
+write timing, task reset and the two hash functions are LEARNED rather
+than hand-wired? Only integer tag-equality on read is kept exact.
+Prior art (in code header): ST-Gumbel Jang 1611.01144; ST estimator
+Bengio 1308.3432; Raven 2607.25357 (soft routed slots, collapse risk);
+universal hashing Carter-Wegman 1979 (FIXH arm); L0/hard-concrete gates
+Louizos 2017 (openai.com/index/learning-sparse-neural-networks-through-
+l0-regularization) — searched this cycle for the gate-collapse fix.
+Data: P32 R1 (8k/8s) and R2 (16k/8s), CLEAN token sets, 4000 steps,
+seed 111, 22,446p. Controls on identical data: KRB-TAG (oracle
+predicates) R1 1/1/1/1|1/.993, R2 1/1/.99/1|.946/.865; TF-ALiBi R2
+1/.967/.929/.944|.829/.754 (42,672p).
+
+  arm                     n1   n2   n3   n4  | n6   n8   mix  | diag
+  R1 KRB-LEARN (all learned) 1.0 .767 .643 .596 | .419 .382 .593 | key_fp 1.0 (gate open on EVERY token), h-ent 1.21/1.49 (3-5/8 cells), no reset
+  R2 KRB-LEARN               1.0 .761 .651 .600 | .396 .323 .695 | key_fp 1.0, h-ent .83/1.04
+  R1 KRB-FIXH (fixed univ. hash + learned gates + rate hinge<=.25)
+                            .964 .722 .627 .494 | .366 .345 .637 | key_recall .375 key_fp .25, 5/8 cells, no reset
+  R2 KRB-FIXH               1.0  .750 .667 .631 | .425 .358 .681 | key_recall .25 key_fp .19, 6/8 cells
+
+Read:
+- Both arms land at the VETDCC / no-bank floor (P32 VETDCC clean-data
+  equivalent ~.35-.60). n1 = 1.0 is the trivial single-binding case.
+- LEARN: the key gate goes degenerate-OPEN (fp 1.0) — every token is
+  written, the bank is thrashed, and the learned hashes collapse to 3-5
+  of 8 cells despite the entropy aux (lam .05). Reset gate never fires.
+- FIXH isolates the cause: with a perfectly spread, grammar-agnostic
+  universal hash the result is UNCHANGED (.494/.345 vs .596/.382). The
+  failure is the learned PREDICATES, not the learned hash. With the
+  rate hinge the key gate now under-fires (recall .25-.375) instead of
+  over-firing — the hinge trades one collapse for the other; there is no
+  gradient signal that says "this token is a key" because a wrong write
+  only hurts several tokens later, through an exact (non-differentiable)
+  tag match.
+- Prediction check: "R1 >= .95 at n4" FALSIFIED (.596 / .494). "R2
+  collapse -> VETDCC floor if hashes do not spread" — hashes DID spread
+  in FIXH and it still hit the floor, so the collapse hypothesis was
+  wrong about the cause.
+- LAW L-PREDICATES-DONT-LEARN-THROUGH-EXACT-MATCH: a hard binary gate
+  whose payoff is delivered only via a downstream exact-equality read
+  receives no usable ST gradient; it collapses open or closed depending
+  on the regulariser. Consequence for the novelty claim: the channel
+  architecture (tag-verified bank) is demonstrated; predicate SOURCE
+  stays hand-wired at this scale. Honest status of threat #3: OPEN,
+  first two attacks negative. Banked negatives: ST-bernoulli gates + aux
+  entropy; ST-bernoulli gates + rate hinge + universal hash.
+- Next attack (not a retry of the above): make the write CONTENT-
+  differentiable — soft write with a learned scalar strength per token
+  (no binarisation), keep exact tag match only at read time, and add a
+  dense auxiliary "was-this-a-key" self-supervised target derived from
+  whether the token is later queried (available in-stream, no grammar
+  label). If that also fails, threat #3 is closed as a scale limit.
+Budget: 4 arms x 4000 steps, ~1.7 h wall each pair, 2-concurrent.
+FILES: arch_vet_p34.py (--arm LEARN|FIXH), p34_a/b.log, p34b_a/b.log,
+RESULT ARCH-VET-LM-P34 x4 in log.jsonl.

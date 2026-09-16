@@ -1,3 +1,14 @@
+## STATE AT CYCLE 69 (read first)
+P34/P34b learned-predicate ablation of KRB-TAG = NEGATIVE twice (all-
+learned .596 n4; fixed universal hash + learned gates .494 n4; both at
+the no-bank floor). Cause = learned predicates get no gradient through
+the exact tag-match read (L-PREDICATES-DONT-LEARN-THROUGH-EXACT-MATCH).
+KRB-TAG with hand-wired predicates stands (C68). C70 plan: soft-
+strength write + in-stream self-supervised key target (final predicate
+attack), then fold KRB-TAG into expert A + 10-seed unified re-cert.
+Env: 5th re-provision this session; `pip install --break-system-
+packages torch numpy` (PyPI, not the cpu index) is the working recipe.
+
 ## STATE AT CYCLE 68 (read first)
 C64-68 = ARCH-VET P28-P33. P28/29: unified system re-cert + in-range
 parity. P30: routing robust under distribution shift. P31: KEYED

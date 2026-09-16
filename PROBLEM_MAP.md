@@ -1059,3 +1059,15 @@ stack use from the grammar coin-flip ceiling.
 - Single seed 111. OPEN QUEUE (C69): 1. fold KRB-TAG into expert A +
   unified 10-seed re-cert incl. MQAR bar; 2. S5 re-lock; 3. results-
   per-compute write-up; 4. RoPE/ALiBi TF control on the legacy axes.
+
+## ARCH-VET P34/P34b (cycle 69) — learned-predicate ablation: NEGATIVE
+- All-learned KRB (gates + ST-Gumbel hashes): R1 .596 n4 / .382 n8 —
+  key gate degenerate-open, hashes collapse to 3-5/8 cells.
+- Fixed universal hash + learned gates + rate hinge: R1 .494/.345, R2
+  .631/.358 — unchanged => failure is the learned PREDICATES, not hash.
+- LAW L-PREDICATES-DONT-LEARN-THROUGH-EXACT-MATCH. Threat #3 (predicate
+  source hand-wired) stays OPEN; two attacks banked negative.
+- OPEN QUEUE (C70): 1. soft-strength write + in-stream "later-queried"
+  self-supervised key target (last predicate attack); 2. fold KRB-TAG
+  into expert A + unified 10-seed re-cert w/ MQAR bar + ALiBi-TF on
+  legacy axes; 3. S5 re-lock; 4. results-per-compute write-up.
