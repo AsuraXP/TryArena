@@ -35,6 +35,14 @@ value vectors, so early reads were corrupt and the read gate learned to
 distrust the bank (R1 .57 n4). P35c: value write is HARD (full overwrite
 when the gate fires; gate trains through the hindsight BCE only), read
 gate bias init 0. Nothing else changes.
+P35c: predicate still perfect, acc unchanged (R1 .56 n4); read gate rg
+= 0 at ALL positions (bias drifted to -.97). Cause: without P33's
+after_A mask the bank HITS in the write phase too (the key is still
+bound from an earlier task, no reset) and injects the STALE value right
+before the NEW value must be predicted -> reads are net-harmful early ->
+gate closes. P35d: couple read to the learned predicate: read_on = hit *
+(1 - kg_t) * rg — "a key is either being bound or being queried". kg is
+the same hindsight-supervised gate; no grammar is added.
 PREDICTION: R1 >= .90 n4, >= .80 n8 with key_recall >= .9; R2 >= .80 n4.
 If R1 < .70 n4 threat #3 is closed as a scale limit. Tag ARCH-VET-LM-P35.
 """
@@ -95,7 +103,7 @@ class KRBHind(p9.VETDCC):
             a = (s.unsqueeze(-1) * torch.exp(-F.softplus(self.Alog))).sum(1); R = a * R + torch.einsum("bk,ksd,bd->bd", s, self.Ww, xt)
             i1 = H1[:, t]; i2 = H2[:, t]; m1 = tags[ar, i1] == xid; m2 = tags[ar, i2] == xid
             cand = torch.where(m1.unsqueeze(-1), vals[ar, i1], vals[ar, i2]); hit = (m1 | m2).float().unsqueeze(-1)
-            rg = torch.sigmoid(self.Wread(torch.cat([s, xt], -1))); read_on = hit * rg
+            rg = torch.sigmoid(self.Wread(torch.cat([s, xt], -1))); read_on = hit * (1 - kg_prev).unsqueeze(-1) * rg  # P35d
             R = (1 - read_on) * R + read_on * cand
             g = torch.sigmoid(self.Wg(torch.cat([s, xt], -1))); push = (g > 0.5) + (g - g.detach())
             buf = torch.roll(buf, 1, dims=1); buf[:, 0] = xt * push; valid = torch.roll(valid, 1, dims=1); valid[:, 0] = (g > 0.5).squeeze(-1)
@@ -139,8 +147,8 @@ def main():
         train_arm(f"P35-{rn}", m, pool, a.steps, 8, lam=a.lam); m.eval()
         r = {f"n{n}_hard": p32.acc(m, R, 10, 256 if n <= 4 else 320, random.Random(600 + n), True, n) for n in R["n_eval"]}
         r["n_train_mix_hard"] = p32.acc(m, R, 12, 256, random.Random(700), True, None); r["params"] = p19.n_params(m); r["diag"] = diag(m, R)
-        print(f"[p35 {rn}:KRB-HIND] {r}", flush=True); out["arms"][f"{rn}:HINDc"] = r
-        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P35c_{rn}_HIND_s{a.seed}.pt")
+        print(f"[p35 {rn}:KRB-HIND] {r}", flush=True); out["arms"][f"{rn}:HINDd"] = r
+        torch.save({"sd": m.state_dict()}, f"p21_ckpt/P35d_{rn}_HIND_s{a.seed}.pt")
     out["wall_s"] = round(time.time() - t0); open("log.jsonl", "a").write(json.dumps(out) + "\n"); print("[P35] DONE", flush=True)
 
 
