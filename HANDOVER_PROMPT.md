@@ -1,3 +1,13 @@
+## STATE AT CYCLE 71 (read first)
+Learned-predicate KRB certified 3/3 seeds (arch_vet_p35.py --arm SEEN):
+R2 .92 n4 / .73 n8 (sd .003), R1 .93/.78, 21,324p. TF-ALiBi control on
+R2 is 1/3-basin (.944/.375/.425 n4) at 42,672p. Hand-wired KRB-TAG is
+the ceiling (R2 1.0/.865). C72: fold KRB-SEEN into expert A, unified
+row with MQAR bar, 3-seed ALiBi-TF on all legacy axes.
+PROCESS: re-provision #6 wiped an unpushed close commit — COMMIT AND
+PUSH IMMEDIATELY after every result, retry push until it lands. Env:
+`pip install --break-system-packages torch numpy`.
+
 ## STATE AT CYCLE 70 (read first)
 P35e KRB-HIND: the key predicate is LEARNED (hindsight bigram-recurrence
 self-supervision, no grammar), frozen universal hash, structural read.

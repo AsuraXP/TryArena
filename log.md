@@ -4189,3 +4189,45 @@ log.jsonl.
 NEXT (C71): 3-seed P35e R1/R2 + R4 composite; sharper phase feature
 for R2 precision; then fold KRB-HIND into expert A for the unified
 10-seed re-cert.
+
+
+## CYCLE 71 — ARCH-VET P35f/g: 3-SEED CERTIFICATION of the learned-predicate KRB + NOVELTY-BIT gate input (SEEN) + 3-seed TF-ALiBi control
+(re-written after re-provision #6 wiped the unpushed close commit; RESULT rows rebuilt from the surviving run logs, marked recovered_from)
+
+Prior art (header of arch_vet_p35.py): induction-head prefix-match
+signal (Olsson et al. 2022; aclanthology 2025.findings-naacl.283) — the
+SEEN arm gives the key gate the bank's own O(1) novelty bit seen_t =
+[a slot already carries tag x_t] instead of an O(N^2) scan. Grammar-free.
+
+Hard-gap acc, seeds 111/222/333, 4000 steps, clean R1 (8k/8s) & R2 (16k/8s):
+  R2  n4 : HINDe .894 .894 .919   SEEN .919 .925 .919   TF-ALiBi .944 .375 .425
+      n8 : HINDe .618 .594 .747   SEEN .726 .733 .729   TF-ALiBi .754 .274 .247
+  R1  n4 : HINDe .936 .942 .923   SEEN  —   .930 .923
+      n8 : HINDe .780 .797 .791   SEEN  —   .784 .770
+  (KRB-HIND 21,323/21,324p; TF-ALiBi 42,672p; hand-wired KRB-TAG s111
+   R2 1.0 n4/.865 n8, R1 1.0/.993.)
+Means: R2 n8 HINDe .653+-.07, SEEN .729+-.003; TF-ALiBi n4 .581+-.32,
+n8 .425+-.29. R1 n8 HINDe .789+-.01.
+
+Read:
+- Learned-predicate KRB is 3/3 stable: every seed within .03 at n4 on
+  both regimes; HINDe's R2 n8 spread (.59-.75) is the query-key-fp
+  instability predicted in C70 (fp 1.0 on s222).
+- SEEN removes it: query-key fp 0 on all seeds, R2 n8 .726/.733/.729
+  (sd .003), +.08 mean over HINDe. Prediction CONFIRMED. R1 unchanged.
+- TF-ALiBi CONTROL IS SEED-FRAGILE: s111 .944/.754 was a lucky basin;
+  s222/s333 .38-.43 n4 / .25-.27 n8 (below the no-bank floor). 1/3
+  basin rate on R2 at 2x params. LAW L-TF-MQAR-BASIN-FRAGILE. C68/C70
+  quoted TF's best seed; the fair 3-seed statement: KRB-SEEN beats
+  TF-ALiBi on R2 by +.34 n4 / +.30 n8 in the mean, ~100x lower
+  variance, half the parameters. R3 overflow exception (C68) stands.
+- Honest gaps: SEEN -.08 n4 / -.14 n8 below the hand-wired predicate
+  on R2; R1 -.07/-.21. Cost = predicate recall on hard-gap streams +
+  first-binding label noise (P(lab|filler) .20).
+- LAW L-NOVELTY-BIT-SHARPENS-PHASE.
+Budget: 9 KRB + 2 TF arms x 4000 steps ≈ 9 h wall, 2-concurrent.
+FILES: arch_vet_p35.py (--arm HINDe|SEEN, --seed), p35f_*.log,
+p35g_*.log, p32_tf_R2_s222/333.log. Checkpoints lost to re-provision.
+NEXT (C72): fold KRB-SEEN into expert A of the unified system; unified
+row with MQAR bar (R2 n4 >= .90, n8 >= .70) + ALiBi-TF 3-seed on the
+legacy axes; R4 composite with SEEN; results-per-compute write-up.

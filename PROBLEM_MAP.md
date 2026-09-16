@@ -1084,3 +1084,13 @@ stack use from the grammar coin-flip ceiling.
 - OPEN QUEUE (C71): 1. 3-seed P35e + R4; 2. sharper grammar-free phase
   feature; 3. fold into expert A + 10-seed unified re-cert w/ ALiBi-TF;
   4. S5 re-lock; 5. results-per-compute write-up.
+
+## ARCH-VET P35f/g (cycle 71) — 3-seed learned-predicate KRB + SEEN
+- SEEN (novelty-bit gate input): R2 n4 .919/.925/.919, n8 .726/.733/
+  .729 (sd .003); R1 n4 .93/.92, n8 .78/.77. HINDe R2 n8 .62/.59/.75.
+- TF-ALiBi R2 3-seed: .944/.375/.425 n4, .754/.274/.247 n8 — 1/3 basin
+  (L-TF-MQAR-BASIN-FRAGILE). Fair: KRB-SEEN +.34 n4 / +.30 n8 mean.
+- Residual: -.08 n4/-.14 n8 vs hand-wired predicate on R2.
+- OPEN QUEUE (C72): 1. fold KRB-SEEN into expert A + unified row with
+  MQAR bar + 3-seed ALiBi-TF on legacy axes; 2. R4 with SEEN; 3. S5
+  re-lock; 4. results-per-compute write-up; 5. R3 overflow spill.
