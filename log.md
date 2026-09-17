@@ -4283,3 +4283,37 @@ RESULT ARCH-VET-LM-P36 x2 in log.jsonl.
 NEXT (C73): 10-seed P36 (seeds 444-1010 need P35 SEEN K experts:
 7 x 2 arms ≈ 5 h); 3-seed ALiBi-TF on legacy axes; results-per-compute
 write-up (RESULTS.md) with the full certified table.
+
+
+## CYCLE 73 — ARCH-VET P36 10-SEED: the unified 5-expert system is 6/6 BARS ON 10/10 SEEDS
+(re-written after re-provision #7 wiped the unpushed close commit; RESULT rows rebuilt from p35_seen10.log / p36_10seed.log, marked recovered_from; all checkpoints survived)
+
+K experts s444-1010 trained (arch_vet_p35.py --jobs R2 --arm SEEN, 4000
+steps, ~55 min/seed on one core), then P36 gate GK per seed.
+  seed  pair  ratio dyck12 MQAR n4/n8   identity Kshare  text CE
+  111  .8585 .596 .9838  .9187/.7257  .9961  .922  2.786
+  222  .8774 .503 .9496  .9250/.7326  .9993  .922  2.674
+  333  .8585 .443 .9728  .9187/.7292  1.0    .922  2.666
+  444  .9151 .546 .9836  .9313/.7257  1.0    .960  2.700
+  555  .8302 .504 .9752  .9125/.7083  1.0    .961  2.745
+  666  .9340 .433 .9459  .9062/.7326  1.0    .957  2.693
+  777  .9340 .469 .9690  .9187/.7188  1.0    .885  2.678
+  888  .8491 .528 .9845  .9125/.7118  .9927  .918  2.746
+  999  .8491 .454 .9440  .9187/.7083  1.0    .962  2.767
+  1010 .9811 .514 .9726  .9313/.7326  .9965  .961  2.786
+  modk 1.0 x10. bars 6/6 x10. Wilson95 all-6: [.722, 1].
+  pair .889 [.830,.981]; ratio .499 [.433,.596]; dyck .968 [.944,
+  .985]; MQAR n4 .919 sd .008 [.906,.931]; n8 .723 sd .010 [.708,
+  .733]; MQAR routed == K-alone and text CE == C-alone on every seed.
+  116,858p on all seeds.
+Read: prediction (C72) 10/10 at 6/6 CONFIRMED. MQAR is the lowest-
+variance certified axis (sd .01) vs the matched TF-ALiBi control's 1/3
+basin. Certified P27 row reproduced bit-identically after adding K
+(identity .993-1.0, deviations only on filler positions).
+LAW L-EXACT-FLUENT-MEMORY-10-SEED: 5-expert hierarchical VET system
+holds 4 OOD reasoning bars + text CE + 2x-OOD multi-query recall with a
+learned write predicate on 10/10 seeds at 116,858p, ~4.3 h 2-core CPU
+per seed. Boundaries: learned predicate .72 n8 vs hand-wired .865;
+overflow physics; in-range parity open; legacy TF controls 2-seed.
+FILES: run_c73.sh, p35_seen10.log, p36_10seed.log, p21_ckpt/P35_R2_
+SEEN_s*.pt, GK_s*.pt. NEXT (C74): learned-predicate gap.

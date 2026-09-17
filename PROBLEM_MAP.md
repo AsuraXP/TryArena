@@ -1105,3 +1105,10 @@ stack use from the grammar coin-flip ceiling.
   ALiBi-TF on legacy axes; 3. RESULTS.md results-per-compute table;
   4. learned predicate -> hand-wired ceiling gap (.73 vs .865 n8);
   5. R3 overflow spill; 6. in-range parity; 7. fluency capacity.
+
+## ARCH-VET P36 10-seed (cycle 73) — 6/6 bars on 10/10 seeds
+- pair .889, modk 1 x10, ratio .50, dyck .97, MQAR n4 .919 sd .008 /
+  n8 .723 sd .010, text == C-alone, 116,858p. L-EXACT-FLUENT-MEMORY-10-SEED.
+- OPEN QUEUE (C74): 1. learned-predicate gap (.72 vs .865 n8); 2. P23
+  TF third seed + lr-tuned TF; 3. generator oracle audit; 4. one-command
+  repro; 5. overflow spill; 6. in-range parity; 7. fluency; 8. theory.

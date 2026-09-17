@@ -1,3 +1,11 @@
+## STATE AT CYCLE 73 (read first)
+UNIFIED 5-EXPERT SYSTEM CERTIFIED 6/6 BARS ON 10/10 SEEDS (116,858p):
+pair .889, modk 1, ratio .50, dyck .97, MQAR R2 .919 n4/.723 n8 with a
+LEARNED write predicate, text == C-alone. RESULTS.md = results-per-
+compute table. C74: shrink learned-predicate gap (.72 -> .865 n8).
+Re-provision #6 AND #7 each wiped an unpushed close commit: PUSH
+IMMEDIATELY after every commit; if push auth fails, retry in a loop.
+
 ## STATE AT CYCLE 72 (read first)
 P36: ONE system (116,858p) = A+B+C+K+G+GM+GK holds 6/6 bars on 3/3
 seeds: four certified OOD bars + text CE == C-alone + MQAR R2 .92 n4/

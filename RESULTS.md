@@ -1,4 +1,4 @@
-# RESULTS — results-per-compute summary (through cycle 72)
+# RESULTS — results-per-compute summary (through cycle 73)
 
 Hardware envelope for EVERY number below: one sandbox, 2 CPU cores, ~4 GB RAM,
 no GPU, PyTorch single-threaded (`OMP_NUM_THREADS=1`), two runs at a time.
@@ -28,7 +28,7 @@ a fixed set of registers/counters/stack/bank.
 | ratio | CE(L=1024)/CE(256 hard) <= .6 | .43-.60, **10/10** | ALiBi .49-.62, NoPE/NAPE .84-1.45 |
 | dyck d12 | close-bracket acc at depth 12 (train d<=6) >= .85 | .95-.98, **10/10** | ALiBi .94 (1/2 seeds); TF-MoE .95 |
 | text CE | bytes/char on held-out text | 2.67-2.79 == C-alone, 10/10 | TF-NAPE 85.9k: 3.14-3.17 |
-| **MQAR n4 / n8** | multi-query recall, 16 keys / 8 slots, 4 (in-range) and 8 (2x OOD) bindings, >= .90 / .70 | .92 / .73, **3/3** (sd .003) | TF-ALiBi 42.7k: .944/.754, .375/.274, .425/.247 (1/3 basin) |
+| **MQAR n4 / n8** | multi-query recall, 16 keys / 8 slots, 4 (in-range) and 8 (2x OOD) bindings, >= .90 / .70 | .919 / .723, **10/10** (sd .008/.010) | TF-ALiBi 42.7k: .944/.754, .375/.274, .425/.247 (1/3 basin) |
 
 Transformer controls (P23/P24/P27): 2L d48-56, NoPE / ALiBi / NAPE positional
 schemes, matched or larger params, union corpus, combined step budget. Best any
@@ -59,7 +59,6 @@ the identical gate recipe: 1 of 4 (dyck only). The system: 4/4 on 10/10 seeds.
 ## 5. Open (honest)
 
 - Learned write predicate is .13 below the hand-wired ceiling at n8 (.73 vs .865).
-- MQAR expert certified 3 seeds; 10-seed running (C73).
 - In-range CE parity with the TF is not reached (256-hard CE 2.2-2.5 vs 1.96).
 - Fluency is corpus- and capacity-bound (1 MB, 43.6k params).
 - ~60 empirical "laws", no theory. No inference-latency or robustness study.
