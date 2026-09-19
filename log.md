@@ -4492,3 +4492,32 @@ NEXT (C77): RESULTS.md TF-control row updated (12 runs). Queue: 1. R3
 overflow spill (more slots, S16) as a capacity knob, not a fix; 2. in-
 range parity (256-hard CE 2.2-2.5 vs TF 1.96); 3. fluency capacity; 4.
 theory for the ~57 laws; 5. C76b HP grid if challenged.
+
+## CYCLE 77 — ARCH-VET P38: BLOCKED CUCKOO (b cells/bucket) attacks the load-1.0 ceiling of the learned-predicate K
+
+RECOVERY NOTE: sandbox re-provisioned again (HEAD rewound to db74de5,
+torch wiped, remote branch at 8ae88bb = C74 code). Working tree survived.
+Restored per protocol: pip torch/numpy (PyPI; the pytorch.org index was
+SSL-dead), single RESTORE commit 28cb04b, fetch + `merge -s ours` of the
+remote history (no force), pushed b030a96. verify 35/35.
+
+PHASE 1 — Hypothesis: n8 .855 (unified, 10 seeds) sits at the oracle
+cuckoo wall (L-CUCKOO-LOAD-CEILING; Pagh-Rodler 2001: 2-choice cuckoo
+fails above load 1/2; we run 8 bindings into 8 cells = load 1.0).
+Search: "cuckoo hashing load factor stash blocked" -> Kirsch-Mitzenmacher-
+Wieder 2008 (stash), Dietzfelbinger-Weidling 2007 / Wikipedia (blocked
+cuckoo: 2 keys per bucket -> load >80%, 3 hashes -> 91%). Not a learned-
+memory paper; the mutation here is to make the slot memory's *bucket
+geometry* blocked while keeping the same total cells, learned predicate,
+consumed-first eviction and O(1) per-token cost.
+Oracle (oracle_c77.py, S=8 cells, consumed-first, 1 kick), n4/n8:
+  b=1 .986/.835 | b=2 .998/.904 | b=4 1.000/.962 | b=2+2kicks .999/.911
+  S16 b=1 .998/.978 | S16 b=2 1.000/.999
+Prediction: BK2 learned ~.90 n8, BK4 ~.95; falsified if BK arms <= .86.
+PHASE 2 — arch_vet_p38.py KRBBlocked(P37 KRBHind): tags/vals/used are
+(B, S/b, b); write = same-key cell > free/consumed cell in H1 bucket >
+H2 bucket > cell 0 of H1 with 1 kick; read = exact tag scan over 2b
+cells. Params 21,324 (unchanged). Smoke 20 st OK (2.3 s/step at 1
+thread -> ~2.6 h per arm-seed).
+PHASE 3 — running: run_c77.sh BK2 111 222 333 | BK4 111 222 333 (2 lanes)
+-> p38_BK2.log / p38_BK4.log.
