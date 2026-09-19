@@ -1,0 +1,46 @@
+[c26a] identity-init fitness = 0.1000
+[c26a] edit 65: 0.1000 -> 0.1150
+[c26a] edit 68: 0.1150 -> 0.1250
+[c26a] edit 73: 0.1250 -> 0.1600
+[c26a] edit 80: 0.1600 -> 0.1750
+[c26a] edit 100: 0.1750 -> 0.2150
+[c26a] edit 183: 0.2150 -> 0.3800
+[c26a] edit 254: 0.3800 -> 0.4000
+[c26a] edit 489: 0.4025 -> 0.4325
+[c26a] edit 569: 0.4325 -> 0.4425
+[c26a] edit 607: 0.4425 -> 0.4525
+[c26a] edit 664: 0.4525 -> 0.4675
+[c26a] edit 673: 0.4675 -> 0.4825
+[c26a] edit 760: 0.4825 -> 0.4875
+[c26a] edit 990: 0.4875 -> 0.5025
+[c26a] edit 1084: 0.5025 -> 0.5075
+[c26a] edit 1289: 0.5125 -> 0.5275
+[c26a] edit 2452: 0.5300 -> 0.5450
+[c26a] edit 2597: 0.5450 -> 0.5600
+[c26a] edit 2622: 0.5600 -> 0.5750
+[c26a] edit 3147: 0.5750 -> 0.5825
+[c26a] edit 4007: 0.5825 -> 0.5975
+[c26a] edit 4506: 0.6033 -> 0.6182
+[c26a] edit 5296: 0.6182 -> 0.6382
+[c26a] edit 6827: 0.6382 -> 0.6532
+[c26a] ... edits=9363 best=0.6558 accepted=3234
+[c26a] edit 11624: 0.6587 -> 0.6687
+[c26a] edit 16616: 0.6710 -> 0.6885
+[c26a] ... edits=17284 best=0.6885 accepted=5021
+[c26a] ... edits=25101 best=0.6929 accepted=6804
+[c26a] ... edits=32889 best=0.6929 accepted=8484
+[c26a] ... edits=40606 best=0.6941 accepted=10185
+[c26a] edit 43717: 0.6941 -> 0.7091
+[c26a] ... edits=48403 best=0.7099 accepted=11845
+[c26a] edit 53063: 0.7119 -> 0.7179
+[c26a] ... edits=56102 best=0.7182 accepted=13418
+[c26a] ... edits=63700 best=0.7190 accepted=15084
+[c26a] edit 67978: 0.7202 -> 0.7402
+[c26a] done: edits=70000 accepted=16377 best=0.7402
+[cert] indist: 2/500 exact, passes=8.19 (want 4), trace_ok=False
+[cert] n16: 0/200 exact, passes=24.3 (want 17), trace_ok=False
+[cert] n32: 0/100 exact, passes=41.0 (want 33), trace_ok=False
+[cert] joint: 0/100 exact, passes=73.0 (want 65), trace_ok=False
+[verdict] {'S1': '2/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': False, 'ALL': False}
+RESULT {"tag": "ARC2-C26A-P6-BIND", "search": {"edits": 70000, "accepted": 16377, "fitness": 0.7402}, "cert": {"indist": {"exact": "2/500", "passes_mean": 8.19, "trace_ok": false}, "n16": {"exact": "0/200", "passes_mean": 24.3, "trace_ok": false}, "n32": {"exact": "0/100", "passes_mean": 41.0, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}}, "verdict": {"S1": "2/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": false, "ALL": false}, "wall_s": 1087.4, "peak_mb": 499.1}
+DONE

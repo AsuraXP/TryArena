@@ -1,0 +1,116 @@
+[c26r3] seed fitness(stage A) = 0.3775
+[c26r3] A edit 57: 0.3775 -> 0.4302
+[c26r3] A edit 152: 0.4302 -> 0.4455
+[c26r3] A edit 172: 0.4464 -> 0.4574
+[c26r3] A edit 1246: 0.4574 -> 0.5032
+[c26r3] A edit 1247: 0.5032 -> 0.5304
+[c26r3] A edit 1311: 0.5361 -> 0.5447
+[c26r3] A edit 1367: 0.5447 -> 0.5498
+[c26r3] A edit 2242: 0.5541 -> 0.5777
+[c26r3] A edit 2317: 0.5777 -> 0.5866
+[c26r3] A edit 5392: 0.5917 -> 0.6082
+[c26r3] A edit 6200: 0.6122 -> 0.6198
+[c26r3] A edit 10741: 0.6234 -> 0.7592
+[c26r3] A edit 10770: 0.7592 -> 0.7919
+[c26r3] A edit 11270: 0.7919 -> 0.8009
+[c26r3] A edit 11324: 0.8009 -> 0.8322
+[c26r3] Stage A done: edits=30000 best=0.8363
+[c26r3] B edit 3: 0.3383 -> 0.3569
+[c26r3] B edit 16: 0.3569 -> 0.3621
+[c26r3] B edit 226: 0.3651 -> 0.3704
+[c26r3] B edit 533: 0.3704 -> 0.3764
+[c26r3] B edit 2059: 0.3779 -> 0.4054
+[c26r3] B edit 2077: 0.4116 -> 0.4200
+[c26r3] Stage B done: edits=23947 best=0.4347
+[c26r3] C stage nd<=1 s0 lr=0.00500 CE 4.5044 crisp-probe 9/64
+[c26r3] C stage nd<=1 s200 lr=0.00500 CE 3.4193 crisp-probe 6/64
+[c26r3] C stage nd<=1 s400 lr=0.00500 CE 2.6044 crisp-probe 0/64
+[c26r3] C stage nd<=1 s600 lr=0.00500 CE 2.3998 crisp-probe 0/64
+[c26r3] C stage nd<=1 s800 lr=0.00500 CE 1.0747 crisp-probe 0/64
+[c26r3] C stage nd<=1 s1000 lr=0.00500 CE 1.1423 crisp-probe 0/64
+[c26r3] C stage nd<=1 s1200 lr=0.00500 CE 1.7220 crisp-probe 0/64
+[c26r3] C stage nd<=1 s1400 lr=0.00500 CE 0.9049 crisp-probe 0/64
+[c26r3] C stage nd<=1 s1600 lr=0.00250 CE 0.7710 crisp-probe 0/64
+[c26r3] C stage nd<=1 s1800 lr=0.00250 CE 0.6472 crisp-probe 0/64
+[c26r3] C stage nd<=1 s2000 lr=0.00250 CE 0.8986 crisp-probe 0/64
+[c26r3] C stage nd<=1 s2200 lr=0.00250 CE 0.5279 crisp-probe 0/64
+[c26r3] C stage nd<=1 s2400 lr=0.00250 CE 0.3069 crisp-probe 0/64
+[c26r3] C stage nd<=1 s2600 lr=0.00250 CE 0.1814 crisp-probe 0/64
+[c26r3] C stage nd<=1 s2800 lr=0.00250 CE 0.5524 crisp-probe 0/64
+[c26r3] C stage nd<=1 s3000 lr=0.00125 CE 0.3682 crisp-probe 0/64
+[c26r3] C stage nd<=1 s3200 lr=0.00125 CE 0.3713 crisp-probe 0/64
+[c26r3] C stage nd<=1 s3400 lr=0.00125 CE 0.3974 crisp-probe 0/64
+[c26r3] C stage nd<=1 s3600 lr=0.00125 CE 0.1755 crisp-probe 0/64
+[c26r3] C stage nd<=1 s3800 lr=0.00125 CE 0.5688 crisp-probe 0/64
+[c26r3] C stage nd<=1 did not crystallize
+[c26r3] C stage nd<=2 s0 lr=0.00500 CE 3.8145 crisp-probe 0/64
+[c26r3] C stage nd<=2 s200 lr=0.00500 CE 1.8883 crisp-probe 7/64
+[c26r3] C stage nd<=2 s400 lr=0.00500 CE 1.4654 crisp-probe 0/64
+[c26r3] C stage nd<=2 s600 lr=0.00500 CE 1.1501 crisp-probe 0/64
+[c26r3] C stage nd<=2 s800 lr=0.00500 CE 1.2078 crisp-probe 0/64
+[c26r3] C stage nd<=2 s1000 lr=0.00500 CE 0.8494 crisp-probe 0/64
+[c26r3] C stage nd<=2 s1200 lr=0.00500 CE 0.6923 crisp-probe 0/64
+[c26r3] C stage nd<=2 s1400 lr=0.00500 CE 0.7178 crisp-probe 0/64
+[c26r3] C stage nd<=2 s1600 lr=0.00250 CE 0.5154 crisp-probe 0/64
+[c26r3] C stage nd<=2 s1800 lr=0.00250 CE 0.4186 crisp-probe 0/64
+[c26r3] C stage nd<=2 s2000 lr=0.00250 CE 0.3978 crisp-probe 0/64
+[c26r3] C stage nd<=2 s2200 lr=0.00250 CE 0.3556 crisp-probe 0/64
+[c26r3] C stage nd<=2 s2400 lr=0.00250 CE 0.3699 crisp-probe 0/64
+[c26r3] C stage nd<=2 s2600 lr=0.00250 CE 0.5546 crisp-probe 0/64
+[c26r3] C stage nd<=2 s2800 lr=0.00250 CE 0.4022 crisp-probe 0/64
+[c26r3] C stage nd<=2 s3000 lr=0.00125 CE 0.4679 crisp-probe 0/64
+[c26r3] C stage nd<=2 s3200 lr=0.00125 CE 0.3194 crisp-probe 0/64
+[c26r3] C stage nd<=2 s3400 lr=0.00125 CE 0.3042 crisp-probe 0/64
+[c26r3] C stage nd<=2 s3600 lr=0.00125 CE 0.4955 crisp-probe 0/64
+[c26r3] C stage nd<=2 s3800 lr=0.00125 CE 0.2966 crisp-probe 0/64
+[c26r3] C stage nd<=2 did not crystallize
+[c26r3] C stage nd<=3 s0 lr=0.00500 CE 3.8096 crisp-probe 0/64
+[c26r3] C stage nd<=3 s200 lr=0.00500 CE 1.3387 crisp-probe 3/64
+[c26r3] C stage nd<=3 s400 lr=0.00500 CE 1.0834 crisp-probe 5/64
+[c26r3] C stage nd<=3 s600 lr=0.00500 CE 0.6782 crisp-probe 5/64
+[c26r3] C stage nd<=3 s800 lr=0.00500 CE 0.6030 crisp-probe 2/64
+[c26r3] C stage nd<=3 s1000 lr=0.00500 CE 0.7170 crisp-probe 0/64
+[c26r3] C stage nd<=3 s1200 lr=0.00500 CE 0.8522 crisp-probe 11/64
+[c26r3] C stage nd<=3 s1400 lr=0.00500 CE 0.6439 crisp-probe 0/64
+[c26r3] C stage nd<=3 s1600 lr=0.00250 CE 0.6202 crisp-probe 1/64
+[c26r3] C stage nd<=3 s1800 lr=0.00250 CE 0.8192 crisp-probe 8/64
+[c26r3] C stage nd<=3 s2000 lr=0.00250 CE 0.7958 crisp-probe 15/64
+[c26r3] C stage nd<=3 s2200 lr=0.00250 CE 0.7456 crisp-probe 4/64
+[c26r3] C stage nd<=3 s2400 lr=0.00250 CE 0.5029 crisp-probe 13/64
+[c26r3] C stage nd<=3 s2600 lr=0.00250 CE 0.4717 crisp-probe 11/64
+[c26r3] C stage nd<=3 s2800 lr=0.00250 CE 0.7261 crisp-probe 4/64
+[c26r3] C stage nd<=3 s3000 lr=0.00125 CE 0.6101 crisp-probe 19/64
+[c26r3] C stage nd<=3 s3200 lr=0.00125 CE 0.5093 crisp-probe 16/64
+[c26r3] C stage nd<=3 s3400 lr=0.00125 CE 0.5958 crisp-probe 9/64
+[c26r3] C stage nd<=3 s3600 lr=0.00125 CE 0.5247 crisp-probe 14/64
+[c26r3] C stage nd<=3 s3800 lr=0.00125 CE 0.6559 crisp-probe 9/64
+[c26r3] C stage nd<=3 did not crystallize
+[c26r3] C stage nd<=4 s0 lr=0.00500 CE 3.2298 crisp-probe 6/64
+[c26r3] C stage nd<=4 s200 lr=0.00500 CE 1.2743 crisp-probe 0/64
+[c26r3] C stage nd<=4 s400 lr=0.00500 CE 0.9193 crisp-probe 0/64
+[c26r3] C stage nd<=4 s600 lr=0.00500 CE 0.9021 crisp-probe 2/64
+[c26r3] C stage nd<=4 s800 lr=0.00500 CE 0.7450 crisp-probe 0/64
+[c26r3] C stage nd<=4 s1000 lr=0.00500 CE 0.7286 crisp-probe 2/64
+[c26r3] C stage nd<=4 s1200 lr=0.00500 CE 0.6641 crisp-probe 2/64
+[c26r3] C stage nd<=4 s1400 lr=0.00500 CE 0.6420 crisp-probe 1/64
+[c26r3] C stage nd<=4 s1600 lr=0.00250 CE 0.7235 crisp-probe 2/64
+[c26r3] C stage nd<=4 s1800 lr=0.00250 CE 0.8342 crisp-probe 4/64
+[c26r3] C stage nd<=4 s2000 lr=0.00250 CE 0.9270 crisp-probe 8/64
+[c26r3] C stage nd<=4 s2200 lr=0.00250 CE 0.7326 crisp-probe 4/64
+[c26r3] C stage nd<=4 s2400 lr=0.00250 CE 0.7865 crisp-probe 0/64
+[c26r3] C stage nd<=4 s2600 lr=0.00250 CE 0.7255 crisp-probe 2/64
+[c26r3] C stage nd<=4 s2800 lr=0.00250 CE 0.7462 crisp-probe 1/64
+[c26r3] C stage nd<=4 s3000 lr=0.00125 CE 0.8438 crisp-probe 0/64
+[c26r3] C stage nd<=4 s3200 lr=0.00125 CE 0.7686 crisp-probe 0/64
+[c26r3] C stage nd<=4 s3400 lr=0.00125 CE 0.7783 crisp-probe 3/64
+[c26r3] C stage nd<=4 s3600 lr=0.00125 CE 0.8260 crisp-probe 0/64
+[c26r3] C stage nd<=4 s3800 lr=0.00125 CE 0.9782 crisp-probe 1/64
+[c26r3] C stage nd<=4 did not crystallize
+[c26r3] restored best-probe checkpoint (19/64)
+[cert] indist: 39/500 exact, passes=12.0 (want 4), trace_ok=False
+[cert] n16: 0/200 exact, passes=25.0 (want 17), trace_ok=False
+[cert] n32: 0/100 exact, passes=41.0 (want 33), trace_ok=False
+[cert] joint: 0/100 exact, passes=73.0 (want 65), trace_ok=False
+[verdict] {'S1': '39/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': False, 'ALL': False}
+RESULT {"tag": "ARC2-C26R3-P6-SEP", "search": {"edits_A": 30000, "edits_B": 23947, "fitA": 0.8363, "fitB": 0.4347}, "cert": {"indist": {"exact": "39/500", "passes_mean": 12.0, "trace_ok": false}, "n16": {"exact": "0/200", "passes_mean": 25.0, "trace_ok": false}, "n32": {"exact": "0/100", "passes_mean": 41.0, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}}, "verdict": {"S1": "39/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": false, "ALL": false}, "steps": 16000, "wall_s": 842.7, "peak_mb": 664.9}
+DONE

@@ -1,0 +1,12 @@
+[c24f] stage k<=1 s0 CE 2.4007 hard-probe 0/64
+[c24f] stage k<=1 s200 CE 2.0095 hard-probe 0/64
+[c24f] stage k<=1 s400 CE 0.9604 hard-probe 0/64
+[c24f] stage k<=1 s600 CE 0.1468 hard-probe 37/64
+[c24f] stage k<=1 s800 CE 0.1237 hard-probe 30/64
+[c24f] stage k<=1 s1000 CE 0.1142 hard-probe 18/64
+[c24f] stage k<=1 s1200 CE 0.0032 hard-probe 59/64
+[c24f] stage k<=1 s1400 CE 0.0027 hard-probe 64/64
+[c24f] stage k<=2 s0 CE 0.0023 hard-probe 29/64
+[c24f] stage k<=2 s200 CE 0.2599 hard-probe 29/64
+[c24f] stage k<=2 s400 CE 0.0050 hard-probe 29/64
+[c24f] stage k<=2 s600 CE 0.0058 hard-probe 24/64

@@ -1,0 +1,19 @@
+[TFMicro] params=8144
+arch_vet_p11.py:198: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [TFMicro] step 500/2000 loss 0.4395 (9s)
+  [TFMicro] step 1000/2000 loss 0.3609 (18s)
+  [TFMicro] step 1500/2000 loss 0.3427 (27s)
+  [TFMicro] step 2000/2000 loss 0.3358 (35s)
+[TFMicro] exact: {'exact_d3': 0.0, 'exact_d4': 0.0, 'exact_d5': 0.0, 'exact_d6': 0.0, 'exact_d7': 0.0, 'exact_d8': 0.0, 'exact_d9': 0.0, 'exact_d10': 0.0}
+[TFMicro] pos: {'open_d3': 0.3183, 'close_d3': 0.6782, 'open_d4': 0.2262, 'close_d4': 0.5805, 'open_d6': 0.1659, 'close_d6': 0.4517, 'open_d8': 0.1378, 'close_d8': 0.3872, 'open_d10': 0.1092, 'close_d10': 0.345}
+[STACKDCC2-big] params=21817
+  [STACKDCC2-big] step 500/2000 loss 0.4012 (389s)
+  [STACKDCC2-big] step 1000/2000 loss 0.3980 (770s)
+  [STACKDCC2-big] step 1500/2000 loss 0.3677 (1153s)
+  [STACKDCC2-big] step 2000/2000 loss 0.3596 (1538s)
+[STACKDCC2-big] exact: {'exact_d3': 0.0, 'exact_d4': 0.0, 'exact_d5': 0.0, 'exact_d6': 0.0, 'exact_d7': 0.0, 'exact_d8': 0.0, 'exact_d9': 0.0, 'exact_d10': 0.0}
+[STACKDCC2-big] pos: {'open_d3': 0.3174, 'close_d3': 0.791, 'open_d4': 0.2042, 'close_d4': 0.7376, 'open_d6': 0.0849, 'close_d6': 0.6238, 'open_d8': 0.079, 'close_d8': 0.5426, 'open_d10': 0.0527, 'close_d10': 0.4881}
+RESULT {"tag": "ARCH-VET-LM-P12", "protocol": "single-task stochastic dyck, train depth 2, L=256 pool 256 seed 12345, 2000 steps seed 0 (identical to P11); per-position open/close acc + exact-match d3-10 (16 streams). Closes P11's missing TF control; STACKDCC2-big re-run for same-session comparability (P11 values cited: close d3-8 .925/.852/.724/.595; VETbase .657/.588/.520/.481)", "arms": {"TFMicro": {"params": 8144, "loss_curve": [[500, 0.4395], [1000, 0.3609], [1500, 0.3427], [2000, 0.3358]], "exact_match_frontier": {"exact_d3": 0.0, "exact_d4": 0.0, "exact_d5": 0.0, "exact_d6": 0.0, "exact_d7": 0.0, "exact_d8": 0.0, "exact_d9": 0.0, "exact_d10": 0.0}, "per_position_bracket_acc": {"open_d3": 0.3183, "close_d3": 0.6782, "open_d4": 0.2262, "close_d4": 0.5805, "open_d6": 0.1659, "close_d6": 0.4517, "open_d8": 0.1378, "close_d8": 0.3872, "open_d10": 0.1092, "close_d10": 0.345}}, "STACKDCC2-big": {"params": 21817, "loss_curve": [[500, 0.4012], [1000, 0.398], [1500, 0.3677], [2000, 0.3596]], "exact_match_frontier": {"exact_d3": 0.0, "exact_d4": 0.0, "exact_d5": 0.0, "exact_d6": 0.0, "exact_d7": 0.0, "exact_d8": 0.0, "exact_d9": 0.0, "exact_d10": 0.0}, "per_position_bracket_acc": {"open_d3": 0.3174, "close_d3": 0.791, "open_d4": 0.2042, "close_d4": 0.7376, "open_d6": 0.0849, "close_d6": 0.6238, "open_d8": 0.079, "close_d8": 0.5426, "open_d10": 0.0527, "close_d10": 0.4881}}}, "wall_s": 1641.0}
+DONE

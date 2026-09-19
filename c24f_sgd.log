@@ -1,0 +1,19 @@
+[c24f] stage k<=1 s0 CE 2.4007 hard-probe 0/64
+[c24f] stage k<=1 s200 CE 1.9492 hard-probe 0/64
+[c24f] stage k<=1 s400 CE 0.5744 hard-probe 0/64
+[c24f] stage k<=1 s600 CE 0.1204 hard-probe 32/64
+[c24f] stage k<=1 s800 CE 0.1172 hard-probe 16/64
+[c24f] stage k<=1 s1000 CE 0.0968 hard-probe 30/64
+[c24f] stage k<=1 s1200 CE 0.0898 hard-probe 47/64
+[c24f] stage k<=1 s1400 CE 0.0316 hard-probe 46/64
+[c24f] stage k<=1 s1600 CE 0.0111 hard-probe 64/64
+[c24f] stage k<=2 s0 CE 0.0118 hard-probe 64/64
+[c24f] stage k<=3 s0 CE 0.0097 hard-probe 64/64
+[c24f] stage k<=4 s0 CE 0.0110 hard-probe 63/64
+[cert] indist: 496/500 exact, passes=3.0 (want 3), trace_ok=True
+[cert] k16: 0/200 exact, passes=25.0 (want 17), trace_ok=False
+[cert] k64: 0/100 exact, passes=73.0 (want 65), trace_ok=False
+[cert] joint: 0/100 exact, passes=73.0 (want 65), trace_ok=False
+[verdict] {'S1': '496/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': False, 'ALL': False}
+RESULT {"tag": "ARC2-C24F-P4-SGD", "cert": {"indist": {"exact": "496/500", "passes_mean": 3.0, "trace_ok": true}, "k16": {"exact": "0/200", "passes_mean": 25.0, "trace_ok": false}, "k64": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}}, "verdict": {"S1": "496/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": false, "ALL": false}, "steps": 1604, "wall_s": 170.9, "peak_mb": 662.6}
+DONE

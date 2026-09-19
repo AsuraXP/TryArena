@@ -1,0 +1,22 @@
+[p22] training gate seed 111 steps 1500
+/home/user/TryArena/arch_vet_p22.py:121: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  f"{float(loss):.4f} ({time.time()-t0:.0f}s)", flush=True)
+  [gate s111] step 250/1500 loss 0.9176 (190s)
+  [gate s111] step 500/1500 loss 0.8256 (382s)
+  [gate s111] step 750/1500 loss 0.8812 (577s)
+  [gate s111] step 1000/1500 loss 0.8807 (766s)
+  [gate s111] step 1250/1500 loss 0.7424 (956s)
+  [gate s111] step 1500/1500 loss 0.9805 (1146s)
+[p22 learned s111] pair=0.8585 modk=1.0 ratio=0.596 dyck_d12=0.9838 joint_pair=1.0 joint_dyck=0.9908 B_share={'vanilla': 0.0324, 'mixdd': 0.5446, 'deepdyck': 0.9801} agree=0.648
+[p22] training gate seed 222 steps 1500
+  [gate s222] step 250/1500 loss 0.8302 (192s)
+  [gate s222] step 500/1500 loss 0.7985 (381s)
+  [gate s222] step 750/1500 loss 0.9351 (569s)
+  [gate s222] step 1000/1500 loss 0.8639 (759s)
+  [gate s222] step 1250/1500 loss 0.8176 (949s)
+  [gate s222] step 1500/1500 loss 1.0028 (1140s)
+[p22 learned s222] pair=0.8774 modk=1.0 ratio=0.503 dyck_d12=0.9496 joint_pair=0.9936 joint_dyck=0.9108 B_share={'vanilla': 0.0052, 'mixdd': 0.5347, 'deepdyck': 0.9771} agree=0.6579
+[P22 LEARNED ROUTER] SUMMARY {"n_seeds": 2, "dyck_close_d12_dist": [0.9838, 0.9496], "basin_dyck_d12_ge_85": 1.0, "pair_eval_dist": [0.8585, 0.8774], "basin_pair_ge_717": 1.0, "len_ratio_dist": [0.596, 0.503], "basin_ratio_le_6": 1.0, "modk_eval_dist": [1.0, 1.0], "basin_modk_eq_1": 1.0, "joint_pair_dist": [1.0, 0.9936], "joint_dyck_dist": [0.9908, 0.9108], "gate_b_share_mixdd": [0.5446, 0.5347], "agreement_mixdd": [0.648, 0.6579], "gate_params": [1410, 1410], "bars_passed_per_seed": [4, 4]}
+RESULT {"tag": "ARCH-VET-LM-P22", "protocol": "learned router over frozen experts: causal token-only GRU gate (one-hot(x_t) -> GRU(8) -> 2 logits, ~1.4k params) trained by the composed probability-mixture CE on a joint pool (vanilla + mixdd + pure deep-dyck), workers frozen; HARD argmax dispatch at eval. Metrics: unified row (4 bars), joint heterogeneous pass, gate-B-share per corpus, agreement with the P21C structural depth-aware router. Reference P21C: pair 3/3 .865, modk 1.0 3/3, ratio 3/3 .473, dyck d12 3/3 .969.", "arms": {"learned-gate": {"per_seed": {"111": {"task_acc_hard": {"track": 0.9535, "modk": 1.0, "dyck": 0.5455, "pair": 0.8585}, "task_acc_train": {"track": 1.0, "modk": 1.0, "dyck": 0.9586, "pair": 1.0}, "ce": {"256_hard": 2.8677, "1024": 1.7079}, "len_ratio_1024_over_256hard": 0.596, "dyck_close_routed": {"close_d1": 0.0, "close_d2": 0.6667, "close_d3": 0.9129, "close_d4": 0.9833, "close_d5": 1.0, "close_d6": 1.0, "close_d7": 0.9921, "close_d8": 0.9882, "close_d9": 0.9863, "close_d10": 0.9853, "close_d11": 0.9841, "close_d12": 0.9838}, "joint_mixdd": {"track": 1.0, "modk": 1.0, "pair": 1.0, "dyck_close": 0.9908, "n_close": 762}, "gate_b_share": {"vanilla": 0.0324, "mixdd": 0.5446, "deepdyck": 0.9801}, "agreement_with_structural": 0.648, "agreement_vanilla": 0.9676, "agreement_deepdyck": 0.3896, "gate_params": 1410}, "222": {"task_acc_hard": {"track": 0.7674, "modk": 1.0, "dyck": 0.5215, "pair": 0.8774}, "task_acc_train": {"track": 1.0, "modk": 1.0, "dyck": 0.9724, "pair": 1.0}, "ce": {"256_hard": 2.5058, "1024": 1.2592}, "len_ratio_1024_over_256hard": 0.503, "dyck_close_routed": {"close_d1": 0.0, "close_d2": 0.9387, "close_d3": 0.8616, "close_d4": 0.9812, "close_d5": 0.9657, "close_d6": 0.9683, "close_d7": 0.9646, "close_d8": 0.9539, "close_d9": 0.9535, "close_d10": 0.9506, "close_d11": 0.9487, "close_d12": 0.9496}, "joint_mixdd": {"track": 1.0, "modk": 1.0, "pair": 0.9936, "dyck_close": 0.9108, "n_close": 762}, "gate_b_share": {"vanilla": 0.0052, "mixdd": 0.5347, "deepdyck": 0.9771}, "agreement_with_structural": 0.6579, "agreement_vanilla": 0.9948, "agreement_deepdyck": 0.3925, "gate_params": 1410}}, "summary": {"n_seeds": 2, "dyck_close_d12_dist": [0.9838, 0.9496], "basin_dyck_d12_ge_85": 1.0, "pair_eval_dist": [0.8585, 0.8774], "basin_pair_ge_717": 1.0, "len_ratio_dist": [0.596, 0.503], "basin_ratio_le_6": 1.0, "modk_eval_dist": [1.0, 1.0], "basin_modk_eq_1": 1.0, "joint_pair_dist": [1.0, 0.9936], "joint_dyck_dist": [0.9908, 0.9108], "gate_b_share_mixdd": [0.5446, 0.5347], "agreement_mixdd": [0.648, 0.6579], "gate_params": [1410, 1410], "bars_passed_per_seed": [4, 4]}}}, "wall_s": 2759.0}
+DONE

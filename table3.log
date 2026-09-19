@@ -1,0 +1,19 @@
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[run] table-only params=48
+  [tbl s0] step 1000/2500 CE 0.8214 (43s)
+  [tbl s0] step 2000/2500 CE 0.7814 (87s)
+  [tbl s0] @4096 {'total': 0.0048, 'echo': 0.025, 'open': 1.2683, 'params': 48}
+  [tbl s1] step 1000/2500 CE 0.8373 (43s)
+  [tbl s1] step 2000/2500 CE 0.7872 (86s)
+  [tbl s1] @4096 {'total': 0.0047, 'echo': 0.0251, 'open': 1.2658, 'params': 48}
+  [hero]        @4096 {'total': -0.2935, 'echo': 0.0106, 'open': 0.9407, 'params': 2974}
+
+========================================================================
+TABLE3 (minimal Markov state) @4096 (total dCE | echo-dCE | open-CE)
+========================================================================
+table_only_s0            params 48     total 0.0048    echo 0.025    open 1.2683
+table_only_s1            params 48     total 0.0047    echo 0.0251   open 1.2658
+hero_ref (dyke_s0)       params 2974   total -0.2935   echo 0.0106   open 0.9407
+========================================================================
+RESULT {"tag": "ARC2-C10-TABLE3", "runs": {"table_only_s0": {"total": 0.0048, "echo": 0.025, "open": 1.2683, "params": 48}, "table_only_s1": {"total": 0.0047, "echo": 0.0251, "open": 1.2658, "params": 48}, "hero_ref (dyke_s0)": {"total": -0.2935, "echo": 0.0106, "open": 0.9407, "params": 2974}}, "wall_s": 218.6, "peak_mb": 658.9}
+DONE

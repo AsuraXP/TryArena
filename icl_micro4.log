@@ -1,0 +1,32 @@
+[setup] icl-micro cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2}
+[run] ssm_d16_1 params=2888
+  [ssm_d16_1] step 500/2500 CE 1.3884 (6s)
+  [ssm_d16_1] step 1000/2500 CE 1.3880 (13s)
+  [ssm_d16_1] step 1500/2500 CE 1.3860 (19s)
+  [ssm_d16_1] step 2000/2500 CE 1.3865 (26s)
+  [ssm_d16_1] step 2500/2500 CE 1.3870 (33s)
+[run] ssm_d64_1 params=42248
+  [ssm_d64_1] step 500/2500 CE 1.3881 (13s)
+  [ssm_d64_1] step 1000/2500 CE 1.3877 (27s)
+  [ssm_d64_1] step 1500/2500 CE 1.3880 (40s)
+  [ssm_d64_1] step 2000/2500 CE 1.3872 (53s)
+  [ssm_d64_1] step 2500/2500 CE 1.3885 (66s)
+/home/user/TryArena/icl_micro4.py:106: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[run] tf_rope params=100488
+  [tf_rope] step 500/2500 CE 1.3883 (22s)
+  [tf_rope] step 1000/2500 CE 1.3883 (44s)
+  [tf_rope] step 1500/2500 CE 1.3882 (66s)
+  [tf_rope] step 2000/2500 CE 1.3874 (89s)
+  [tf_rope] step 2500/2500 CE 1.3885 (111s)
+
+====================================================================================
+ICL-4X4  dCE nats/token (0 = oracle) | target-dCE = CE on the FINAL value
+====================================================================================
+run           L64 (total|target)        L512 (total|target)       L2048 (total|target)      L4096 (total|target)      
+ssm_d16_1     (0.6774, 1.3901)          (0.6915, 1.3853)          (0.6927, 1.395)           (0.6938, 1.3821)          
+ssm_d64_1     (0.6766, 1.3935)          (0.6922, 1.3947)          (0.6935, 1.3367)          (0.6944, 1.391)           
+tf_rope       (0.6759, 1.3925)          (2.3364, 1.4043)          (2.4124, 1.3229)          (2.3512, 1.4112)          
+====================================================================================
+RESULT {"tag": "ARC2-C9-ICL-4X4", "runs": {"ssm_d16_1": {"L64": [0.6774, 1.3901], "L512": [0.6915, 1.3853], "L2048": [0.6927, 1.395], "L4096": [0.6938, 1.3821]}, "ssm_d64_1": {"L64": [0.6766, 1.3935], "L512": [0.6922, 1.3947], "L2048": [0.6935, 1.3367], "L4096": [0.6944, 1.391]}, "tf_rope": {"L64": [0.6759, 1.3925], "L512": [2.3364, 1.4043], "L2048": [2.4124, 1.3229], "L4096": [2.3512, 1.4112]}}, "note": "total_dce | target_dCE per length", "wall_s": 215.3, "peak_mb": 1408.2}
+DONE

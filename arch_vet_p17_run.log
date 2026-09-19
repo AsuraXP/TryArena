@@ -1,0 +1,36 @@
+[STACKDCC2-big seed 111] params=21817
+  [STACKDCC2-big-s111] step 500/4000 loss 0.4221 (377s)
+  [STACKDCC2-big-s111] step 1000/4000 loss 0.3779 (760s)
+  [STACKDCC2-big-s111] step 1500/4000 loss 0.3707 (1147s)
+  [STACKDCC2-big-s111] step 2000/4000 loss 0.3628 (1533s)
+  [STACKDCC2-big-s111] step 2500/4000 loss 0.3668 (1922s)
+  [STACKDCC2-big-s111] step 3000/4000 loss 0.3675 (2304s)
+  [STACKDCC2-big-s111] step 3500/4000 loss 0.3622 (2686s)
+  [STACKDCC2-big-s111] step 4000/4000 loss 0.3523 (3065s)
+[STACKDCC2-big s111] exact: {'exact_d3': 0.0, 'exact_d4': 0.0, 'exact_d5': 0.0, 'exact_d6': 0.0, 'exact_d7': 0.0, 'exact_d8': 0.0}
+[STACKDCC2-big s111] close: {'close_d3': 0.6635, 'close_d4': 0.6591, 'close_d6': 0.546, 'close_d8': 0.4574}
+[STACKDCC2-big seed 222] params=21817
+  [STACKDCC2-big-s222] step 500/4000 loss 0.3762 (382s)
+  [STACKDCC2-big-s222] step 1000/4000 loss 0.3775 (760s)
+  [STACKDCC2-big-s222] step 1500/4000 loss 0.3624 (1142s)
+  [STACKDCC2-big-s222] step 2000/4000 loss 0.3613 (1529s)
+  [STACKDCC2-big-s222] step 2500/4000 loss 0.3561 (1920s)
+  [STACKDCC2-big-s222] step 3000/4000 loss 0.3519 (2307s)
+  [STACKDCC2-big-s222] step 3500/4000 loss 0.3550 (2701s)
+  [STACKDCC2-big-s222] step 4000/4000 loss 0.3491 (3092s)
+[STACKDCC2-big s222] exact: {'exact_d3': 0.0, 'exact_d4': 0.0, 'exact_d5': 0.0, 'exact_d6': 0.0, 'exact_d7': 0.0, 'exact_d8': 0.0}
+[STACKDCC2-big s222] close: {'close_d3': 0.7433, 'close_d4': 0.674, 'close_d6': 0.5717, 'close_d8': 0.4451}
+[STACKDCC2-big seed 333] params=21817
+  [STACKDCC2-big-s333] step 500/4000 loss 0.4046 (387s)
+  [STACKDCC2-big-s333] step 1000/4000 loss 0.3994 (768s)
+  [STACKDCC2-big-s333] step 1500/4000 loss 0.3659 (1151s)
+  [STACKDCC2-big-s333] step 2000/4000 loss 0.3639 (1529s)
+  [STACKDCC2-big-s333] step 2500/4000 loss 0.3648 (1917s)
+  [STACKDCC2-big-s333] step 3000/4000 loss 0.3621 (2299s)
+  [STACKDCC2-big-s333] step 3500/4000 loss 0.3585 (2680s)
+  [STACKDCC2-big-s333] step 4000/4000 loss 0.3518 (3061s)
+[STACKDCC2-big s333] exact: {'exact_d3': 0.0, 'exact_d4': 0.0, 'exact_d5': 0.0, 'exact_d6': 0.0, 'exact_d7': 0.0, 'exact_d8': 0.0}
+[STACKDCC2-big s333] close: {'close_d3': 0.6141, 'close_d4': 0.5625, 'close_d6': 0.4611, 'close_d8': 0.4012}
+[STACKDCC2-big] SUMMARY {"close_d3_dist": [0.6635, 0.7433, 0.6141], "basin_close_d3_ge_678": 0.3333333333333333, "basin_close_d3_ge_85": 0.0, "close_d4_dist": [0.6591, 0.674, 0.5625], "close_d3_mean": 0.6736, "close_d3_sd": 0.0532}
+RESULT {"tag": "ARCH-VET-LM-P17", "protocol": "dyck basin at 2x budget: STACKDCC2-big x seeds 111/222/333, ctor under manual_seed, P11 single-task stochastic dyck (train depth 2, L=256 pool 256 seed 12345), 4000 STEPS (2x P14's 2000); eval exact d3-8 + close/open d3/4/6/8 (16 streams); bars close_d3>=.678 (TFMicro P12 control) / >=.85 (P11 citation); P14 2000-step reference .655/.763/.631 (1/3)", "arms": {"STACKDCC2-big": {"per_seed": {"111": {"loss_curve": [[500, 0.4221], [1000, 0.3779], [1500, 0.3707], [2000, 0.3628], [2500, 0.3668], [3000, 0.3675], [3500, 0.3622], [4000, 0.3523]], "exact_match": {"exact_d3": 0.0, "exact_d4": 0.0, "exact_d5": 0.0, "exact_d6": 0.0, "exact_d7": 0.0, "exact_d8": 0.0}, "close_open_acc": {"open_d3": 0.3209, "close_d3": 0.6635, "open_d4": 0.2168, "close_d4": 0.6591, "open_d6": 0.1674, "close_d6": 0.546, "open_d8": 0.1054, "close_d8": 0.4574}}, "222": {"loss_curve": [[500, 0.3762], [1000, 0.3775], [1500, 0.3624], [2000, 0.3613], [2500, 0.3561], [3000, 0.3519], [3500, 0.355], [4000, 0.3491]], "exact_match": {"exact_d3": 0.0, "exact_d4": 0.0, "exact_d5": 0.0, "exact_d6": 0.0, "exact_d7": 0.0, "exact_d8": 0.0}, "close_open_acc": {"open_d3": 0.3304, "close_d3": 0.7433, "open_d4": 0.2506, "close_d4": 0.674, "open_d6": 0.1565, "close_d6": 0.5717, "open_d8": 0.1124, "close_d8": 0.4451}}, "333": {"loss_curve": [[500, 0.4046], [1000, 0.3994], [1500, 0.3659], [2000, 0.3639], [2500, 0.3648], [3000, 0.3621], [3500, 0.3585], [4000, 0.3518]], "exact_match": {"exact_d3": 0.0, "exact_d4": 0.0, "exact_d5": 0.0, "exact_d6": 0.0, "exact_d7": 0.0, "exact_d8": 0.0}, "close_open_acc": {"open_d3": 0.3339, "close_d3": 0.6141, "open_d4": 0.2584, "close_d4": 0.5625, "open_d6": 0.134, "close_d6": 0.4611, "open_d8": 0.086, "close_d8": 0.4012}}}, "summary": {"close_d3_dist": [0.6635, 0.7433, 0.6141], "basin_close_d3_ge_678": 0.3333333333333333, "basin_close_d3_ge_85": 0.0, "close_d4_dist": [0.6591, 0.674, 0.5625], "close_d3_mean": 0.6736, "close_d3_sd": 0.0532}}}, "wall_s": 9367.6}
+DONE

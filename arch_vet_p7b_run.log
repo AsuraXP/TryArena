@@ -1,0 +1,16 @@
+[P7b VETbase] params=8372
+  [P7b] step 500/2000 loss 0.2848 (244s)
+  [P7b] step 1000/2000 loss 0.2651 (487s)
+  [P7b] step 1500/2000 loss 0.2636 (727s)
+  [P7b] step 2000/2000 loss 0.2665 (970s)
+  [P7b] n 13-16 L=24: acc 0.600 (20 blocks)
+  [P7b] n 13-16 L=256: acc 0.437 (263 blocks)
+  [P7b] n 13-16 L=1024: acc 0.495 (1058 blocks)
+  [P7b] n 17-20 L=28: acc 0.300 (20 blocks)
+  [P7b] n 17-20 L=256: acc 0.443 (221 blocks)
+  [P7b] n 17-20 L=1024: acc 0.395 (881 blocks)
+  [P7b] n 21-24 L=32: acc 0.000 (20 blocks)
+  [P7b] n 21-24 L=256: acc 0.026 (195 blocks)
+  [P7b] n 21-24 L=1024: acc 0.011 (755 blocks)
+RESULT {"tag": "ARCH-VET-LM-P7B", "protocol": "VETbase trained exactly as P7 (n 4-12 L=256 pool 256 seed 12345, 2000 steps, seed 0); acc per n-band at L=n_hi+8 (P7 protocol, single block) vs L=256 vs L=1024 (multi-block length stress); 20 streams/point", "params": 8372, "loss_curve": [[500, 0.2848], [1000, 0.2651], [1500, 0.2636], [2000, 0.2665]], "frontier_by_length": {"n13_16": {"L24": 0.6, "L256": 0.4373, "L1024": 0.4953}, "n17_20": {"L28": 0.3, "L256": 0.4434, "L1024": 0.395}, "n21_24": {"L32": 0.0, "L256": 0.0256, "L1024": 0.0106}}, "wall_s": 1011.8}
+DONE

@@ -1,0 +1,33 @@
+[c37] bank cloned from entry state h11: {}
+[c37] seed fitness = 0.3500
+[c37] edit 7 (macros 2): 0.3500 -> 0.3983
+[c37] edit 8 (macros 2): 0.3983 -> 0.4355
+[c37] edit 9 (macros 2): 0.4355 -> 0.4491
+[c37] edit 15 (macros 3): 0.4491 -> 0.4719
+[c37] edit 20 (macros 3): 0.4719 -> 0.4856
+[c37] edit 38 (macros 10): 0.4856 -> 0.5218
+[c37] edit 42 (macros 12): 0.5218 -> 0.5439
+[c37] edit 74 (macros 22): 0.5439 -> 0.5559
+[c37] edit 157 (macros 47): 0.5598 -> 0.5964
+[c37] edit 166 (macros 49): 0.5964 -> 0.6111
+[c37] edit 203 (macros 62): 0.6150 -> 0.6297
+[c37] edit 204 (macros 63): 0.6297 -> 0.6702
+[c37] edit 215 (macros 64): 0.6702 -> 0.7048
+[c37] edit 282 (macros 82): 0.7048 -> 0.7199
+[c37] edit 299 (macros 88): 0.7199 -> 0.7269
+[c37] edit 305 (macros 90): 0.7269 -> 0.7667
+[c37] edit 337 (macros 100): 0.7667 -> 0.7984
+[c37] edit 382 (macros 117): 0.8004 -> 0.8763
+[c37] edit 404 (macros 125): 0.8763 -> 0.8917
+[c37] edit 462 (macros 148): 0.8917 -> 0.9267
+[c37] edit 2098 (macros 668): 0.9283 -> 0.9495
+[c37] edit 5572 (macros 1808): 0.9495 -> 0.9593
+[c37] edit 16733 (macros 5367): 0.9593 -> 0.9698
+[c37] done: edits=41733 accepted=34 macros=13172 best=0.9698
+[cert] indist: 154/500 exact, passes=4.48 (want 4), trace_ok=True
+[cert] n16: 1/200 exact, passes=18.43 (want 17), trace_ok=True
+[cert] n32: 0/100 exact, passes=35.19 (want 33), trace_ok=True
+[cert] joint: 0/100 exact, passes=66.82 (want 65), trace_ok=True
+[verdict] {'S1': '154/500', 'S2': '1/200', 'S3': '0/100', 'S4': '0/100', 'S5': True, 'ALL': False}
+RESULT {"tag": "ARC2-C37-P6-SINGLE", "search": {"edits": 41733, "accepted": 34, "macros": 13172, "fitness": 0.9698}, "cert": {"indist": {"exact": "154/500", "passes_mean": 4.48, "trace_ok": true}, "n16": {"exact": "1/200", "passes_mean": 18.43, "trace_ok": true}, "n32": {"exact": "0/100", "passes_mean": 35.19, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 66.82, "trace_ok": true}}, "verdict": {"S1": "154/500", "S2": "1/200", "S3": "0/100", "S4": "0/100", "S5": true, "ALL": false}, "wall_s": 931.2, "peak_mb": 500.9}
+DONE

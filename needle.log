@@ -1,0 +1,25 @@
+[setup] needle cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'tf_d': 64, 'tf_layers': 2}
+[run] ssm_d16_1 params=11456
+  [ssm] step 500/2500 CE 5.5614 (10s)
+  [ssm] step 1000/2500 CE 5.5579 (21s)
+  [ssm] step 1500/2500 CE 5.5557 (31s)
+  [ssm] step 2000/2500 CE 5.5546 (41s)
+  [ssm] step 2500/2500 CE 5.5519 (51s)
+/home/user/TryArena/needle.py:118: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[run] tf_rope params=133248
+  [tf] step 500/2500 CE 5.5721 (27s)
+  [tf] step 1000/2500 CE 5.5646 (53s)
+  [tf] step 1500/2500 CE 5.5585 (80s)
+  [tf] step 2000/2500 CE 5.5580 (107s)
+  [tf] step 2500/2500 CE 5.5549 (133s)
+
+====================================================================================
+NEEDLE  dCE nats/token (0 = oracle) | target-dCE = CE on the FINAL value token
+====================================================================================
+run           L64 (total|target)        L512 (total|target)       L2048 (total|target)      L4096 (total|target)      
+ssm_d16_1     (0.3967, 5.5394)          (1.0399, 5.5652)          (2.1067, 5.5163)          (2.4374, 5.5523)          
+tf_rope       (0.4006, 5.5674)          (1.4291, 5.4909)          (3.0859, 5.6213)          (3.6503, 5.587)           
+====================================================================================
+RESULT {"tag": "ARC2-C9-NEEDLE", "runs": {"ssm_d16_1": {"L64": [0.3967, 5.5394], "L512": [1.0399, 5.5652], "L2048": [2.1067, 5.5163], "L4096": [2.4374, 5.5523]}, "tf_rope": {"L64": [0.4006, 5.5674], "L512": [1.4291, 5.4909], "L2048": [3.0859, 5.6213], "L4096": [3.6503, 5.587]}}, "note": "total_dce | target_dCE per length", "wall_s": 190.1, "peak_mb": 1427.2}
+DONE

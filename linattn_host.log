@@ -1,0 +1,25 @@
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[run] ssm params=84628 (elapsed 0.0min)
+  [ssm-s0] step 500/2500 CE 1.8644 (29s)
+  [ssm-s0] step 1000/2500 CE 1.6504 (58s)
+  [ssm-s0] step 1500/2500 CE 1.5956 (89s)
+  [ssm-s0] step 2000/2500 CE 1.5878 (120s)
+  [ssm-s0] step 2500/2500 CE 1.5572 (151s)
+[run] ssm_cop params=101632 (elapsed 2.6min)
+  [ssm_cop-s0] step 500/2500 CE 1.8552 (60s)
+  [ssm_cop-s0] step 1000/2500 CE 1.6265 (121s)
+  [ssm_cop-s0] step 1500/2500 CE 1.5706 (185s)
+  [ssm_cop-s0] step 2000/2500 CE 1.5785 (254s)
+  [ssm_cop-s0] step 2500/2500 CE 1.5412 (317s)
+
+====================================================================================================
+RESULTS  dCE = excess CE over analytic oracle (nats/token; 0 = perfect)
+====================================================================================================
+run             fuzzy@64     fuzzy@512    fuzzy@2048   fuzzy@4096   structured@64   structured@512  structured@2048 structured@4096 
+ssm             0.0723       0.0651       0.0571       0.0622       0.0877       0.1243       0.123        0.134        
+ssm_cop         0.1001       0.0827       0.0809       0.0894       0.1044       0.1729       0.2134       0.2027       
+tf_rope(v2)     0.0472       0.99         1.1122       1.1402       0.0298       0.8831       1.2094       1.304        
+machine(v2)     5.5209       5.8524       5.8477       5.8746       0.0863       0.1826       0.3664       0.4725       
+====================================================================================================
+RESULT {"tag": "ARC2-C8-LINATT-HOST", "runs": {"ssm": {"fuzzy@64": 0.0723, "fuzzy@512": 0.0651, "fuzzy@2048": 0.0571, "fuzzy@4096": 0.0622, "structured@64": 0.0877, "structured@512": 0.1243, "structured@2048": 0.123, "structured@4096": 0.134}, "ssm_cop": {"fuzzy@64": 0.1001, "fuzzy@512": 0.0827, "fuzzy@2048": 0.0809, "fuzzy@4096": 0.0894, "structured@64": 0.1044, "structured@512": 0.1729, "structured@2048": 0.2134, "structured@4096": 0.2027}, "tf_rope(v2)": {"fuzzy@64": 0.0472, "fuzzy@512": 0.99, "fuzzy@2048": 1.1122, "fuzzy@4096": 1.1402, "structured@64": 0.0298, "structured@512": 0.8831, "structured@2048": 1.2094, "structured@4096": 1.304}, "machine(v2)": {"fuzzy@64": 5.5209, "fuzzy@512": 5.8524, "fuzzy@2048": 5.8477, "fuzzy@4096": 5.8746, "structured@64": 0.0863, "structured@512": 0.1826, "structured@2048": 0.3664, "structured@4096": 0.4725}}, "verdict": "NOT-WIN: ssm_cop structured@4096=0.2027 (tf_rope=1.304), fuzzy@64=0.1001", "wall_s": 476.8, "peak_mb": 707.8}
+DONE

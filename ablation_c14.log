@@ -1,0 +1,11 @@
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+ABLATION C14 — pure echo, batch 32, L=64, 2500 steps, dCE@4096 (standalone cert = -0.2935; iso_s0_10k = 1.1401):
+  A: 8-row table (iso branch0)       dCE@4096 = -0.2979   (139s)
+  B: 4-row table (standalone)        dCE@4096 = -0.2958   (137s)
+  C: 8-row table, L=63               dCE@4096 = -0.2983   (134s)
+  D: 8-row table + emb router-proxy CE dCE@4096 = -0.2986   (139s)
+DONE

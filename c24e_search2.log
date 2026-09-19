@@ -1,0 +1,9 @@
+[c24e] resumed fitness = 0.9143
+[c24e] done: edits=15000 accepted=0 structured=5470 best=0.9143
+[cert] indist: 0/500 exact, passes=3.0 (want 3), trace_ok=True
+[cert] k16: 0/200 exact, passes=17.0 (want 17), trace_ok=True
+[cert] k64: 0/100 exact, passes=65.0 (want 65), trace_ok=True
+[cert] joint: 0/100 exact, passes=65.0 (want 65), trace_ok=True
+[verdict] {'S1': '0/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': True, 'ALL': False}
+RESULT {"tag": "ARC2-C24E-P4-SEARCH2", "search": {"edits": 15000, "accepted": 0, "structured": 5470, "fitness": 0.9143}, "cert": {"indist": {"exact": "0/500", "passes_mean": 3.0, "trace_ok": true}, "k16": {"exact": "0/200", "passes_mean": 17.0, "trace_ok": true}, "k64": {"exact": "0/100", "passes_mean": 65.0, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 65.0, "trace_ok": true}}, "verdict": {"S1": "0/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": true, "ALL": false}, "wall_s": 284.3, "peak_mb": 496.8}
+DONE

@@ -1,0 +1,30 @@
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[run] ssm params=85083 (elapsed 0.0min)
+  [ssm-s0] step 500/2500 CE 1.1414 (35s)
+  [ssm-s0] step 1000/2500 CE 1.1441 (72s)
+  [ssm-s0] step 1500/2500 CE 1.1380 (109s)
+  [ssm-s0] step 2000/2500 CE 1.1464 (146s)
+  [ssm-s0] step 2500/2500 CE 1.1356 (184s)
+[run] ssm_cop params=102087 (elapsed 3.1min)
+  [ssm_cop-s0] step 500/2500 CE 1.1036 (78s)
+  [ssm_cop-s0] step 1000/2500 CE 1.0806 (135s)
+  [ssm_cop-s0] step 1500/2500 CE 1.0659 (193s)
+  [ssm_cop-s0] step 2000/2500 CE 1.0766 (251s)
+  [ssm_cop-s0] step 2500/2500 CE 1.0796 (311s)
+[run] tf_rope params=101339 (fresh, same budget)
+  [tf_rope-s0] step 500/2500 CE 1.0813 (24s)
+  [tf_rope-s0] step 1000/2500 CE 1.0659 (47s)
+  [tf_rope-s0] step 1500/2500 CE 1.0582 (71s)
+  [tf_rope-s0] step 2000/2500 CE 1.0757 (96s)
+  [tf_rope-s0] step 2500/2500 CE 1.0695 (121s)
+
+====================================================================================================
+RESULTS  dCE = excess CE over analytic oracle (nats/token; 0 = perfect)
+====================================================================================================
+run             dyck10@64    dyck10@512   dyck10@2048  dyck10@4096  mod7@64      mod7@512     mod7@2048    mod7@4096    
+ssm             0.1996       0.2226       0.2206       0.2226       1.1043       1.103        1.1014       1.1015       
+ssm_cop         0.359        0.315        0.2786       0.2766       1.1091       1.1058       1.1036       1.1051       
+tf_rope         0.0226       0.5162       1.1467       1.5168       1.1064       1.1109       1.3262       1.9668       
+====================================================================================================
+RESULT {"tag": "ARC2-C8-LINATT-HARD", "runs": {"ssm": {"dyck10@64": 0.1996, "dyck10@512": 0.2226, "dyck10@2048": 0.2206, "dyck10@4096": 0.2226, "mod7@64": 1.1043, "mod7@512": 1.103, "mod7@2048": 1.1014, "mod7@4096": 1.1015}, "ssm_cop": {"dyck10@64": 0.359, "dyck10@512": 0.315, "dyck10@2048": 0.2786, "dyck10@4096": 0.2766, "mod7@64": 1.1091, "mod7@512": 1.1058, "mod7@2048": 1.1036, "mod7@4096": 1.1051}, "tf_rope": {"dyck10@64": 0.0226, "dyck10@512": 0.5162, "dyck10@2048": 1.1467, "dyck10@4096": 1.5168, "mod7@64": 1.1064, "mod7@512": 1.1109, "mod7@2048": 1.3262, "mod7@4096": 1.9668}}, "beats_tf": {"dyck10@64": false, "dyck10@512": true, "dyck10@2048": true, "dyck10@4096": true, "mod7@64": true, "mod7@512": true, "mod7@2048": true, "mod7@4096": true}, "verdict": "ssm beats tf_rope on 7/8 cells; mod7@4096: ssm 1.1015 vs tf 1.9668; dyck10@4096: ssm 0.2226 vs tf 1.5168", "wall_s": 622.7, "peak_mb": 708.4}
+DONE

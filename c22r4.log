@@ -1,0 +1,38 @@
+[setup] unified-add (machine v4) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096} VOCAB=75
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[setup] dialog-chat (machine v8, chatbot) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16} VOCAB=36
+[arm] machine v8 (chatbot) params=20518
+[c22r4] preamble loaded, SSM decay clamped <= 0.9 (0s)
+[smoke-v9c] forward host0 = host + state organ + math organ OK
+[smoke-v9c] PASSED
+/home/user/TryArena/c22r4.py:254: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  f"gates {[round(float(v), 2) for v in torch.exp(m.head_gate)]} "
+  [v9c] step 2000/16000 lm 0.5156 rt 0.0000 gates [2.11, 1.66, 1.84] st_m_abs 634.4 (164s)
+  [v9c] step 4000/16000 lm 0.5132 rt 0.0000 gates [2.01, 1.68, 1.89] st_m_abs 719.7 (326s)
+  [v9c] step 6000/16000 lm 0.5063 rt 0.0000 gates [1.99, 1.68, 1.95] st_m_abs 867.2 (487s)
+  [v9c] step 8000/16000 lm 0.5195 rt 0.0000 gates [1.88, 1.56, 1.95] st_m_abs 1107.8 (647s)
+  [v9c] step 10000/16000 lm 0.5230 rt 0.0000 gates [1.86, 1.53, 1.83] st_m_abs 1416.7 (809s)
+  [v9c] step 12000/16000 lm 0.5132 rt 0.0000 gates [1.81, 1.41, 1.75] st_m_abs 1746.5 (971s)
+  [v9c] step 14000/16000 lm 0.5019 rt 0.0000 gates [1.78, 1.23, 1.76] st_m_abs 2046.9 (1129s)
+  [v9c] step 16000/16000 lm 0.4963 rt 0.0000 gates [1.76, 1.27, 1.7] st_m_abs 2263.7 (1287s)
+[v9c] trained in 1287s
+[eval-v9c] {'state4096': 0.072, 'state16384': 0.0709, 'mathplus4096': -0.0032, 'mathminus4096': 0.0045, 'chat4096': -0.0001, 'overwrite4096': 0.9665, 'routing': 1.0, 'head_gates': [1.756, 1.272, 1.698], 'st_m_abs': 2263.7}
+[dialogue]
+  U: my name is dave       | A: A ok
+  U: my code is 4 2        | A: A ok
+  U: ok                    | A: A ok
+  U: what is my name       | A: A dave
+  U: tell me the and it    | A: A it
+  U: what is 7 plus 5      | A: A 1 2
+  U: my now name is bob    | A: A ok
+  U: fine                  | A: A fine
+  U: what is 3 minus 7     | A: A 6
+  U: what is my code       | A: A 4 2
+[bars] {'D1_state_le_0.01': False, 'D2_overwrite_le_0.05': False, 'D3_16k_le_4k+0.05': True, 'D4_mathplus_le_0.02': True, 'D4_mathminus_le_0.05': True, 'D5_chat_le_0.02': True, 'D6_routing_1.0': True, 'D7_dialogue_exact': True}
+RESULT {"tag": "ARC2-C22R4-REPAIR", "changes": ["organ wd=0", "math turns in state family (MIX +18/118)", "host0 branch gets math organ too", "16k steps", "SSM decay clamp a<=0.90 (fixes r3 length-collapse: log_a drift to 0.986 + head norm blowup)"], "v9c": {"state4096": 0.072, "state16384": 0.0709, "mathplus4096": -0.0032, "mathminus4096": 0.0045, "chat4096": -0.0001, "overwrite4096": 0.9665, "routing": 1.0, "head_gates": [1.756, 1.272, 1.698], "st_m_abs": 2263.7}, "bars": {"D1_state_le_0.01": false, "D2_overwrite_le_0.05": false, "D3_16k_le_4k+0.05": true, "D4_mathplus_le_0.02": true, "D4_mathminus_le_0.05": true, "D5_chat_le_0.02": true, "D6_routing_1.0": true, "D7_dialogue_exact": true}, "D7_detail": true, "wall_s": 1294.3}
+DONE

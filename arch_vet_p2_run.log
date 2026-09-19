@@ -1,0 +1,42 @@
+[data] pool 512 x 256
+[A1-control+query] params=5534
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  hist.append((step, round(float(loss), 4)))
+  [A1-control+query] step 250/2000 loss 1.6453 (37s)
+  [A1-control+query] step 500/2000 loss 1.5985 (74s)
+  [A1-control+query] step 750/2000 loss 1.6077 (110s)
+  [A1-control+query] step 1000/2000 loss 1.5759 (146s)
+  [A1-control+query] step 1250/2000 loss 1.5920 (183s)
+  [A1-control+query] step 1500/2000 loss 1.4573 (219s)
+  [A1-control+query] step 1750/2000 loss 1.4590 (256s)
+  [A1-control+query] step 2000/2000 loss 1.4450 (293s)
+[A1-control+query] ce={'256_train': 1.5581, '256_hard': 1.724, '512': 1.4723, '1024': 1.5267}
+[A1-control+query] acc(train)={ track: 0.008, modk: 0.358, dyck: 0.000, pair: 0.053 }
+[A1-control+query] acc(eval)={ track: 0.000, modk: 0.365, dyck: 0.000, pair: 0.075 }
+[A2+register] params=7150
+  [A2+register] step 250/2000 loss 1.5226 (68s)
+  [A2+register] step 500/2000 loss 1.4798 (133s)
+  [A2+register] step 750/2000 loss 1.4522 (200s)
+  [A2+register] step 1000/2000 loss 1.3912 (266s)
+  [A2+register] step 1250/2000 loss 1.3764 (334s)
+  [A2+register] step 1500/2000 loss 1.2478 (403s)
+  [A2+register] step 1750/2000 loss 1.2437 (468s)
+  [A2+register] step 2000/2000 loss 1.2469 (535s)
+[A2+register] ce={'256_train': 1.3286, '256_hard': 2.1786, '512': 1.2818, '1024': 1.3195}
+[A2+register] acc(train)={ track: 0.976, modk: 0.400, dyck: 0.120, pair: 1.000 }
+[A2+register] acc(eval)={ track: 0.442, modk: 0.212, dyck: 0.000, pair: 0.189 }
+[A3+LIFO(base)] params=8372
+  [A3+LIFO(base)] step 250/2000 loss 1.5470 (120s)
+  [A3+LIFO(base)] step 500/2000 loss 1.4601 (241s)
+  [A3+LIFO(base)] step 750/2000 loss 1.4227 (362s)
+  [A3+LIFO(base)] step 1000/2000 loss 1.3805 (486s)
+  [A3+LIFO(base)] step 1250/2000 loss 1.3754 (620s)
+  [A3+LIFO(base)] step 1500/2000 loss 1.2390 (752s)
+  [A3+LIFO(base)] step 1750/2000 loss 1.2363 (875s)
+  [A3+LIFO(base)] step 2000/2000 loss 1.2090 (993s)
+[A3+LIFO(base)] ce={'256_train': 1.321, '256_hard': 2.0779, '512': 1.257, '1024': 1.2936}
+[A3+LIFO(base)] acc(train)={ track: 0.984, modk: 0.417, dyck: 0.192, pair: 1.000 }
+[A3+LIFO(base)] acc(eval)={ track: 0.512, modk: 0.423, dyck: 0.000, pair: 0.094 }
+RESULT {"tag": "ARCH-VET-LM-P2", "protocol": "same 4-task stream / 512-pool(seed 12345) / 2000 steps / seed 0 / probes as Phase-1; A1=no register no LIFO, A2=+soft register, A3=full base (re-run same-session)", "ablations": {"A1-control+query": {"params": 5534, "loss_curve": [[250, 1.6453], [500, 1.5985], [750, 1.6077], [1000, 1.5759], [1250, 1.592], [1500, 1.4573], [1750, 1.459], [2000, 1.445]], "ce": {"256_train": 1.5581, "256_hard": 1.724, "512": 1.4723, "1024": 1.5267}, "acc_train_interval": {"track": 0.0079, "modk": 0.3583, "dyck": 0.0, "pair": 0.0534}, "acc_eval_interval": {"track": 0.0, "modk": 0.3654, "dyck": 0.0, "pair": 0.0755}, "len_ratio_1024_over_256hard": 0.886}, "A2+register": {"params": 7150, "loss_curve": [[250, 1.5226], [500, 1.4798], [750, 1.4522], [1000, 1.3912], [1250, 1.3764], [1500, 1.2478], [1750, 1.2437], [2000, 1.2469]], "ce": {"256_train": 1.3286, "256_hard": 2.1786, "512": 1.2818, "1024": 1.3195}, "acc_train_interval": {"track": 0.9762, "modk": 0.4, "dyck": 0.12, "pair": 1.0}, "acc_eval_interval": {"track": 0.4419, "modk": 0.2115, "dyck": 0.0, "pair": 0.1887}, "len_ratio_1024_over_256hard": 0.606}, "A3+LIFO(base)": {"params": 8372, "loss_curve": [[250, 1.547], [500, 1.4601], [750, 1.4227], [1000, 1.3805], [1250, 1.3754], [1500, 1.239], [1750, 1.2363], [2000, 1.209]], "ce": {"256_train": 1.321, "256_hard": 2.0779, "512": 1.257, "1024": 1.2936}, "acc_train_interval": {"track": 0.9841, "modk": 0.4167, "dyck": 0.192, "pair": 1.0}, "acc_eval_interval": {"track": 0.5116, "modk": 0.4231, "dyck": 0.0, "pair": 0.0943}, "len_ratio_1024_over_256hard": 0.623}}, "wall_s": 1834.0}
+DONE

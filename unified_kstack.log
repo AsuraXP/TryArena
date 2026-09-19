@@ -1,0 +1,40 @@
+[setup] unified-stable (machine v5, dual-gating) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16, 'KSTACK': 4096}
+[setup] unified-add (machine v4) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096} VOCAB=75
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[setup] unified-kstack (machine v6, depth-k readout) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 6000, 9000, 12000], 'd_model': 16, 'KSTACK': 4096} VOCAB=79
+[arm] machine v6 (depth-k readout organ) params=26891
+    [v6] checkpoint at step 3000
+/home/user/TryArena/unified_kstack.py:316: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  f"kstack_m_abs {float(m6.kstack_m.abs().sum()):.1f} "
+  [v6 s0] step 3000/12000 lm 1.7031 rt 0.0001 head_gates [2.1203227043151855, 1.7632529735565186, 2.559666395187378, 2.089442491531372] kstack_m_abs 465.9 (275s)
+    [v6] checkpoint at step 6000
+  [v6 s0] step 6000/12000 lm 1.5865 rt 0.0000 head_gates [2.274414539337158, 1.8484430313110352, 2.7007508277893066, 2.201493740081787] kstack_m_abs 510.7 (549s)
+    [v6] checkpoint at step 9000
+  [v6 s0] step 9000/12000 lm 1.5577 rt 0.0000 head_gates [2.2086143493652344, 1.807009220123291, 2.8064677715301514, 2.2991065979003906] kstack_m_abs 552.1 (823s)
+    [v6] checkpoint at step 12000
+  [v6 s0] step 12000/12000 lm 1.5515 rt 0.0000 head_gates [2.102665901184082, 1.810398817062378, 2.958050012588501, 2.315664291381836] kstack_m_abs 598.2 (1096s)
+[v6] trained in 1096s
+[eval] checkpoints @4096 (+ @16384 probes):
+  v6_3k: {'echo': (-0.2329, 1.0), 'kstack': (0.0781, 1.0), 'icl': (0.0521, 0.0436, 1.0), 'mod7': (0.0073, 1.0), 'add': (0.1654, 1.0), 'icl_t16384': 0.1867, 'kstack_16384': 0.0771, 'head_gates': [2.12, 1.763, 2.56, 2.089], 'organ_gate': 15.501, 'kstack_m_abs': 465.9}
+  v6_6k: {'echo': (-0.3153, 1.0), 'kstack': (0.0143, 1.0), 'icl': (0.0112, 0.003, 1.0), 'mod7': (0.0068, 1.0), 'add': (0.0501, 1.0), 'icl_t16384': 0.0009, 'kstack_16384': 0.0129, 'head_gates': [2.274, 1.848, 2.701, 2.201], 'organ_gate': 25.441, 'kstack_m_abs': 510.7}
+  v6_9k: {'echo': (-0.3175, 1.0), 'kstack': (0.0103, 1.0), 'icl': (0.0073, 0.001, 1.0), 'mod7': (0.0071, 1.0), 'add': (0.0241, 1.0), 'icl_t16384': 0.0013, 'kstack_16384': 0.0078, 'head_gates': [2.209, 1.807, 2.806, 2.299], 'organ_gate': 31.086, 'kstack_m_abs': 552.1}
+  v6_12k: {'echo': (-0.3198, 1.0), 'kstack': (0.0037, 1.0), 'icl': (0.005, 0.0, 1.0), 'mod7': (0.0034, 1.0), 'add': (0.0154, 1.0), 'icl_t16384': 0.0, 'kstack_16384': 0.0032, 'head_gates': [2.103, 1.81, 2.958, 2.316], 'organ_gate': 33.659, 'kstack_m_abs': 598.2}
+
+====================================================================================================
+MACHINE v6 DEPTH-K READOUT — v5 ref: echo -0.3153, icl tgt 0.0002/0.0004,
+mod7 0.0034, add 0.0095, routing 1.0. kstack is the new capability.
+SUCCESS: (i) kstack @4096 <= 0.01 at 9k/12k; (ii) @16384 within 3x @4096;
+(iii) echo <= -0.25, icl tgt <= 0.005, mod7 <= 0.01, add <= 0.02 at 12k.
+====================================================================================================
+v6_3k   kstack 0.0781  kstack16k 0.0771  echo (-0.2329, 1.0)  icl (0.0521, 0.0436, 1.0)  icl16k 0.1867  mod7 (0.0073, 1.0)  add (0.1654, 1.0)  hg [2.12, 1.763, 2.56, 2.089]  m_abs 465.9
+v6_6k   kstack 0.0143  kstack16k 0.0129  echo (-0.3153, 1.0)  icl (0.0112, 0.003, 1.0)  icl16k 0.0009  mod7 (0.0068, 1.0)  add (0.0501, 1.0)  hg [2.274, 1.848, 2.701, 2.201]  m_abs 510.7
+v6_9k   kstack 0.0103  kstack16k 0.0078  echo (-0.3175, 1.0)  icl (0.0073, 0.001, 1.0)  icl16k 0.0013  mod7 (0.0071, 1.0)  add (0.0241, 1.0)  hg [2.209, 1.807, 2.806, 2.299]  m_abs 552.1
+v6_12k  kstack 0.0037  kstack16k 0.0032  echo (-0.3198, 1.0)  icl (0.005, 0.0, 1.0)  icl16k 0.0  mod7 (0.0034, 1.0)  add (0.0154, 1.0)  hg [2.103, 1.81, 2.958, 2.316]  m_abs 598.2
+====================================================================================================
+RESULT {"tag": "ARC2-C18-MACHINE-V6-DEPTHK", "runs": {"v6_3k": {"echo": [-0.2329, 1.0], "kstack": [0.0781, 1.0], "icl": [0.0521, 0.0436, 1.0], "mod7": [0.0073, 1.0], "add": [0.1654, 1.0], "icl_t16384": 0.1867, "kstack_16384": 0.0771, "head_gates": [2.12, 1.763, 2.56, 2.089], "organ_gate": 15.501, "kstack_m_abs": 465.9}, "v6_6k": {"echo": [-0.3153, 1.0], "kstack": [0.0143, 1.0], "icl": [0.0112, 0.003, 1.0], "mod7": [0.0068, 1.0], "add": [0.0501, 1.0], "icl_t16384": 0.0009, "kstack_16384": 0.0129, "head_gates": [2.274, 1.848, 2.701, 2.201], "organ_gate": 25.441, "kstack_m_abs": 510.7}, "v6_9k": {"echo": [-0.3175, 1.0], "kstack": [0.0103, 1.0], "icl": [0.0073, 0.001, 1.0], "mod7": [0.0071, 1.0], "add": [0.0241, 1.0], "icl_t16384": 0.0013, "kstack_16384": 0.0078, "head_gates": [2.209, 1.807, 2.806, 2.299], "organ_gate": 31.086, "kstack_m_abs": 552.1}, "v6_12k": {"echo": [-0.3198, 1.0], "kstack": [0.0037, 1.0], "icl": [0.005, 0.0, 1.0], "mod7": [0.0034, 1.0], "add": [0.0154, 1.0], "icl_t16384": 0.0, "kstack_16384": 0.0032, "head_gates": [2.103, 1.81, 2.958, 2.316], "organ_gate": 33.659, "kstack_m_abs": 598.2}}, "wall_s": 1121.0, "peak_mb": 723.1}
+DONE

@@ -1,0 +1,22 @@
+[p34] R1:KRB-LEARN params 22446
+/home/user/TryArena/arch_vet_p34.py:145: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  if step % 250 == 0: print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} aux {float(model.aux):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P34-R1-LEARN] step 250/4000 ce 1.9588 aux 0.002 (148s)
+  [P34-R1-LEARN] step 500/4000 ce 1.8383 aux 0.002 (298s)
+  [P34-R1-LEARN] step 750/4000 ce 1.8202 aux 0.003 (457s)
+  [P34-R1-LEARN] step 1000/4000 ce 1.8094 aux 0.003 (602s)
+  [P34-R1-LEARN] step 1250/4000 ce 1.7965 aux 0.003 (765s)
+  [P34-R1-LEARN] step 1500/4000 ce 1.7562 aux 0.004 (923s)
+  [P34-R1-LEARN] step 1750/4000 ce 1.7462 aux 0.005 (1075s)
+  [P34-R1-LEARN] step 2000/4000 ce 1.7319 aux 0.003 (1231s)
+  [P34-R1-LEARN] step 2250/4000 ce 1.7322 aux 0.002 (1388s)
+  [P34-R1-LEARN] step 2500/4000 ce 1.7377 aux 0.005 (1539s)
+  [P34-R1-LEARN] step 2750/4000 ce 1.6602 aux 0.006 (1693s)
+  [P34-R1-LEARN] step 3000/4000 ce 1.6894 aux 0.003 (1843s)
+  [P34-R1-LEARN] step 3250/4000 ce 1.6573 aux 0.003 (1997s)
+  [P34-R1-LEARN] step 3500/4000 ce 1.6607 aux 0.003 (2161s)
+  [P34-R1-LEARN] step 3750/4000 ce 1.6508 aux 0.006 (2322s)
+  [P34-R1-LEARN] step 4000/4000 ce 1.6603 aux 0.002 (2482s)
+[p34 R1:KRB-LEARN] {'n1_hard': 1.0, 'n2_hard': 0.7667, 'n3_hard': 0.6429, 'n4_hard': 0.5962, 'n6_hard': 0.4187, 'n8_hard': 0.3818, 'n_train_mix_hard': 0.5926, 'params': 22446, 'diag': {'key_recall': 1.0, 'key_fp': 1.0, 'reset_on_T': False, 'reset_fp': 0.0, 'h1_ent': 1.213, 'h2_ent': 1.494, 'h1_cells': 4, 'h2_cells': 5, 'h1_eq_h2': 0.25}}
+[P34] DONE

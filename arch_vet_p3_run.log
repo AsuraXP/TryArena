@@ -1,0 +1,19 @@
+[A3] params=8372
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  hist.append((step, round(float(loss), 4)))
+  [A3] step 250/2000 loss 1.4900 (120s)
+  [A3] step 500/2000 loss 1.4231 (240s)
+  [A3] step 750/2000 loss 1.4021 (357s)
+  [A3] step 1000/2000 loss 1.3513 (474s)
+  [A3] step 1250/2000 loss 1.3570 (596s)
+  [A3] step 1500/2000 loss 1.2300 (717s)
+  [A3] step 1750/2000 loss 1.2296 (835s)
+  [A3] step 2000/2000 loss 1.2132 (955s)
+[A3] ce={'256_train': 1.3285, '256_hard': 2.3023, '512': 1.2579, '1024': 1.2961}
+[A3] acc(train)={'track': 0.96, 'modk': 0.442, 'dyck': 0.176, 'pair': 1.0}
+[A3] acc(eval)={'track': 0.302, 'modk': 0.212, 'dyck': 0.0, 'pair': 0.604}
+[A3] bit_identical_to_phase1=False (step250 1.49 vs 1.4488)
+RESULT {"tag": "ARCH-VET-LM-P3", "note": "A3 base standalone, seed0-before-construction; bit-parity check vs Phase-1 VET", "params": 8372, "loss_curve": [[250, 1.49], [500, 1.4231], [750, 1.4021], [1000, 1.3513], [1250, 1.357], [1500, 1.23], [1750, 1.2296], [2000, 1.2132]], "ce": {"256_train": 1.3285, "256_hard": 2.3023, "512": 1.2579, "1024": 1.2961}, "acc_train_interval": {"track": 0.9603, "modk": 0.4417, "dyck": 0.176, "pair": 1.0}, "acc_eval_interval": {"track": 0.3023, "modk": 0.2115, "dyck": 0.0, "pair": 0.6038}, "bit_identical_to_phase1": false, "wall_s": 964.2}
+DONE
+P3 exit=0

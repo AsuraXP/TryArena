@@ -1,0 +1,60 @@
+[VETDCC-big seed 111] params=21257
+  [VETDCC-big-s111] step 250/4000 loss 1.5094 (170s)
+  [VETDCC-big-s111] step 500/4000 loss 1.3871 (342s)
+  [VETDCC-big-s111] step 750/4000 loss 1.3809 (514s)
+  [VETDCC-big-s111] step 1000/4000 loss 1.3397 (684s)
+  [VETDCC-big-s111] step 1250/4000 loss 1.3317 (855s)
+  [VETDCC-big-s111] step 1500/4000 loss 1.1932 (1025s)
+  [VETDCC-big-s111] step 1750/4000 loss 1.1927 (1199s)
+  [VETDCC-big-s111] step 2000/4000 loss 1.1724 (1374s)
+  [VETDCC-big-s111] step 2250/4000 loss 1.1735 (1545s)
+  [VETDCC-big-s111] step 2500/4000 loss 1.2747 (1715s)
+  [VETDCC-big-s111] step 2750/4000 loss 1.2038 (1885s)
+  [VETDCC-big-s111] step 3000/4000 loss 1.2386 (2057s)
+  [VETDCC-big-s111] step 3250/4000 loss 1.0972 (2229s)
+  [VETDCC-big-s111] step 3500/4000 loss 1.1769 (2403s)
+  [VETDCC-big-s111] step 3750/4000 loss 1.2240 (2576s)
+  [VETDCC-big-s111] step 4000/4000 loss 1.1143 (2746s)
+[VETDCC-big s111] ce={'256_train': 1.27, '256_hard': 2.739, '512': 1.211, '1024': 1.252}
+[VETDCC-big s111] acc_eval={'track': 0.953, 'modk': 1.0, 'dyck': 0.0, 'pair': 0.792}
+[VETDCC-big seed 222] params=21257
+  [VETDCC-big-s222] step 250/4000 loss 1.5680 (169s)
+  [VETDCC-big-s222] step 500/4000 loss 1.4099 (338s)
+  [VETDCC-big-s222] step 750/4000 loss 1.3832 (507s)
+  [VETDCC-big-s222] step 1000/4000 loss 1.3408 (678s)
+  [VETDCC-big-s222] step 1250/4000 loss 1.3341 (856s)
+  [VETDCC-big-s222] step 1500/4000 loss 1.1946 (1025s)
+  [VETDCC-big-s222] step 1750/4000 loss 1.1952 (1195s)
+  [VETDCC-big-s222] step 2000/4000 loss 1.1724 (1366s)
+  [VETDCC-big-s222] step 2250/4000 loss 1.1837 (1537s)
+  [VETDCC-big-s222] step 2500/4000 loss 1.2784 (1707s)
+  [VETDCC-big-s222] step 2750/4000 loss 1.2071 (1881s)
+  [VETDCC-big-s222] step 3000/4000 loss 1.2427 (2051s)
+  [VETDCC-big-s222] step 3250/4000 loss 1.1089 (2221s)
+  [VETDCC-big-s222] step 3500/4000 loss 1.1796 (2393s)
+  [VETDCC-big-s222] step 3750/4000 loss 1.2269 (2566s)
+  [VETDCC-big-s222] step 4000/4000 loss 1.1210 (2738s)
+[VETDCC-big s222] ce={'256_train': 1.273, '256_hard': 2.337, '512': 1.215, '1024': 1.257}
+[VETDCC-big s222] acc_eval={'track': 0.767, 'modk': 1.0, 'dyck': 0.019, 'pair': 0.792}
+[VETDCC-big seed 333] params=21257
+  [VETDCC-big-s333] step 250/4000 loss 1.4654 (174s)
+  [VETDCC-big-s333] step 500/4000 loss 1.3790 (347s)
+  [VETDCC-big-s333] step 750/4000 loss 1.3664 (522s)
+  [VETDCC-big-s333] step 1000/4000 loss 1.2923 (695s)
+  [VETDCC-big-s333] step 1250/4000 loss 1.2977 (868s)
+  [VETDCC-big-s333] step 1500/4000 loss 1.1788 (1040s)
+  [VETDCC-big-s333] step 1750/4000 loss 1.1842 (1212s)
+  [VETDCC-big-s333] step 2000/4000 loss 1.1744 (1384s)
+  [VETDCC-big-s333] step 2250/4000 loss 1.1752 (1556s)
+  [VETDCC-big-s333] step 2500/4000 loss 1.2828 (1727s)
+  [VETDCC-big-s333] step 2750/4000 loss 1.2116 (1900s)
+  [VETDCC-big-s333] step 3000/4000 loss 1.2476 (2072s)
+  [VETDCC-big-s333] step 3250/4000 loss 1.1068 (2243s)
+  [VETDCC-big-s333] step 3500/4000 loss 1.1811 (2414s)
+  [VETDCC-big-s333] step 3750/4000 loss 1.2288 (2584s)
+  [VETDCC-big-s333] step 4000/4000 loss 1.1173 (2753s)
+[VETDCC-big s333] ce={'256_train': 1.274, '256_hard': 2.809, '512': 1.212, '1024': 1.258}
+[VETDCC-big s333] acc_eval={'track': 0.349, 'modk': 1.0, 'dyck': 0.0, 'pair': 0.717}
+[VETDCC-big] SUMMARY {"pair_eval_dist": [0.7925, 0.7925, 0.717], "basin_pair_ge_9": 0.0, "basin_pair_ge_717": 1.0, "modk_eval_dist": [1.0, 1.0, 1.0], "basin_modk_eq_1": 1.0, "len_ratio_dist": [0.457, 0.538, 0.448], "basin_ratio_le_6": 1.0, "track_eval_dist": [0.9535, 0.7674, 0.3488], "pair_mean": 0.7673, "pair_sd": 0.0356}
+RESULT {"tag": "ARCH-VET-LM-P16", "protocol": "pair-OOD basin budget test: VETDCC-big x seeds 111/222/333, ctor under manual_seed, P9 4-task L=256 pool 512 seed 12345, 4000 STEPS (2x P15's 2000 = P5 budget); eval CE sweep + task_acc + dyck d3-6 (P15-identical); bars pair>=.9/.717, modk=1.0, ratio<=.6; P15 2000-step reference .302/.302/.887", "arms": {"VETDCC-big": {"per_seed": {"111": {"ce": {"256_train": 1.2699, "256_hard": 2.7391, "512": 1.2108, "1024": 1.2515}, "acc_train_interval": {"track": 1.0, "modk": 1.0, "dyck": 0.168, "pair": 1.0}, "acc_eval_interval": {"track": 0.9535, "modk": 1.0, "dyck": 0.0, "pair": 0.7925}, "pair_eval": 0.7925, "modk_eval": 1.0, "track_eval": 0.9535, "len_ratio_1024_over_256hard": 0.457, "loss_curve": [[250, 1.5094], [500, 1.3871], [750, 1.3809], [1000, 1.3397], [1250, 1.3317], [1500, 1.1932], [1750, 1.1927], [2000, 1.1724], [2250, 1.1735], [2500, 1.2747], [2750, 1.2038], [3000, 1.2386], [3250, 1.0972], [3500, 1.1769], [3750, 1.224], [4000, 1.1143]]}, "222": {"ce": {"256_train": 1.2734, "256_hard": 2.3372, "512": 1.2153, "1024": 1.2568}, "acc_train_interval": {"track": 1.0, "modk": 1.0, "dyck": 0.144, "pair": 1.0}, "acc_eval_interval": {"track": 0.7674, "modk": 1.0, "dyck": 0.0185, "pair": 0.7925}, "pair_eval": 0.7925, "modk_eval": 1.0, "track_eval": 0.7674, "len_ratio_1024_over_256hard": 0.538, "loss_curve": [[250, 1.568], [500, 1.4099], [750, 1.3832], [1000, 1.3408], [1250, 1.3341], [1500, 1.1946], [1750, 1.1952], [2000, 1.1724], [2250, 1.1837], [2500, 1.2784], [2750, 1.2071], [3000, 1.2427], [3250, 1.1089], [3500, 1.1796], [3750, 1.2269], [4000, 1.121]]}, "333": {"ce": {"256_train": 1.2742, "256_hard": 2.8092, "512": 1.2119, "1024": 1.2577}, "acc_train_interval": {"track": 1.0, "modk": 1.0, "dyck": 0.088, "pair": 1.0}, "acc_eval_interval": {"track": 0.3488, "modk": 1.0, "dyck": 0.0, "pair": 0.717}, "pair_eval": 0.717, "modk_eval": 1.0, "track_eval": 0.3488, "len_ratio_1024_over_256hard": 0.448, "loss_curve": [[250, 1.4654], [500, 1.379], [750, 1.3664], [1000, 1.2923], [1250, 1.2977], [1500, 1.1788], [1750, 1.1842], [2000, 1.1744], [2250, 1.1752], [2500, 1.2828], [2750, 1.2116], [3000, 1.2476], [3250, 1.1068], [3500, 1.1811], [3750, 1.2288], [4000, 1.1173]]}}, "summary": {"pair_eval_dist": [0.7925, 0.7925, 0.717], "basin_pair_ge_9": 0.0, "basin_pair_ge_717": 1.0, "modk_eval_dist": [1.0, 1.0, 1.0], "basin_modk_eq_1": 1.0, "len_ratio_dist": [0.457, 0.538, 0.448], "basin_ratio_le_6": 1.0, "track_eval_dist": [0.9535, 0.7674, 0.3488], "pair_mean": 0.7673, "pair_sd": 0.0356}}}, "wall_s": 8282.0}
+DONE

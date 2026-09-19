@@ -1,0 +1,11 @@
+[c24d] identity-init fitness = 0.6143
+[c24d] edit 17: 0.6143 -> 0.8243
+[c24d] edit 21: 0.8243 -> 0.9143
+[c24d] search done: edits=8021 accepted=2 best=0.9143
+[cert] indist: 0/500 exact, passes=3.0 (want 3), trace_ok=True
+[cert] k16: 0/200 exact, passes=17.0 (want 17), trace_ok=True
+[cert] k64: 0/100 exact, passes=65.0 (want 65), trace_ok=True
+[cert] joint: 0/100 exact, passes=65.0 (want 65), trace_ok=True
+[verdict] {'S1': '0/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': True, 'ALL': False}
+RESULT {"tag": "ARC2-C24D-P4-SEARCH", "search": {"edits": 8021, "accepted": 2, "fitness": 0.9143}, "cert": {"indist": {"exact": "0/500", "passes_mean": 3.0, "trace_ok": true}, "k16": {"exact": "0/200", "passes_mean": 17.0, "trace_ok": true}, "k64": {"exact": "0/100", "passes_mean": 65.0, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 65.0, "trace_ok": true}}, "verdict": {"S1": "0/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": true, "ALL": false}, "wall_s": 133.6, "peak_mb": 499.2}
+DONE

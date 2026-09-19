@@ -1,0 +1,42 @@
+[c29f] bank cloned from entry state h11: {}
+[c29f] seed fitness = 0.2864
+[c29f] edit 7 (macros 2): 0.2864 -> 0.3360
+[c29f] edit 8 (macros 2): 0.3360 -> 0.3673
+[c29f] edit 10 (macros 2): 0.3673 -> 0.4426
+[c29f] edit 18 (macros 3): 0.4446 -> 0.4509
+[c29f] edit 22 (macros 4): 0.4509 -> 0.4734
+[c29f] edit 24 (macros 6): 0.4734 -> 0.5574
+[c29f] edit 27 (macros 9): 0.5574 -> 0.6517
+[c29f] edit 81 (macros 27): 0.6517 -> 0.7254
+[c29f] edit 85 (macros 27): 0.7254 -> 0.7750
+[c29f] edit 323 (macros 103): 0.7750 -> 0.7897
+[c29f] edit 332 (macros 107): 0.7897 -> 0.8054
+[c29f] edit 585 (macros 188): 0.8054 -> 0.8456
+[c29f] edit 612 (macros 201): 0.8456 -> 0.8786
+[c29f] edit 769 (macros 259): 0.8786 -> 0.9028
+[c29f] edit 1904 (macros 622): 0.9028 -> 0.9141
+[c29f] edit 2133 (macros 709): 0.9141 -> 0.9534
+[c29f] edit 3131 (macros 1033): 0.9534 -> 0.9867
+[c29f] edit 6096 (macros 1983): 0.9867 -> 0.9882
+[c29f] edit 6821 (macros 2208): 0.9882 -> 1.0039
+[c29f] edit 10307 (macros 3284): 1.0039 -> 1.0063
+[c29f] edit 15062 (macros 4804): 1.0063 -> 1.0079
+[c29f] edit 20395 (macros 6523): 1.0079 -> 1.0100
+[c29f] edit 20397 (macros 6524): 1.0100 -> 1.0128
+[c29f] edit 20474 (macros 6546): 1.0128 -> 1.0231
+[c29f] edit 21073 (macros 6750): 1.0231 -> 1.0379
+[c29f] edit 21080 (macros 6752): 1.0379 -> 1.0548
+[c29f] edit 21221 (macros 6794): 1.0548 -> 1.0555
+[c29f] edit 22511 (macros 7192): 1.0555 -> 1.0563
+[c29f] edit 23027 (macros 7367): 1.0563 -> 1.0586
+[c29f] edit 23975 (macros 7663): 1.0586 -> 1.0597
+[c29f] edit 24812 (macros 7918): 1.0597 -> 1.0617
+[c29f] edit 30626 (macros 9728): 1.0617 -> 1.0650
+[c29f] done: edits=55626 accepted=39 macros=17702 best=1.0650
+[cert] indist: 326/500 exact, passes=3.2 (want 4), trace_ok=False
+[cert] n16: 9/200 exact, passes=8.04 (want 17), trace_ok=False
+[cert] n32: 0/100 exact, passes=14.37 (want 33), trace_ok=False
+[cert] joint: 0/100 exact, passes=27.72 (want 65), trace_ok=False
+[verdict] {'S1': '326/500', 'S2': '9/200', 'S3': '0/100', 'S4': '0/100', 'S5': False, 'ALL': False}
+RESULT {"tag": "ARC2-C29F-P6-BDIG", "search": {"edits": 55626, "accepted": 39, "macros": 17702, "fitness": 1.065}, "cert": {"indist": {"exact": "326/500", "passes_mean": 3.2, "trace_ok": false}, "n16": {"exact": "9/200", "passes_mean": 8.04, "trace_ok": false}, "n32": {"exact": "0/100", "passes_mean": 14.37, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 27.72, "trace_ok": false}}, "verdict": {"S1": "326/500", "S2": "9/200", "S3": "0/100", "S4": "0/100", "S5": false, "ALL": false}, "wall_s": 387.5, "peak_mb": 499.3}
+DONE

@@ -1,0 +1,48 @@
+[unit] depth-3 balanced stream: 3/3 closes MATCH, 0 bad (flags=[('close', True, False, False), ('close', True, False, False), ('close', True, False, False)])
+[unit] 7 nested opens: overflow only on 7th ([False, False, False, False, False, False, True])
+[STACKDCC-base] params=9273
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [STACKDCC-base] step 250/2000 loss 1.4588 (77s)
+  [STACKDCC-base] step 500/2000 loss 1.3743 (151s)
+  [STACKDCC-base] step 750/2000 loss 1.3835 (224s)
+  [STACKDCC-base] step 1000/2000 loss 1.3183 (297s)
+  [STACKDCC-base] step 1250/2000 loss 1.3347 (371s)
+  [STACKDCC-base] step 1500/2000 loss 1.2135 (449s)
+  [STACKDCC-base] step 1750/2000 loss 1.1973 (524s)
+  [STACKDCC-base] step 2000/2000 loss 1.1820 (602s)
+[STACKDCC-base] ce={'256_train': 1.2983, '256_hard': 2.1754, '512': 1.2213, '1024': 1.2656}
+[STACKDCC-base] acc(train)={ track: 0.992, modk: 1.000, dyck: 0.184, pair: 1.000 }
+[STACKDCC-base] acc(eval)={ track: 0.628, modk: 1.000, dyck: 0.019, pair: 0.377 }
+  [STACKDCC-base] dyck depth 3: 0.000 (295 segs)
+  [STACKDCC-base] dyck depth 4: 0.000 (215 segs)
+  [STACKDCC-base] dyck depth 5: 0.000 (156 segs)
+  [STACKDCC-base] dyck depth 6: 0.000 (115 segs)
+  [STACKDCC-base] dyck depth 7: 0.000 (97 segs)
+  [STACKDCC-base] dyck depth 8: 0.000 (70 segs)
+  [STACKDCC-base] dyck depth 9: 0.000 (53 segs)
+  [STACKDCC-base] dyck depth 10: 0.000 (50 segs)
+[STACKDCC-big] params=21649
+  [STACKDCC-big] step 250/2000 loss 1.4440 (92s)
+  [STACKDCC-big] step 500/2000 loss 1.3741 (182s)
+  [STACKDCC-big] step 750/2000 loss 1.3579 (274s)
+  [STACKDCC-big] step 1000/2000 loss 1.2751 (365s)
+  [STACKDCC-big] step 1250/2000 loss 1.2863 (457s)
+  [STACKDCC-big] step 1500/2000 loss 1.1728 (546s)
+  [STACKDCC-big] step 1750/2000 loss 1.1745 (635s)
+  [STACKDCC-big] step 2000/2000 loss 1.1689 (729s)
+[STACKDCC-big] ce={'256_train': 1.2749, '256_hard': 2.2854, '512': 1.2166, '1024': 1.258}
+[STACKDCC-big] acc(train)={ track: 1.000, modk: 1.000, dyck: 0.168, pair: 1.000 }
+[STACKDCC-big] acc(eval)={ track: 0.698, modk: 1.000, dyck: 0.000, pair: 0.547 }
+  [STACKDCC-big] dyck depth 3: 0.000 (295 segs)
+  [STACKDCC-big] dyck depth 4: 0.000 (215 segs)
+  [STACKDCC-big] dyck depth 5: 0.000 (156 segs)
+  [STACKDCC-big] dyck depth 6: 0.000 (115 segs)
+  [STACKDCC-big] dyck depth 7: 0.000 (97 segs)
+  [STACKDCC-big] dyck depth 8: 0.000 (70 segs)
+  [STACKDCC-big] dyck depth 9: 0.000 (53 segs)
+  [STACKDCC-big] dyck depth 10: 0.000 (50 segs)
+RESULT {"tag": "ARCH-VET-LM-P10", "protocol": "STACKDCC = VETDCC + exact bracket-type stack (capacity 6, hardwired push on 29/30, match-check+pop on 31/32, per-task reset); 7-dim stack features [top_empty, top_a, top_b, match, mismatch, underflow, overflow] zero-injected into controller + readout; P1 4-task pool, 2000 steps, seed 0; probes identical to P9 (CE 4-way, task acc, dyck frontier 3-10). Sharp prediction: dyck HIGH at depth 3-6 (in-capacity), COLLAPSE at 7-10 (overflow)", "arms": {"STACKDCC-base": {"params": 9273, "loss_curve": [[250, 1.4588], [500, 1.3743], [750, 1.3835], [1000, 1.3183], [1250, 1.3347], [1500, 1.2135], [1750, 1.1973], [2000, 1.182]], "ce": {"256_train": 1.2983, "256_hard": 2.1754, "512": 1.2213, "1024": 1.2656}, "acc_train_interval": {"track": 0.9921, "modk": 1.0, "dyck": 0.184, "pair": 1.0}, "acc_eval_interval": {"track": 0.6279, "modk": 1.0, "dyck": 0.0185, "pair": 0.3774}, "dyck_depth_frontier": {"depth3": 0.0, "depth4": 0.0, "depth5": 0.0, "depth6": 0.0, "depth7": 0.0, "depth8": 0.0, "depth9": 0.0, "depth10": 0.0}, "len_ratio_1024_over_256hard": 0.582}, "STACKDCC-big": {"params": 21649, "loss_curve": [[250, 1.444], [500, 1.3741], [750, 1.3579], [1000, 1.2751], [1250, 1.2863], [1500, 1.1728], [1750, 1.1745], [2000, 1.1689]], "ce": {"256_train": 1.2749, "256_hard": 2.2854, "512": 1.2166, "1024": 1.258}, "acc_train_interval": {"track": 1.0, "modk": 1.0, "dyck": 0.168, "pair": 1.0}, "acc_eval_interval": {"track": 0.6977, "modk": 1.0, "dyck": 0.0, "pair": 0.5472}, "dyck_depth_frontier": {"depth3": 0.0, "depth4": 0.0, "depth5": 0.0, "depth6": 0.0, "depth7": 0.0, "depth8": 0.0, "depth9": 0.0, "depth10": 0.0}, "len_ratio_1024_over_256hard": 0.55}}, "wall_s": 1382.8}
+DONE
+P10 exit=0

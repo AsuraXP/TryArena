@@ -1,0 +1,22 @@
+[c29] seed fitness = 0.6102
+[c29d] edit 1: 0.6102 -> 0.6350
+[c29d] edit 2: 0.6350 -> 0.7043
+[c29d] edit 6: 0.7043 -> 0.7636
+[c29d] edit 36: 0.7636 -> 0.7700
+[c29d] edit 66: 0.7700 -> 0.8024
+[c29d] edit 103: 0.8024 -> 0.8144
+[c29d] edit 214: 0.8148 -> 0.8176
+[c29d] edit 325: 0.8176 -> 0.8290
+[c29d] edit 631: 0.8290 -> 0.8536
+[c29d] edit 1441: 0.8536 -> 0.8624
+[c29d] edit 1979: 0.8624 -> 0.8666
+[c29d] edit 2860: 0.8666 -> 0.9015
+[c29d] edit 8039: 0.9015 -> 0.9264
+[c29d] done: edits=23039 accepted=14 best=0.9264
+[cert] indist: 17/500 exact, passes=4.16 (want 4), trace_ok=True
+[cert] n16: 0/200 exact, passes=17.24 (want 17), trace_ok=True
+[cert] n32: 0/100 exact, passes=33.14 (want 33), trace_ok=True
+[cert] joint: 0/100 exact, passes=65.22 (want 65), trace_ok=True
+[verdict] {'S1': '17/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': True, 'ALL': False}
+RESULT {"tag": "ARC2-C29D-P6-REPAIR", "search": {"edits": 23039, "accepted": 14, "fitness": 0.9264}, "cert": {"indist": {"exact": "17/500", "passes_mean": 4.16, "trace_ok": true}, "n16": {"exact": "0/200", "passes_mean": 17.24, "trace_ok": true}, "n32": {"exact": "0/100", "passes_mean": 33.14, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 65.22, "trace_ok": true}}, "verdict": {"S1": "17/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": true, "ALL": false}, "wall_s": 225.8, "peak_mb": 497.7}
+DONE

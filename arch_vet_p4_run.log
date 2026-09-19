@@ -1,0 +1,39 @@
+[VETbase] params=8372
+/home/user/TryArena/arch_vet_p4.py:100: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  hist.append((step, round(float(loss), 4)))
+  [VETbase] step 500/2000 loss 1.9856 (248s)
+  [VETbase] step 1000/2000 loss 1.9756 (498s)
+  [VETbase] step 1500/2000 loss 1.9702 (753s)
+  [VETbase] step 2000/2000 loss 1.8523 (995s)
+  [VETbase] gap 32-64: acc 0.595 (37 blocks)
+  [VETbase] gap 64-96: acc 0.514 (37 blocks)
+  [VETbase] gap 96-144: acc 0.450 (40 blocks)
+  [VETbase] gap 144-192: acc 0.475 (40 blocks)
+  [VETbase] gap 192-256: acc 0.275 (40 blocks)
+  [VETbase] ce={'256_traingap': 1.8532, '1024_evalgap': 2.7993}
+[VETbig] params=20697
+  [VETbig] step 500/2000 loss 1.9879 (310s)
+  [VETbig] step 1000/2000 loss 1.8556 (617s)
+  [VETbig] step 1500/2000 loss 1.8426 (923s)
+  [VETbig] step 2000/2000 loss 1.8427 (1224s)
+  [VETbig] gap 32-64: acc 0.946 (37 blocks)
+  [VETbig] gap 64-96: acc 0.676 (37 blocks)
+  [VETbig] gap 96-144: acc 0.600 (40 blocks)
+  [VETbig] gap 144-192: acc 0.500 (40 blocks)
+  [VETbig] gap 192-256: acc 0.450 (40 blocks)
+  [VETbig] ce={'256_traingap': 1.8476, '1024_evalgap': 2.9208}
+[MAMBA] params=9360
+  [MAMBA] step 500/2000 loss 2.0054 (110s)
+  [MAMBA] step 1000/2000 loss 1.9966 (221s)
+  [MAMBA] step 1500/2000 loss 1.9867 (330s)
+  [MAMBA] step 2000/2000 loss 1.9867 (438s)
+  [MAMBA] gap 32-64: acc 0.054 (37 blocks)
+  [MAMBA] gap 64-96: acc 0.108 (37 blocks)
+  [MAMBA] gap 96-144: acc 0.100 (40 blocks)
+  [MAMBA] gap 144-192: acc 0.175 (40 blocks)
+  [MAMBA] gap 192-256: acc 0.175 (40 blocks)
+  [MAMBA] ce={'256_traingap': 1.9935, '1024_evalgap': 3.3833}
+RESULT {"tag": "ARCH-VET-LM-P4", "protocol": "single-task TRACK stream (T x <gap fills> A x), train gap 4-16 L=256 2000 steps seed 0; frontier eval gaps 32-64/64-96/96-144/144-192/192-256, 20 streams each; CE 256(train-gap) vs 1024(eval-gap)", "arms": {"VETbase": {"params": 8372, "loss_curve": [[500, 1.9856], [1000, 1.9756], [1500, 1.9702], [2000, 1.8523]], "frontier_acc": {"gap32_64": 0.5946, "gap64_96": 0.5135, "gap96_144": 0.45, "gap144_192": 0.475, "gap192_256": 0.275}, "ce": {"256_traingap": 1.8532, "1024_evalgap": 2.7993}}, "VETbig": {"params": 20697, "loss_curve": [[500, 1.9879], [1000, 1.8556], [1500, 1.8426], [2000, 1.8427]], "frontier_acc": {"gap32_64": 0.9459, "gap64_96": 0.6757, "gap96_144": 0.6, "gap144_192": 0.5, "gap192_256": 0.45}, "ce": {"256_traingap": 1.8476, "1024_evalgap": 2.9208}}, "MAMBA": {"params": 9360, "loss_curve": [[500, 2.0054], [1000, 1.9966], [1500, 1.9867], [2000, 1.9867]], "frontier_acc": {"gap32_64": 0.0541, "gap64_96": 0.1081, "gap96_144": 0.1, "gap144_192": 0.175, "gap192_256": 0.175}, "ce": {"256_traingap": 1.9935, "1024_evalgap": 3.3833}}}, "wall_s": 2686.5}
+DONE
+P4 exit=0

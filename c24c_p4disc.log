@@ -1,0 +1,23 @@
+====================================================================================================
+[E1] 750/6000 kmax=1 CE 0.19140
+[E1] 1500/6000 kmax=2 CE 5.28020
+[E1] 2250/6000 kmax=2 CE 0.03415
+[E1] 3000/6000 kmax=3 CE 2.14764
+[E1] 3750/6000 kmax=3 CE 0.16426
+[E1] 4500/6000 kmax=4 CE 0.29473
+[E1] 5250/6000 kmax=4 CE 0.32207
+[E1] 6000/6000 kmax=4 CE 0.00294
+[E1-cert] k=1: 0/200 exact, passes=4.00 (want 2)
+[E1-cert] k=2: 0/200 exact, passes=5.00 (want 3)
+[E1-cert] k=4: 0/200 exact, passes=9.34 (want 5)
+====================================================================================================
+[E2] snapped baseline exact = 0.000
+[E2] done: best=0.000, edits=2428
+====================================================================================================
+[E3] indist: 0/500 exact, passes=11.0 (want 3), trace_ok=False
+[E3] k16: 0/200 exact, passes=25.0 (want 17), trace_ok=False
+[E3] k64: 0/100 exact, passes=73.0 (want 65), trace_ok=False
+[E3] joint: 0/100 exact, passes=73.0 (want 65), trace_ok=False
+[verdict] {'E1_k1_exact': '0/200', 'E2_in_dist': '0/500', 'E2_k16': '0/200', 'E3_k64': '0/100', 'E3_joint': '0/100', 'passes_discipline': False}
+RESULT {"tag": "ARC2-C24C-P4-DISC", "e1": {"k1": {"exact": "0/200", "passes_mean": 4.0}, "k2": {"exact": "0/200", "passes_mean": 5.0}, "k4": {"exact": "0/200", "passes_mean": 9.34}}, "e2_best": 0.0, "e2_edits": 2428, "e3": {"indist": {"exact": "0/500", "passes_mean": 11.0, "trace_ok": false}, "k16": {"exact": "0/200", "passes_mean": 25.0, "trace_ok": false}, "k64": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 73.0, "trace_ok": false}}, "verdict": {"E1_k1_exact": "0/200", "E2_in_dist": "0/500", "E2_k16": "0/200", "E3_k64": "0/100", "E3_joint": "0/100", "passes_discipline": false}, "wall_s": 407.7, "peak_mb": 666.5}
+DONE
