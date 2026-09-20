@@ -4521,3 +4521,14 @@ cells. Params 21,324 (unchanged). Smoke 20 st OK (2.3 s/step at 1
 thread -> ~2.6 h per arm-seed).
 PHASE 3 — running: run_c77.sh BK2 111 222 333 | BK4 111 222 333 (2 lanes)
 -> p38_BK2.log / p38_BK4.log.
+
+RECOVERY NOTE 2 (C77): sandbox re-provisioned again — HEAD at db74de5,
+torch wiped, p38/p39 runs lost before any result line. Local commits
+through C76 (d23c0ce, 8b8f333) had never reached the remote (auth flap),
+but the remote already held the restored equivalents (28cb04b..affd528),
+so recovery = fetch + `reset --mixed` to affd528 + checkout of the C77
+files (no history rewrite, nothing lost). torch 2.14 from PyPI; verify
+35/35. C77 lanes relaunched: BK2 111 222 333 | BK4 111 222 333.
+Prior art added this cycle: Kirsch-Mitzenmacher-Wieder 2010 (SICOMP;
+stash of size s -> failure O(n^-s)) and Kutzelnigg 2010 — the stash is
+the alternative geometry if blocked buckets under-deliver.
