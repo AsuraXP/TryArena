@@ -1,0 +1,5 @@
+[p38] R2:BK2 params 21324
+/home/user/TryArena/arch_vet_p37.py:121: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  if step % 250 == 0: print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R2-BK2] step 250/4000 ce 2.0912 bce 0.505 (236s)

@@ -4567,3 +4567,11 @@ free .08 knob (seed 3 -> .902 vs .857) — banked as a cheap follow-up.
 PREDICTION for the running lanes (falsifiable): BK2 n8 in [.90,.955],
 BK4 in [.95,.998]; a BK2 <= .86 falsifies the "learning follows
 geometry" reading and points at the read path.
+Hash-seed scan (200 seeds, exact ceiling): S8 b1 n8 median .869, best
+.929 (seed 38); S8 b2 median .959, best .996 (seed 12). Deployed seed
+85 is at the median (b1 .857, b2 .955) — no cherry-pick in the certified
+rows. HONESTY: picking the hash seed by scanning the R2 key set is
+key-set-specific tuning (the 16 keys are fixed vocab ids, but the
+policy is evaluated on those same keys); any "seed 38" arm must be
+labelled as tuned-to-vocab and is NOT a substitute for geometry (b>=2).
+Banked as optional C77c, lowest priority.
