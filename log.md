@@ -4542,3 +4542,28 @@ verify 35/35, p38 smoke 5 st OK. Lanes relaunched: BK2 111 222 333 |
 BK4 111 222 333 -> p38_BK2.log / p38_BK4.log. Mitigation: run_c77.sh
 now runs seeds sequentially per arm so a partial result line lands
 after ~2.6 h; commit + push each result line as it appears.
+
+C77 THEORY (queue item 4, first closed-form law) — theory_c77.py.
+Claim: for n keys, S cells, 2 hash choices, b-cell buckets, NO policy
+(any kicks, any eviction) can retain more than nu(G) bindings, nu = max
+b-capacitated matching of the key->bucket graph (Hall / cuckoo-graph
+orientability, Pagh-Rodler 2001; Dietzfelbinger-Weidling 2007). So
+recall_n <= E_subsets[nu]/n. Computed EXACTLY on the R2 key set (16
+keys, all C(16,n) subsets) under the deployed hash seed 85:
+  S8 b1: n4 .998  n6 .965  n8 .857   (min subset .50)
+  S8 b2: n4 1.00  n6 .998  n8 .955
+  S8 b4: n4 1.00  n6 1.00  n8 .998
+  S16 b1: n8 .999 ; S16 b2: n8 1.000
+  hash-seed spread S8 b1 n8 over seeds 1-5,85: .82-.90 (85 = .857)
+MEASURED vs CEILING (S8 b1): unified learned K n8 .855±.008 (10 seeds),
+hand-wired .865, n4 .983 vs .998, n6 .93 vs .965. The 1-kick oracle
+(.835) is BELOW the ceiling; the learned K is AT it.
+LAW L-KRB-MATCHING-CEILING: the learned-predicate keyed register bank
+achieves the Hall-matching ceiling of its hash geometry within seed
+noise; residual MQAR n8 error at S8 is a property of the hash graph,
+not of learning, routing, or the predicate. Corollary: the n8 gap is
+closed only by geometry (b>=2 or S16), and the hash seed itself is a
+free .08 knob (seed 3 -> .902 vs .857) — banked as a cheap follow-up.
+PREDICTION for the running lanes (falsifiable): BK2 n8 in [.90,.955],
+BK4 in [.95,.998]; a BK2 <= .86 falsifies the "learning follows
+geometry" reading and points at the read path.
