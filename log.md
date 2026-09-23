@@ -4532,3 +4532,13 @@ files (no history rewrite, nothing lost). torch 2.14 from PyPI; verify
 Prior art added this cycle: Kirsch-Mitzenmacher-Wieder 2010 (SICOMP;
 stash of size s -> failure O(n^-s)) and Kutzelnigg 2010 — the stash is
 the alternative geometry if blocked buckets under-deliver.
+
+RECOVERY NOTE 3 (C77): re-provisioned a third time (HEAD db74de5, torch
+wiped, p38 lanes lost pre-result again; working tree at C76 state).
+Recovery: fetch origin branch (0ee45b0) -> `reset --mixed` -> checkout of
+p38/p39/oracle_c77/run_c77/log.md from 0ee45b0 (no rewrite). torch 2.14
+via `pip --break-system-packages` (PEP 668 now enforced on this image).
+verify 35/35, p38 smoke 5 st OK. Lanes relaunched: BK2 111 222 333 |
+BK4 111 222 333 -> p38_BK2.log / p38_BK4.log. Mitigation: run_c77.sh
+now runs seeds sequentially per arm so a partial result line lands
+after ~2.6 h; commit + push each result line as it appears.
