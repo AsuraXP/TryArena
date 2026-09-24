@@ -4575,3 +4575,14 @@ key-set-specific tuning (the 16 keys are fixed vocab ids, but the
 policy is evaluated on those same keys); any "seed 38" arm must be
 labelled as tuned-to-vocab and is NOT a substitute for geometry (b>=2).
 Banked as optional C77c, lowest priority.
+
+RECOVERY NOTE 4 (C77): fourth re-provision (HEAD db74de5, torch wiped,
+p38 lanes lost pre-result). Recovery: fetch 3b68788 -> reset --mixed ->
+checkout (no rewrite). torch 2.14 via pip --break-system-packages; verify
+35/35. MITIGATION (structural): arch_vet_p38.train_arm_resumable — same
+recipe as p37.train_arm (constant lr, step-indexed batches) + model/opt/
+RNG/step checkpoint every 250 steps (p21_ckpt/*.resume.pt, gitignored);
+a relaunch resumes exactly. Lanes relaunched: BK2 111 222 333 | BK4 111
+222 333. Resume checkpoints are local-only (re-provision wipes them too
+unless committed) — so the harness also commits the .resume.pt files
+opportunistically each poll (small: ~90 KB each).

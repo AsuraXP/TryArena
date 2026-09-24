@@ -83,6 +83,24 @@ class KRBBlocked(p37.KRBHind):
         return lg
 
 
+def train_arm_resumable(name, model, pool, steps, batch=8, lr=3e-3, lam=0.5, ck=None):
+    """Identical recipe to p37.train_arm (constant lr, step-indexed batches, same seed) + model/opt/step
+    checkpoint every 250 steps so a sandbox re-provision resumes exactly instead of restarting."""
+    import os
+    torch.manual_seed(0); opt = torch.optim.AdamW(model.parameters(), lr=lr); model.train(); t0 = time.time(); n_pool = len(pool); start = 1
+    if ck and os.path.exists(ck):
+        st = torch.load(ck); model.load_state_dict(st["sd"]); opt.load_state_dict(st["opt"]); torch.set_rng_state(st["rng"]); start = st["step"] + 1
+        print(f"  [{name}] RESUMED at step {start-1}", flush=True)
+    for step in range(start, steps + 1):
+        sel = [(step * batch + i) % n_pool for i in range(batch)]; x = torch.stack([pool[i] for i in sel]); y = x[:, 1:]
+        xin = x[:, :256]; lg = model(xin); ce = F.cross_entropy(lg.reshape(-1, V), y.reshape(-1))
+        lab = p37.hindsight_labels(xin); bce = F.binary_cross_entropy_with_logits(model.kg_logits, lab)
+        loss = ce + lam * bce; opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
+        if step % 250 == 0:
+            print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+            if ck: torch.save({"sd": model.state_dict(), "opt": opt.state_dict(), "rng": torch.get_rng_state(), "step": step}, ck)
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--jobs", default="R2"); ap.add_argument("--seed", type=int, default=111)
     ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--arm", default="BK2"); a = ap.parse_args()
@@ -90,7 +108,7 @@ def main():
     for rn in a.jobs.split(","):
         R = p32.regime(rn); rng = random.Random(12345); pool = [torch.tensor(p32.gen_stream(rng, R, 256)) for _ in range(512)]
         torch.manual_seed(a.seed); m = KRBBlocked(V, 24, R["slots"], b=b); print(f"[p38] {rn}:{a.arm} params {p19.n_params(m)}", flush=True)
-        p37.train_arm(f"P38-{rn}-{a.arm}", m, pool, a.steps, 8, lam=0.5); m.eval()
+        train_arm_resumable(f"P38-{rn}-{a.arm}", m, pool, a.steps, 8, lam=0.5, ck=f"p21_ckpt/P38_{rn}_{a.arm}_s{a.seed}.resume.pt" if a.steps >= 1000 else None); m.eval()
         r = {f"n{n}_hard": p32.acc(m, R, 10, 256 if n <= 4 else 320, random.Random(600 + n), True, n) for n in R["n_eval"]}
         r["n_train_mix_hard"] = p32.acc(m, R, 12, 256, random.Random(700), True, None); r["params"] = p19.n_params(m); r["diag"] = p37.diag(m, R)
         print(f"[p38 {rn}:{a.arm} s{a.seed}] {r}", flush=True); out["arms"][f"{rn}:{a.arm}"] = r
