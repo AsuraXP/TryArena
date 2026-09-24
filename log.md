@@ -4586,3 +4586,17 @@ a relaunch resumes exactly. Lanes relaunched: BK2 111 222 333 | BK4 111
 222 333. Resume checkpoints are local-only (re-provision wipes them too
 unless committed) — so the harness also commits the .resume.pt files
 opportunistically each poll (small: ~90 KB each).
+
+PHASE 1 (C77 prior-art refresh, 2026-09-24): new close prior art found
+- arXiv 2607.02303 "A Hippocampus for Linear Attention" (HOLA): bounded
+  exact KV cache attached to Gated DeltaNet; write rule = residual
+  magnitude (non-learned), 46M-340M. Differs from K: soft/dense write
+  criterion, no slot geometry, no exactness proof; our write predicate is
+  learned (hindsight) and the bank has a provable Hall ceiling.
+- arXiv 2608.30376 "Kathleen Remembers": 25K-param HRR holographic
+  notebook with learned local write gate on an attention-free byte trunk;
+  80-82% one-shot recall at 4x train length. Closest in scale/spirit.
+  Differs: holographic superposition (interference-bounded, ~.8) vs our
+  discrete tagged slots (.98 n4 / .855 n8 at 2x OOD, ceiling-tight).
+  These sharpen the novelty statement: K is the only micro-scale exact
+  memory whose recall is shown to equal its combinatorial ceiling.
