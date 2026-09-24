@@ -3,3 +3,30 @@
 Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
   if step % 250 == 0: print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
   [P38-R2-BK4] step 250/4000 ce 2.0560 bce 0.505 (235s)
+[p38] R2:BK4 params 21324
+/home/user/TryArena/arch_vet_p38.py:100: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R2-BK4] step 250/4000 ce 2.0560 bce 0.505 (166s)
+  [P38-R2-BK4] step 500/4000 ce 1.8945 bce 0.445 (329s)
+  [P38-R2-BK4] step 750/4000 ce 1.8995 bce 0.413 (495s)
+  [P38-R2-BK4] step 1000/4000 ce 1.8601 bce 0.412 (661s)
+  [P38-R2-BK4] step 1250/4000 ce 1.8641 bce 0.414 (826s)
+  [P38-R2-BK4] step 1500/4000 ce 1.8535 bce 0.399 (993s)
+  [P38-R2-BK4] step 1750/4000 ce 1.8504 bce 0.404 (1158s)
+  [P38-R2-BK4] step 2000/4000 ce 1.8311 bce 0.404 (1321s)
+  [P38-R2-BK4] step 2250/4000 ce 1.8687 bce 0.401 (1489s)
+  [P38-R2-BK4] step 2500/4000 ce 1.8520 bce 0.412 (1658s)
+  [P38-R2-BK4] step 2750/4000 ce 1.7979 bce 0.377 (1823s)
+  [P38-R2-BK4] step 3000/4000 ce 1.8319 bce 0.400 (1987s)
+  [P38-R2-BK4] step 3250/4000 ce 1.8084 bce 0.400 (2150s)
+  [P38-R2-BK4] step 3500/4000 ce 1.7862 bce 0.401 (2312s)
+  [P38-R2-BK4] step 3750/4000 ce 1.8152 bce 0.410 (2477s)
+  [P38-R2-BK4] step 4000/4000 ce 1.8128 bce 0.398 (2643s)
+[p38 R2:BK4 s111] {'n1_hard': 1.0, 'n2_hard': 1.0, 'n3_hard': 1.0, 'n4_hard': 1.0, 'n6_hard': 0.9917, 'n8_hard': 0.9583, 'n_train_mix_hard': 1.0, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.0}}
+[P38] DONE
+[p38] R2:BK4 params 21324
+/home/user/TryArena/arch_vet_p38.py:100: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R2-BK4] step 250/4000 ce 2.0676 bce 0.507 (163s)

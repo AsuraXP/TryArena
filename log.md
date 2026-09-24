@@ -4600,3 +4600,17 @@ PHASE 1 (C77 prior-art refresh, 2026-09-24): new close prior art found
   discrete tagged slots (.98 n4 / .855 n8 at 2x OOD, ceiling-tight).
   These sharpen the novelty statement: K is the only micro-scale exact
   memory whose recall is shown to equal its combinatorial ceiling.
+
+C77 PHASE 4 — P38 seed 111 (4000 st, 21,324 p, R2 stream), predictions
+made BEFORE the runs (see C77 THEORY above):
+| arm | n1-n4 | n6 | n8 | ceiling (Hall, seed 85) | predicted band |
+|---|---|---|---|---|---|
+| S8 b1 (P37 CF85R, 10-seed mean) | .983 | .93 | .855 | .998/.965/.857 | — |
+| S8 b2 BK2 | 1.000 | .992 | **.924** | 1.00/.998/.955 | [.90,.955] ✓ |
+| S8 b4 BK4 | 1.000 | .992 | **.958** | 1.00/1.00/.998 | [.95,.998] ✓ |
+Both inside the pre-registered bands; diag key_recall 1.0. BK2 sits .03
+under its ceiling, BK4 .04 under — the first cell in which the learned K
+is measurably BELOW geometry (b1 was ceiling-tight), i.e. with b>=2 the
+residual is now the read path / kick policy, not the hash graph. n4 is
+exactly 1.000 for the first time. Seeds 222/333 running (lanes
+sequential), then P36 --K P38 fold for the unified row.
