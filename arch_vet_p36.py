@@ -48,7 +48,7 @@ class Unified4(nn.Module):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--seeds", default="111,222,333"); ap.add_argument("--steps", type=int, default=1000); ap.add_argument("--K", default="P35", help="P35 = SEEN expert | P37 = CF85R expert (cycle 75)"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--seeds", default="111,222,333"); ap.add_argument("--steps", type=int, default=1000); ap.add_argument("--K", default="P35", help="P35 = SEEN expert | P37 = CF85R expert (cycle 75) | BK2/BK4 = blocked-cuckoo P38 expert (cycle 77)"); a = ap.parse_args()
     t0 = time.time(); out = {"tag": "ARCH-VET-LM-P36", "K": a.K, "protocol": __doc__[:1900], "per_seed": {}}
     va_text = torch.stack(p26.pool_of(p26.gen_text_stream, 32, 99, src=p26.TXT_VA)); R2 = p32.regime("R2")
     for seed in map(int, a.seeds.split(",")):
@@ -56,7 +56,8 @@ def main():
         mA = p21.VETDCC(V0, 24, k=8, K=8); mB = p21.STACKDCC2_D12(V0, 24, k=8, K=8); mC = p26.ByteGRU(VB, 48)
         mA.load_state_dict(torch.load(f"{CKPT}/A_s{seed}.pt")["sd"]); mB.load_state_dict(torch.load(f"{CKPT}/B_s{seed}.pt")["sd"]); mC.load_state_dict(torch.load(f"{CKPT}/C_s{seed}.pt")["sd"])
         g2 = p22.Gate(V0, 8); g2.load_state_dict(torch.load(f"{CKPT}/G_s{seed}.pt")["sd"]); gm = p26b.GateM(4); gm.load_state_dict(torch.load(f"{CKPT}/GM_s{seed}.pt")["sd"])
-        if a.K == "P37": mK = p37.KRBHind(V0, 24, 8, seen=True, cf=True, hseed=85, decouple=True); mK.load_state_dict(torch.load(f"{CKPT}/P37_R2_CF85R_s{seed}.pt")["sd"])
+        if a.K.startswith("BK"): mK = p38.KRBBlocked(V0, 24, 8, b=int(a.K[2:])); mK.load_state_dict(torch.load(f"{CKPT}/P38_R2_{a.K}_s{seed}.pt")["sd"])
+        elif a.K == "P37": mK = p37.KRBHind(V0, 24, 8, seen=True, cf=True, hseed=85, decouple=True); mK.load_state_dict(torch.load(f"{CKPT}/P37_R2_CF85R_s{seed}.pt")["sd"])
         else: mK = p35.KRBHind(V0, 24, 8, seen=True); mK.load_state_dict(torch.load(f"{CKPT}/P35_R2_SEEN_s{seed}.pt")["sd"])
         for m in (mA, mB, mC, g2, gm, mK):
             m.eval()
@@ -67,7 +68,7 @@ def main():
         joint += p26.pool_of(p26.gen_chatmix_stream, 128, 4000 + seed) + p26.pool_of(p26.gen_text_stream, 64, 5000 + seed)
         rk = random.Random(6000 + seed); joint += [torch.tensor(p32.gen_stream(rk, R2, 257)) for _ in range(128)]
         joint = [j[:257] for j in joint]
-        gkp = f"{CKPT}/GK{'37' if a.K == 'P37' else ''}_s{seed}.pt"
+        gkp = f"{CKPT}/GK{'37' if a.K == 'P37' else (a.K if a.K.startswith('BK') else '')}_s{seed}.pt"
         if a.steps == 0 and os.path.exists(gkp): gk.load_state_dict(torch.load(gkp)["sd"]); print(f"[p36] s{seed} GK loaded from checkpoint (re-score mode)", flush=True)
         opt = torch.optim.AdamW(gk.parameters(), lr=3e-3); tt = time.time()
         for step in range(1, a.steps + 1):
