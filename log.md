@@ -4956,3 +4956,7 @@ better, h8 <= .4; HOP-BIGRAM h1 ~ HOP, h>=2 collapses (intermediates
 never written) — if HOP-BIGRAM does NOT collapse the path label was
 unnecessary and the honesty caveat is void.
 PHASE 3: run_c83.sh lane B -> p42.log.
+
+C79 — SBK4 K 10-seed: n1/n2/n3/n4/n6/n8_hard = 1.000 on 10/10 seeds
+(60/60 cells exact, 21,324 p, learned predicate, zero grammar).
+7-seed unified fold (K=SBK4, C=F, seeds 444-1010) running on lane A.

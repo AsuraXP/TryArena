@@ -208,3 +208,18 @@ Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pyto
   [P38-R2-SBK4] step 1500/4000 ce 1.8378 bce 0.403 (960s)
   [P38-R2-SBK4] step 1750/4000 ce 1.8090 bce 0.404 (1122s)
   [P38-R2-SBK4] step 2000/4000 ce 1.7912 bce 0.408 (1284s)
+[p38] R2:SBK4 params 21324
+  [P38-R2-SBK4] RESUMED at step 2000
+/home/user/TryArena/arch_vet_p38.py:110: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R2-SBK4] step 2250/4000 ce 1.8317 bce 0.402 (165s)
+  [P38-R2-SBK4] step 2500/4000 ce 1.8619 bce 0.416 (333s)
+  [P38-R2-SBK4] step 2750/4000 ce 1.7819 bce 0.382 (501s)
+  [P38-R2-SBK4] step 3000/4000 ce 1.8352 bce 0.400 (666s)
+  [P38-R2-SBK4] step 3250/4000 ce 1.8004 bce 0.405 (840s)
+  [P38-R2-SBK4] step 3500/4000 ce 1.7950 bce 0.406 (1010s)
+  [P38-R2-SBK4] step 3750/4000 ce 1.8017 bce 0.415 (1173s)
+  [P38-R2-SBK4] step 4000/4000 ce 1.8180 bce 0.401 (1337s)
+[p38 R2:SBK4 s1010] {'n1_hard': 1.0, 'n2_hard': 1.0, 'n3_hard': 1.0, 'n4_hard': 1.0, 'n6_hard': 1.0, 'n8_hard': 1.0, 'n_train_mix_hard': 1.0, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.0}}
+[P38] DONE
