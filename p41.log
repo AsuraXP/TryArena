@@ -1,4 +1,12 @@
-Traceback (most recent call last):
-  File "/home/user/TryArena/arch_vet_p41.py", line 10, in <module>
-    import argparse, json, os, resource, time, gc, torch
-ModuleNotFoundError: No module named 'torch'
+[p41] unified params 116858 | TF-ALiBi params 42672
+/home/user/TryArena/arch_vet_p41.py:39: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  x = torch.tensor(p19.make_pool(1, L, 5)[0][:L]).unsqueeze(0)
+[p41 L=256] unified 0.709s = 2768.3 us/tok, peak RSS 522 MB
+[p41 L=256] TF-ALiBi 0.003s = 10.7 us/tok, peak RSS 525 MB
+[p41 L=1024] unified 2.758s = 2693.4 us/tok, peak RSS 532 MB
+[p41 L=1024] TF-ALiBi 0.035s = 34.6 us/tok, peak RSS 570 MB
+[p41 L=4096] unified 10.858s = 2650.8 us/tok, peak RSS 570 MB
+[p41 L=4096] TF-ALiBi 0.784s = 191.5 us/tok, peak RSS 739 MB
+[p41 L=16384] unified 45.031s = 2748.5 us/tok, peak RSS 739 MB
+[p41 L=16384] TF-ALiBi 18.002s = 1098.7 us/tok, peak RSS 1151 MB
+[P41] DONE

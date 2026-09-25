@@ -4903,3 +4903,35 @@ measurable error at every geometry; (2) every future capacity claim can
 be PREDICTED exactly by theory_c81.py before training (a 2-second
 computation replaces a 45-minute run for go/no-go); (3) the C78 SBK2
 "band miss" is fully explained (replay .962, learned .967).
+
+RECOVERY NOTE 5 (C82): fifth re-provision (HEAD db74de5, torch wiped),
+but the WORKING TREE survived intact through C82 while the remote was
+at a6cbe7a (C77) — commits C78-C82 had never pushed (auth flap). Recovery
+= fetch -> reset --mixed -> single RESTORE commit e876743 -> push (auth
+was back: PUSHED). torch 2.14 reinstalled; verify 35/35. The resumable
+trainer paid off: SBK4 s1010 RESUMED at step 2000 (exact) instead of
+restarting. Lane A: s1010 -> 7-seed fold. Lane B: P41.
+
+## CYCLE 82 — INFERENCE ENVELOPE (arch_vet_p41.py), measured on the 2-core box, forward-only, batch 1, 1 thread
+| L | unified 116,858 p (all 4 experts dense) | TF-ALiBi 42,672 p | peak RSS unified / TF |
+|---|---|---|---|
+| 256 | 2768 us/tok | 10.7 us/tok | 522 / 525 MB |
+| 1024 | 2693 us/tok | 34.6 us/tok | 532 / 570 MB |
+| 4096 | 2651 us/tok | 191.5 us/tok | 570 / 739 MB |
+| 16384 | 2749 us/tok | 1098.7 us/tok | 739 / 1151 MB |
+HONEST READ: (1) the system's per-token cost is FLAT in L (2.65-2.77
+ms/tok, O(1) state confirmed) and its memory is flat (+217 MB from 256
+to 16k is the input/logit tensors); the TF's per-token cost grows ~100x
+from 256 to 16k (O(L)) and its RSS 2.2x. (2) The PREDICTION that the TF
+would fail at 16k was WRONG: PyTorch's attention runs the 16k score
+matrices head-by-head (1.15 GB peak), so the TF still completes, and in
+absolute terms it is still 2.5x FASTER per token at 16k than our
+Python-loop implementation; the crossover is ~L=40k on this box. (3) The
+system's constant is implementation, not architecture: a per-token
+Python loop over 4 experts with ~30 small tensor ops each. A fused/
+scripted step would move the constant by 1-2 orders; not done here (no
+claim made). LAW L-O1-ENVELOPE-MEASURED: constant per-token time and
+memory in L for the unified exact+fluent system, verified to 16k; the
+"beats the Transformer" claim on efficiency is asymptotic and in memory,
+NOT in absolute latency at <=16k with this implementation. Falsified
+sub-prediction logged. RESULT ARCH-VET-LM-P41 in log.jsonl.
