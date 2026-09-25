@@ -1,0 +1,10 @@
+[p36] s111 GK loaded from checkpoint (re-score mode)
+[p36 chat s111] {'text_ce': 2.7064, 'sym_ce': 1.8867} | {'track': 0.9091, 'modk': 1.0, 'pair': 0.9904, 'dyck_close': 0.9846, 'n_close': 325}
+[p36 K=SBK4 C=F s111] bars=6/6 {'pair': 0.8585, 'modk': 1.0, 'ratio': 0.596, 'dyck_d12': 0.9838, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=0.9962 Kshare=0.9192 text 2.5081/2.5081 params 116858
+[p36] s222 GK loaded from checkpoint (re-score mode)
+[p36 chat s222] {'text_ce': 2.7164, 'sym_ce': 2.2975} | {'track': 0.9455, 'modk': 1.0, 'pair': 0.9904, 'dyck_close': 0.8954, 'n_close': 325}
+[p36 K=SBK4 C=F s222] bars=6/6 {'pair': 0.8774, 'modk': 1.0, 'ratio': 0.503, 'dyck_d12': 0.9496, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=1.0 Kshare=0.9207 text 2.4997/2.4997 params 116858
+[p36] s333 GK loaded from checkpoint (re-score mode)
+[p36 chat s333] {'text_ce': 2.6768, 'sym_ce': 2.186} | {'track': 0.9091, 'modk': 1.0, 'pair': 0.9904, 'dyck_close': 0.8123, 'n_close': 325}
+[p36 K=SBK4 C=F s333] bars=6/6 {'pair': 0.8585, 'modk': 1.0, 'ratio': 0.443, 'dyck_d12': 0.9728, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=1.0 Kshare=0.9219 text 2.485/2.485 params 116858
+[P36] DONE

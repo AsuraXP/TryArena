@@ -26,7 +26,7 @@ import torch, torch.nn as nn, torch.nn.functional as F
 torch.set_num_threads(1); torch.backends.mha.set_fastpath_enabled(False)
 REPO = os.path.dirname(os.path.abspath(__file__)); os.chdir(REPO); CKPT = f"{REPO}/p21_ckpt"
 import arch_vet_p26 as p26, arch_vet_p26b as p26b, arch_vet_p22 as p22, arch_vet_p21 as p21, arch_vet_p19 as p19
-import arch_vet_p13d as p13d, arch_vet_lm as lm, arch_vet_p32 as p32, arch_vet_p35 as p35, arch_vet_p37 as p37
+import arch_vet_p13d as p13d, arch_vet_lm as lm, arch_vet_p32 as p32, arch_vet_p35 as p35, arch_vet_p37 as p37, arch_vet_p38 as p38
 V0, VB = p26.V0, p26.VB
 
 
@@ -48,15 +48,15 @@ class Unified4(nn.Module):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--seeds", default="111,222,333"); ap.add_argument("--steps", type=int, default=1000); ap.add_argument("--K", default="P35", help="P35 = SEEN expert | P37 = CF85R expert (cycle 75) | BK2/BK4 = blocked-cuckoo P38 expert (cycle 77)"); a = ap.parse_args()
-    t0 = time.time(); out = {"tag": "ARCH-VET-LM-P36", "K": a.K, "protocol": __doc__[:1900], "per_seed": {}}
+    ap = argparse.ArgumentParser(); ap.add_argument("--seeds", default="111,222,333"); ap.add_argument("--steps", type=int, default=1000); ap.add_argument("--chat", action="store_true"); ap.add_argument("--C", default="", help=" = pooled C (P26) | F = fresh-stream C (P40, cycle 79)"); ap.add_argument("--K", default="P35", help="P35 = SEEN expert | P37 = CF85R expert (cycle 75) | BK2/BK4 = blocked-cuckoo P38 expert (cycle 77)"); a = ap.parse_args()
+    t0 = time.time(); out = {"tag": "ARCH-VET-LM-P36", "K": a.K, "C": a.C, "protocol": __doc__[:1900], "per_seed": {}}
     va_text = torch.stack(p26.pool_of(p26.gen_text_stream, 32, 99, src=p26.TXT_VA)); R2 = p32.regime("R2")
     for seed in map(int, a.seeds.split(",")):
         torch.manual_seed(seed)
         mA = p21.VETDCC(V0, 24, k=8, K=8); mB = p21.STACKDCC2_D12(V0, 24, k=8, K=8); mC = p26.ByteGRU(VB, 48)
-        mA.load_state_dict(torch.load(f"{CKPT}/A_s{seed}.pt")["sd"]); mB.load_state_dict(torch.load(f"{CKPT}/B_s{seed}.pt")["sd"]); mC.load_state_dict(torch.load(f"{CKPT}/C_s{seed}.pt")["sd"])
+        mA.load_state_dict(torch.load(f"{CKPT}/A_s{seed}.pt")["sd"]); mB.load_state_dict(torch.load(f"{CKPT}/B_s{seed}.pt")["sd"]); mC.load_state_dict(torch.load(f"{CKPT}/C{a.C}_s{seed}.pt")["sd"])
         g2 = p22.Gate(V0, 8); g2.load_state_dict(torch.load(f"{CKPT}/G_s{seed}.pt")["sd"]); gm = p26b.GateM(4); gm.load_state_dict(torch.load(f"{CKPT}/GM_s{seed}.pt")["sd"])
-        if a.K.startswith("BK"): mK = p38.KRBBlocked(V0, 24, 8, b=int(a.K[2:])); mK.load_state_dict(torch.load(f"{CKPT}/P38_R2_{a.K}_s{seed}.pt")["sd"])
+        if "BK" in a.K: mK = p38.KRBBlocked(V0, 24, 8, b=int(a.K[-1]), smart=a.K.startswith("S")); mK.load_state_dict(torch.load(f"{CKPT}/P38_R2_{a.K}_s{seed}.pt")["sd"])
         elif a.K == "P37": mK = p37.KRBHind(V0, 24, 8, seen=True, cf=True, hseed=85, decouple=True); mK.load_state_dict(torch.load(f"{CKPT}/P37_R2_CF85R_s{seed}.pt")["sd"])
         else: mK = p35.KRBHind(V0, 24, 8, seen=True); mK.load_state_dict(torch.load(f"{CKPT}/P35_R2_SEEN_s{seed}.pt")["sd"])
         for m in (mA, mB, mC, g2, gm, mK):
@@ -68,7 +68,7 @@ def main():
         joint += p26.pool_of(p26.gen_chatmix_stream, 128, 4000 + seed) + p26.pool_of(p26.gen_text_stream, 64, 5000 + seed)
         rk = random.Random(6000 + seed); joint += [torch.tensor(p32.gen_stream(rk, R2, 257)) for _ in range(128)]
         joint = [j[:257] for j in joint]
-        gkp = f"{CKPT}/GK{'37' if a.K == 'P37' else (a.K if a.K.startswith('BK') else '')}_s{seed}.pt"
+        gkp = f"{CKPT}/GK{'37' if a.K == 'P37' else (a.K if 'BK' in a.K else '')}{a.C}_s{seed}.pt"
         if a.steps == 0 and os.path.exists(gkp): gk.load_state_dict(torch.load(gkp)["sd"]); print(f"[p36] s{seed} GK loaded from checkpoint (re-score mode)", flush=True)
         opt = torch.optim.AdamW(gk.parameters(), lr=3e-3); tt = time.time()
         for step in range(1, a.steps + 1):
@@ -83,6 +83,9 @@ def main():
         gk.eval(); u.eval()
         with torch.no_grad():
             row = {"C_alone_text_ce": p26.decomposed_ce(mC, va_text)["text_ce"], "routed_text_ce": p26.decomposed_ce(u, va_text)["text_ce"]}
+            if a.chat:   # C81: chatbot row (P26 metrics) on the unified system — chatmix decomposed CE + one-pass reasoning answers
+                va_chat = torch.stack(p26.pool_of(p26.gen_chatmix_stream, 32, 98, src=p26.TXT_VA))
+                row["routed_chatmix"] = p26.decomposed_ce(u, va_chat); row["chatmix_reasoning"] = p26.chatmix_reasoning(u, 32)
             same = tot = 0
             for s in p19.make_pool(16, 256, 7) + p13d.gen_mix_pool(16, 256, 7):
                 r4 = u.routes(s[:256].unsqueeze(0)).squeeze(0); r3 = u3.routes(s[:256].unsqueeze(0)).squeeze(0)
@@ -104,7 +107,7 @@ def main():
         row["guard"] = {"pair": acc["pair"], "modk": acc["modk"], "ratio": ratio, "dyck_d12": d12, "mqar_routed": mq, "mqar_K_alone": mqk}
         row["bars"] = {"pair": acc["pair"] >= .717, "modk": acc["modk"] >= 1, "ratio": ratio <= .6, "dyck_d12": d12 >= .85, "mqar_n4": mq["n4"] >= .90, "mqar_n8": mq["n8"] >= .70}
         row["n_bars"] = sum(row["bars"].values()); row["params"] = p19.n_params(mA) + p19.n_params(mB) + p19.n_params(mC) + p19.n_params(g2) + p19.n_params(gm) + p19.n_params(mK) + p19.n_params(gk)
-        out["per_seed"][seed] = row; print(f"[p36 K={a.K} s{seed}] bars={row['n_bars']}/6 {row['guard']} identity={row['symbolic_dispatch_identity']} Kshare={row['K_share_on_krb']} text {row['routed_text_ce']}/{row['C_alone_text_ce']} params {row['params']}", flush=True)
+        out["per_seed"][seed] = row; print((f"[p36 chat s{seed}] {row.get('routed_chatmix')} | {row.get('chatmix_reasoning')}\n" if a.chat else "") + f"[p36 K={a.K}{(' C=' + a.C) if a.C else ''} s{seed}] bars={row['n_bars']}/6 {row['guard']} identity={row['symbolic_dispatch_identity']} Kshare={row['K_share_on_krb']} text {row['routed_text_ce']}/{row['C_alone_text_ce']} params {row['params']}", flush=True)
     out["wall_s"] = round(time.time() - t0); open("log.jsonl", "a").write(json.dumps(out) + "\n"); print("[P36] DONE", flush=True)
 
 

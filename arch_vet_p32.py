@@ -47,6 +47,7 @@ def regime(name):
     if name == "R1": return dict(keys=K16[:8], vals=V8, n_lo=1, n_hi=4, comp=False, slots=8, n_eval=(1, 2, 3, 4, 6, 8))
     if name == "R2": return dict(keys=K16, vals=V8, n_lo=1, n_hi=4, comp=False, slots=8, n_eval=(1, 2, 3, 4, 6, 8))
     if name == "R3": return dict(keys=K16[:8], vals=V8, n_lo=1, n_hi=6, comp=False, slots=4, n_eval=(1, 2, 3, 4, 5, 6, 8))
+    if name == "R5": return dict(keys=K16 + [2, 5, 6, 7, 8, 9, 10, 11, 12, 30, 31, 32], vals=V8, n_lo=1, n_hi=6, comp=False, slots=16, n_eval=(4, 8, 12, 16))   # C78b: 28 keys, S16, 2.7x OOD count
     if name == "R4": return dict(keys=[(a, b) for a in KA for b in KB], vals=V8, n_lo=1, n_hi=4, comp=True, slots=8, n_eval=(1, 2, 3, 4, 6, 8))
 
 
@@ -155,7 +156,9 @@ def main():
             m = {"KRB": lambda: KRB(V, 24, R["keys"], R["slots"], "pair" if R["comp"] else "one"),
                  "KRB-2T": lambda: KRB(V, 24, R["keys"], R["slots"], "two"),
                  "KRB-PAIR": lambda: KRB(V, 24, R["keys"], R["slots"], "pair"),
-                 "VETDCC": lambda: p9.VETDCC(V, 24, k=8, K=8), "TF-alibi": lambda: p23.TFCtrl(V, pe="alibi")}[arm]()
+                 "VETDCC": lambda: p9.VETDCC(V, 24, k=8, K=8), "TF-alibi": lambda: p23.TFCtrl(V, pe="alibi"),
+                 "TF-alibi-big": lambda: p23.TFCtrl(V, d=96, nh=4, depth=4, mlp=2, pe="alibi"),      # C80b: 308,592 p = 14x the K, 2.6x the whole unified system
+                 "TF-nape-big": lambda: p23.TFCtrl(V, d=96, nh=4, depth=4, mlp=2, pe="nape")}[arm]()
             if arm == "KRB" and R["comp"]: continue   # single-token KRB is undefined on composite keys; KRB-PAIR is the variant
             name = f"{rn}/{arm}"; print(f"[p32] {name} params {p19.n_params(m)} slots {R['slots']} keys {len(R['keys'])}", flush=True)
             p19.train_arm(f"P32-{rn}-{arm}", m, pool, a.steps, 8); m.eval()

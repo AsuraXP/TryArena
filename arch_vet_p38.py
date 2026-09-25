@@ -21,8 +21,8 @@ V = p19.V
 
 
 class KRBBlocked(p37.KRBHind):
-    def __init__(self, V, d, slots, b=2, hseed=85, **kw):
-        super().__init__(V, d, slots, hseed=hseed, decouple=True, **kw); self.b = b; self.NB = slots // b
+    def __init__(self, V, d, slots, b=2, hseed=85, smart=False, **kw):
+        super().__init__(V, d, slots, hseed=hseed, decouple=True, **kw); self.b = b; self.NB = slots // b; self.smart = smart
         g = torch.Generator().manual_seed(hseed); self.register_buffer("HF1", torch.randn(V, self.NB, generator=g)); self.register_buffer("HF2", torch.randn(V, self.NB, generator=g))
 
     def forward(self, x):
@@ -48,12 +48,22 @@ class KRBBlocked(p37.KRBHind):
                 cell = torch.where(h_s1, c_s1, torch.where(use1, c_f1, torch.where(h_s2, c_s2, torch.where(use2, c_f2, torch.zeros_like(c_f1)))))
                 kick = wm & ~use1 & ~use2
                 if kick.any():
-                    occ = tags[ar, i1, 0].clamp(min=0); a1 = self.HF1[occ].argmax(-1); a2 = self.HF2[occ].argmax(-1); alt = torch.where(a1 == i1, a2, a1)
+                    vc = torch.zeros(B, dtype=torch.long)
+                    if self.smart:
+                        # C78 smart victim (1-level BFS, Fotakis 2005 / MemC3 2014): pick the first cell of bucket1 whose occupant's
+                        # alternate bucket has a free/consumed cell; fall back to cell 0. Exact, zero params.
+                        occ_all = T1.clamp(min=0)                                            # B,b
+                        A1 = self.HF1[occ_all].argmax(-1); A2 = self.HF2[occ_all].argmax(-1); alt_all = torch.where(A1 == i1.unsqueeze(-1), A2, A1)  # B,b
+                        Talt = tags[ar.unsqueeze(-1), alt_all]; Ualt = used[ar.unsqueeze(-1), alt_all]                          # B,b,b
+                        can = (((Talt == -1) | Ualt).any(-1)) & (alt_all != i1.unsqueeze(-1))                                    # B,b
+                        vc = torch.where(can.any(-1), can.float().argmax(-1), vc)
+                    occ = tags[ar, i1, vc].clamp(min=0); a1 = self.HF1[occ].argmax(-1); a2 = self.HF2[occ].argmax(-1); alt = torch.where(a1 == i1, a2, a1)
                     Ta = tags[ar, alt]; fa = (Ta == -1) | used[ar, alt]; ca, ha = first(fa); mv = kick & ha
                     if mv.any():
                         v2 = vals.clone(); g2 = tags.clone(); u2 = used.clone()
-                        v2[ar[mv], alt[mv], ca[mv]] = vals[ar[mv], i1[mv], 0]; g2[ar[mv], alt[mv], ca[mv]] = occ[mv]; u2[ar[mv], alt[mv], ca[mv]] = used[ar[mv], i1[mv], 0]
+                        v2[ar[mv], alt[mv], ca[mv]] = vals[ar[mv], i1[mv], vc[mv]]; g2[ar[mv], alt[mv], ca[mv]] = occ[mv]; u2[ar[mv], alt[mv], ca[mv]] = used[ar[mv], i1[mv], vc[mv]]
                         vals, tags, used = v2, g2, u2
+                    cell = torch.where(kick, vc, cell)
                 if wm.any():
                     v2 = vals.clone(); g2 = tags.clone(); u2 = used.clone()
                     v2[ar[wm], bk[wm], cell[wm]] = e[wm, t]; g2[ar[wm], bk[wm], cell[wm]] = pk[wm]; u2[ar[wm], bk[wm], cell[wm]] = False
@@ -104,10 +114,10 @@ def train_arm_resumable(name, model, pool, steps, batch=8, lr=3e-3, lam=0.5, ck=
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--jobs", default="R2"); ap.add_argument("--seed", type=int, default=111)
     ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--arm", default="BK2"); a = ap.parse_args()
-    b = int(a.arm[2:]); t0 = time.time(); out = {"tag": "ARCH-VET-LM-P38", "protocol": __doc__[:1500], "seed": a.seed, "steps": a.steps, "arm": a.arm, "arms": {}}
+    b = int(a.arm[-1]); smart = a.arm.startswith("S"); t0 = time.time(); out = {"tag": "ARCH-VET-LM-P38", "protocol": __doc__[:1500], "seed": a.seed, "steps": a.steps, "arm": a.arm, "arms": {}}
     for rn in a.jobs.split(","):
         R = p32.regime(rn); rng = random.Random(12345); pool = [torch.tensor(p32.gen_stream(rng, R, 256)) for _ in range(512)]
-        torch.manual_seed(a.seed); m = KRBBlocked(V, 24, R["slots"], b=b); print(f"[p38] {rn}:{a.arm} params {p19.n_params(m)}", flush=True)
+        torch.manual_seed(a.seed); m = KRBBlocked(V, 24, R["slots"], b=b, smart=smart); print(f"[p38] {rn}:{a.arm} params {p19.n_params(m)}", flush=True)
         train_arm_resumable(f"P38-{rn}-{a.arm}", m, pool, a.steps, 8, lam=0.5, ck=f"p21_ckpt/P38_{rn}_{a.arm}_s{a.seed}.resume.pt" if a.steps >= 1000 else None); m.eval()
         r = {f"n{n}_hard": p32.acc(m, R, 10, 256 if n <= 4 else 320, random.Random(600 + n), True, n) for n in R["n_eval"]}
         r["n_train_mix_hard"] = p32.acc(m, R, 12, 256, random.Random(700), True, None); r["params"] = p19.n_params(m); r["diag"] = p37.diag(m, R)

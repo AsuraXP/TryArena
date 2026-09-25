@@ -1139,3 +1139,12 @@ stack use from the grammar coin-flip ceiling.
   run ✗.
 - OPEN QUEUE (C77): 1. overflow spill / more slots; 2. in-range parity;
   3. fluency capacity; 4. theory; 5. C76b HP grid.
+
+## C77-C79 — exact memory saturated; fluency pipeline fixed; new headline row
+- C77 P38 blocked cuckoo: BK2 n8 .932, BK4 .952 (3 seeds), inside pre-registered Hall bands. L-BLOCKED-CUCKOO-LIFTS-LEARNED-K.
+- C78 smart kick (BFS victim, 1 kick, 0 params): SBK4 n1-n8 = 1.000 on 3/3 seeds; SBK2 .967. L-SMART-KICK-SATURATES-B4. Unified K=SBK4: 6/6 x3, MQAR 1.0/1.0.
+- C78b R5 (28 keys, S16 b8): n16 = 1.000 at 21,324 p. L-EXACT-MEMORY-SCALES-WITH-STATE. (seeds 222/333 + b4 arms running)
+- C78c fluency: C overfit its 98 KB pool; fresh streams 2.786 -> 2.505 (d48). Capacity to 170k p -> 2.386; corpus-bound ~2.36. L-FLUENCY-WAS-PIPELINE-BOUND.
+- C79 headline (K=SBK4, C=F): 6/6, MQAR 1/1, text 2.49-2.51, 3/3 seeds, 116,858 p. 10-seed running (run_c79b.sh).
+- Honesty: SBK2 s111 band miss (.969 vs [.91,.95]) = band-setting error (+1.1 sd of bound); static Hall bound is a per-segment bound, recency buffer can add a small surplus.
+- OPEN QUEUE (C80): 1. finish 10-seed of the C79 row; 2. R5 seeds + b4 arms; 3. RoPE-free TF control on MQAR R5 (matched params) for the memory claim at S16; 4. theory: stream-aware bound; 5. in-range hazard CE (closed as reasoning, open as number); 6. chatbot fusion with the fresh C.

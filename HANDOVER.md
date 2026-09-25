@@ -334,3 +334,11 @@ bidirectional geometry (cycle 43).
   lanes may append to one log — filter on the ^[pNN ...] result lines.
 - Queue (C77): overflow spill / S16 slots; in-range CE parity; fluency
   capacity; theory for the laws; C76b full TF HP grid if challenged.
+
+## 11. C77-C79 ADDENDUM (2026-09-24)
+- Headline system = A + B + C(fresh, CF_s*.pt) + K(SBK4, P38_R2_SBK4_s*.pt) + gates G/GM/GK(SBK4F_s*). Re-score: ./reproduce.sh quick.
+- arch_vet_p38.py: KRBBlocked(b, smart); arms BKb / SBKb; train_arm_resumable saves *.resume.pt every 250 st (survives re-provision if committed).
+- arch_vet_p36.py flags: --K P35|P37|BK2|BK4|SBK2|SBK4, --C ''|F. arch_vet_p40.py trains fresh-stream C. arch_vet_p39.py --fresh = capacity probe.
+- p32 regime R5 (28 keys, S16) for state-scaling; oracle_c78.py = policy oracle.
+- Lanes: run_c79b.sh (10-seed headline), run_c78b.sh (R5 arms). Logs: p38_SBK4.log, p40.log, p36ksbk4_cf.log, p38_R5_*.log.
+- 5th re-provision protocol: fetch origin branch -> reset --mixed -> checkout; pip install --break-system-packages torch numpy; verify 35/35; relaunch lanes (resume ckpts make it exact).

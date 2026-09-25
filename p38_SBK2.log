@@ -1,0 +1,66 @@
+[p38] R2:SBK2 params 21324
+/home/user/TryArena/arch_vet_p38.py:110: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R2-SBK2] step 250/4000 ce 2.0879 bce 0.505 (168s)
+  [P38-R2-SBK2] step 500/4000 ce 1.9540 bce 0.461 (336s)
+  [P38-R2-SBK2] step 750/4000 ce 1.9078 bce 0.418 (502s)
+  [P38-R2-SBK2] step 1000/4000 ce 1.8651 bce 0.410 (673s)
+  [P38-R2-SBK2] step 1250/4000 ce 1.8704 bce 0.413 (841s)
+  [P38-R2-SBK2] step 1500/4000 ce 1.8599 bce 0.399 (1008s)
+  [P38-R2-SBK2] step 1750/4000 ce 1.8276 bce 0.401 (1182s)
+  [P38-R2-SBK2] step 2000/4000 ce 1.8146 bce 0.407 (1352s)
+  [P38-R2-SBK2] step 2250/4000 ce 1.8381 bce 0.399 (1520s)
+  [P38-R2-SBK2] step 2500/4000 ce 1.8425 bce 0.413 (1690s)
+  [P38-R2-SBK2] step 2750/4000 ce 1.8014 bce 0.383 (1858s)
+  [P38-R2-SBK2] step 3000/4000 ce 1.8359 bce 0.396 (2024s)
+  [P38-R2-SBK2] step 3250/4000 ce 1.8132 bce 0.401 (2189s)
+  [P38-R2-SBK2] step 3500/4000 ce 1.8080 bce 0.403 (2354s)
+  [P38-R2-SBK2] step 3750/4000 ce 1.8160 bce 0.412 (2521s)
+  [P38-R2-SBK2] step 4000/4000 ce 1.8159 bce 0.398 (2693s)
+[p38 R2:SBK2 s111] {'n1_hard': 1.0, 'n2_hard': 1.0, 'n3_hard': 1.0, 'n4_hard': 1.0, 'n6_hard': 1.0, 'n8_hard': 0.9688, 'n_train_mix_hard': 1.0, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.0}}
+[P38] DONE
+[p38] R2:SBK2 params 21324
+/home/user/TryArena/arch_vet_p38.py:110: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R2-SBK2] step 250/4000 ce 2.0850 bce 0.506 (168s)
+  [P38-R2-SBK2] step 500/4000 ce 1.9088 bce 0.459 (330s)
+  [P38-R2-SBK2] step 750/4000 ce 1.8813 bce 0.430 (494s)
+  [P38-R2-SBK2] step 1000/4000 ce 1.8290 bce 0.416 (664s)
+  [P38-R2-SBK2] step 1250/4000 ce 1.8414 bce 0.419 (829s)
+  [P38-R2-SBK2] step 1500/4000 ce 1.8291 bce 0.403 (993s)
+  [P38-R2-SBK2] step 1750/4000 ce 1.8127 bce 0.399 (1153s)
+  [P38-R2-SBK2] step 2000/4000 ce 1.8112 bce 0.409 (1321s)
+  [P38-R2-SBK2] step 2250/4000 ce 1.8340 bce 0.401 (1488s)
+  [P38-R2-SBK2] step 2500/4000 ce 1.8393 bce 0.413 (1651s)
+  [P38-R2-SBK2] step 2750/4000 ce 1.7926 bce 0.381 (1815s)
+  [P38-R2-SBK2] step 3000/4000 ce 1.8336 bce 0.399 (1980s)
+  [P38-R2-SBK2] step 3250/4000 ce 1.8319 bce 0.405 (2149s)
+  [P38-R2-SBK2] step 3500/4000 ce 1.8158 bce 0.406 (2318s)
+  [P38-R2-SBK2] step 3750/4000 ce 1.8288 bce 0.412 (2486s)
+  [P38-R2-SBK2] step 4000/4000 ce 1.8339 bce 0.402 (2652s)
+[p38 R2:SBK2 s222] {'n1_hard': 1.0, 'n2_hard': 1.0, 'n3_hard': 1.0, 'n4_hard': 1.0, 'n6_hard': 1.0, 'n8_hard': 0.9618, 'n_train_mix_hard': 1.0, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.0}}
+[P38] DONE
+[p38] R2:SBK2 params 21324
+/home/user/TryArena/arch_vet_p38.py:110: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R2-SBK2] step 250/4000 ce 2.0683 bce 0.527 (145s)
+  [P38-R2-SBK2] step 500/4000 ce 2.0556 bce 0.469 (296s)
+  [P38-R2-SBK2] step 750/4000 ce 1.9409 bce 0.412 (461s)
+  [P38-R2-SBK2] step 1000/4000 ce 1.9270 bce 0.403 (625s)
+  [P38-R2-SBK2] step 1250/4000 ce 1.8807 bce 0.415 (792s)
+  [P38-R2-SBK2] step 1500/4000 ce 1.8751 bce 0.397 (953s)
+  [P38-R2-SBK2] step 1750/4000 ce 1.8607 bce 0.397 (1116s)
+  [P38-R2-SBK2] step 2000/4000 ce 1.8385 bce 0.404 (1283s)
+  [P38-R2-SBK2] step 2250/4000 ce 1.8582 bce 0.397 (1448s)
+  [P38-R2-SBK2] step 2500/4000 ce 1.8473 bce 0.412 (1613s)
+  [P38-R2-SBK2] step 2750/4000 ce 1.8104 bce 0.379 (1779s)
+  [P38-R2-SBK2] step 3000/4000 ce 1.8302 bce 0.394 (1945s)
+  [P38-R2-SBK2] step 3250/4000 ce 1.8230 bce 0.396 (2110s)
+  [P38-R2-SBK2] step 3500/4000 ce 1.8165 bce 0.401 (2279s)
+  [P38-R2-SBK2] step 3750/4000 ce 1.8215 bce 0.410 (2451s)
+  [P38-R2-SBK2] step 4000/4000 ce 1.8281 bce 0.394 (2617s)
+[p38 R2:SBK2 s333] {'n1_hard': 1.0, 'n2_hard': 1.0, 'n3_hard': 1.0, 'n4_hard': 1.0, 'n6_hard': 1.0, 'n8_hard': 0.9688, 'n_train_mix_hard': 1.0, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.003}}
+[P38] DONE

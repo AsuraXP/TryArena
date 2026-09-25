@@ -1,0 +1,66 @@
+[p32] R5/TF-alibi params 42672 slots 16 keys 28
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [P32-R5-TF-alibi] step 250/4000 loss 2.0285 (7s)
+  [P32-R5-TF-alibi] step 500/4000 loss 1.9905 (15s)
+  [P32-R5-TF-alibi] step 750/4000 loss 1.9146 (22s)
+  [P32-R5-TF-alibi] step 1000/4000 loss 1.8028 (30s)
+  [P32-R5-TF-alibi] step 1250/4000 loss 1.7524 (38s)
+  [P32-R5-TF-alibi] step 1500/4000 loss 1.6914 (45s)
+  [P32-R5-TF-alibi] step 1750/4000 loss 1.6669 (53s)
+  [P32-R5-TF-alibi] step 2000/4000 loss 1.6511 (61s)
+  [P32-R5-TF-alibi] step 2250/4000 loss 1.6322 (68s)
+  [P32-R5-TF-alibi] step 2500/4000 loss 1.6284 (76s)
+  [P32-R5-TF-alibi] step 2750/4000 loss 1.6078 (83s)
+  [P32-R5-TF-alibi] step 3000/4000 loss 1.6777 (91s)
+  [P32-R5-TF-alibi] step 3250/4000 loss 1.6125 (98s)
+  [P32-R5-TF-alibi] step 3500/4000 loss 1.6435 (106s)
+  [P32-R5-TF-alibi] step 3750/4000 loss 1.5873 (113s)
+  [P32-R5-TF-alibi] step 4000/4000 loss 1.5982 (121s)
+[p32 R5/TF-alibi] {'n4_hard': 0.4062, 'n8_hard': 0.3007, 'n12_hard': 0.2639, 'n16_hard': 0.2531, 'n_train_mix_hard': 0.4083, 'params': 42672}
+[P32] DONE
+[p32] R5/TF-alibi params 42672 slots 16 keys 28
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [P32-R5-TF-alibi] step 250/4000 loss 2.0249 (7s)
+  [P32-R5-TF-alibi] step 500/4000 loss 1.9775 (15s)
+  [P32-R5-TF-alibi] step 750/4000 loss 1.8811 (22s)
+  [P32-R5-TF-alibi] step 1000/4000 loss 1.7763 (30s)
+  [P32-R5-TF-alibi] step 1250/4000 loss 1.7236 (37s)
+  [P32-R5-TF-alibi] step 1500/4000 loss 1.6803 (45s)
+  [P32-R5-TF-alibi] step 1750/4000 loss 1.6806 (52s)
+  [P32-R5-TF-alibi] step 2000/4000 loss 1.6675 (60s)
+  [P32-R5-TF-alibi] step 2250/4000 loss 1.6389 (67s)
+  [P32-R5-TF-alibi] step 2500/4000 loss 1.6329 (74s)
+  [P32-R5-TF-alibi] step 2750/4000 loss 1.6200 (82s)
+  [P32-R5-TF-alibi] step 3000/4000 loss 1.6825 (89s)
+  [P32-R5-TF-alibi] step 3250/4000 loss 1.6174 (97s)
+  [P32-R5-TF-alibi] step 3500/4000 loss 1.6421 (104s)
+  [P32-R5-TF-alibi] step 3750/4000 loss 1.6035 (111s)
+  [P32-R5-TF-alibi] step 4000/4000 loss 1.5940 (119s)
+[p32 R5/TF-alibi] {'n4_hard': 0.425, 'n8_hard': 0.3345, 'n12_hard': 0.3056, 'n16_hard': 0.2687, 'n_train_mix_hard': 0.4379, 'params': 42672}
+[P32] DONE
+[p32] R5/TF-alibi params 42672 slots 16 keys 28
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [P32-R5-TF-alibi] step 250/4000 loss 2.0231 (8s)
+  [P32-R5-TF-alibi] step 500/4000 loss 2.0079 (15s)
+  [P32-R5-TF-alibi] step 750/4000 loss 1.9858 (22s)
+  [P32-R5-TF-alibi] step 1000/4000 loss 1.9426 (30s)
+  [P32-R5-TF-alibi] step 1250/4000 loss 1.8634 (38s)
+  [P32-R5-TF-alibi] step 1500/4000 loss 1.8232 (45s)
+  [P32-R5-TF-alibi] step 1750/4000 loss 1.7662 (53s)
+  [P32-R5-TF-alibi] step 2000/4000 loss 1.7329 (60s)
+  [P32-R5-TF-alibi] step 2250/4000 loss 1.6898 (68s)
+  [P32-R5-TF-alibi] step 2500/4000 loss 1.6704 (75s)
+  [P32-R5-TF-alibi] step 2750/4000 loss 1.6454 (83s)
+  [P32-R5-TF-alibi] step 3000/4000 loss 1.7511 (91s)
+  [P32-R5-TF-alibi] step 3250/4000 loss 1.6733 (98s)
+  [P32-R5-TF-alibi] step 3500/4000 loss 1.6846 (105s)
+  [P32-R5-TF-alibi] step 3750/4000 loss 1.6426 (112s)
+  [P32-R5-TF-alibi] step 4000/4000 loss 1.6360 (120s)
+[p32 R5/TF-alibi] {'n4_hard': 0.3812, 'n8_hard': 0.2601, 'n12_hard': 0.1972, 'n16_hard': 0.1531, 'n_train_mix_hard': 0.3136, 'params': 42672}
+[P32] DONE

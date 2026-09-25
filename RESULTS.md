@@ -12,8 +12,8 @@ from `arch_vet_p*.py` + `p21_ckpt/` + `log.jsonl` (RESULT rows, one per run).
 |---|---|---|---|
 | A  VETDCC | 21,257 | value/exact-transition controller + counters + register | vanilla 4-task stream, 4000 st |
 | B  STACKDCC2 D12 | 21,817 | A + explicit push/pop stack organ | deep-dyck mix, 2000 st |
-| C  ByteGRU | 43,600 | byte-level GRU fluency expert | 1 MB text, 4000 st |
-| K  KRB-CF85R (P37) | 21,324 | tagged keyed register bank, **learned** write predicate (hindsight self-supervised), consumed-first eviction, vocab-balanced cuckoo hash, structural verified read; zero hand-wired grammar | MQAR R2 stream, 4000 st |
+| C  ByteGRU | 43,600 | byte-level GRU fluency expert | 1 MB text, fresh streams each step (C79), 4000 st |
+| K  KRB-SBK4 (P38, C78) | 21,324 | tagged keyed register bank, **learned** write predicate (hindsight self-supervised), consumed-first eviction, blocked cuckoo (2 buckets x 4 cells) with BFS-guided smart kick, structural verified read; zero hand-wired grammar; capacity = state (S), not params | MQAR R2 stream, 4000 st |
 | G / GM / GK | 1,410 / 3,713 / 3,737 | causal token-only GRU gates, hierarchical (certified 2-way -> +modality -> +memory) | composed-mixture CE, 1000-1500 st each, experts frozen |
 
 No expert uses attention. Per-token cost is O(1) in sequence length; state is
@@ -27,8 +27,8 @@ a fixed set of registers/counters/stack/bank.
 | modk | count-mod-k over long span, = 1.0 | 1.0, **10/10** | .10-.27 all TF arms |
 | ratio | CE(L=1024)/CE(256 hard) <= .6 | .43-.60, **10/10** | ALiBi .49-.62, NoPE/NAPE .84-1.45 |
 | dyck d12 | close-bracket acc at depth 12 (train d<=6) >= .85 | .95-.98, **10/10** | ALiBi .94 (1/2 seeds); TF-MoE .95 |
-| text CE | bytes/char on held-out text | 2.67-2.79 == C-alone, 10/10 | TF-NAPE 85.9k: 3.14-3.17 |
-| **MQAR n4 / n8** | multi-query recall, 16 keys / 8 slots, 4 (in-range) and 8 (2x OOD) bindings, >= .90 / .70 | .983 / .855, **10/10** (sd .003/.008; P37 learned-predicate K) | TF-ALiBi 42.7k: .944/.754, .375/.274, .425/.247 (1/3 basin) |
+| text CE | nats/byte on held-out text | **2.49-2.51** == C-alone, 3/3 (C79 fresh-stream C; pooled C 2.67-2.79 was overfit, 10/10) | TF-NAPE 85.9k: 3.14-3.17 |
+| **MQAR n4 / n8** | multi-query recall, 16 keys / 8 slots, 4 (in-range) and 8 (2x OOD) bindings, >= .90 / .70 | **1.000 / 1.000**, 3/3 seeds (C79; 10-seed running) — P37 K: .983/.855 10/10 | TF-ALiBi 42.7k: .944/.754, .375/.274, .425/.247 (1/3 basin) |
 
 Transformer controls (P23/P24/P27): 2L d48-56, NoPE / ALiBi / NAPE positional
 schemes, matched or larger params, union corpus, combined step budget; C76
@@ -65,3 +65,10 @@ the identical gate recipe: 1 of 4 (dyck only). The system: 4/4 on 10/10 seeds.
 - Fluency is corpus- and capacity-bound (1 MB, 43.6k params).
 - ~60 empirical "laws", no theory. No inference-latency or robustness study.
 - Third-party repro: `./reproduce.sh quick` (verify suite, generator oracle audit, re-score all 10 seeds from checkpoints).
+
+## Update C77-C79 (2026-09-24)
+- Learned keyed register bank: rand-b1 .855 < rand-b2 .932 < smart-b2 .967 < rand-b4 .952 < **smart-b4 1.000** (n8, 3 seeds each, constant 21,324 p); ordering matches the placement oracle exactly.
+- State scaling: S16 b8 smart, 28 keys, trained n<=6: n16 = 1.000 (2.7x OOD count) at the same 21,324 p.
+- Expert C was overfitting a 98 KB pool; fresh streams: 2.786 -> 2.505 at identical params/steps (capacity beyond ~170k p is corpus-bound at ~2.36).
+- Headline unified row (K=SBK4, C=fresh): 6/6 bars, MQAR 1.0/1.0, text 2.49-2.51 on 3/3 seeds; 10-seed certification in progress.
+- Transformer controls unchanged: 12 matched-param runs, best 2/4, modk at chance on 12/12.
