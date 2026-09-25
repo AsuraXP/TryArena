@@ -4935,3 +4935,24 @@ memory in L for the unified exact+fluent system, verified to 16k; the
 "beats the Transformer" claim on efficiency is asymptotic and in memory,
 NOT in absolute latency at <=16k with this implementation. Falsified
 sub-prediction logged. RESULT ARCH-VET-LM-P41 in log.jsonl.
+
+## CYCLE 83 — k-HOP POINTER CHASING (R6): iterated exact dereference vs the Transformer's log-depth circuit
+PHASE 1: Sanford-Hsu-Telgarsky 2024 (arXiv 2402.09268): TFs do k-hop in
+O(log k) depth by pointer doubling; recurrent/SSM need Omega(k) steps.
+Mutation: the register bank dereferences sequentially, ONE hop per
+repeated query token ('repeat = continue the chase', grammar-free, zero
+params, O(1)/token); hop count = run length, so h is unbounded at test.
+The TF trained on h<=2 must extrapolate its doubling circuit to h=8.
+PHASE 2: arch_vet_p42.py — regime R6 (16 keys, values are keys, n 2-4,
+h 1-2 train; eval n=6, h 1/2/3/4/6/8, hard gaps), KRBHop = KRBBlocked
+(SBK4) with the repeat rule patched at source level (write path byte-
+identical), value id recovered by exact nearest-embedding lookup.
+Labels: path-hindsight (task-aware but future-derived; honesty note in
+the docstring); HOP-BIGRAM ablation keeps the P37 grammar-agnostic label.
+Smoke 3 st OK. PREDICTIONS (pre-registered): HOP h1/h2 >= .98, h4 >= .95,
+h8 >= .90 (structural extrapolation; any loss = eviction/self-loop
+edge cases); TF-ALiBi 2L h1 >= .8, h2 <= .7, h4/h8 <= .3; TF 4L d96 h2
+better, h8 <= .4; HOP-BIGRAM h1 ~ HOP, h>=2 collapses (intermediates
+never written) — if HOP-BIGRAM does NOT collapse the path label was
+unnecessary and the honesty caveat is void.
+PHASE 3: run_c83.sh lane B -> p42.log.
