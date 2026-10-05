@@ -5178,3 +5178,11 @@ predicate exact on modk support AND modk = 1.0 hard => joint learned-
 predicate claim stands (then 2 more seeds). Falsifier: diffuse sets as
 in C84b => ST is not the lever; next = length curriculum (train 256 +
 512 mixed, eval 1024/2048) so in-range fit alone can't close the loss.
+
+C85b — ST hard predicates vs frozen controller, lr 1e-2: NEGATIVE,
+killed at step 1500. CE rose 1.38 -> 1.94 (= the all-off level 1.86)
+and token 21 left the count set by step 1250: each sign flip of a
+logit is a discontinuous change of the whole counter trajectory, and
+Adam at 1e-2 keeps re-flipping. ST is not the lever at this lr; the
+soft relaxation (C85) is. Lane B -> C85 seed 2 (frozen P42_HW_s111.pt,
+seed 222).

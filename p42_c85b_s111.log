@@ -1,0 +1,8 @@
+[p42C85b] controller frozen from p21_ckpt/P42_HW_s222.pt; trainable = P only
+[p42C85b] LP params 21449 cfg p0=0.0 live=False st=True tau1=0.5 l1=0.0
+  [P42C85b-LP-s111] step 250/4000 ce 1.3759 tau 0.96 pred(hit/on/true) one(1, 8, 1) task(1, 18, 1) open(1, 17, 2) close(2, 28, 2) (199s)
+  [P42C85b-LP-s111] step 500/4000 ce 1.4595 tau 0.92 pred(hit/on/true) one(1, 8, 1) task(1, 22, 1) open(1, 17, 2) close(2, 28, 2) (395s)
+  [P42C85b-LP-s111] step 750/4000 ce 1.4846 tau 0.88 pred(hit/on/true) one(1, 7, 1) task(1, 19, 1) open(1, 16, 2) close(2, 28, 2) (595s)
+  [P42C85b-LP-s111] step 1000/4000 ce 1.9922 tau 0.84 pred(hit/on/true) one(0, 8, 1) task(1, 24, 1) open(1, 16, 2) close(2, 28, 2) (804s)
+  [P42C85b-LP-s111] step 1250/4000 ce 1.8865 tau 0.81 pred(hit/on/true) one(0, 4, 1) task(1, 28, 1) open(1, 16, 2) close(2, 28, 2) (1009s)
+  [P42C85b-LP-s111] step 1500/4000 ce 1.9442 tau 0.77 pred(hit/on/true) one(0, 4, 1) task(1, 28, 1) open(1, 16, 2) close(2, 28, 2) (1213s)
