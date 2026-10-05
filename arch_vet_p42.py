@@ -113,7 +113,7 @@ def train_lp(name, m, pool, steps, batch=8, lr=3e-3, tau0=1.0, tau1=0.2, l1=0.0)
     """p19.train_arm recipe (AdamW 3e-3, step-indexed batches, clip 1) + tau annealing for the predicate relaxation."""
     torch.manual_seed(0); opt = torch.optim.AdamW([p for p in m.parameters() if p.requires_grad], lr=lr); m.train(); t0 = time.time(); n_pool = len(pool)
     for step in range(1, steps + 1):
-        m.tau = tau0 * (tau1 / tau0) ** ((step - 1) / max(1, steps - 1)); m.hard = False
+        m.tau = tau0 * (tau1 / tau0) ** ((step - 1) / max(1, steps - 1)); m.hard = getattr(m, "train_hard", False)
         sel = [(step * batch + i) % n_pool for i in range(batch)]; x = torch.stack([pool[i] for i in sel])
         lg = m(x[:, :256]); loss = F.cross_entropy(lg.reshape(-1, V), x[:, 1:257].reshape(-1))
         if l1 > 0: loss = loss + l1 * torch.sigmoid(m.P).sum()   # sparsity prior: predicates are few-token sets
@@ -128,13 +128,17 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--arms", default="LP"); ap.add_argument("--seed", type=int, default=111); ap.add_argument("--steps", type=int, default=4000)
     ap.add_argument("--p0", type=float, default=-2.0); ap.add_argument("--live", action="store_true"); ap.add_argument("--st", action="store_true"); ap.add_argument("--cat", action="store_true")
     ap.add_argument("--tau1", type=float, default=0.2); ap.add_argument("--l1", type=float, default=0.0); ap.add_argument("--tagsuffix", default="")
-    ap.add_argument("--lr", type=float, default=3e-3); ap.add_argument("--regime", default="base"); ap.add_argument("--freeze_ctrl", default="", help="C85 diagnostic: load an HW checkpoint, freeze everything but P, learn only the predicates")
+    ap.add_argument("--lr", type=float, default=3e-3); ap.add_argument("--regime", default="base"); ap.add_argument("--fixed_random", action="store_true", help="C90 phase 1: P fixed to a random one-token set per role, HARD counters during training (crisp, wrong)"); ap.add_argument("--freeze_ctrl", default="", help="C85 diagnostic: load an HW checkpoint, freeze everything but P, learn only the predicates")
     a = ap.parse_args()
     install_regime(a.regime); pool = p19.make_pool(512, 256, 12345); out = {"tag": "ARCH-VET-LM-P42" + a.tagsuffix, "protocol": __doc__[:1800], "seed": a.seed, "steps": a.steps, "cfg": vars(a), "arms": {}}
     for arm in a.arms.split(","):
         torch.manual_seed(a.seed)
         if arm == "LP":
             m = VETDCC_LP(V, 24, k=8, K=8, p0=a.p0, live=a.live, st=a.st, cat=a.cat)
+            if a.fixed_random:
+                g_ = torch.Generator().manual_seed(a.seed + 7); toks = torch.randint(0, V, (4,), generator=g_)
+                with torch.no_grad(): m.P.fill_(-5.0); m.P[toks, torch.arange(4)] = 5.0
+                m.P.requires_grad_(False); m.train_hard = True; print(f"[p42{a.tagsuffix}] fixed random predicates one/task/open/close = {toks.tolist()} (truth 21/4/29,30/31,32); hard counters in training", flush=True)
             if a.freeze_ctrl:
                 sd = torch.load(a.freeze_ctrl)["sd"]; missing = m.load_state_dict(sd, strict=False); assert missing.missing_keys == ["P"], missing
                 for n_, p_ in m.named_parameters(): p_.requires_grad_(n_ in ("P", "Pc"))
