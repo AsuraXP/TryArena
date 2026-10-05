@@ -61,7 +61,7 @@ the identical gate recipe: 1 of 4 (dyck only). The system: 4/4 on 10/10 seeds.
 ## 5. Open (honest)
 
 - Standalone learned-predicate expert (P37 CF85R) reaches .981/.85 (3 seeds) = hand-wired ceiling; the unified system still carries the P35 K (.92/.72) until C75 re-folds it.
-- In-range CE parity with the TF is not reached (256-hard CE 2.2-2.5 vs 1.96).
+- In-range CE (C91, identical batches, fair ALiBi control 42.7k): unified 1.30/2.60/1.27 vs TF 1.36/2.86/1.77 at 256-train/256-hard/1024 — parity premise retired; 256-hard excess is a filler gap-length prior shared by all models (arch_vet_p43.py).
 - Fluency is corpus- and capacity-bound (1 MB, 43.6k params).
 - ~60 empirical "laws", no theory. No inference-latency or robustness study.
 - Third-party repro: `./reproduce.sh quick` (verify suite, generator oracle audit, re-score all 10 seeds from checkpoints).

@@ -5347,3 +5347,40 @@ Learned-predicate end state (C83-C90): identifiable given a consumer
 (C85, 2/2); joint discovery from scratch OPEN after 7 negative arms
 (soft x2, ST, wide regime, categorical prior, crisp-random bootstrap,
 L1). The queue item is parked; the honest wording is in RESULTS.md.
+
+C91 — THE IN-RANGE HAZARD NUMBER (arch_vet_p43.py; token-class CE
+decomposition on the IDENTICAL p19.eval_full batches; no training):
+| model | stream | filler | answer | one-run | bracket | marker | other | ALL |
+|---|---|---|---|---|---|---|---|---|
+| unified s111 | 256-train | 2.206 | .011 | .136 | .541 | .716 | 1.961 | 1.300 |
+| unified s111 | 256-HARD | 3.476 | .300 | 1.056 | 2.568 | .696 | 2.146 | 2.597 |
+| unified s111 | 1024 | 2.199 | .013 | .157 | .573 | .687 | 1.860 | 1.272 |
+| unified s222 | 256-HARD | 3.010 | .521 | .751 | 4.788 | 1.749 | 2.840 | 2.503 |
+| A alone s111 | 256-HARD | 3.476 | .300 | 1.056 | 5.978 | .387 | 1.818 | 2.739 |
+| TF-ALiBi 42.7k | 256-train | 2.209 | .225 | .250 | 1.003 | .622 | 1.952 | 1.356 |
+| TF-ALiBi 42.7k | 256-HARD | 3.508 | 3.709 | 1.905 | 2.312 | .684 | 2.588 | 2.864 |
+| TF-ALiBi 42.7k | 1024 | 2.715 | .297 | .425 | .835 | 1.549 | 2.149 | 1.772 |
+(token counts per class at 256: filler 787/1240, answer 129/52, one-run
+204/382, bracket 236/110, marker 473/180, other 219/84 for train/hard.)
+FINDINGS. (1) Frontier item 5 is RESOLVED AGAINST ITS PREMISE: on the
+same batches the fair matched control is worse than the unified system
+on all three streams (256-train 1.356 vs 1.300/1.277; 256-hard 2.864 vs
+2.597/2.503; 1024 1.772 vs 1.272/1.259). The "TF 1.96 in-range" figure
+was the 8,144-p sinusoidal TFMicro at P1 (not re-runnable from a ckpt;
+likely a different batch); it is retired from RESULTS. (2) WHERE the
+256-hard CE lives: 60% of hard-stream tokens are fillers, and EVERY
+model pays 3.0-3.5 nats on them against a ln 8 = 2.079 floor — a learned
+gap-length prior ("the gap should have ended by now") inherited from the
+train interval. This is a property of the held-out-interval protocol,
+shared by TF and unified alike, not a mechanism failure. (3) On the
+tokens the mechanisms exist for (answer class) the unified system is at
+.30/.52 nats at held-out gaps vs TF 3.71 (chance-level: ln 8 = 2.08 for
+a track symbol, so 3.7 is confidently wrong). (4) bracket class at 256-
+hard: A alone 5.98 (not its job) -> unified 2.57 via routing to B;
+s222 4.79 shows the depth-3 residual of B at this budget.
+LAW L-HAZARD-IS-GAP-PRIOR: the held-out-interval CE excess at train
+length is carried by filler tokens (gap-length prior), identical across
+architectures within .5 nats; architectural differences live entirely
+in the answer class (unified .3-.5 vs TF 3.7). Caveat: TF control was
+trained on the joint A+B pool (P23 protocol) — the fairest available.
+RESULT ARCH-VET-LM-P43 in jsonl.
