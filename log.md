@@ -5212,3 +5212,20 @@ where the controller's internal counting breaks (train 256 + long,
 eval strictly longer; HW arm given the identical curriculum). C86 ST
 joint run left to finish for the record (diffuse at step 1000, same
 signature as C84b). LAW L-JOINT-CONSUMER-BLINDNESS (2/2 seeds).
+
+C87 PHASE 1 — WIDE regime (arch_vet_p42.py --regime wide): train counts
+2-40 instead of 2-12 (everything else identical), eval counts 41-100
+(was 13-30). Rationale from C85/C86: in-range LM loss must PAY for the
+exact counter; an 8-state soft Mealy controller can memorise 11 count->
+mod cases but not 39, so the counter becomes necessary in-range while
+eval stays strictly OOD. HW arm gets the identical regime (fair). Arms:
+LP s111 (live, soft, p0 0, tau1 .5) lane A; HW s111 lane B after C85
+s222. C86 (joint ST) killed at step ~2000 with the C84b signature
+(count set 0/8 hits), logged as negative.
+Pre-registration C87: (a) LP count predicate exact on modk support;
+(b) hard-mode modk = 1.0 at counts 41-100 for LP AND HW; (c) if HW
+itself fails (b), the regime is too hard for the host at 4000 steps and
+the comparison is void (report, then raise steps). Falsifier: HW 1.0,
+LP count set diffuse => widening the interval does not create the
+in-range pressure (controller finds another in-range solution) =>
+predicate learning needs a structural prior, not a data lever.

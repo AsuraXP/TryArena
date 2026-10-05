@@ -84,6 +84,20 @@ class VETDCC_LP(VETDCC):
         return lg
 
 
+def install_regime(regime):
+    """C87: 'wide' regime — train counts 2..40 (a soft Mealy controller cannot memorise the count->mod map, so the exact
+    counter pays off IN-RANGE), eval counts 41..100 (still strictly out of range). Patches gen_stream in the namespace that
+    make_pool / make_batches / task_acc close over, so the whole p19 harness (train pool, CE at 256/512/1024, task_acc) runs
+    in the new regime for every arm identically."""
+    if regime == "base": return
+    assert regime == "wide", regime
+    import inspect
+    g = p19.make_batches.__globals__
+    src = inspect.getsource(g["gen_stream"]).replace("count_lo, count_hi = 13, 30", "count_lo, count_hi = 41, 100").replace("count_lo, count_hi = 2, 12", "count_lo, count_hi = 2, 40")
+    assert "41, 100" in src and "2, 40" in src
+    exec(src, g); print(f"[p42] regime=wide installed (train counts 2-40, eval 41-100)", flush=True)
+
+
 def train_lp(name, m, pool, steps, batch=8, lr=3e-3, tau0=1.0, tau1=0.2, l1=0.0):
     """p19.train_arm recipe (AdamW 3e-3, step-indexed batches, clip 1) + tau annealing for the predicate relaxation."""
     torch.manual_seed(0); opt = torch.optim.AdamW([p for p in m.parameters() if p.requires_grad], lr=lr); m.train(); t0 = time.time(); n_pool = len(pool)
@@ -103,9 +117,9 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--arms", default="LP"); ap.add_argument("--seed", type=int, default=111); ap.add_argument("--steps", type=int, default=4000)
     ap.add_argument("--p0", type=float, default=-2.0); ap.add_argument("--live", action="store_true"); ap.add_argument("--st", action="store_true")
     ap.add_argument("--tau1", type=float, default=0.2); ap.add_argument("--l1", type=float, default=0.0); ap.add_argument("--tagsuffix", default="")
-    ap.add_argument("--lr", type=float, default=3e-3); ap.add_argument("--freeze_ctrl", default="", help="C85 diagnostic: load an HW checkpoint, freeze everything but P, learn only the predicates")
+    ap.add_argument("--lr", type=float, default=3e-3); ap.add_argument("--regime", default="base"); ap.add_argument("--freeze_ctrl", default="", help="C85 diagnostic: load an HW checkpoint, freeze everything but P, learn only the predicates")
     a = ap.parse_args()
-    pool = p19.make_pool(512, 256, 12345); out = {"tag": "ARCH-VET-LM-P42" + a.tagsuffix, "protocol": __doc__[:1800], "seed": a.seed, "steps": a.steps, "cfg": vars(a), "arms": {}}
+    install_regime(a.regime); pool = p19.make_pool(512, 256, 12345); out = {"tag": "ARCH-VET-LM-P42" + a.tagsuffix, "protocol": __doc__[:1800], "seed": a.seed, "steps": a.steps, "cfg": vars(a), "arms": {}}
     for arm in a.arms.split(","):
         torch.manual_seed(a.seed)
         if arm == "LP":
