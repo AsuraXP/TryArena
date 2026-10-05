@@ -5322,3 +5322,8 @@ wall-time crossover vs the ALiBi TF now ~L = 36k (was ~40k). RESULT
 ARCH-VET-LM-P41 (C89) in jsonl. Next engineering step (queued, larger):
 evaluate only the routed expert per step instead of all four (routing
 is causal, so this is exact) — up to ~3x more.
+
+C89 PHASE 3 — regression: ./reproduce.sh quick (verify 35/35, audit
+CLEAN, re-score of all 10 certified seeds through the vectorised code):
+10/10 rows 6/6, every pair/ratio/text value identical to the C79 CLOSE
+table to the printed digit. The C89 rewrite is certified lossless.
