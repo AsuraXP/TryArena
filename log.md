@@ -5392,3 +5392,11 @@ C90 PHASE 3 — s222 phase 1 (random P = 41/29/28/35): bars 2/3, modk
 not buy consumer commitment; phase 2 not run (killed) for either seed.
 C90 CLOSED negative as pre-registered. L-COMMITMENT-REQUIRES-CORRECTNESS
 2/2. RESULT ARCH-VET-LM-P42C90p1 x2 in jsonl.
+
+C91 PHASE 2 — all 10 certified seeds (unified, 256-hard; s333 identical
+to A s333 and omitted from the first run, 9 listed): answer-class NLL
+.300 .521 .212 .253 .227 .628 .588 .708 .200 -> mean .404 ± .19 vs TF
+3.709; filler 3.14 ± .30 vs TF 3.51; ALL 2.52 ± .16 vs TF 2.864. The
+unified system beats the fair control on the 256-hard stream mean on
+9/9 seeds and on the answer class by ~3.3 nats on every seed. RESULT
+ARCH-VET-LM-P43 (7 more seeds) in jsonl.
