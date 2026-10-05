@@ -4970,3 +4970,15 @@ folds 444-777 (lane A) | 888-1010 (lane B) -> p36ksbk4_cf(_b).log.
 SBK4 K 10-seed: n1..n8 = 1.000 on 10/10 seeds (60/60 cells).
 CF 10-seed val CE: 2.508 2.500 2.485 2.521 2.497 2.485 2.467 2.481 2.509
 2.557 (mean 2.501, sd .025).
+
+## CYCLE 82 — INFERENCE ENVELOPE (measured): arch_vet_p41.py
+Smoke L=256 (contended cores): unified 5.9 ms/tok, 524 MB; TF-ALiBi 24
+us/tok, 527 MB. HONEST: the unified system is ~240x slower per token at
+L=256 — a Python per-timestep organ loop over 4 densely-evaluated experts
+vs a vectorized attention block; this is implementation, not
+architecture, and it is a real engineering debt to record. The
+architectural claim is the SLOPE: unified us/tok and RSS flat in L, TF
+us/tok growing ~linearly and RSS ~L^2 (16k: 4.3 GB/layer of scores ->
+cannot run here). PREDICTION: unified us/tok within 1.3x across 256 ->
+16384 and RSS +< 200 MB; TF fails or exceeds 3 GB at 16384. run_c82.sh
+runs the sweep on idle cores after the folds -> p41.log.
