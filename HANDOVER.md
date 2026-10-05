@@ -342,3 +342,11 @@ bidirectional geometry (cycle 43).
 - p32 regime R5 (28 keys, S16) for state-scaling; oracle_c78.py = policy oracle.
 - Lanes: run_c79b.sh (10-seed headline), run_c78b.sh (R5 arms). Logs: p38_SBK4.log, p40.log, p36ksbk4_cf.log, p38_R5_*.log.
 - 5th re-provision protocol: fetch origin branch -> reset --mixed -> checkout; pip install --break-system-packages torch numpy; verify 35/35; relaunch lanes (resume ckpts make it exact).
+
+## 12. C79-CLOSE / C80-C84 ADDENDUM (2026-09-25)
+- Headline system CERTIFIED 6/6 on 10/10 seeds (log.md "C79 CLOSE" table; jsonl id ARCH-VET-LM-P36-SBK4-CF-10SEED). reproduce.sh quick re-scores all 10.
+- TF-on-R5 controls (C80/C80b, arch_vet_p3x --tf): n16 <= .31 at 42k and 308k p. Chatbot row + theory_c81.py exact-replay oracle (C81).
+- arch_vet_p41.py --lens L,...: inference envelope (unified us/tok flat 256->16k; TF ~L; wall-time gap 2.5-260x = Python organ loop debt).
+- arch_vet_p42.py: learned token predicates for expert A (VETDCC_LP). FLAGS THAT MATTER: --live (random-init counter consumers; without it dL/dP == 0 at init — C83 negative was this bug), --p0 0, --tau1 .5, --l1 0 (L1 under AdamW = constant drift artifact, C84). --st = straight-through (untested). Arms LP/HW, --tagsuffix names the jsonl tag + ckpt.
+- Lanes: run_c84c.sh (LP s111,s333), run_c84d.sh (LP s222 then HW s111). Logs p42_c84b_s*.log, p42_hw*.log. HW s222 = 3/3 (host sane).
+- HAZARD: never `pkill -f <name>` from a bash tool call whose own command line contains <name> — it kills the calling shell (happened twice). Use pgrep -af then kill PIDs.
