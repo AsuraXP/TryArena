@@ -27,9 +27,13 @@ VETDCC = p13d.VETDCC
 
 
 class VETDCC_LP(VETDCC):
-    def __init__(self, V, d, k=8, K=8, p0=-2.0, live=False, st=False):
+    def __init__(self, V, d, k=8, K=8, p0=-2.0, live=False, st=False, cat=False):
         super().__init__(V, d, k=k, K=K)
-        self.P = nn.Parameter(torch.zeros(V, 4) + p0)     # predicate logits; 4 x V = 192 params
+        self.cat = cat
+        if cat:   # C88 structural prior: each role = union of 2 categorical slots over V (a <=2-token set BY CONSTRUCTION;
+                  # the diffuse many-token optimum of the Bernoulli map is removed from the hypothesis space). 2 x 4 x V params.
+            self.Pc = nn.Parameter(torch.randn(2, V, 4) * 0.01)
+        self.P = nn.Parameter(torch.zeros(V, 4) + p0)     # Bernoulli predicate logits; 4 x V = 192 params (unused when cat)
         self.tau = 1.0; self.hard = False; self.st = st
         if live:   # C84 FIX: P13d zero-inits every consumer of the counter state (Ws counter block, W_mod, W_depth) so dL/dP == 0
                    # exactly at init (measured: grad-norm 0.0). Give the consumers a small random init so P receives gradient.
@@ -45,10 +49,18 @@ class VETDCC_LP(VETDCC):
         R = torch.zeros(B, self.d, device=dev); s = torch.full((B, self.k), 1.0 / self.k, device=dev)
         buf = torch.zeros(B, self.K, self.d, device=dev); valid = torch.zeros(B, self.K, dtype=torch.bool, device=dev)
         lg = torch.empty(B, L, V, device=dev)
+        if self.cat:
+            with torch.no_grad():   # keep self.P as the "hard set" view for logging / hard eval: top-1 of each slot
+                Pb_cat = torch.zeros(V, 4, dtype=torch.bool, device=dev); idx = self.Pc.argmax(1)   # [2,4]
+                for sl in range(2): Pb_cat[idx[sl], torch.arange(4, device=dev)] = True
+                self.P.copy_(torch.where(Pb_cat, 5.0, -5.0))
         if self.hard:
             Pb = self.P > 0; c = torch.zeros(B, dtype=torch.long, device=dev); dep = torch.zeros(B, dtype=torch.long, device=dev)
         else:
-            Pp = torch.sigmoid(self.P / self.tau)
+            if self.cat:
+                q = torch.softmax(self.Pc / self.tau, dim=1); Pp = 1 - (1 - q[0]) * (1 - q[1])   # union of the two slots
+            else:
+                Pp = torch.sigmoid(self.P / self.tau)
             if self.st: Pp = (self.P > 0).float() + (Pp - Pp.detach())   # straight-through: hard forward, sigmoid gradient
             m = torch.zeros(B, M_MOD, device=dev); m[:, 0] = 1; dv = torch.zeros(B, D_CLAMP + 1, device=dev); dv[:, 0] = 1
         for t in range(L):
@@ -115,7 +127,7 @@ def train_lp(name, m, pool, steps, batch=8, lr=3e-3, tau0=1.0, tau1=0.2, l1=0.0)
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--arms", default="LP"); ap.add_argument("--seed", type=int, default=111); ap.add_argument("--steps", type=int, default=4000)
-    ap.add_argument("--p0", type=float, default=-2.0); ap.add_argument("--live", action="store_true"); ap.add_argument("--st", action="store_true")
+    ap.add_argument("--p0", type=float, default=-2.0); ap.add_argument("--live", action="store_true"); ap.add_argument("--st", action="store_true"); ap.add_argument("--cat", action="store_true")
     ap.add_argument("--tau1", type=float, default=0.2); ap.add_argument("--l1", type=float, default=0.0); ap.add_argument("--tagsuffix", default="")
     ap.add_argument("--lr", type=float, default=3e-3); ap.add_argument("--regime", default="base"); ap.add_argument("--freeze_ctrl", default="", help="C85 diagnostic: load an HW checkpoint, freeze everything but P, learn only the predicates")
     a = ap.parse_args()
@@ -123,12 +135,12 @@ def main():
     for arm in a.arms.split(","):
         torch.manual_seed(a.seed)
         if arm == "LP":
-            m = VETDCC_LP(V, 24, k=8, K=8, p0=a.p0, live=a.live, st=a.st)
+            m = VETDCC_LP(V, 24, k=8, K=8, p0=a.p0, live=a.live, st=a.st, cat=a.cat)
             if a.freeze_ctrl:
                 sd = torch.load(a.freeze_ctrl)["sd"]; missing = m.load_state_dict(sd, strict=False); assert missing.missing_keys == ["P"], missing
-                for n_, p_ in m.named_parameters(): p_.requires_grad_(n_ == "P")
+                for n_, p_ in m.named_parameters(): p_.requires_grad_(n_ in ("P", "Pc"))
                 print(f"[p42{a.tagsuffix}] controller frozen from {a.freeze_ctrl}; trainable = P only", flush=True)
-            print(f"[p42{a.tagsuffix}] LP params {p19.n_params(m)} cfg p0={a.p0} live={a.live} st={a.st} tau1={a.tau1} l1={a.l1}", flush=True); train_lp(f"P42{a.tagsuffix}-LP-s{a.seed}", m, pool, a.steps, lr=a.lr, tau1=a.tau1, l1=a.l1); m.hard = True; m.eval()
+            print(f"[p42{a.tagsuffix}] LP params {p19.n_params(m)} cfg p0={a.p0} live={a.live} st={a.st} cat={a.cat} regime={a.regime} tau1={a.tau1} l1={a.l1}", flush=True); train_lp(f"P42{a.tagsuffix}-LP-s{a.seed}", m, pool, a.steps, lr=a.lr, tau1=a.tau1, l1=a.l1); m.hard = True; m.eval()
             with torch.no_grad():
                 tt = m.truth_table(); Pb = m.P > 0
                 pred = {n: {"learned_on": sorted(torch.nonzero(Pb[:, j]).flatten().tolist()), "truth": sorted(torch.nonzero(tt[:, j]).flatten().tolist())} for j, n in enumerate(["one", "task", "open", "close"])}
