@@ -5167,3 +5167,14 @@ more queued after C85b). Lever: a schedule that makes the counter
 reliable BEFORE the controller learns to ignore it — straight-through
 hard predicates from step 1 (C85b running vs frozen ctrl; C86 = joint
 from scratch with ST). RESULT ARCH-VET-LM-P42C85 in jsonl.
+
+C86 PHASE 1 — joint from scratch, straight-through hard predicates
+(--live --st --p0 0 --tau1 .5, lr 3e-3), s111. Hypothesis (from C85):
+the controller only commits to a counter that is already a clean
+deterministic function of the input; ST gives it hard counters from
+step 1 (wrong at first, but crisp), so there is a gradient path for the
+controller to use them and for P to fix them. Pre-registration: count
+predicate exact on modk support AND modk = 1.0 hard => joint learned-
+predicate claim stands (then 2 more seeds). Falsifier: diffuse sets as
+in C84b => ST is not the lever; next = length curriculum (train 256 +
+512 mixed, eval 1024/2048) so in-range fit alone can't close the loss.
