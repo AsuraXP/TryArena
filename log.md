@@ -4982,3 +4982,24 @@ us/tok growing ~linearly and RSS ~L^2 (16k: 4.3 GB/layer of scores ->
 cannot run here). PREDICTION: unified us/tok within 1.3x across 256 ->
 16384 and RSS +< 200 MB; TF fails or exceeds 3 GB at 16384. run_c82.sh
 runs the sweep on idle cores after the folds -> p41.log.
+
+## CYCLE 83 — LEARNED PREDICATES FOR EXPERT A (P42 VETDCC-LP): does the exact-organ architecture survive learning its own grammar?
+PHASE 1: A's four token predicates (count token 21, reset 4, open 29/30,
+close 31/32) are hand-wired. Mechanism: V x 4 learned predicate logits;
+TRAIN with the counters relaxed to state distributions shifted by the
+predicate probabilities (tau 1 -> 0.2); DEPLOY hard (p > .5 -> the exact
+integer counters). No supervision beyond next-token CE. Prior art:
+Differentiable FSMs (Google 2022), DeepDFA (arXiv 2408.08622), neural
+stacks (Grefenstette 2015), Suzgun 2019 — all learn full transition
+tables from labelled traces; here only the predicate map is learned,
+the organs stay exact, the loss is the LM loss, deployment is discrete.
++192 params (21,449 vs 21,257). Smoke OK.
+PRE-REGISTERED: (a) the recovered predicate sets equal the truth on >= 2/3
+seeds (the reset and count predicates are the easiest: their effect on
+CE is immediate); (b) hard-mode bars pair >= .717, modk = 1.0, ratio <=
+.6 on every seed where (a) holds; (c) if (a) fails for open/close only,
+pair/modk still hold (the depth counter only serves dyck in A). Falsifier:
+modk < 1.0 with a correct count predicate => the soft relaxation damaged
+the controller (co-adaptation), and the learned-grammar claim for A
+would need a different estimator (straight-through). run_c83.sh (lane
+B after its folds): LP s111/222/333, HW s111 control -> p42.log.
