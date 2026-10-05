@@ -5059,3 +5059,28 @@ engineering debt (vectorized/scripted organ kernels), now queued.
 LAW L-O1-ENVELOPE-MEASURED: per-token wall time of the exact-organ
 system is independent of context length from 256 to 16384 (±3%).
 RESULT ARCH-VET-LM-P41 x2 in log.jsonl.
+
+C83 PHASE 2 — P42 LP s111 (4000 steps, tau 1 -> .2, hard-mode eval):
+NEGATIVE on pre-registration (a) and (b). Recovered predicate map:
+  one   -> {15,19}       truth {21}   (fillers; spurious)
+  task  -> {4}           truth {4}    EXACT (reset learned, step ~1000)
+  open  -> {37,38,39,40} truth {29,30}
+  close -> {4}           truth {31,32}
+Hard-mode bars 1/3: pair .0755, modk .2308, ratio .581. CE in-range
+1.377 (train-len), hard 2.366, 512 1.335, 1024 1.376 — in-range CE is
+indistinguishable from the HW arm's training trajectory (LP 1.19-1.26
+vs HW 1.17-1.19 at matched steps). Falsifier check: the count predicate
+is WRONG, so by the pre-registered rule the failure is attributable to
+predicate learning, not to the relaxation damaging the controller.
+READING: under plain LM loss at train length the controller fits the
+tasks WITHOUT the exact counters (the same in-range sufficiency that
+lets a Transformer fit 256 and fail 1024), so the gradient on P carries
+almost no identification signal; the only predicate with an in-range
+signal (reset at the task boundary, used at every position) is the one
+that was found. This is an identifiability result, logged as
+L-PREDICATE-NONIDENTIFIABLE-IN-RANGE (provisional, 1 seed; s222/s333 +
+HW s111/s222 running per protocol). Next lever if s222/s333 agree:
+C84 = make the counters NECESSARY in-range — (i) sparsity prior on
+sigmoid(P) (one-or-two-token predicates), (ii) train on a length
+curriculum where the counter is the only sub-quadratic solution, (iii)
+straight-through hard predicates. Not retrying the as-is arm.
