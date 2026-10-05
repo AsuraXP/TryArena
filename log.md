@@ -5270,3 +5270,41 @@ time is the inherent per-step tensor ops of 4 densely evaluated experts
 (einsum/linear/where), i.e. the next step is torch.compile / scripting
 the step function or evaluating only the routed expert — both are
 larger changes, queued. Re-sweep of P41 after the current runs.
+
+C87 PHASE 3 — HW wide s111: modk 1.000 at counts 41-100 (exact counter
+is interval-invariant), pair .575 (long count runs crowd the pair task
+out of 256-token streams; regime artefact), ratio .52. The wide regime
+is feasible for the host => the C87 LP negative stands.
+C88 PHASE 2 — categorical 2-slot prior, joint from scratch, s111:
+NEGATIVE. one -> {14} (filler), task -> {0,45}, open -> {0}, close ->
+{5,11}; hard modk .2115 (chance), pair .698, ratio .548 -> 1/3. The
+slots lock early onto tokens that make the soft counter a position-
+like clock; the controller then treats it as a feature and goes blind,
+exactly as with the Bernoulli map. Falsifier branch taken.
+
+C83-C88 SYNTHESIS — "learned predicates" condition, honest status:
+  JOINT from scratch (controller + predicates, LM loss only):
+    soft Bernoulli (C84b x2), straight-through (C86), wide-count regime
+    (C87), categorical <=2-token prior (C88): 0/5 runs recover the count
+    predicate; every joint controller is COUNTER-BLIND (truth predicates
+    plugged in -> still chance). L-JOINT-CONSUMER-BLINDNESS.
+  PREDICATES-ONLY given a counter-consuming controller (C85 x2):
+    count predicate recovered exactly on its support from LM loss, hard
+    modk .21 -> 1.0, 3/3 bars, no supervision on predicates.
+    L-PREDICATE-IDENTIFIABLE-GIVEN-CONSUMER.
+  Reading: in-range LM loss pays ~0 nats for the exact mechanism (HW
+  1.17 vs blind 1.19 train CE) — the identical reason a Transformer fits
+  256 and fails 1024 reproduces INSIDE the architecture when the
+  mechanism is made optional. The grammar is identifiable; the
+  commitment of the consumer is not purchasable with in-range loss.
+  Claim wording from here on: "token predicates are learnable from LM
+  loss given a consumer; the hand-wired predicates in the certified
+  rows are a shortcut for the consumer-commitment problem, which is
+  open." RESULTS.md updated accordingly.
+C90 (closing test, pre-registered NEGATIVE): no-oracle bootstrap —
+phase 1 train the controller with P FIXED to a random one-token set per
+role in hard mode (a crisp but semantically wrong counter), phase 2 =
+C85 predicates-only against that controller. Prediction: a useless
+crisp counter is ignored (blind) => phase 2 fails; if instead it
+succeeds, consumer commitment needs only crispness, not correctness,
+and joint-from-scratch is re-opened via a crisp-init schedule.

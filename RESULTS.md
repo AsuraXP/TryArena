@@ -73,3 +73,8 @@ the identical gate recipe: 1 of 4 (dyck only). The system: 4/4 on 10/10 seeds.
 - Headline unified row (K=SBK4, C=fresh): **6/6 bars on 10/10 seeds**, MQAR 1.0/1.0 on every seed, text 2.501±.025, 116,858 p. Chatbot row: chatmix CE 2.68-2.72 (was 2.92-3.08), reasoning-in-prose unchanged.
 - Theory: learned K equals the exact replay of its placement policy on the eval streams within +.025 on 7/7 arms (theory_c81.py) — capacity claims are now predicted before training.
 - Transformer controls unchanged: 12 matched-param runs, best 2/4, modk at chance on 12/12.
+
+## Learned predicates (C83-C88, 2026-10-05)
+- Predicates-only vs a frozen certified controller: count predicate recovered exactly on its task support from LM loss alone, hard-deployed modk .21 -> 1.0, 3/3 bars, 2/2 seeds (arch_vet_p42.py --freeze_ctrl).
+- Joint from scratch (5 runs: soft, ST, wide regime, categorical prior): 0/5 — the jointly trained controller is counter-blind even when handed the truth predicates.
+- Honest wording: predicates are *identifiable* given a consumer; from-scratch joint discovery is OPEN. The certified rows use hand-wired predicates as a shortcut for the consumer-commitment problem.
