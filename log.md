@@ -5248,3 +5248,11 @@ seeds; (b) hard modk = 1.0 where (a); falsifier: slots lock onto
 fillers/track tokens with modk at chance => even a sparse prior cannot
 beat consumer blindness => the honest end-state is "learned predicates
 given a counter-consuming controller (C85); joint from scratch open".
+
+C85 PHASE 3 — seed 2 (frozen P42_HW_s111.pt, predicates-only, soft):
+bars 3/3: pair .7736, modk 1.000, ratio .537. one = {21, 29} (29 is a
+bracket, never in a modk segment -> exact on support); task = {4} +
+extras. L-PREDICATE-IDENTIFIABLE-GIVEN-CONSUMER: 2/2 seeds, both
+controllers (s111 and s222 HW), count predicate recovered from LM loss
+alone and the exact modk bar restored in hard deployment. RESULT
+ARCH-VET-LM-P42C85 x2 in jsonl.
