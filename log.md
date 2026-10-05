@@ -4960,3 +4960,13 @@ PHASE 3: run_c83.sh lane B -> p42.log.
 C79 — SBK4 K 10-seed: n1/n2/n3/n4/n6/n8_hard = 1.000 on 10/10 seeds
 (60/60 cells exact, 21,324 p, learned predicate, zero grammar).
 7-seed unified fold (K=SBK4, C=F, seeds 444-1010) running on lane A.
+
+RECOVERY NOTE 5 (C79/C82): fifth re-provision (HEAD db74de5, torch wiped).
+Remote 7ea1ad1 held everything through C81 incl. all 10 SBK4 K ckpts and
+10 CF ckpts (the resume-ckpt commits paid off: s1010 had finished and
+been committed). Lost: only the 7 unified folds (not started). Recovery:
+fetch -> reset --mixed -> checkout; torch 2.14.1; verify 35/35. Relaunch:
+folds 444-777 (lane A) | 888-1010 (lane B) -> p36ksbk4_cf(_b).log.
+SBK4 K 10-seed: n1..n8 = 1.000 on 10/10 seeds (60/60 cells).
+CF 10-seed val CE: 2.508 2.500 2.485 2.521 2.497 2.485 2.467 2.481 2.509
+2.557 (mean 2.501, sd .025).
