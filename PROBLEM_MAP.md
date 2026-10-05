@@ -1156,3 +1156,11 @@ stack use from the grammar coin-flip ceiling.
 - C82: inference envelope (p41) — honest 240x per-token implementation gap at L=256; slope sweep queued.
 - Groundbreakingness conditions: fair control ✓✓ (19 TF runs), learned predicates ✓ for K / IN PROGRESS for A (C83 P42), one unified model ✓ 10 seeds, reproducibility: reproduce.sh quick re-scores 10 seeds; external run ✗.
 - OPEN QUEUE (C83+): 1. P42 learned predicates for A (running); 2. same for B (stack push/pop predicates); 3. p41 slope sweep; 4. vectorize the organ loop (engineering); 5. in-range hazard CE; 6. external reproduction.
+
+## C83-C88 learned-predicate line (2026-10-05)
+- GOAL: replace the hand-wired token predicates of expert A (count/reset/open/close) with predicates learned under LM loss; deploy hard.
+- C83: dead gradient (zero-init counter consumers) -> withdrawn. C84: L1 under Adam = constant drift -> withdrawn. (Both are harness lessons, in HANDOVER §12.)
+- C84b/C86/C87 (joint from scratch; soft / ST / wide-count regime): NEGATIVE 4/4 runs — predicate sets diffuse, controller COUNTER-BLIND (truth predicates plugged in -> modk still chance). L-JOINT-CONSUMER-BLINDNESS.
+- C85 (predicates-only vs frozen certified controller): POSITIVE 2/2 — count predicate exact on task support, hard modk .21 -> 1.0, 3/3 bars. L-PREDICATE-IDENTIFIABLE-GIVEN-CONSUMER.
+- Honest status of the "learned predicates" condition: the predicate map IS learnable from LM loss (no supervision on predicates) but only once the controller consumes exact counters; from-scratch joint discovery is OPEN. C88 (categorical <=2-token prior) running.
+- Scope limits: open/close carry no bar pressure in the P1 4-task harness (dyck acc ~0 for HW too) -> unidentifiable here by construction; needs the P11 dyck regime to test.
