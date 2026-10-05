@@ -5327,3 +5327,23 @@ C89 PHASE 3 — regression: ./reproduce.sh quick (verify 35/35, audit
 CLEAN, re-score of all 10 certified seeds through the vectorised code):
 10/10 rows 6/6, every pair/ratio/text value identical to the C79 CLOSE
 table to the printed digit. The C89 rewrite is certified lossless.
+
+C90 PHASE 2 — s111 phase 1 (P fixed random one/task/open/close =
+32/31/43/29, HARD counters throughout training): bars 1/3, modk .2115.
+Direct commitment test on that controller (hard eval, P swapped):
+| P | modk | pair | CE train / hard / 512 / 1024 |
+| random-fixed (as trained) | .211 | .679 | 1.2903 / 2.5767 / 1.2280 / 1.2693 |
+| all off | .211 | .679 | 1.2907 / 2.5744 / 1.2278 / 1.2679 |
+| TRUTH | .211 | .679 | 1.2973 / 2.5795 / 1.2330 / 1.2693 |
+Identical to 3 decimals: the controller never read the counter. A crisp
+but useless counter is ignored exactly like a diffuse one => phase 2
+(predicates-only against this consumer) cannot succeed; killed for s111
+as pre-registered-negative-confirmed-by-measurement (s222 phase 1 left
+to finish for a 2-seed table). CONCLUSION of the line: consumer
+commitment requires the counter to be USEFUL in-range from early
+training, which only the correct predicate provides — a circularity
+that in-range LM loss cannot break. L-COMMITMENT-REQUIRES-CORRECTNESS.
+Learned-predicate end state (C83-C90): identifiable given a consumer
+(C85, 2/2); joint discovery from scratch OPEN after 7 negative arms
+(soft x2, ST, wide regime, categorical prior, crisp-random bootstrap,
+L1). The queue item is parked; the honest wording is in RESULTS.md.
