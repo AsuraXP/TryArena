@@ -5186,3 +5186,29 @@ logit is a discontinuous change of the whole counter trajectory, and
 Adam at 1e-2 keeps re-flipping. ST is not the lever at this lr; the
 soft relaxation (C85) is. Lane B -> C85 seed 2 (frozen P42_HW_s111.pt,
 seed 222).
+
+C86 PHASE 2 — decisive ablation on the JOINTLY trained C84b controllers
+(hard eval, P swapped; same checkpoints):
+| ckpt | P | modk | CE train / hard / 512 / 1024 |
+| C84b s111 | learned | .250 | 1.845 / 2.878 / 1.944 / 1.889 |
+| C84b s111 | all off | .212 | 1.647 / 2.357 / 1.627 / 1.705 |
+| C84b s111 | TRUTH | .212 | 1.692 / 3.647 / 1.620 / 1.787 |
+| C84b s222 | learned | .212 | 1.449 / 2.168 / 1.433 / 1.460 |
+| C84b s222 | all off | .212 | 1.675 / 2.245 / 1.668 / 1.721 |
+| C84b s222 | TRUTH | .212 | 1.864 / 3.028 / 1.839 / 1.910 |
+The joint controllers are COUNTER-BLIND: given the exact truth
+predicates they stay at chance on modk and get WORSE CE. They learned
+around the (then-diffuse) counter rather than through it. Contrast C85:
+a controller trained with reliable counters lets LM loss identify the
+count predicate from scratch. So the joint failure is not "P can't be
+learned", it is "the consumer never commits while the counter is
+unreliable, and in-range LM loss does not pay it to commit" (HW train CE
+1.17-1.19 vs blind 1.19-1.30: the exact mechanism buys ~0 nats in-range
+— the Transformer lesson, now reproduced INSIDE the architecture).
+Consequence: no alternating / EM schedule can work (frozen-controller
+phases would be learning P for a blind consumer). The lever has to be a
+LOSS that pays for the mechanism in-range, i.e. a length curriculum
+where the controller's internal counting breaks (train 256 + long,
+eval strictly longer; HW arm given the identical curriculum). C86 ST
+joint run left to finish for the record (diffuse at step 1000, same
+signature as C84b). LAW L-JOINT-CONSUMER-BLINDNESS (2/2 seeds).
