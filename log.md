@@ -5110,3 +5110,31 @@ into a steady ~lr/step drift, which dominates the small, noisy CE
 signal on P (|dCE/dP| ~ 1e-3 at init). Artifact of optimiser x prior,
 logged; killed. C84b = same arm with l1 = 0 (live, p0 0, tau1 .5),
 seeds 111/333 lane A, 222 + HW s111 lane B.
+
+C84b PHASE 3 — live-gradient LP, l1 = 0, tau 1 -> .5, 4000 steps:
+| seed | hard bars | pair | modk | ratio | |one| | |task| | |open| | |close| |
+|---|---|---|---|---|---|---|---|---|
+| 111 | 1/3 | .811 | .25 | .656 | 14 (21 not in) | 8 (4 not in) | 14 (29 in, 30 out) | 17 (32 in) |
+| 222 | 0/3 | .302 | .21 | .674 | 15 (21 not in) | 11 (4 not in) | 7 (29,30 in) | 24 (31,32 in) |
+HW s222 control 3/3. NEGATIVE on (a) and (b), now with a measured live
+gradient (||dL/dP|| ~ 3e-3 at init, predicates moved from step 1).
+Signature: in-range train CE tracks the HW arm within .03 for the whole
+run (1.19-1.30 vs 1.17-1.19), while the learned predicate sets DIFFUSE
+(7-24 tokens each; truth 1-2) instead of sharpening; s222's "one" set is
+exactly the TRACK tokens minus 21 (a legal in-range re-encoding: the
+mod-3 counter advanced on everything except the real count token).
+LAW L-PREDICATE-NONIDENTIFIABLE-IN-RANGE (now earned, 2/2 seeds, live
+gradient): under joint controller + predicate training on train-length
+LM loss, the exact counters are absorbed as generic soft features; the
+loss has many in-range optima and no pressure toward the OOD-correct
+grammar. Falsifier reading: the counter predicate is wrong WITH a live
+gradient => genuine identifiability gap (pre-registered branch) =>
+curriculum/structural lever next. s333 killed (2/2 identical failure
+signature; time reallocated). RESULT ARCH-VET-LM-P42C84b x2 in jsonl.
+C85 (diagnostic, launched): --freeze_ctrl p21_ckpt/P42_HW_s222.pt —
+learn ONLY P against a controller that already consumes exact counters.
+Pre-registration: if P sharpens to truth here, the gap is purely
+joint-training identifiability (controller-side), and the lever is a
+two-phase schedule (fix consumer, then learn predicates, then co-train);
+if P stays diffuse even here, the LM-loss signal on P itself is too weak
+at train length and the lever is length curriculum.
