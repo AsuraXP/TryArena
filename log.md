@@ -5033,3 +5033,29 @@ bars are EXACT (1.0) and the fluency bar improved 0.22 nats/byte at
 constant parameters. Transformer controls on the same bars: best 2/4
 legacy (12 runs), MQAR R5 n16 <= .31 (7 runs incl. 308k p).
 RESULT ARCH-VET-LM-P36 (K=SBK4, C=F) x10 in log.jsonl.
+
+C82 PHASE 4 — inference envelope, idle-core sweep (arch_vet_p41.py, p41.log;
+a second contended sweep agrees on every slope):
+| L | unified us/tok | unified RSS | TF-ALiBi us/tok | TF RSS |
+|---|---|---|---|---|
+| 256 | 2768 | 522 MB | 10.7 | 525 MB |
+| 1024 | 2693 | 532 | 34.6 | 570 |
+| 4096 | 2651 | 570 | 191.5 | 739 |
+| 16384 | 2749 | 739 | 1098.7 | 1151 |
+Held: unified per-token cost flat in L (ratio 16384/256 = 0.99; predicted
+<= 1.3); TF per-token cost grows 103x (~linear in L, as attention
+dictates). MISSED: (a) unified RSS grew 217 MB (predicted < 200; the
+growth is the B x L x V logits of 4 densely-evaluated experts + allocator
+cache); (b) FALSIFIED: the TF did NOT fail at 16k and peaked at only 1.15
+GB — torch's CPU scaled_dot_product_attention uses a memory-efficient
+(chunked) kernel, so the "4.3 GB score matrix" estimate was wrong for
+this runtime. Correct statement: TF memory grows ~L (KV + chunked
+scores) at this L, cost grows ~L; the unified system is O(1) in both.
+HONEST HEADLINE: at every L tested the unified system is SLOWER in wall
+time (2.5x at 16k, 260x at 256) because the organs run as a Python per-
+step loop over 4 experts; extrapolated crossover ~L = 40k. The O(1)
+envelope is architectural and measured; the constant factor is an
+engineering debt (vectorized/scripted organ kernels), now queued.
+LAW L-O1-ENVELOPE-MEASURED: per-token wall time of the exact-organ
+system is independent of context length from 256 to 16384 (±3%).
+RESULT ARCH-VET-LM-P41 x2 in log.jsonl.
