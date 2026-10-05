@@ -5138,3 +5138,32 @@ joint-training identifiability (controller-side), and the lever is a
 two-phase schedule (fix consumer, then learn predicates, then co-train);
 if P stays diffuse even here, the LM-loss signal on P itself is too weak
 at train length and the lever is length curriculum.
+
+C85 PHASE 2 — predicates-only learning against the frozen certified
+controller (P42_HW_s222.pt), soft relaxation, 4000 steps, HARD eval:
+  bars 3/3: pair .7547, modk 1.000, ratio .600 (boundary).
+  Same controller, same hard eval, P swapped (single-run ablation):
+  | P | modk | pair | track | CE train/hard/512/1024 |
+  | all off | .212 | .774 | .628 | 1.860 / 3.079 / 1.861 / 1.853 |
+  | LEARNED | 1.000 | .755 | .581 | 1.403 / 2.359 / 1.359 / 1.415 |
+  | truth | 1.000 | .792 | .767 | 1.273 / 2.337 / 1.215 / 1.257 |
+Learned sets restricted to the tokens that actually occur in the task's
+streams (shape-disjoint tasks => predicates are identifiable only up to
+co-occurrence): one = {21} EXACTLY on modk streams (full set {0,21,28,
+30,31,32,40}; the extras never appear in a modk segment). task = {4} +
+17 extras incl. fillers that do occur; the hard counter nevertheless
+restores modk 1.0, and the residual .13 nats of CE vs truth is this
+loose reset set. open/close are NOT identified ({30,31,32}/{29} on dyck
+streams) — and cannot be in this harness: dyck accuracy is ~0 for the
+HW arms too (P1 4-task regime never had a dyck bar), so there is no
+loss pressure on the depth channel. Honest scope.
+Pre-registration outcome: branch 1 — with the consumer fixed, train-
+length LM loss DOES identify the bar-critical predicate (count) exactly
+on its support and recovers the exact bar (.21 -> 1.0); the C84b failure
+is therefore a JOINT-training problem (the controller never commits to
+the counter while the counter is unreliable, so the counter never gets a
+clean gradient). LAW L-PREDICATE-IDENTIFIABLE-GIVEN-CONSUMER (1 seed; 2
+more queued after C85b). Lever: a schedule that makes the counter
+reliable BEFORE the controller learns to ignore it — straight-through
+hard predicates from step 1 (C85b running vs frozen ctrl; C86 = joint
+from scratch with ST). RESULT ARCH-VET-LM-P42C85 in jsonl.
