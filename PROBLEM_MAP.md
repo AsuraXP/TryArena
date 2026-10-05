@@ -1148,3 +1148,11 @@ stack use from the grammar coin-flip ceiling.
 - C79 headline (K=SBK4, C=F): 6/6, MQAR 1/1, text 2.49-2.51, 3/3 seeds, 116,858 p. 10-seed running (run_c79b.sh).
 - Honesty: SBK2 s111 band miss (.969 vs [.91,.95]) = band-setting error (+1.1 sd of bound); static Hall bound is a per-segment bound, recency buffer can add a small surplus.
 - OPEN QUEUE (C80): 1. finish 10-seed of the C79 row; 2. R5 seeds + b4 arms; 3. RoPE-free TF control on MQAR R5 (matched params) for the memory claim at S16; 4. theory: stream-aware bound; 5. in-range hazard CE (closed as reasoning, open as number); 6. chatbot fusion with the fresh C.
+
+## C79 CLOSE / C80-C82 (2026-09-25)
+- Headline system certified: 6/6 on 10/10 seeds; MQAR 1.0/1.0 x10; text 2.501±.025; 116,858 p. L-EXACT-FLUENT-MEMORY-SATURATED-10-SEED.
+- C80/C80b: TF on R5 (42k and 308k p, ALiBi/NAPE): n16 .13-.31 vs K 1.000. L-TF-BINDING-COUNT-COLLAPSE (capacity-independent).
+- C81: chatbot row 3 seeds (chat CE -0.2..-0.37, reasoning unchanged); theory_c81 exact replay: L-KRB-ORACLE-FAITHFUL.
+- C82: inference envelope (p41) — honest 240x per-token implementation gap at L=256; slope sweep queued.
+- Groundbreakingness conditions: fair control ✓✓ (19 TF runs), learned predicates ✓ for K / IN PROGRESS for A (C83 P42), one unified model ✓ 10 seeds, reproducibility: reproduce.sh quick re-scores 10 seeds; external run ✗.
+- OPEN QUEUE (C83+): 1. P42 learned predicates for A (running); 2. same for B (stack push/pop predicates); 3. p41 slope sweep; 4. vectorize the organ loop (engineering); 5. in-range hazard CE; 6. external reproduction.

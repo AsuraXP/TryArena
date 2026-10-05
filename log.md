@@ -5003,3 +5003,33 @@ modk < 1.0 with a correct count predicate => the soft relaxation damaged
 the controller (co-adaptation), and the learned-grammar claim for A
 would need a different estimator (straight-through). run_c83.sh (lane
 B after its folds): LP s111/222/333, HW s111 control -> p42.log.
+
+
+C79 CLOSE — 10-SEED CERTIFICATION of the headline system (A + B + C-fresh + K-SBK4 + G/GM/GK; 116,858 p):
+| seed | bars | pair | modk | ratio | dyck12 | mqar n4 | n8 | identity | Kshare | text CE |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 111 | 6/6 | 0.859 | 1.000 | 0.596 | 0.984 | 1.000 | 1.000 | 0.996 | 0.919 | 2.508 |
+| 222 | 6/6 | 0.877 | 1.000 | 0.503 | 0.950 | 1.000 | 1.000 | 1.000 | 0.921 | 2.500 |
+| 333 | 6/6 | 0.859 | 1.000 | 0.443 | 0.973 | 1.000 | 1.000 | 1.000 | 0.922 | 2.485 |
+| 444 | 6/6 | 0.915 | 1.000 | 0.546 | 0.984 | 1.000 | 1.000 | 0.998 | 0.960 | 2.521 |
+| 555 | 6/6 | 0.830 | 1.000 | 0.504 | 0.975 | 1.000 | 1.000 | 1.000 | 0.961 | 2.497 |
+| 666 | 6/6 | 0.934 | 1.000 | 0.433 | 0.946 | 1.000 | 1.000 | 0.998 | 0.904 | 2.485 |
+| 777 | 6/6 | 0.934 | 1.000 | 0.469 | 0.969 | 1.000 | 1.000 | 1.000 | 0.887 | 2.467 |
+| 888 | 6/6 | 0.849 | 1.000 | 0.528 | 0.985 | 1.000 | 1.000 | 0.998 | 0.939 | 2.481 |
+| 999 | 6/6 | 0.849 | 1.000 | 0.454 | 0.944 | 1.000 | 1.000 | 1.000 | 0.946 | 2.509 |
+| 1010 | 6/6 | 0.981 | 1.000 | 0.514 | 0.973 | 1.000 | 1.000 | 0.998 | 0.961 | 2.557 |
+mean±sd: pair 0.889±0.049 modk 1.000±0.000 ratio 0.499±0.051 dyck 0.968±0.016 n4 1.000±0.000 n8 1.000±0.000 id 0.999±0.001 Kshare 0.932±0.026 text 2.501±0.025
+n=10 all 6/6: True
+**6/6 bars on 10/10 seeds.** MQAR 1.000/1.000 on every seed (routed ==
+K-alone, gate cost 0). Text CE 2.501±.025 == CF-alone (was 2.724±.047
+with the pooled C). Every other bar statistically identical to the P36/
+P37 rows (same A/B checkpoints; identity .998-1.0). Basin rate 10/10 ->
+95% CP lower bound .74.
+LAW L-EXACT-FLUENT-MEMORY-SATURATED-10-SEED: one coherent 5-expert
+system with learned write predicate, exact blocked-cuckoo memory, and a
+fresh-stream fluency expert holds pair/modk/ratio/dyck/MQAR(2x OOD)/text
+bars on 10/10 seeds at 116,858 parameters on a 2-core CPU; the memory
+bars are EXACT (1.0) and the fluency bar improved 0.22 nats/byte at
+constant parameters. Transformer controls on the same bars: best 2/4
+legacy (12 runs), MQAR R5 n16 <= .31 (7 runs incl. 308k p).
+RESULT ARCH-VET-LM-P36 (K=SBK4, C=F) x10 in log.jsonl.

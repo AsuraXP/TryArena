@@ -29,3 +29,9 @@
   [P36-GK-s666] step 750/1000 loss 1.8855 (982s)
   [P36-GK-s666] step 1000/1000 loss 0.8383 (1300s)
 [p36 K=SBK4 C=F s666] bars=6/6 {'pair': 0.934, 'modk': 1.0, 'ratio': 0.433, 'dyck_d12': 0.9459, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=0.9982 Kshare=0.9036 text 2.4848/2.4848 params 116858
+  [P36-GK-s777] step 250/1000 loss 1.1037 (313s)
+  [P36-GK-s777] step 500/1000 loss 1.6182 (620s)
+  [P36-GK-s777] step 750/1000 loss 1.8589 (930s)
+  [P36-GK-s777] step 1000/1000 loss 0.9775 (1239s)
+[p36 K=SBK4 C=F s777] bars=6/6 {'pair': 0.934, 'modk': 1.0, 'ratio': 0.469, 'dyck_d12': 0.969, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=1.0 Kshare=0.8867 text 2.467/2.467 params 116858
+[P36] DONE
