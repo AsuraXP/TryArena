@@ -1,0 +1,22 @@
+[p42C90p1] fixed random predicates one/task/open/close = [41, 29, 28, 35] (truth 21/4/29,30/31,32); hard counters in training
+[p42C90p1] LP params 21449 cfg p0=-2.0 live=True st=False cat=False regime=base tau1=0.2 l1=0.0
+  [P42C90p1-LP-s222] step 250/4000 ce 1.5268 tau 0.90 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (137s)
+  [P42C90p1-LP-s222] step 500/4000 ce 1.7226 tau 0.82 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (276s)
+  [P42C90p1-LP-s222] step 750/4000 ce 1.4289 tau 0.74 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (411s)
+  [P42C90p1-LP-s222] step 1000/4000 ce 1.3868 tau 0.67 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (546s)
+  [P42C90p1-LP-s222] step 1250/4000 ce 1.3842 tau 0.60 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (683s)
+  [P42C90p1-LP-s222] step 1500/4000 ce 1.2617 tau 0.55 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (823s)
+  [P42C90p1-LP-s222] step 1750/4000 ce 1.2435 tau 0.49 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (960s)
+  [P42C90p1-LP-s222] step 2000/4000 ce 1.2280 tau 0.45 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (1101s)
+  [P42C90p1-LP-s222] step 2250/4000 ce 1.2308 tau 0.40 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (1236s)
+  [P42C90p1-LP-s222] step 2500/4000 ce 1.3221 tau 0.37 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (1370s)
+  [P42C90p1-LP-s222] step 2750/4000 ce 1.2396 tau 0.33 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (1505s)
+  [P42C90p1-LP-s222] step 3000/4000 ce 1.2803 tau 0.30 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (1641s)
+  [P42C90p1-LP-s222] step 3250/4000 ce 1.1318 tau 0.27 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (1779s)
+  [P42C90p1-LP-s222] step 3500/4000 ce 1.2073 tau 0.24 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (1920s)
+  [P42C90p1-LP-s222] step 3750/4000 ce 1.2455 tau 0.22 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (2075s)
+  [P42C90p1-LP-s222] step 4000/4000 ce 1.1516 tau 0.20 pred(hit/on/true) one(0, 1, 1) task(0, 1, 1) open(0, 1, 2) close(0, 1, 2) (2225s)
+[P42-LP s222] ce={'256_train': 1.297, '256_hard': 2.173, '512': 1.224, '1024': 1.278}
+[P42-LP s222] acc_eval={'track': 0.744, 'modk': 0.269, 'dyck': 0.0, 'pair': 0.792}
+[p42 LP s222] bars=2/3 pair 0.7925 modk 0.2692 ratio 0.588 predicates_exact=False {'one': {'learned_on': [41], 'truth': [21]}, 'task': {'learned_on': [29], 'truth': [4]}, 'open': {'learned_on': [28], 'truth': [29, 30]}, 'close': {'learned_on': [35], 'truth': [31, 32]}}
+[P42] DONE

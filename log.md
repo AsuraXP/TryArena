@@ -5384,3 +5384,11 @@ architectures within .5 nats; architectural differences live entirely
 in the answer class (unified .3-.5 vs TF 3.7). Caveat: TF control was
 trained on the joint A+B pool (P23 protocol) — the fairest available.
 RESULT ARCH-VET-LM-P43 in jsonl.
+
+C90 PHASE 3 — s222 phase 1 (random P = 41/29/28/35): bars 2/3, modk
+.2692. Commitment test: random-fixed modk .269 CE-train 1.297 | all off
+.269 / 1.315 | TRUTH .365 / 1.381. A trace of use (truth lifts modk
+.27 -> .37, CE worsens) but no commitment. 2/2 seeds: crispness does
+not buy consumer commitment; phase 2 not run (killed) for either seed.
+C90 CLOSED negative as pre-registered. L-COMMITMENT-REQUIRES-CORRECTNESS
+2/2. RESULT ARCH-VET-LM-P42C90p1 x2 in jsonl.
