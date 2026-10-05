@@ -103,7 +103,7 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--arms", default="LP"); ap.add_argument("--seed", type=int, default=111); ap.add_argument("--steps", type=int, default=4000)
     ap.add_argument("--p0", type=float, default=-2.0); ap.add_argument("--live", action="store_true"); ap.add_argument("--st", action="store_true")
     ap.add_argument("--tau1", type=float, default=0.2); ap.add_argument("--l1", type=float, default=0.0); ap.add_argument("--tagsuffix", default="")
-    ap.add_argument("--freeze_ctrl", default="", help="C85 diagnostic: load an HW checkpoint, freeze everything but P, learn only the predicates")
+    ap.add_argument("--lr", type=float, default=3e-3); ap.add_argument("--freeze_ctrl", default="", help="C85 diagnostic: load an HW checkpoint, freeze everything but P, learn only the predicates")
     a = ap.parse_args()
     pool = p19.make_pool(512, 256, 12345); out = {"tag": "ARCH-VET-LM-P42" + a.tagsuffix, "protocol": __doc__[:1800], "seed": a.seed, "steps": a.steps, "cfg": vars(a), "arms": {}}
     for arm in a.arms.split(","):
@@ -114,7 +114,7 @@ def main():
                 sd = torch.load(a.freeze_ctrl)["sd"]; missing = m.load_state_dict(sd, strict=False); assert missing.missing_keys == ["P"], missing
                 for n_, p_ in m.named_parameters(): p_.requires_grad_(n_ == "P")
                 print(f"[p42{a.tagsuffix}] controller frozen from {a.freeze_ctrl}; trainable = P only", flush=True)
-            print(f"[p42{a.tagsuffix}] LP params {p19.n_params(m)} cfg p0={a.p0} live={a.live} st={a.st} tau1={a.tau1} l1={a.l1}", flush=True); train_lp(f"P42{a.tagsuffix}-LP-s{a.seed}", m, pool, a.steps, tau1=a.tau1, l1=a.l1); m.hard = True; m.eval()
+            print(f"[p42{a.tagsuffix}] LP params {p19.n_params(m)} cfg p0={a.p0} live={a.live} st={a.st} tau1={a.tau1} l1={a.l1}", flush=True); train_lp(f"P42{a.tagsuffix}-LP-s{a.seed}", m, pool, a.steps, lr=a.lr, tau1=a.tau1, l1=a.l1); m.hard = True; m.eval()
             with torch.no_grad():
                 tt = m.truth_table(); Pb = m.P > 0
                 pred = {n: {"learned_on": sorted(torch.nonzero(Pb[:, j]).flatten().tolist()), "truth": sorted(torch.nonzero(tt[:, j]).flatten().tolist())} for j, n in enumerate(["one", "task", "open", "close"])}

@@ -1,0 +1,24 @@
+[p42] HW params 21257
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [P42-HW-s111] step 250/4000 loss 1.5094 (183s)
+  [P42-HW-s111] step 500/4000 loss 1.3871 (363s)
+  [P42-HW-s111] step 750/4000 loss 1.3809 (542s)
+  [P42-HW-s111] step 1000/4000 loss 1.3397 (736s)
+  [P42-HW-s111] step 1250/4000 loss 1.3317 (937s)
+  [P42-HW-s111] step 1500/4000 loss 1.1932 (1139s)
+  [P42-HW-s111] step 1750/4000 loss 1.1927 (1353s)
+  [P42-HW-s111] step 2000/4000 loss 1.1724 (1547s)
+  [P42-HW-s111] step 2250/4000 loss 1.1735 (1735s)
+  [P42-HW-s111] step 2500/4000 loss 1.2747 (1923s)
+  [P42-HW-s111] step 2750/4000 loss 1.2038 (2104s)
+  [P42-HW-s111] step 3000/4000 loss 1.2386 (2291s)
+  [P42-HW-s111] step 3250/4000 loss 1.0972 (2476s)
+  [P42-HW-s111] step 3500/4000 loss 1.1769 (2661s)
+  [P42-HW-s111] step 3750/4000 loss 1.2240 (2844s)
+  [P42-HW-s111] step 4000/4000 loss 1.1143 (3029s)
+[P42-HW s111] ce={'256_train': 1.27, '256_hard': 2.739, '512': 1.211, '1024': 1.252}
+[P42-HW s111] acc_eval={'track': 0.953, 'modk': 1.0, 'dyck': 0.0, 'pair': 0.792}
+[p42 HW s111] bars=3/3 pair 0.7925 modk 1.0 ratio 0.457 predicates_exact=None None
+[P42] DONE
