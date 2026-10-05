@@ -27,10 +27,14 @@ VETDCC = p13d.VETDCC
 
 
 class VETDCC_LP(VETDCC):
-    def __init__(self, V, d, k=8, K=8):
+    def __init__(self, V, d, k=8, K=8, p0=-2.0, live=False, st=False):
         super().__init__(V, d, k=k, K=K)
-        self.P = nn.Parameter(torch.zeros(V, 4) - 2.0)     # predicates start "off" (sigmoid(-2) = .12); 4 x V = 192 params
-        self.tau = 1.0; self.hard = False
+        self.P = nn.Parameter(torch.zeros(V, 4) + p0)     # predicate logits; 4 x V = 192 params
+        self.tau = 1.0; self.hard = False; self.st = st
+        if live:   # C84 FIX: P13d zero-inits every consumer of the counter state (Ws counter block, W_mod, W_depth) so dL/dP == 0
+                   # exactly at init (measured: grad-norm 0.0). Give the consumers a small random init so P receives gradient.
+            with torch.no_grad():
+                nc = M_MOD + D_CLAMP + 1; self.Ws.weight[:, -nc:].normal_(0, 0.1); self.W_mod.normal_(0, 0.1); self.W_depth.normal_(0, 0.1)
 
     def truth_table(self):
         t = torch.zeros(V, 4, dtype=torch.bool); t[ONE, 0] = True; t[T_TASK, 1] = True
@@ -45,6 +49,7 @@ class VETDCC_LP(VETDCC):
             Pb = self.P > 0; c = torch.zeros(B, dtype=torch.long, device=dev); dep = torch.zeros(B, dtype=torch.long, device=dev)
         else:
             Pp = torch.sigmoid(self.P / self.tau)
+            if self.st: Pp = (self.P > 0).float() + (Pp - Pp.detach())   # straight-through: hard forward, sigmoid gradient
             m = torch.zeros(B, M_MOD, device=dev); m[:, 0] = 1; dv = torch.zeros(B, D_CLAMP + 1, device=dev); dv[:, 0] = 1
         for t in range(L):
             xt = e[:, t]; xid = x[:, t]
@@ -79,13 +84,14 @@ class VETDCC_LP(VETDCC):
         return lg
 
 
-def train_lp(name, m, pool, steps, batch=8, lr=3e-3, tau0=1.0, tau1=0.2):
+def train_lp(name, m, pool, steps, batch=8, lr=3e-3, tau0=1.0, tau1=0.2, l1=0.0):
     """p19.train_arm recipe (AdamW 3e-3, step-indexed batches, clip 1) + tau annealing for the predicate relaxation."""
     torch.manual_seed(0); opt = torch.optim.AdamW(m.parameters(), lr=lr); m.train(); t0 = time.time(); n_pool = len(pool)
     for step in range(1, steps + 1):
         m.tau = tau0 * (tau1 / tau0) ** ((step - 1) / max(1, steps - 1)); m.hard = False
         sel = [(step * batch + i) % n_pool for i in range(batch)]; x = torch.stack([pool[i] for i in sel])
         lg = m(x[:, :256]); loss = F.cross_entropy(lg.reshape(-1, V), x[:, 1:257].reshape(-1))
+        if l1 > 0: loss = loss + l1 * torch.sigmoid(m.P).sum()   # sparsity prior: predicates are few-token sets
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
         if step % 250 == 0:
             with torch.no_grad():
@@ -94,12 +100,14 @@ def train_lp(name, m, pool, steps, batch=8, lr=3e-3, tau0=1.0, tau1=0.2):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--arms", default="LP"); ap.add_argument("--seed", type=int, default=111); ap.add_argument("--steps", type=int, default=4000); a = ap.parse_args()
-    pool = p19.make_pool(512, 256, 12345); out = {"tag": "ARCH-VET-LM-P42", "protocol": __doc__[:1800], "seed": a.seed, "steps": a.steps, "arms": {}}
+    ap = argparse.ArgumentParser(); ap.add_argument("--arms", default="LP"); ap.add_argument("--seed", type=int, default=111); ap.add_argument("--steps", type=int, default=4000)
+    ap.add_argument("--p0", type=float, default=-2.0); ap.add_argument("--live", action="store_true"); ap.add_argument("--st", action="store_true")
+    ap.add_argument("--tau1", type=float, default=0.2); ap.add_argument("--l1", type=float, default=0.0); ap.add_argument("--tagsuffix", default=""); a = ap.parse_args()
+    pool = p19.make_pool(512, 256, 12345); out = {"tag": "ARCH-VET-LM-P42" + a.tagsuffix, "protocol": __doc__[:1800], "seed": a.seed, "steps": a.steps, "cfg": vars(a), "arms": {}}
     for arm in a.arms.split(","):
         torch.manual_seed(a.seed)
         if arm == "LP":
-            m = VETDCC_LP(V, 24, k=8, K=8); print(f"[p42] LP params {p19.n_params(m)}", flush=True); train_lp(f"P42-LP-s{a.seed}", m, pool, a.steps); m.hard = True; m.eval()
+            m = VETDCC_LP(V, 24, k=8, K=8, p0=a.p0, live=a.live, st=a.st); print(f"[p42{a.tagsuffix}] LP params {p19.n_params(m)} cfg p0={a.p0} live={a.live} st={a.st} tau1={a.tau1} l1={a.l1}", flush=True); train_lp(f"P42{a.tagsuffix}-LP-s{a.seed}", m, pool, a.steps, tau1=a.tau1, l1=a.l1); m.hard = True; m.eval()
             with torch.no_grad():
                 tt = m.truth_table(); Pb = m.P > 0
                 pred = {n: {"learned_on": sorted(torch.nonzero(Pb[:, j]).flatten().tolist()), "truth": sorted(torch.nonzero(tt[:, j]).flatten().tolist())} for j, n in enumerate(["one", "task", "open", "close"])}
@@ -109,7 +117,7 @@ def main():
         r = p19.eval_full(m, f"P42-{arm}", a.seed); r["predicates"] = pred; r["predicates_exact"] = exact; r["params"] = p19.n_params(m)
         acc = r["acc_eval_interval"]; r["bars"] = {"pair": acc["pair"] >= .717, "modk": acc["modk"] >= 1, "ratio": r["len_ratio_1024_over_256hard"] <= .6}
         print(f"[p42 {arm} s{a.seed}] bars={sum(r['bars'].values())}/3 pair {acc['pair']} modk {acc['modk']} ratio {r['len_ratio_1024_over_256hard']} predicates_exact={exact} {pred}", flush=True)
-        out["arms"][arm] = r; torch.save({"sd": m.state_dict()}, f"p21_ckpt/P42_{arm}_s{a.seed}.pt")
+        out["arms"][arm] = r; torch.save({"sd": m.state_dict()}, f"p21_ckpt/P42{a.tagsuffix}_{arm}_s{a.seed}.pt")
     open("log.jsonl", "a").write(json.dumps(out) + "\n"); print("[P42] DONE", flush=True)
 
 

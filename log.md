@@ -5084,3 +5084,20 @@ C84 = make the counters NECESSARY in-range — (i) sparsity prior on
 sigmoid(P) (one-or-two-token predicates), (ii) train on a length
 curriculum where the counter is the only sub-quadratic solution, (iii)
 straight-through hard predicates. Not retrying the as-is arm.
+
+C83 PHASE 3 — CORRECTION (supersedes the identifiability reading above).
+Measured at init: ||dL/dP|| = 0.0 EXACTLY. Cause: P13d zero-initialises
+every consumer of the counter state (Ws counter block, W_mod, W_depth;
+the "do-no-harm" injection), so the predicate logits sit behind an all-
+zero linear map; with tau annealing sigmoid(-2/tau) -> 0 the relaxation
+freezes before the consumers become non-zero. The s111 negative is
+therefore a DEAD-GRADIENT-PATH result, not evidence about LM-loss
+identifiability; L-PREDICATE-NONIDENTIFIABLE-IN-RANGE is WITHDRAWN.
+Protocol change (logged, not silent): remaining as-is LP seeds killed
+(a structurally dead arm; not worth 2 h); HW s111/s222 controls kept.
+C84 = P42 with --live (consumer init N(0,.1); ||dL/dP|| = .0027 at
+init), --p0 0 (sigmoid .5, not .12), --tau1 .5, --l1 .002 (few-token
+prior). Seeds 111/333 (lane A, run_c84.sh) and 222 (lane B after HW
+s222, run_c84b.sh). Pre-registration for C84 is the SAME (a)(b)(c) as
+C83; the falsifier now reads: wrong count predicate WITH a live
+gradient => genuine identifiability gap => C85 = curriculum lever.
