@@ -5308,3 +5308,17 @@ C85 predicates-only against that controller. Prediction: a useless
 crisp counter is ignored (blind) => phase 2 fails; if instead it
 succeeds, consumer commitment needs only crispness, not correctness,
 and joint-from-scratch is re-opened via a crisp-init schedule.
+
+C89 PHASE 2 — P41 re-sweep with the vectorised selectors (one other
+process running, like the second C82 sweep):
+| L | unified us/tok (C82 contended -> C89) | TF us/tok |
+| 256 | 3500 -> 2505 | 13.9 |
+| 1024 | 3514 -> 2393 | 45.7 |
+| 4096 | 3550 -> 2288 | 204 |
+| 16384 | 3547 -> 2354 | 1050 |
+~1.45x per-token speed-up at every L, slope still flat (16384/256 =
+.94), RSS unchanged (524 -> 789 MB), outputs bit-identical. Extrapolated
+wall-time crossover vs the ALiBi TF now ~L = 36k (was ~40k). RESULT
+ARCH-VET-LM-P41 (C89) in jsonl. Next engineering step (queued, larger):
+evaluate only the routed expert per step instead of all four (routing
+is causal, so this is exact) — up to ~3x more.

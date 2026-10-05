@@ -1,0 +1,12 @@
+[p41] unified params 116858 | TF-ALiBi params 42672
+/home/user/TryArena/arch_vet_p41.py:39: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  x = torch.tensor(p19.make_pool(1, L, 5)[0][:L]).unsqueeze(0)
+[p41 L=256] unified 0.641s = 2505.1 us/tok, peak RSS 524 MB
+[p41 L=256] TF-ALiBi 0.004s = 13.9 us/tok, peak RSS 527 MB
+[p41 L=1024] unified 2.450s = 2392.5 us/tok, peak RSS 534 MB
+[p41 L=1024] TF-ALiBi 0.047s = 45.7 us/tok, peak RSS 569 MB
+[p41 L=4096] unified 9.372s = 2288.0 us/tok, peak RSS 569 MB
+[p41 L=4096] TF-ALiBi 0.837s = 204.3 us/tok, peak RSS 789 MB
+[p41 L=16384] unified 38.562s = 2353.6 us/tok, peak RSS 789 MB
+[p41 L=16384] TF-ALiBi 17.199s = 1049.8 us/tok, peak RSS 1184 MB
+[P41] DONE
