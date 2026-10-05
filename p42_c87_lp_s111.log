@@ -1,0 +1,10 @@
+[p42] regime=wide installed (train counts 2-40, eval 41-100)
+[p42C87] LP params 21449 cfg p0=0.0 live=True st=False tau1=0.5 l1=0.0
+  [P42C87-LP-s111] step 250/4000 ce 1.1093 tau 0.96 pred(hit/on/true) one(0, 10, 1) task(0, 13, 1) open(0, 16, 2) close(0, 15, 2) (264s)
+  [P42C87-LP-s111] step 500/4000 ce 1.2021 tau 0.92 pred(hit/on/true) one(0, 11, 1) task(0, 14, 1) open(0, 16, 2) close(0, 15, 2) (515s)
+  [P42C87-LP-s111] step 750/4000 ce 1.0634 tau 0.88 pred(hit/on/true) one(0, 12, 1) task(0, 16, 1) open(0, 16, 2) close(0, 15, 2) (777s)
+  [P42C87-LP-s111] step 1000/4000 ce 1.1089 tau 0.84 pred(hit/on/true) one(0, 12, 1) task(0, 18, 1) open(0, 13, 2) close(0, 18, 2) (1030s)
+  [P42C87-LP-s111] step 1250/4000 ce 0.9094 tau 0.81 pred(hit/on/true) one(0, 13, 1) task(0, 18, 1) open(0, 12, 2) close(0, 19, 2) (1272s)
+  [P42C87-LP-s111] step 1500/4000 ce 1.0789 tau 0.77 pred(hit/on/true) one(0, 14, 1) task(0, 19, 1) open(0, 12, 2) close(0, 19, 2) (1502s)
+  [P42C87-LP-s111] step 1750/4000 ce 0.9803 tau 0.74 pred(hit/on/true) one(0, 15, 1) task(0, 17, 1) open(0, 13, 2) close(0, 19, 2) (1748s)
+  [P42C87-LP-s111] step 2000/4000 ce 1.0292 tau 0.71 pred(hit/on/true) one(0, 15, 1) task(0, 17, 1) open(0, 9, 2) close(1, 22, 2) (1986s)

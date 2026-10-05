@@ -5229,3 +5229,22 @@ the comparison is void (report, then raise steps). Falsifier: HW 1.0,
 LP count set diffuse => widening the interval does not create the
 in-range pressure (controller finds another in-range solution) =>
 predicate learning needs a structural prior, not a data lever.
+
+C87 PHASE 2 — LP wide regime s111 killed at step 2000: count set 0/15
+hits, task 0/17, same diffuse signature as C84b/C86 (train CE 0.98-1.10;
+the long ONE-runs are trivially predictable, so widening the interval
+LOWERED the loss weight of the one answer token per task rather than
+raising the pressure). Pre-registered falsifier branch taken: a data
+lever does not make the counter necessary in-range => structural prior.
+HW wide s111 left queued (lane B) so the regime's feasibility for the
+host is on record.
+C88 PHASE 1 — categorical predicates (--cat): each role = union of two
+softmax slots over V, temperature-annealed; hard view = top-1 of each
+slot, so every predicate is a <=2-token set BY CONSTRUCTION (the prior
+is "predicates are tiny token sets" — declared, uniform over roles,
+grammar-agnostic). Joint from scratch, --live, base regime, s111.
+Pre-registration: (a) count slot -> 21 and task slot -> 4 on >= 2/3
+seeds; (b) hard modk = 1.0 where (a); falsifier: slots lock onto
+fillers/track tokens with modk at chance => even a sparse prior cannot
+beat consumer blindness => the honest end-state is "learned predicates
+given a counter-consuming controller (C85); joint from scratch open".
