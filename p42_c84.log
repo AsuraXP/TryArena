@@ -1,0 +1,4 @@
+[p42C84] LP params 21449 cfg p0=0.0 live=True st=False tau1=0.5 l1=0.002
+  [P42C84-LP-s111] step 250/4000 ce 1.6902 tau 0.96 pred(hit/on/true) one(0, 0, 1) task(0, 0, 1) open(0, 0, 2) close(0, 0, 2) (236s)
+  [P42C84-LP-s111] step 500/4000 ce 1.5193 tau 0.92 pred(hit/on/true) one(0, 0, 1) task(0, 0, 1) open(0, 0, 2) close(0, 0, 2) (473s)
+  [P42C84-LP-s111] step 750/4000 ce 1.4636 tau 0.88 pred(hit/on/true) one(0, 0, 1) task(0, 0, 1) open(0, 0, 2) close(0, 0, 2) (704s)

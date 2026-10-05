@@ -5101,3 +5101,12 @@ prior). Seeds 111/333 (lane A, run_c84.sh) and 222 (lane B after HW
 s222, run_c84b.sh). Pre-registration for C84 is the SAME (a)(b)(c) as
 C83; the falsifier now reads: wrong count predicate WITH a live
 gradient => genuine identifiability gap => C85 = curriculum lever.
+
+C84 PHASE 2 — HW s222 control: 3/3 (pair .7925, modk 1.0, ratio .538):
+the P42 host/harness reproduces the certified A regime. C84 LP s111
+(l1 .002): all 192 logits < 0 by step 250 and never recover through
+750 — the L1 prior is a constant-sign gradient that AdamW normalises
+into a steady ~lr/step drift, which dominates the small, noisy CE
+signal on P (|dCE/dP| ~ 1e-3 at init). Artifact of optimiser x prior,
+logged; killed. C84b = same arm with l1 = 0 (live, p0 0, tau1 .5),
+seeds 111/333 lane A, 222 + HW s111 lane B.
