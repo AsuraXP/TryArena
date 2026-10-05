@@ -5256,3 +5256,17 @@ extras. L-PREDICATE-IDENTIFIABLE-GIVEN-CONSUMER: 2/2 seeds, both
 controllers (s111 and s222 HW), count predicate recovered from LM loss
 alone and the exact modk bar restored in hard deployment. RESULT
 ARCH-VET-LM-P42C85 x2 in jsonl.
+
+C89 PHASE 1 — inference engineering (the P41 constant factor), lossless:
+cProfile of Unified4 at L=256 (1 seq): 1.89 s, of which ~0.5 s was the
+per-timestep Python double loop computing the LIFO "newest valid slot"
+selector (5,888 sum() + 39,558 .float() calls) duplicated in lm/p9/p11/
+p38/p42, plus per-step torch.stack of K slot views. Replaced by one
+cumsum per step (sel_j = valid_j * [sum_{i<j} valid_i == 0]) and
+torch.cat — identical semantics. Verified: unified logits max|diff| =
+0.0 vs the pre-patch reference (2 x 256 x 304 tensor, seed-111 ckpts);
+verify_suite 35/35. Profiled time 1.89 s -> 1.17 s (1.6x); remaining
+time is the inherent per-step tensor ops of 4 densely evaluated experts
+(einsum/linear/where), i.e. the next step is torch.compile / scripting
+the step function or evaluating only the routed expert — both are
+larger changes, queued. Re-sweep of P41 after the current runs.

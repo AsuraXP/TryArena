@@ -82,11 +82,10 @@ class KRBBlocked(p37.KRBHind):
                 rb = torch.where(h1, i1, i2); rc = torch.where(h1, c1, c2); u2 = used.clone(); u2[ar[rd], rb[rd], rc[rd]] = True; used = u2
             g = torch.sigmoid(self.Wg(torch.cat([s, xt], -1))); push = (g > 0.5) + (g - g.detach())
             buf = torch.roll(buf, 1, dims=1); buf[:, 0] = xt * push; valid = torch.roll(valid, 1, dims=1); valid[:, 0] = (g > 0.5).squeeze(-1)
-            y = self.Wo(R + xt); feat = torch.stack([buf[:, j] for j in range(self.K)] + [xt], 1)
+            y = self.Wo(R + xt); feat = torch.cat([buf, xt.unsqueeze(1)], 1)
             logits = self.head(y) + torch.einsum("bk,bjd,kdv->bv", s, feat, self.M)
             selk = torch.zeros(B, self.K + 1)
-            for j in range(self.K):
-                newer = sum(valid[:, i].float() for i in range(j)) if j else torch.zeros(B); selk[:, j] = valid[:, j].float() * (newer == 0).float()
+            _vf = valid.float(); selk[:, :self.K] = _vf * ((_vf.cumsum(1) - _vf) == 0).float()   # C89: vectorised 'newest valid slot' (== the old per-j Python loop)
             selk[:, self.K] = 1.0
             lg[:, t] = logits + torch.einsum("bs,ksv->bv", selk, self.T) + mod_oh @ self.W_mod + depth_oh @ self.W_depth
         self.kg_logits = torch.stack(kgl_list, 1)

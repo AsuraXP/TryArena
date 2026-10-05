@@ -156,16 +156,12 @@ class STACKDCC2(VETDCC):
             valid = torch.roll(valid, 1, dims=1)
             valid[:, 0] = (g > 0.5).squeeze(-1)
             y = self.Wo(R + xt)
-            feat = torch.stack(
-                [buf[:, j] for j in range(self.K)] + [xt], 1)
+            feat = torch.cat([buf, xt.unsqueeze(1)], 1)
             logits = self.head(y)
             logits = logits + torch.einsum(
                 "bk,bjd,kdv->bv", s, feat, self.M)
             sel = torch.zeros(B, self.K + 1, device=x.device)
-            for j in range(self.K):
-                newer = torch.zeros(B, device=x.device) + sum(
-                    valid[:, i].float() for i in range(j))
-                sel[:, j] = valid[:, j].float() * (newer == 0).float()
+            _vf = valid.float(); sel[:, :self.K] = _vf * ((_vf.cumsum(1) - _vf) == 0).float()   # C89: vectorised 'newest valid slot' (== the old per-j Python loop)
             sel[:, self.K] = 1.0
             logits = logits + torch.einsum("bs,ksv->bv", sel, self.T)
             logits = logits + mod_oh @ self.W_mod \
