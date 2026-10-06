@@ -5526,3 +5526,35 @@ PREDICTION: SBC in-range >= .9 at d32 (where GRU .41); OOD-len within
 exceed M; slope on len > TF's (-.008). If in-range < GRU: the write
 event does not learn under CE (ledger reason 1) -> anneal schedule /
 consumer-need redesign before abandoning the cell.
+C95 RESULT (interim, seed-1 probe + 3x3 full run, 4000 steps, M=8).
+Blockers found and removed on the way (each one run): L1 on the gate
+-> writes die; gate init OFF -> writes die (reader never sees signal;
+same disease as C85 joint arm, now inside the core); keys/queries from
+the recurrent state -> a second co-adaptation; TIED q/k -> one map
+forced to serve two window roles. Final form: q,k,v from a learned
+2-token window [e_{t-1},e_t], untied, gate init ON, straight-through
+hard addressing, tau 1->0.1. Everything learned; no position signal.
+| d | params | seed | in | len(x4) | cnt(8 facts) | both | far(L~892, x23) | gate val/fil |
+|16|  5,034|1|1.000|1.000| .974| .935| .917| .95/.01|
+|16|  5,034|2| .438| .430| .260| .268| .250| .11/.10|  collapsed
+|16|  5,034|3| .401| .422| .245| .229| .130| .26/.08|  collapsed
+|32| 16,138|1|1.000|1.000|1.000| .997| .953| .99/.02|
+|32| 16,138|2| .953| .919| .779| .815| .766| .36/.02|  partial
+|32| 16,138|3|1.000|1.000| .995| .969| .901| .90/.02|
+|64| 56,778|1| .427| .419| .268| .234| .214| .18/.11|  collapsed
+|64| 56,778|2| .711| .716| .477| .445| .469| .23/.02|  partial
+|64| 56,778|3| .432| .451| .263| .260| .234| .08/.09|  collapsed
+Banked comparison (C94, same eval seeds): TF d64 104,612p in .997 /
+len .440 / cnt .711 / both .169; GRU d64 in .474.
+READING. (1) When the write event is learned (gate on values >= .9,
+on filler <= .02) the dense learner binds EXACTLY and the result is
+length-free (x23) and count-free up to M, at 5k params — a thing
+the 104k TF cannot do at any length beyond training. (2) Whether it
+is learned is bimodal: a basin. Early CE prefers writes OFF (slot
+noise through r/conf), the reader learns to ignore memory, the
+writer's gradient vanishes. Collapsed runs = plain GRU numbers.
+Slope over all 9 runs is negative (d64 0/3 clean): reported as is.
+LAW L-WRITE-EVENT-BASIN: a learned write event under CE is a
+bistable co-adaptation; init/warm-up decides the basin, not size.
+Next (running): hold the gate at 1 for the first 1000 steps so the
+reader learns to depend on memory before the writer may go quiet.
