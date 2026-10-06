@@ -5509,3 +5509,20 @@ only where the state is set-structured. => next cell on the map:
 'state = bindings the learner itself creates' — INSIDE the learner,
 position-free, bounded, overwritable, learned end-to-end (not an
 organ: delete the learned part and nothing works).
+
+C95 — PRE-REGISTRATION (arch_vet_p47.py): SLOT-BINDING CORE (SBC).
+Map cell: 'state = bindings the learner creates' + 'continuous inside
+a binding, discrete between (annealed)' + 'explicit empty state'.
+Prior art: Sparse Delta Memory (Cabannes+ 2026-07; sparse slot delta
+writes, top-k product keys, writes every token), Lattice arXiv
+2504.05646 (online-GD slot compression), NTM/DNC (location/usage
+addressing). Delta: (a) write = learned sparse EVENT (L1 on gate;
+filler must leave memory untouched), (b) content-only addressing
+annealed soft->hard so one slot = one exact binding with overwrite,
+(c) occupancy is readable -> 'nothing stored' is a state. No position
+signal anywhere. Everything learned (controller GRU, q/k/v, gates).
+PREDICTION: SBC in-range >= .9 at d32 (where GRU .41); OOD-len within
+.05 of in-range (position-free); OOD-count degrades only as facts
+exceed M; slope on len > TF's (-.008). If in-range < GRU: the write
+event does not learn under CE (ledger reason 1) -> anneal schedule /
+consumer-need redesign before abandoning the cell.
