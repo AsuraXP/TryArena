@@ -48,7 +48,7 @@ class SBC(nn.Module):
         self.head = nn.Linear(2 * d + 1, V)
         nn.init.constant_(self.g.bias, GATE_INIT)   # +2: start writing everything (like a KV cache); learn to NOT write
 
-    def forward(self, x, tau=0.1, states=False, force_write=False, M=None, gmin=0.0):
+    def forward(self, x, tau=0.1, states=False, force_write=False, M=None, gmin=0.0, hardgate=False):
         B, L = x.shape; d = self.d; M = M or self.M; e = self.E(x)
         h = torch.zeros(B, d); K = self.K0[:M].unsqueeze(0).expand(B, M, d).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M)
         outs, gates = [], []
@@ -62,7 +62,9 @@ class SBC(nn.Module):
             conf = (a * occ).sum(-1, keepdim=True)
             outs.append(self.head(torch.cat([h, r, conf], -1)))
             # write
-            k = self.ka[0] * e[:, t] + self.ka[1] * prev0; v = self.v(win); g = torch.ones(B, 1) if force_write else gmin + (1 - gmin) * torch.sigmoid(self.g(h)); gates.append(g)   # leaky: 'off' is never absorbing
+            k = self.ka[0] * e[:, t] + self.ka[1] * prev0; v = self.v(win); g = torch.ones(B, 1) if force_write else gmin + (1 - gmin) * torch.sigmoid(self.g(h))   # leaky: 'off' is never absorbing
+            if hardgate: g = (g > 0.5).float()
+            gates.append(g)
             wsim = torch.einsum("bd,bmd->bm", k, K) / math.sqrt(d)
             m = hard(torch.softmax((wsim + logocc) / tau, -1))
             p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta)
@@ -91,10 +93,10 @@ def train(d, M, seed, steps, B, log, l1=0.0, warm=0):
 
 
 @torch.no_grad()
-def acc(m, batches, tau=0.05, M=None):
+def acc(m, batches, tau=0.05, M=None, hardgate=False):
     m.eval(); c = t = 0
     for bt in batches:
-        p = m(bt["x"], tau=tau, M=M).argmax(-1)
+        p = m(bt["x"], tau=tau, M=M, hardgate=hardgate).argmax(-1)
         for i, poss in enumerate(bt["ans"]):
             for s in poss: c += int(p[i, s - 1].item() == bt["x"][i, s].item()); t += 1
     m.train(); return c / max(t, 1)
@@ -127,8 +129,8 @@ def main():
             m = train(d, a.M, seed, a.steps, a.B, log, warm=a.warm)
             wp = write_profile(m, ev_in)
             Me = a.Meval or None
-            r = {"arm": "SBC", "warm": a.warm, "d": d, "M": a.M, "Meval": a.Meval or a.M, "seed": seed, "params": T.n_params(m), "in": acc(m, ev_in, M=Me), "len": acc(m, ev_len, M=Me), "cnt": acc(m, ev_cnt, M=Me), "both": acc(m, ev_both, M=Me), "far": acc(m, ev_far, M=Me), "gate_on_values": wp[0], "gate_on_filler": wp[1]}
-            res["runs"].append(r); log(f"[p47 SBC d{d} M{a.M} s{seed}] params {r['params']} in {r['in']:.3f} len {r['len']:.3f} cnt {r['cnt']:.3f} both {r['both']:.3f} far {r['far']:.3f} gate val/fil {wp}")
+            r = {"arm": "SBC", "warm": a.warm, "d": d, "M": a.M, "Meval": a.Meval or a.M, "seed": seed, "params": T.n_params(m), "in": acc(m, ev_in, M=Me), "len": acc(m, ev_len, M=Me), "cnt": acc(m, ev_cnt, M=Me), "both": acc(m, ev_both, M=Me), "far": acc(m, ev_far, M=Me), "far_hard": acc(m, ev_far, M=Me, hardgate=True), "both_hard": acc(m, ev_both, M=Me, hardgate=True), "gate_on_values": wp[0], "gate_on_filler": wp[1]}
+            res["runs"].append(r); log(f"[p47 SBC d{d} M{a.M} s{seed}] params {r['params']} in {r['in']:.3f} len {r['len']:.3f} cnt {r['cnt']:.3f} both {r['both']:.3f} far {r['far']:.3f} | hardgate both {r['both_hard']:.3f} far {r['far_hard']:.3f} | gate val/fil {wp}")
     xs = [math.log2(r["params"]) for r in res["runs"]]
     if len(xs) >= 2:
         res["slopes"] = {}

@@ -5558,3 +5558,39 @@ LAW L-WRITE-EVENT-BASIN: a learned write event under CE is a
 bistable co-adaptation; init/warm-up decides the basin, not size.
 Next (running): hold the gate at 1 for the first 1000 steps so the
 reader learns to depend on memory before the writer may go quiet.
+C95 RESULT — FINAL FORM (arch_vet_p47.py), 3 sizes x 3 seeds, 4000
+steps, train M=4 slots / eval M=8 (state grown, no retraining).
+Collapse diagnosed (diag47.py, seed 2): ALL slots start identical, so
+soft addressing is uniform, every write smears over every slot,
+reads are 1/M everywhere and q/k/theta receive ZERO gradient — an
+unbroken symmetry, not a basin of CE. Earlier "fixes" (L1, gate
+init, warm-up, zero-init read path, ST-hard) were all aimed at the
+gate; the gate was downstream. Final form: learned distinct initial
+slot keys (symmetry broken by construction), soft addressing tau
+1->.1, leaky gate gmin .2->0 (off-state never absorbing), q/k as
+learned per-tap mixes in the shared embedding space (the model
+discovered key<-previous token [.22,1.30], query<-current [1.03,.12]
+by itself), v from the 2-token window, controller GRU for everything
+else. No position signal anywhere.
+| d | params | in | OOD-len x4 | OOD-cnt 8 facts (M 4->8) | both | far L~892 x23 | gate val/fil |
+|16| 4,298| .911/.987/.846| .943/.977/.878| .732/.820/.620| .659/.844/.667| .510/.771/.651| .99/.07 .88/.04 .99/.05|
+|32|12,618| .992/.974/.948| .992/.974/.958| .857/.828/.826| .891/.818/.862| .875/.807/.557| .99/.06 .99/.06 1.0/.21|
+|64|41,546| .990/.987/.987| .984/1.00/.982| .815/.828/.807| .812/.878/.812| .812/.818/.823| .91/.07 .95/.06 .97/.08|
+Slopes (acc per log2 params): in +.022 len +.017 cnt +.028 both
++.033 far +.053. Banked TF (C94, identical eval seeds): d64 104,612p
+in .997 / len .440 / cnt .711 / both .169; TF len slope -.008.
+GRU d64 in .474. 9/9 seeds learn (previous form 3/9).
+WHAT THIS IS: a dense learner (every map learned, loss = CE only)
+whose state is a bounded set of bindings it writes itself; the write
+is a learned EVENT (>=.88 on values, <=.08 on filler) and reading is
+by content, so distance does not exist for it (x23 length, .82 at
+41k params where TF collapses at x4) and capacity is a state size,
+not a parameter (M grown 4->8 at deployment). Delete the learned
+part and nothing works. This is the first core-lane positive.
+WHAT IT IS NOT YET: cnt ceiling ~.83 at M 4->8 (investigating: M=8
+training run); far erodes at d16 from leak writes (hard-gate eval
+added); one synthetic binding task, not text; filler is noise, not
+language. LAWS: L-SLOT-SYMMETRY (identical initial slots give zero
+gradient to addressing; symmetry must be broken by construction) and
+L-OFF-STATE-MUST-LEAK (a saturating write gate makes 'never write'
+absorbing; a leaky gate during training removes the attractor).
