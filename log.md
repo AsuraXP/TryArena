@@ -5594,3 +5594,24 @@ language. LAWS: L-SLOT-SYMMETRY (identical initial slots give zero
 gradient to addressing; symmetry must be broken by construction) and
 L-OFF-STATE-MUST-LEAK (a saturating write gate makes 'never write'
 absorbing; a leaky gate during training removes the attractor).
+C95 ADDENDUM — train M=8 (no scarcity), d32, 2 seeds: in 1.000/.997,
+len 1.000/1.000, cnt .909/.852, both .922/.883, far .891/.854;
+HARD gate at eval identical (.924/.891) -> the learned gate is
+already binary in effect; selectivity (.95/.07) emerged WITHOUT
+scarcity once the slot symmetry was broken. cnt ceiling ~.9: 8 facts
+= every key in use + overwrites; residual = match-threshold
+collisions (theta is a single scalar). Left as is.
+
+C96 — PRE-REGISTRATION (arch_vet_p48.py): SBC on TEXT.
+Natural dialogue bytes (chat_dialogues_big.txt, 4.8 MB, 95/5 split),
+train contiguous L=128, 3000 steps, B=16, arms TF / GRU / SBC at
+d=16/32/64, identical batches. Metrics: val nats/byte at 128 (in
+range), 512, 1024 (length OOD). PREDICTION: (1) SBC ce128 < GRU
+ce128 at every size (bindings buy copying of names/words within the
+window); (2) SBC ce1024 <= SBC ce128 (position-free: longer context
+can only help), TF ce1024 > TF ce128 (PE extrapolation); (3) slope
+d(ce)/d(log2 params) more negative for SBC than TF. Honest risk: at
+these sizes the TF may beat SBC in-range on bytes; reported as is.
+If (1) fails: the write event does not fire on text (gate stats
+logged) -> the binding core needs a text-shaped need (next: name/
+entity-heavy synthetic text) before claiming the generalizer target.

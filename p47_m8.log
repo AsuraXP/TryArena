@@ -1,0 +1,23 @@
+[P47] eval lens in=38 len=155 cnt=70 both=299 far=892
+  [SBC d32 M8 s1] step 0 tau 1.00 ce 3.609 gate 0.901 occ 1.00 (0s)
+  [SBC d32 M8 s1] step 500 tau 0.75 ce 1.706 gate 0.346 occ 0.65 (39s)
+  [SBC d32 M8 s1] step 1000 tau 0.56 ce 1.744 gate 0.319 occ 0.68 (77s)
+  [SBC d32 M8 s1] step 1500 tau 0.42 ce 1.696 gate 0.328 occ 0.66 (117s)
+  [SBC d32 M8 s1] step 2000 tau 0.32 ce 1.628 gate 0.334 occ 0.66 (154s)
+  [SBC d32 M8 s1] step 2500 tau 0.24 ce 1.509 gate 0.310 occ 0.57 (193s)
+  [SBC d32 M8 s1] step 3000 tau 0.18 ce 1.646 gate 0.296 occ 0.63 (232s)
+  [SBC d32 M8 s1] step 3500 tau 0.13 ce 1.513 gate 0.274 occ 0.53 (271s)
+  [SBC d32 M8 s1] step 3999 tau 0.10 ce 1.604 gate 0.270 occ 0.58 (311s)
+[p47 SBC d32 M8 s1] params 12618 in 1.000 len 1.000 cnt 0.909 both 0.922 far 0.891 | hardgate both 0.924 far 0.891 | gate val/fil (0.956, 0.071)
+  [SBC d32 M8 s2] step 0 tau 1.00 ce 3.596 gate 0.895 occ 0.99 (0s)
+  [SBC d32 M8 s2] step 500 tau 0.75 ce 1.637 gate 0.324 occ 0.60 (39s)
+  [SBC d32 M8 s2] step 1000 tau 0.56 ce 1.625 gate 0.333 occ 0.64 (79s)
+  [SBC d32 M8 s2] step 1500 tau 0.42 ce 1.532 gate 0.350 occ 0.60 (117s)
+  [SBC d32 M8 s2] step 2000 tau 0.32 ce 1.512 gate 0.334 occ 0.61 (156s)
+  [SBC d32 M8 s2] step 2500 tau 0.24 ce 1.578 gate 0.317 occ 0.64 (193s)
+  [SBC d32 M8 s2] step 3000 tau 0.18 ce 1.645 gate 0.291 occ 0.63 (232s)
+  [SBC d32 M8 s2] step 3500 tau 0.13 ce 1.657 gate 0.262 occ 0.59 (387s)
+  [SBC d32 M8 s2] step 3999 tau 0.10 ce 1.541 gate 0.257 occ 0.56 (425s)
+[p47 SBC d32 M8 s2] params 12618 in 0.997 len 1.000 cnt 0.852 both 0.883 far 0.854 | hardgate both 0.880 far 0.854 | gate val/fil (0.946, 0.068)
+[P47] slopes {"in": 0.0, "len": 0.0, "cnt": 0.0, "both": 0.0, "far": 0.0}
+[P47] DONE
