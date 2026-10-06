@@ -5466,3 +5466,46 @@ Bugs fixed on the way (logged): chat.py exec clobbered sys.argv_backup
 (all CLI args dropped silently); write-before-read.
 RESULT ARCH-VET-LM-P45 in jsonl. Distance test (200 distractors)
 running -> p45_mem_d200.log.
+
+C94 — CORE LANE OPENS. PRE-REGISTRATION (arch_vet_p46.py).
+Gate: candidates A state-invariance+counterfactual loss (survivor) /
+B law-situation two-timescale (fast-weights family, killed) / C
+surprise-gated plasticity (focal family, killed) / D credit-through-
+binding (deferred, needs bindings) / E event-count time (deferred).
+Prior art: TAR arXiv 1708.01009 (penalises adjacent-step change — the
+opposite); CSR arXiv 2509.01544 (counterfactual KL on LLM outputs at
+fine-tune). Delta: loss on the recurrent STATE of a from-scratch
+learner; meaning := invariant to distractor insertion/resampling AND
+moved by a counterfactual fact swap. No organs; dense GRU answers.
+Task: key-value facts with overwrites + filler + queries; train L~64,
+<=4 facts, filler runs 0-4; OOD-len: same facts, runs 0-30 (L~200);
+OOD-count: 8 facts. Arms: TF, GRU, GRU+INV at d=16/32/64, same
+batches, 1500 steps. PREDICTION: INV > GRU on OOD at every size and
+INV slope (acc vs log2 params) > GRU slope; TF collapses on count
+(banked). If INV == GRU: invariance is not the missing need -> the
+learner needs a *structural* place for bindings, not a loss (goes to
+map cell 'state = learner-created bindings').
+C94 RESULT — FALSIFIED (seed 1, 8000 steps, answer-weighted CE, same batches).
+| arm | d | params | in | OOD-len | OOD-cnt | both |
+| TF  |16|  7,748| .990| .474| .557| .073|
+| TF  |32| 27,748|1.000| .253| .672| .042|
+| TF  |64|104,612| .997| .440| .711| .169|
+| GRU |16|  2,820| .372| .307| .224| .182|
+| GRU |32|  8,676| .406| .414| .258| .258|
+| GRU |64| 29,604| .474| .430| .211| .232|
+| INV |16|  2,820| .331| .339| .216| .148|
+| INV |32|  8,676| .411| .411| .240| .237|
+| INV |64| 29,604| .406| .438| .242| .234|
+Slopes (acc per log2 param): TF len -.008 / GRU len .036 / INV len .029.
+The invariance term is satisfied (inv -> .003) and changes nothing:
+INV == GRU at every size. A loss cannot create what the state has no
+place for. Reading that transfers: TF binds in range because its
+state IS a set of bindings (the KV cache) — paid for with O(N) state
+and position-fragility (len .25-.47) and no overwrite (both .04-.17:
+stale facts compete). The GRU's fixed vector cannot hold 4 bindings
+at all. LAW L-BINDING-NEEDS-A-PLACE: at micro scale a dense recurrent
+state does not learn to bind under CE+invariance; binding appears
+only where the state is set-structured. => next cell on the map:
+'state = bindings the learner itself creates' — INSIDE the learner,
+position-free, bounded, overwritable, learned end-to-end (not an
+organ: delete the learned part and nothing works).
