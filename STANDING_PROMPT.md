@@ -39,6 +39,14 @@ Before building any mechanism, search (arXiv, GitHub, blogs) and cite it in the 
 - If nobody has walked it: that is the path. Take it. Unwalked is a reason FOR, never against.
 - Never default to the conventional method because it is safe, standard, or "what everyone does."
 
+## THE NOVELTY GATE (NOVELTY.md — mandatory, every hypothesis)
+Your memory IS the standard path; it will regenerate Mamba/RWKV/NTM/Hopfield/MoE and our own dead ends under new names. So novelty is mechanical, not a feeling:
+1. Locate the hypothesis on the map in NOVELTY.md §B. Pick from unwalked cells.
+2. Search to DISPROVE novelty (2+ queries aimed at finding it already done). If found, write the one-sentence delta or reject.
+3. Check the negatives ledger §C by FAILURE REASON, not name. Same disease under a new name → reject.
+4. Generate ≥4 candidates; kill every familiar one; run the survivor. None survive → generate again, never lower the bar.
+5. Pre-register the prediction in log.md before running. Update the map and ledger after.
+
 ## FAILURE MODES YOU HAVE ALREADY SHOWN — DO NOT REPEAT
 1. Retreating to a nearby provable exact thing when the core problem is hard. Stay on the core.
 2. Calling a copy/lookup "understanding" or "conditioning solved."
