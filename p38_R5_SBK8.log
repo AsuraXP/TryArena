@@ -1,0 +1,66 @@
+[p38] R5:SBK8 params 21324
+/home/user/TryArena/arch_vet_p38.py:110: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R5-SBK8] step 250/4000 ce 2.1231 bce 0.483 (168s)
+  [P38-R5-SBK8] step 500/4000 ce 2.0410 bce 0.435 (333s)
+  [P38-R5-SBK8] step 750/4000 ce 1.9999 bce 0.392 (498s)
+  [P38-R5-SBK8] step 1000/4000 ce 1.9590 bce 0.356 (662s)
+  [P38-R5-SBK8] step 1250/4000 ce 1.9700 bce 0.365 (824s)
+  [P38-R5-SBK8] step 1500/4000 ce 1.9358 bce 0.361 (989s)
+  [P38-R5-SBK8] step 1750/4000 ce 1.9281 bce 0.352 (1151s)
+  [P38-R5-SBK8] step 2000/4000 ce 1.9332 bce 0.361 (1319s)
+  [P38-R5-SBK8] step 2250/4000 ce 1.9007 bce 0.368 (1489s)
+  [P38-R5-SBK8] step 2500/4000 ce 1.8938 bce 0.361 (1659s)
+  [P38-R5-SBK8] step 2750/4000 ce 1.8878 bce 0.349 (1832s)
+  [P38-R5-SBK8] step 3000/4000 ce 1.9704 bce 0.344 (2003s)
+  [P38-R5-SBK8] step 3250/4000 ce 1.8969 bce 0.345 (2176s)
+  [P38-R5-SBK8] step 3500/4000 ce 1.9309 bce 0.357 (2341s)
+  [P38-R5-SBK8] step 3750/4000 ce 1.8726 bce 0.350 (2507s)
+  [P38-R5-SBK8] step 4000/4000 ce 1.8902 bce 0.351 (2673s)
+[p38 R5:SBK8 s111] {'n4_hard': 1.0, 'n8_hard': 1.0, 'n12_hard': 1.0, 'n16_hard': 1.0, 'n_train_mix_hard': 1.0, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.0}}
+[P38] DONE
+[p38] R5:SBK8 params 21324
+/home/user/TryArena/arch_vet_p38.py:110: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R5-SBK8] step 250/4000 ce 2.1204 bce 0.483 (168s)
+  [P38-R5-SBK8] step 500/4000 ce 2.1089 bce 0.459 (334s)
+  [P38-R5-SBK8] step 750/4000 ce 2.0367 bce 0.410 (507s)
+  [P38-R5-SBK8] step 1000/4000 ce 1.9684 bce 0.372 (684s)
+  [P38-R5-SBK8] step 1250/4000 ce 1.9787 bce 0.380 (850s)
+  [P38-R5-SBK8] step 1500/4000 ce 1.9424 bce 0.375 (1019s)
+  [P38-R5-SBK8] step 1750/4000 ce 1.9282 bce 0.365 (1184s)
+  [P38-R5-SBK8] step 2000/4000 ce 1.9364 bce 0.371 (1348s)
+  [P38-R5-SBK8] step 2250/4000 ce 1.9243 bce 0.376 (1519s)
+  [P38-R5-SBK8] step 2500/4000 ce 1.9205 bce 0.375 (1688s)
+  [P38-R5-SBK8] step 2750/4000 ce 1.9071 bce 0.356 (1855s)
+  [P38-R5-SBK8] step 3000/4000 ce 1.9855 bce 0.346 (2022s)
+  [P38-R5-SBK8] step 3250/4000 ce 1.9011 bce 0.340 (2187s)
+  [P38-R5-SBK8] step 3500/4000 ce 1.9463 bce 0.359 (2357s)
+  [P38-R5-SBK8] step 3750/4000 ce 1.9027 bce 0.348 (2526s)
+  [P38-R5-SBK8] step 4000/4000 ce 1.9097 bce 0.344 (2695s)
+[p38 R5:SBK8 s222] {'n4_hard': 1.0, 'n8_hard': 1.0, 'n12_hard': 1.0, 'n16_hard': 1.0, 'n_train_mix_hard': 1.0, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.004}}
+[P38] DONE
+[p38] R5:SBK8 params 21324
+/home/user/TryArena/arch_vet_p38.py:110: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P38-R5-SBK8] step 250/4000 ce 2.1643 bce 0.507 (159s)
+  [P38-R5-SBK8] step 500/4000 ce 2.2323 bce 0.444 (323s)
+  [P38-R5-SBK8] step 750/4000 ce 2.1121 bce 0.409 (501s)
+  [P38-R5-SBK8] step 1000/4000 ce 1.9703 bce 0.359 (676s)
+  [P38-R5-SBK8] step 1250/4000 ce 1.9646 bce 0.361 (848s)
+  [P38-R5-SBK8] step 1500/4000 ce 1.9133 bce 0.350 (1021s)
+  [P38-R5-SBK8] step 1750/4000 ce 1.9022 bce 0.343 (1193s)
+  [P38-R5-SBK8] step 2000/4000 ce 1.9159 bce 0.345 (1368s)
+  [P38-R5-SBK8] step 2250/4000 ce 1.9041 bce 0.354 (1548s)
+  [P38-R5-SBK8] step 2500/4000 ce 1.8963 bce 0.353 (1726s)
+  [P38-R5-SBK8] step 2750/4000 ce 1.8777 bce 0.337 (1901s)
+  [P38-R5-SBK8] step 3000/4000 ce 1.9685 bce 0.336 (2077s)
+  [P38-R5-SBK8] step 3250/4000 ce 1.8986 bce 0.328 (2246s)
+  [P38-R5-SBK8] step 3500/4000 ce 1.9363 bce 0.348 (2417s)
+  [P38-R5-SBK8] step 3750/4000 ce 1.8916 bce 0.340 (2588s)
+  [P38-R5-SBK8] step 4000/4000 ce 1.9032 bce 0.336 (2761s)
+[p38 R5:SBK8 s333] {'n4_hard': 1.0, 'n8_hard': 1.0, 'n12_hard': 1.0, 'n16_hard': 1.0, 'n_train_mix_hard': 1.0, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.004}}
+[P38] DONE

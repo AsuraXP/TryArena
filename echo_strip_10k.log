@@ -1,0 +1,23 @@
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[run] table-only params=24
+  [tbl s0] step 1000/10000 CE 1.3885 (33s)
+  [tbl s0] step 2000/10000 CE 1.3738 (66s)
+  [tbl s0] step 3000/10000 CE 1.3684 (100s)
+  [tbl s0] step 4000/10000 CE 1.3679 (133s)
+  [tbl s0] step 5000/10000 CE 1.3672 (166s)
+  [tbl s0] step 6000/10000 CE 1.3759 (199s)
+  [tbl s0] step 7000/10000 CE 1.3624 (232s)
+  [tbl s0] step 8000/10000 CE 1.3666 (265s)
+  [tbl s0] step 9000/10000 CE 1.3684 (299s)
+  [tbl s0] step 10000/10000 CE 1.3649 (332s)
+  [tbl s0] @4096 {'total': 0.5934, 'echo': 1.2365, 'open': 1.596, 'params': 24}
+  [hero]        @4096 {'total': -0.2935, 'echo': 0.0106, 'open': 0.9407, 'params': 2974}
+
+========================================================================
+ECHO STRIP-DOWN @4096 (total dCE | echo-dCE | open-CE)
+========================================================================
+table_only_s0            params 24     total 0.5934    echo 1.2365   open 1.596
+hero_ref (dyke_s0)       params 2974   total -0.2935   echo 0.0106   open 0.9407
+========================================================================
+RESULT {"tag": "ARC2-C10-ECHO-STRIP-10K", "runs": {"table_only_s0": {"total": 0.5934, "echo": 1.2365, "open": 1.596, "params": 24}, "hero_ref (dyke_s0)": {"total": -0.2935, "echo": 0.0106, "open": 0.9407, "params": 2974}}, "wall_s": 333.3, "peak_mb": 658.9}
+DONE

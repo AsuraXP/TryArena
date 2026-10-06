@@ -1,0 +1,23 @@
+[c29e] census: 278/300 failing cases, 232 localized repair cells
+[c29e] seed fitness = 0.4692
+[c29e] edit 1: 0.4692 -> 0.5242
+[c29e] edit 2: 0.5242 -> 0.5542
+[c29e] edit 11: 0.5542 -> 0.6033
+[c29e] edit 37: 0.6033 -> 0.6183
+[c29e] edit 221: 0.6183 -> 0.6233
+[c29e] edit 306: 0.6251 -> 0.6333
+[c29e] edit 456: 0.6346 -> 0.6542
+[c29e] edit 606: 0.6550 -> 0.6758
+[c29e] edit 1294: 0.6758 -> 0.6800
+[c29e] edit 1912: 0.6800 -> 0.7150
+[c29e] edit 2441: 0.7150 -> 0.7217
+[c29e] edit 7053: 0.7217 -> 0.7300
+[c29e] edit 12107: 0.7300 -> 0.7354
+[c29e] done: edits=28107 accepted=16 best=0.7354
+[cert] indist: 16/500 exact, passes=4.16 (want 4), trace_ok=False
+[cert] n16: 0/200 exact, passes=17.24 (want 17), trace_ok=False
+[cert] n32: 0/100 exact, passes=33.14 (want 33), trace_ok=False
+[cert] joint: 0/100 exact, passes=65.22 (want 65), trace_ok=False
+[verdict] {'S1': '16/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': False, 'ALL': False}
+RESULT {"tag": "ARC2-C29E-P6-CEGIS", "search": {"edits": 28107, "accepted": 16, "fitness": 0.7354, "repair_cells": 232, "fail_cases": 278}, "cert": {"indist": {"exact": "16/500", "passes_mean": 4.16, "trace_ok": false}, "n16": {"exact": "0/200", "passes_mean": 17.24, "trace_ok": false}, "n32": {"exact": "0/100", "passes_mean": 33.14, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 65.22, "trace_ok": false}}, "verdict": {"S1": "16/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": false, "ALL": false}, "wall_s": 214.7, "peak_mb": 498.5}
+DONE

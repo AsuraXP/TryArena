@@ -1,0 +1,12 @@
+[setup] dyck3-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 4096], 'eval_reps': 2, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02, 'tf_steps': 10000}
+[arm] table3_k3 params=64
+  [tbl3 s0] step 2000/2500 CE 0.9540 (87s)
+  [tbl3 s0] @4096 {'total': 0.0068, 'echo': 0.0271, 'params': 64}
+  [tbl3 s1] step 2000/2500 CE 0.9492 (88s)
+  [tbl3 s1] @4096 {'total': 0.0073, 'echo': 0.0285, 'params': 64}
+[arm] ssm_d16_1 params=2888
+  [ssm] step 2000/2500 CE 0.9601 (24s)
+  [ssm] @4096 {'total': -0.0072, 'echo': 0.9836, 'params': 2888}
+/home/user/TryArena/dyck3_echo.py:102: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[arm] TF_STRONG params=794120 (10k steps)

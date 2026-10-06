@@ -1,0 +1,24 @@
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+  [ssm] step 500/2500 CE 0.7274 (7s)
+  [ssm] step 1000/2500 CE 0.7448 (13s)
+  [ssm] step 1500/2500 CE 0.7360 (19s)
+  [ssm] step 2000/2500 CE 0.6805 (25s)
+  [ssm] step 2500/2500 CE 0.6587 (31s)
+<string>:187: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  [tf] step 500/2500 CE 0.6483 (21s)
+  [tf] step 1000/2500 CE 0.6709 (42s)
+  [tf] step 1500/2500 CE 0.6617 (63s)
+  [tf] step 2000/2500 CE 0.6393 (84s)
+  [tf] step 2500/2500 CE 0.6210 (106s)
+============================================================================================
+DYCK-ECHO per-token-type dCE  (echo oracle = 0 exactly; echo = the non-regular read)
+============================================================================================
+echo L512      total -0.2761  echo 0.0107   open -0.4376  close -0.3422  echo_frac 0.297
+echo L4096     total -0.2935  echo 0.0106   open -0.4456  close -0.3804  echo_frac 0.292
+ssm L512       total -0.1014  echo 0.6019   open -0.4567  close -0.3188  echo_frac 0.297
+ssm L4096      total -0.1199  echo 0.6057   open -0.4644  close -0.3539  echo_frac 0.292
+tf L512        total 2.2526   echo 2.7048   open 1.3307   close 3.0556   echo_frac 0.297
+tf L4096       total 1.4569   echo 2.42     open 0.7083   close 1.562    echo_frac 0.292
+============================================================================================
+RESULT {"tag": "ARC2-C8-DYCKECHO-DECOMP", "runs": {"echo L512": {"total_dce": -0.2761, "echo_dce (E0+E1+Z, oracle=0 exactly)": 0.0107, "open_dce (O0+O1)": -0.4376, "close_dce (C)": -0.3422, "echo_frac": 0.297}, "echo L4096": {"total_dce": -0.2935, "echo_dce (E0+E1+Z, oracle=0 exactly)": 0.0106, "open_dce (O0+O1)": -0.4456, "close_dce (C)": -0.3804, "echo_frac": 0.292}, "ssm L512": {"total_dce": -0.1014, "echo_dce (E0+E1+Z, oracle=0 exactly)": 0.6019, "open_dce (O0+O1)": -0.4567, "close_dce (C)": -0.3188, "echo_frac": 0.297}, "ssm L4096": {"total_dce": -0.1199, "echo_dce (E0+E1+Z, oracle=0 exactly)": 0.6057, "open_dce (O0+O1)": -0.4644, "close_dce (C)": -0.3539, "echo_frac": 0.292}, "tf L512": {"total_dce": 2.2526, "echo_dce (E0+E1+Z, oracle=0 exactly)": 2.7048, "open_dce (O0+O1)": 1.3307, "close_dce (C)": 3.0556, "echo_frac": 0.297}, "tf L4096": {"total_dce": 1.4569, "echo_dce (E0+E1+Z, oracle=0 exactly)": 2.42, "open_dce (O0+O1)": 0.7083, "close_dce (C)": 1.562, "echo_frac": 0.292}}, "wall_s": 141.9, "peak_mb": 1349.0}
+DONE

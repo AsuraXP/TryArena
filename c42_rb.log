@@ -1,0 +1,7 @@
+  [c42] evals 10000 best 0.3878 (199s)
+[c42] search done: evals 12023 best 0.3985
+[c42] feasible(rightward) pairing fraction = 0.556
+[c42] per-position tgt success: {'tgt0': '6/30', 'tgt1': '20/30', 'tgt2': '13/20', 'tgt3': '8/10'}
+[c42] verdict: NEGATIVE-STRUCTURAL (predicted barrier empirically confirmed)
+RESULT {"tag": "ARC2-C42-REVBIND", "res": {"search_best_fitness": 0.3985, "evals": 12023, "feasible_fraction": 0.5556, "per_position": {"tgt0": "6/30", "tgt1": "20/30", "tgt2": "13/20", "tgt3": "8/10"}, "theorem": "single-head LTR tape machines transport values monotonically rightward; reversal needs leftward moves for half the pairs => class barrier at ANY budget", "next_attack": "LIFO organ (machine-v6 kstack) / bidirectional head", "verdict": "NEGATIVE-STRUCTURAL (predicted barrier empirically confirmed)"}, "wall_s": 240.0, "peak_mb": 494.8}
+DONE

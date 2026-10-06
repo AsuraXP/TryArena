@@ -1,0 +1,32 @@
+[VETDCC-big seed 111] params=21257
+  [VETDCC-big-s111] step 500/2000 loss 0.4271 (338s)
+  [VETDCC-big-s111] step 1000/2000 loss 0.4211 (680s)
+  [VETDCC-big-s111] step 1500/2000 loss 0.3934 (1023s)
+  [VETDCC-big-s111] step 2000/2000 loss 0.3745 (1371s)
+[VETDCC-big s111] exact: {'exact_d3': 0.0, 'exact_d4': 0.0, 'exact_d5': 0.0, 'exact_d6': 0.0, 'exact_d7': 0.0, 'exact_d8': 0.0}
+[VETDCC-big s111] close: {'close_d3': 0.6409, 'close_d4': 0.5334, 'close_d6': 0.4416, 'close_d8': 0.396}
+[VETDCC-big seed 222] params=21257
+  [VETDCC-big-s222] step 500/2000 loss 0.3840 (348s)
+  [VETDCC-big-s222] step 1000/2000 loss 0.3748 (693s)
+  [VETDCC-big-s222] step 1500/2000 loss 0.3680 (1039s)
+  [VETDCC-big-s222] step 2000/2000 loss 0.3580 (1384s)
+[VETDCC-big s222] exact: {'exact_d3': 0.0, 'exact_d4': 0.0, 'exact_d5': 0.0, 'exact_d6': 0.0, 'exact_d7': 0.0, 'exact_d8': 0.0}
+[VETDCC-big s222] close: {'close_d3': 0.2897, 'close_d4': 0.3716, 'close_d6': 0.2936, 'close_d8': 0.259}
+[VETDCC-big seed 333] params=21257
+  [VETDCC-big-s333] step 500/2000 loss 0.4162 (345s)
+  [VETDCC-big-s333] step 1000/2000 loss 0.3747 (693s)
+  [VETDCC-big-s333] step 1500/2000 loss 0.4202 (1037s)
+  [VETDCC-big-s333] step 2000/2000 loss 0.3751 (1384s)
+[VETDCC-big s333] exact: {'exact_d3': 0.0, 'exact_d4': 0.0, 'exact_d5': 0.0, 'exact_d6': 0.0, 'exact_d7': 0.0, 'exact_d8': 0.0}
+[VETDCC-big s333] close: {'close_d3': 0.4033, 'close_d4': 0.4368, 'close_d6': 0.3871, 'close_d8': 0.3459}
+[VETDCC-big] RESULT ROW: {"close_d3_dist": [0.6409, 0.2897, 0.4033], "basin_rate_ge_678": 0.0, "basin_rate_ge_85": 0.0, "close_d3_mean": 0.4446, "close_d3_sd": 0.1463}
+[STACKDCC2-big seed 111] params=21817
+  [STACKDCC2-big-s111] step 500/2000 loss 0.4221 (386s)
+  [STACKDCC2-big-s111] step 1000/2000 loss 0.3779 (772s)
+  [STACKDCC2-big-s111] step 1500/2000 loss 0.3707 (1158s)
+  [STACKDCC2-big-s111] step 2000/2000 loss 0.3628 (1544s)
+[STACKDCC2-big s111] exact: {'exact_d3': 0.0, 'exact_d4': 0.0, 'exact_d5': 0.0, 'exact_d6': 0.0, 'exact_d7': 0.0, 'exact_d8': 0.0}
+[STACKDCC2-big s111] close: {'close_d3': 0.6548, 'close_d4': 0.6386, 'close_d6': 0.5327, 'close_d8': 0.4583}
+[STACKDCC2-big seed 222] params=21817
+  [STACKDCC2-big-s222] step 500/2000 loss 0.3762 (387s)
+  [STACKDCC2-big-s222] step 1000/2000 loss 0.3775 (774s)

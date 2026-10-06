@@ -1,0 +1,40 @@
+[setup] unified-add (machine v4) cfg={'steps': 12000, 'batch': 32, 'train_len': 63, 'ckpts': [3000, 9000], 'd_model': 16, 'KSTACK': 4096} VOCAB=75
+[setup] unified-iso cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'ckpt_step': 10000, 'd_model': 16, 'KSTACK': 4096}
+[setup] unified cfg={'steps': 2500, 'batch': 32, 'n_echo': 12, 'n_icl': 10, 'n_mod7': 10, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[arm] machine v4 (4 branches + carry organ) params=21305
+  [v4 s0] step 2000/12000 lm 1.7451 rt 0.0002 (83s)
+    [add] checkpoint at step 3000
+  [v4 s0] step 4000/12000 lm 1.6064 rt 0.0000 (167s)
+  [v4 s0] step 6000/12000 lm 1.5687 rt 0.0000 (253s)
+  [v4 s0] step 8000/12000 lm 1.5555 rt 0.0000 (337s)
+    [add] checkpoint at step 9000
+  [v4 s0] step 10000/12000 lm 1.5493 rt 0.0000 (421s)
+  [v4 s0] step 12000/12000 lm 1.5444 rt 0.0000 (505s)
+[v4] trained in 505s
+[eval] checkpoints @4096:
+  v4_3x: {'echo': (-0.2768, 1.0), 'icl': (0.0403, 0.0228, 1.0), 'mod7': (0.0057, 1.0), 'add': (0.1135, 1.0)}
+  v4_9x: {'echo': (-0.2982, 1.0), 'icl': (0.0072, 0.0021, 1.0), 'mod7': (0.0043, 1.0), 'add': (0.0164, 1.0)}
+  v4_final: {'echo': (-0.3004, 1.0), 'icl': (0.1351, 0.1972, 1.0), 'mod7': (0.0036, 1.0), 'add': (0.0091, 1.0)}
+/home/user/TryArena/unified_add.py:275: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[arm] micro TF (protocol baseline, 12k mixed4) params=104843
+  [tf] step 4000/12000 CE 1.7032 (172s)
+  [tf] step 8000/12000 CE 1.7156 (338s)
+  [tf] step 12000/12000 CE 1.7171 (512s)
+  micro_tf_12k: {'echo': (4.7821, 7.9343), 'icl': (5.3882, 10.5687), 'mod7': (5.6299, 10.4806), 'add': (4.8216, 2.5457), 'params': 104843}
+
+================================================================================================
+MACHINE v4 (4 families) @4096 (dCE; routing acc in parens; add = total dCE,
+sum-position oracle 0, A-position oracle ln10; ln10 = 2.303)
+v3 certs: echo -0.2981 | icl 0.0102|0.0047 | mod7 0.0015
+================================================================================================
+v4_3x         params 21305   echo (-0.2768, 1.0)  icl (0.0403, 0.0228, 1.0)  mod7 (0.0057, 1.0)  add (0.1135, 1.0)
+v4_9x         params 21305   echo (-0.2982, 1.0)  icl (0.0072, 0.0021, 1.0)  mod7 (0.0043, 1.0)  add (0.0164, 1.0)
+v4_final      params 21305   echo (-0.3004, 1.0)  icl (0.1351, 0.1972, 1.0)  mod7 (0.0036, 1.0)  add (0.0091, 1.0)
+micro_tf_12k  params 104843  echo (4.7821, 7.9343)  icl (5.3882, 10.5687)  mod7 (5.6299, 10.4806)  add (4.8216, 2.5457)
+================================================================================================
+RESULT {"tag": "ARC2-C15-MACHINE-V4-CARRY", "runs": {"v4_3x": {"echo": [-0.2768, 1.0], "icl": [0.0403, 0.0228, 1.0], "mod7": [0.0057, 1.0], "add": [0.1135, 1.0], "params": 21305}, "v4_9x": {"echo": [-0.2982, 1.0], "icl": [0.0072, 0.0021, 1.0], "mod7": [0.0043, 1.0], "add": [0.0164, 1.0], "params": 21305}, "v4_final": {"echo": [-0.3004, 1.0], "icl": [0.1351, 0.1972, 1.0], "mod7": [0.0036, 1.0], "add": [0.0091, 1.0], "params": 21305}, "micro_tf_12k": {"echo": [4.7821, 7.9343], "icl": [5.3882, 10.5687], "mod7": [5.6299, 10.4806], "add": [4.8216, 2.5457], "params": 104843}}, "wall_s": 1036.0, "peak_mb": 1350.1}
+DONE

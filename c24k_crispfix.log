@@ -1,0 +1,18 @@
+[c24k] stage k<=1 s0 lr=0.00500 CE 1.2209 hard-probe 0/64
+[c24k] stage k<=1 s200 lr=0.00500 CE 1.1216 hard-probe 0/64
+[c24k] stage k<=1 s400 lr=0.00500 CE 0.4055 hard-probe 0/64
+[c24k] stage k<=1 s600 lr=0.00500 CE 0.1472 hard-probe 21/64
+[c24k] stage k<=1 s800 lr=0.00500 CE 0.1204 hard-probe 24/64
+[c24k] stage k<=1 s1000 lr=0.00500 CE 0.1139 hard-probe 19/64
+[c24k] stage k<=1 s1200 lr=0.00500 CE 0.0031 hard-probe 64/64
+[c24k] stage k<=2 s0 lr=0.00500 CE 0.0026 hard-probe 64/64
+[c24k] stage k<=3 s0 lr=0.00500 CE 0.0025 hard-probe 64/64
+[c24k] stage k<=4 s0 lr=0.00500 CE 0.0025 hard-probe 64/64
+[c24k] restored best-probe checkpoint (probe 64/64)
+[cert] indist: 500/500 exact, passes=3.0 (want 3), trace_ok=True
+[cert] k16: 200/200 exact, passes=17.0 (want 17), trace_ok=True
+[cert] k64: 100/100 exact, passes=65.0 (want 65), trace_ok=True
+[cert] joint: 100/100 exact, passes=65.0 (want 65), trace_ok=True
+[verdict] {'S1': '500/500', 'S2': '200/200', 'S3': '100/100', 'S4': '100/100', 'S5': True, 'ALL': True}
+RESULT {"tag": "ARC2-C24K-P4-CRISPFIX", "cert": {"indist": {"exact": "500/500", "passes_mean": 3.0, "trace_ok": true}, "k16": {"exact": "200/200", "passes_mean": 17.0, "trace_ok": true}, "k64": {"exact": "100/100", "passes_mean": 65.0, "trace_ok": true}, "joint": {"exact": "100/100", "passes_mean": 65.0, "trace_ok": true}}, "verdict": {"S1": "500/500", "S2": "200/200", "S3": "100/100", "S4": "100/100", "S5": true, "ALL": true}, "steps": 1204, "wall_s": 48.8, "peak_mb": 663.5}
+DONE

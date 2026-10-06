@@ -1,0 +1,66 @@
+[p26] pools text 384 chat 512; val text/chat 32/32
+  [P26-C-s111] step 500/4000 loss 2.0746 (29s)
+  [P26-C-s111] step 1000/4000 loss 1.8394 (58s)
+  [P26-C-s111] step 1500/4000 loss 1.6460 (87s)
+  [P26-C-s111] step 2000/4000 loss 1.6218 (117s)
+  [P26-C-s111] step 2500/4000 loss 1.9276 (146s)
+  [P26-C-s111] step 3000/4000 loss 1.5884 (175s)
+  [P26-C-s111] step 3500/4000 loss 1.7435 (205s)
+  [P26-C-s111] step 4000/4000 loss 1.6902 (234s)
+[p26 s111] params A 21257 B 21817 C 43600; C-alone val text CE/byte 2.786
+  [gate3 s111] step 250/1500 loss 1.3621 (194s)
+  [gate3 s111] step 500/1500 loss 0.8471 (393s)
+  [gate3 s111] step 750/1500 loss 0.5358 (585s)
+  [gate3 s111] step 1000/1500 loss 1.7080 (782s)
+  [gate3 s111] step 1250/1500 loss 1.6668 (989s)
+  [gate3 s111] step 1500/1500 loss 1.2729 (1192s)
+[p26 unified3 s111] text CE routed 2.786 (C-alone 2.786) | chatmix {'text_ce': 3.0763, 'sym_ce': 1.7784} | reasoning {'track': 0.9091, 'modk': 1.0, 'pair': 0.9808, 'dyck_close': 0.9846, 'n_close': 325} | share {'text': [0.0039, 0.0, 0.9961], 'chatmix': [0.3411, 0.1335, 0.5254], 'vanilla': [0.9211, 0.0789, 0.0], 'deepdyck': [0.0317, 0.9683, 0.0]} | guard {'pair': 0.8585, 'modk': 1.0, 'ratio': 1.02, 'dyck_d12': 0.9838, 'bars': 3}
+  [P26-C-s222] step 500/4000 loss 2.1426 (35s)
+  [P26-C-s222] step 1000/4000 loss 1.8850 (67s)
+  [P26-C-s222] step 1500/4000 loss 1.6820 (99s)
+  [P26-C-s222] step 2000/4000 loss 1.6142 (132s)
+  [P26-C-s222] step 2500/4000 loss 1.9240 (165s)
+  [P26-C-s222] step 3000/4000 loss 1.6510 (197s)
+  [P26-C-s222] step 3500/4000 loss 1.7669 (230s)
+  [P26-C-s222] step 4000/4000 loss 1.6957 (262s)
+[p26 s222] params A 21257 B 21817 C 43600; C-alone val text CE/byte 2.6743
+  [gate3 s222] step 250/1500 loss 1.3653 (201s)
+  [gate3 s222] step 500/1500 loss 0.9907 (402s)
+  [gate3 s222] step 750/1500 loss 0.5618 (601s)
+  [gate3 s222] step 1000/1500 loss 1.9170 (801s)
+  [gate3 s222] step 1250/1500 loss 1.5545 (999s)
+  [gate3 s222] step 1500/1500 loss 1.3282 (1196s)
+[p26 unified3 s222] text CE routed 2.6743 (C-alone 2.6743) | chatmix {'text_ce': 2.916, 'sym_ce': 2.0653} | reasoning {'track': 0.9455, 'modk': 1.0, 'pair': 0.9904, 'dyck_close': 0.8954, 'n_close': 325} | share {'text': [0.0, 0.0039, 0.9961], 'chatmix': [0.3411, 0.1335, 0.5254], 'vanilla': [0.9417, 0.0583, 0.0], 'deepdyck': [0.0229, 0.9771, 0.0]} | guard {'pair': 0.8774, 'modk': 1.0, 'ratio': 1.0, 'dyck_d12': 0.9496, 'bars': 3}
+[p26 ctrl tf s111] params 85872
+  [P26-tf-s111] step 1000/6000 loss 1.8805 (52s)
+  [P26-tf-s111] step 2000/6000 loss 1.6526 (108s)
+  [P26-tf-s111] step 3000/6000 loss 1.6394 (161s)
+  [P26-tf-s111] step 4000/6000 loss 1.4268 (213s)
+  [P26-tf-s111] step 5000/6000 loss 1.6673 (263s)
+  [P26-tf-s111] step 6000/6000 loss 1.4122 (314s)
+[p26 ctrl tf s111] 3.17 {'text_ce': 3.2499, 'sym_ce': 1.2622} {'track': 0.6909, 'modk': 0.3824, 'pair': 0.6538, 'dyck_close': 0.9785, 'n_close': 325}
+[p26 ctrl tf s222] params 85872
+  [P26-tf-s222] step 1000/6000 loss 1.8325 (51s)
+  [P26-tf-s222] step 2000/6000 loss 1.6139 (105s)
+  [P26-tf-s222] step 3000/6000 loss 1.6422 (158s)
+  [P26-tf-s222] step 4000/6000 loss 1.4568 (214s)
+  [P26-tf-s222] step 5000/6000 loss 1.5825 (267s)
+  [P26-tf-s222] step 6000/6000 loss 1.4520 (322s)
+[p26 ctrl tf s222] 3.137 {'text_ce': 3.3141, 'sym_ce': 1.2543} {'track': 0.4364, 'modk': 0.2353, 'pair': 0.7981, 'dyck_close': 0.96, 'n_close': 325}
+[p26 ctrl gru s111] params 89136
+  [P26-gru-s111] step 1000/6000 loss 1.4008 (131s)
+  [P26-gru-s111] step 2000/6000 loss 1.2552 (277s)
+  [P26-gru-s111] step 3000/6000 loss 1.2143 (416s)
+  [P26-gru-s111] step 4000/6000 loss 1.0633 (543s)
+  [P26-gru-s111] step 5000/6000 loss 1.1077 (666s)
+  [P26-gru-s111] step 6000/6000 loss 1.0277 (788s)
+[p26 ctrl gru s111] 3.3389 {'text_ce': 3.7485, 'sym_ce': 1.1552} {'track': 0.9455, 'modk': 1.0, 'pair': 0.9904, 'dyck_close': 0.9723, 'n_close': 325}
+[p26 ctrl gru s222] params 89136
+  [P26-gru-s222] step 1000/6000 loss 1.3950 (120s)
+  [P26-gru-s222] step 2000/6000 loss 1.2493 (245s)
+  [P26-gru-s222] step 3000/6000 loss 1.1716 (371s)
+  [P26-gru-s222] step 4000/6000 loss 1.0853 (495s)
+  [P26-gru-s222] step 5000/6000 loss 1.1045 (629s)
+  [P26-gru-s222] step 6000/6000 loss 1.0076 (757s)
+[p26 ctrl gru s222] 3.3965 {'text_ce': 3.8271, 'sym_ce': 1.1565} {'track': 0.9455, 'modk': 1.0, 'pair': 0.9712, 'dyck_close': 0.9846, 'n_close': 325}
+[P26] DONE {"unified3": {"111": [{"track": 0.9091, "modk": 1.0, "pair": 0.9808, "dyck_close": 0.9846, "n_close": 325}, {"text_ce": 3.0763, "sym_ce": 1.7784}], "222": [{"track": 0.9455, "modk": 1.0, "pair": 0.9904, "dyck_close": 0.8954, "n_close": 325}, {"text_ce": 2.916, "sym_ce": 2.0653}]}, "ctrl-tf": {"111": [{"track": 0.6909, "modk": 0.3824, "pair": 0.6538, "dyck_close": 0.9785, "n_close": 325}, {"text_ce": 3.2499, "sym_ce": 1.2622}], "222": [{"track": 0.4364, "modk": 0.2353, "pair": 0.7981, "dyck_close": 0.96, "n_close": 325}, {"text_ce": 3.3141, "sym_ce": 1.2543}]}, "ctrl-gru": {"111": [{"track": 0.9455, "modk": 1.0, "pair": 0.9904, "dyck_close": 0.9723, "n_close": 325}, {"text_ce": 3.7485, "sym_ce": 1.1552}], "222": [{"track": 0.9455, "modk": 1.0, "pair": 0.9712, "dyck_close": 0.9846, "n_close": 325}, {"text_ce": 3.8271, "sym_ce": 1.1565}]}}

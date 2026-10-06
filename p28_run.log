@@ -1,0 +1,62 @@
+[p28 A-alone s111] 256_hard: tot 2.7391 det 1.2983(n108) stoch 2.8193 | 256_train: tot 1.2699 det 0.0457(n262) stoch 1.4495 | 1024: tot 1.2515 det 0.0567(n279) stoch 1.4399
+[p28 unified-gate s111] 256_hard: tot 2.5965 det 1.3116(n108) stoch 2.668 | 256_train: tot 1.2996 det 0.0823(n262) stoch 1.4782 | 1024: tot 1.2716 det 0.1068(n279) stoch 1.4553
+[p28 A-alone s222] 256_hard: tot 2.3372 det 0.9769(n108) stoch 2.4129 | 256_train: tot 1.2734 det 0.0478(n262) stoch 1.4533 | 1024: tot 1.2568 det 0.0579(n279) stoch 1.4459
+[p28 unified-gate s222] 256_hard: tot 2.503 det 2.1718(n108) stoch 2.5215 | 256_train: tot 1.277 det 0.0756(n262) stoch 1.4532 | 1024: tot 1.2587 det 0.072(n279) stoch 1.4459
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [P28-TF-alibi] step 250/6000 loss 0.8222 (6s)
+  [P28-TF-alibi] step 500/6000 loss 0.6278 (12s)
+  [P28-TF-alibi] step 750/6000 loss 0.6390 (19s)
+  [P28-TF-alibi] step 1000/6000 loss 0.5913 (26s)
+  [P28-TF-alibi] step 1250/6000 loss 0.5726 (33s)
+  [P28-TF-alibi] step 1500/6000 loss 0.8217 (40s)
+  [P28-TF-alibi] step 1750/6000 loss 0.7856 (46s)
+  [P28-TF-alibi] step 2000/6000 loss 0.9454 (52s)
+  [P28-TF-alibi] step 2250/6000 loss 1.0074 (58s)
+  [P28-TF-alibi] step 2500/6000 loss 1.1479 (64s)
+  [P28-TF-alibi] step 2750/6000 loss 1.2099 (70s)
+  [P28-TF-alibi] step 3000/6000 loss 1.2506 (76s)
+  [P28-TF-alibi] step 3250/6000 loss 1.1121 (83s)
+  [P28-TF-alibi] step 3500/6000 loss 1.1807 (90s)
+  [P28-TF-alibi] step 3750/6000 loss 1.2305 (97s)
+  [P28-TF-alibi] step 4000/6000 loss 1.1248 (103s)
+  [P28-TF-alibi] step 4250/6000 loss 1.2568 (110s)
+  [P28-TF-alibi] step 4500/6000 loss 1.2901 (118s)
+  [P28-TF-alibi] step 4750/6000 loss 1.2167 (124s)
+  [P28-TF-alibi] step 5000/6000 loss 1.2764 (131s)
+  [P28-TF-alibi] step 5250/6000 loss 1.1855 (137s)
+  [P28-TF-alibi] step 5500/6000 loss 0.4651 (145s)
+  [P28-TF-alibi] step 5750/6000 loss 0.4462 (152s)
+  [P28-TF-alibi] step 6000/6000 loss 0.4692 (159s)
+[p28 TF-alibi s111] 256_hard: tot 2.8638 det 3.3304(n108) stoch 2.8378 | 256_train: tot 1.3559 det 0.5917(n262) stoch 1.468 | 1024: tot 1.7716 det 0.5962(n279) stoch 1.957
+  [P28-TF-nope] step 250/6000 loss 1.2789 (7s)
+  [P28-TF-nope] step 500/6000 loss 1.2500 (14s)
+  [P28-TF-nope] step 750/6000 loss 1.2985 (21s)
+  [P28-TF-nope] step 1000/6000 loss 1.3565 (28s)
+  [P28-TF-nope] step 1250/6000 loss 1.2296 (34s)
+  [P28-TF-nope] step 1500/6000 loss 1.3459 (41s)
+  [P28-TF-nope] step 1750/6000 loss 1.3592 (48s)
+  [P28-TF-nope] step 2000/6000 loss 1.3622 (56s)
+  [P28-TF-nope] step 2250/6000 loss 1.4003 (63s)
+  [P28-TF-nope] step 2500/6000 loss 1.2636 (70s)
+  [P28-TF-nope] step 2750/6000 loss 1.3509 (76s)
+  [P28-TF-nope] step 3000/6000 loss 1.3848 (83s)
+  [P28-TF-nope] step 3250/6000 loss 1.2259 (89s)
+  [P28-TF-nope] step 3500/6000 loss 1.3076 (96s)
+  [P28-TF-nope] step 3750/6000 loss 1.3506 (103s)
+  [P28-TF-nope] step 4000/6000 loss 1.2514 (109s)
+  [P28-TF-nope] step 4250/6000 loss 1.4040 (116s)
+  [P28-TF-nope] step 4500/6000 loss 1.4003 (123s)
+  [P28-TF-nope] step 4750/6000 loss 1.2935 (130s)
+  [P28-TF-nope] step 5000/6000 loss 1.3779 (137s)
+  [P28-TF-nope] step 5250/6000 loss 1.3252 (144s)
+  [P28-TF-nope] step 5500/6000 loss 0.8863 (151s)
+  [P28-TF-nope] step 5750/6000 loss 0.8683 (158s)
+  [P28-TF-nope] step 6000/6000 loss 0.9046 (164s)
+[p28 TF-nope s111] 256_hard: tot 2.0832 det 1.7262(n108) stoch 2.1031 | 256_train: tot 1.515 det 0.9256(n262) stoch 1.6015 | 1024: tot 3.0135 det 2.4046(n279) stoch 3.1096
+[p28 classes 256_hard A-alone] det_answer=0.3294/68 det_close=2.9454/40 stoch_count=1.0129/401 stoch_dyck_open=6.8657/44 stoch_fill_or_A=3.3923/1269 stoch_kv=1.5969/16 stoch_other=3.5288/84 stoch_sym=3.262/17 stoch_task=1.6385/46 stoch_taskstart=0.0551/63
+[p28 classes 256_hard unified-gate] det_answer=0.3294/68 det_close=2.9813/40 stoch_count=1.0129/401 stoch_dyck_open=2.0201/44 stoch_fill_or_A=3.3923/1269 stoch_kv=1.5969/16 stoch_other=1.5153/84 stoch_sym=4.8823/17 stoch_task=1.6385/46 stoch_taskstart=1.0305/63
+[p28 classes 256_hard TF-alibi] det_answer=3.4003/68 det_close=3.2115/40 stoch_count=1.8311/401 stoch_dyck_open=0.7678/44 stoch_fill_or_A=3.4263/1269 stoch_kv=1.3978/16 stoch_other=1.7677/84 stoch_sym=3.988/17 stoch_task=2.1106/46 stoch_taskstart=0.8506/63
+[p28 classes 256_hard TF-nope] det_answer=1.3746/68 det_close=2.3238/40 stoch_count=0.6138/401 stoch_dyck_open=1.4577/44 stoch_fill_or_A=2.6601/1269 stoch_kv=1.9432/16 stoch_other=1.4249/84 stoch_sym=4.141/17 stoch_task=2.4711/46 stoch_taskstart=0.9414/63
+[P28] DONE

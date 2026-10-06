@@ -1,0 +1,12 @@
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [P21-B-deepmix-s333] step 250/2000 loss 0.9644 (194s)
+  [P21-B-deepmix-s333] step 500/2000 loss 0.8687 (393s)
+  [P21-B-deepmix-s333] step 750/2000 loss 0.6865 (593s)
+  [P21-B-deepmix-s333] step 1000/2000 loss 0.5836 (787s)
+  [P21-B-deepmix-s333] step 1250/2000 loss 0.5224 (984s)
+  [P21-B-deepmix-s333] step 1500/2000 loss 0.5119 (1183s)
+  [P21-B-deepmix-s333] step 1750/2000 loss 0.5010 (1387s)
+  [P21-B-deepmix-s333] step 2000/2000 loss 0.4989 (1586s)
+[p21 train] /home/user/TryArena/p21_ckpt/B_s333.pt in 1587s params=21817

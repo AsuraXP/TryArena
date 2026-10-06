@@ -1,0 +1,18 @@
+[c24g] resumed fitness = 0.9143
+[c24g] edit 608: 0.9143 -> 0.9463
+[c24g] edit 656: 0.9463 -> 0.9513
+[c24g] edit 4161: 0.9597 -> 0.9665
+[c24g] edit 6595: 0.9778 -> 0.9815
+[c24g] edit 8843: 0.9815 -> 0.9820
+[c24g] edit 8967: 0.9820 -> 0.9870
+[c24g] edit 10182: 0.9870 -> 0.9908
+[c24g] edit 12150: 0.9908 -> 0.9945
+[c24g] edit 26673: 0.9945 -> 0.9970
+[c24g] done: edits=45000 accepted=21485 best=0.9970
+[cert] indist: 106/500 exact, passes=4.51 (want 3), trace_ok=False
+[cert] k16: 0/200 exact, passes=17.06 (want 17), trace_ok=False
+[cert] k64: 0/100 exact, passes=65.19 (want 65), trace_ok=False
+[cert] joint: 0/100 exact, passes=65.17 (want 65), trace_ok=False
+[verdict] {'S1': '106/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': False, 'ALL': False}
+RESULT {"tag": "ARC2-C24G-P4-SEARCH3", "search": {"edits": 45000, "accepted": 21485, "fitness": 0.997}, "cert": {"indist": {"exact": "106/500", "passes_mean": 4.51, "trace_ok": false}, "k16": {"exact": "0/200", "passes_mean": 17.06, "trace_ok": false}, "k64": {"exact": "0/100", "passes_mean": 65.19, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 65.17, "trace_ok": false}}, "verdict": {"S1": "106/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": false, "ALL": false}, "wall_s": 737.6, "peak_mb": 498.7}
+DONE

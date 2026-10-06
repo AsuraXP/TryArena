@@ -1,0 +1,15 @@
+[c29] bank cloned from entry state h15: {15: 2, 14: 1, 8: 1}
+[c29] seed fitness = 0.3961
+[c29] edit 26 (macros 7): 0.3961 -> 0.4231
+[c29] edit 163 (macros 55): 0.4273 -> 0.4629
+[c29] edit 5176 (macros 1663): 0.4629 -> 0.4693
+[c29] edit 10870 (macros 3546): 0.4693 -> 0.4764
+[c29] edit 25316 (macros 8315): 0.4764 -> 0.4908
+[c29] done: edits=50316 accepted=6 macros=16491 best=0.4908
+[cert] indist: 0/500 exact, passes=6.61 (want 4), trace_ok=False
+[cert] n16: 0/200 exact, passes=2.92 (want 17), trace_ok=False
+[cert] n32: 0/100 exact, passes=3.34 (want 33), trace_ok=False
+[cert] joint: 0/100 exact, passes=3.66 (want 65), trace_ok=False
+[verdict] {'S1': '0/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': False, 'ALL': False}
+RESULT {"tag": "ARC2-C29-P6-BANK", "search": {"edits": 50316, "accepted": 6, "macros": 16491, "fitness": 0.4908}, "cert": {"indist": {"exact": "0/500", "passes_mean": 6.61, "trace_ok": false}, "n16": {"exact": "0/200", "passes_mean": 2.92, "trace_ok": false}, "n32": {"exact": "0/100", "passes_mean": 3.34, "trace_ok": false}, "joint": {"exact": "0/100", "passes_mean": 3.66, "trace_ok": false}}, "verdict": {"S1": "0/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": false, "ALL": false}, "wall_s": 413.9, "peak_mb": 501.0}
+DONE

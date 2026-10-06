@@ -1,0 +1,21 @@
+[c32] census: 175/300 failing; per-digit fails [67, 98, 2, 1, 51, 0, 0, 14, 3, 0]; 68 repair cells
+[c32] seed fitness = 0.8927 val = 0.9021
+[c32] edit 6: 0.8927 -> 0.9323 (val 0.9021)
+[c32] edit 40: 0.9328 -> 0.9365 (val 0.9021)
+[c32] edit 177: 0.9365 -> 0.9411 (val 0.9021)
+[c32] edit 265: 0.9411 -> 0.9500 (val 0.9021)
+[c32] edit 405: 0.9500 -> 0.9521 (val 0.9021)
+[c32] edit 491: 0.9521 -> 0.9547 (val 0.9021)
+[c32] edit 492: 0.9547 -> 0.9646 (val 0.9021)
+[c32] edit 534: 0.9646 -> 0.9667 (val 0.9021)
+[c32] edit 621: 0.9667 -> 0.9812 (val 0.9021)
+[c32] edit 852: 0.9812 -> 0.9854 (val 0.9021)
+[c32] edit 7518: 0.9854 -> 0.9865 (val 0.9021)
+[c32] done: edits=25518 accepted=13 best=0.9865
+[cert] indist: 219/500 exact, passes=4.32 (want 4), trace_ok=True
+[cert] n16: 3/200 exact, passes=17.37 (want 17), trace_ok=True
+[cert] n32: 0/100 exact, passes=33.33 (want 33), trace_ok=True
+[cert] joint: 0/100 exact, passes=65.33 (want 65), trace_ok=True
+[verdict] {'S1': '219/500', 'S2': '3/200', 'S3': '0/100', 'S4': '0/100', 'S5': True, 'ALL': False}
+RESULT {"tag": "ARC2-C32-P6-SPLIT", "search": {"edits": 25518, "accepted": 13, "fitness": 0.9865, "repair_cells": 68, "fail_cases": 175, "per_digit_fail": [67, 98, 2, 1, 51, 0, 0, 14, 3, 0]}, "cert": {"indist": {"exact": "219/500", "passes_mean": 4.32, "trace_ok": true}, "n16": {"exact": "3/200", "passes_mean": 17.37, "trace_ok": true}, "n32": {"exact": "0/100", "passes_mean": 33.33, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 65.33, "trace_ok": true}}, "verdict": {"S1": "219/500", "S2": "3/200", "S3": "0/100", "S4": "0/100", "S5": true, "ALL": false}, "wall_s": 409.0, "peak_mb": 499.0}
+DONE

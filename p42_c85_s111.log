@@ -1,0 +1,22 @@
+[p42C85] controller frozen from p21_ckpt/P42_HW_s222.pt; trainable = P only
+[p42C85] LP params 21449 cfg p0=0.0 live=False st=False tau1=0.5 l1=0.0
+  [P42C85-LP-s111] step 250/4000 ce 1.5436 tau 0.96 pred(hit/on/true) one(1, 9, 1) task(1, 25, 1) open(0, 5, 2) close(0, 26, 2) (195s)
+  [P42C85-LP-s111] step 500/4000 ce 1.4209 tau 0.92 pred(hit/on/true) one(1, 9, 1) task(1, 25, 1) open(0, 5, 2) close(0, 26, 2) (386s)
+  [P42C85-LP-s111] step 750/4000 ce 1.4025 tau 0.88 pred(hit/on/true) one(1, 11, 1) task(1, 25, 1) open(0, 5, 2) close(0, 26, 2) (597s)
+  [P42C85-LP-s111] step 1000/4000 ce 1.3771 tau 0.84 pred(hit/on/true) one(1, 13, 1) task(1, 26, 1) open(0, 5, 2) close(0, 26, 2) (812s)
+  [P42C85-LP-s111] step 1250/4000 ce 1.3797 tau 0.81 pred(hit/on/true) one(1, 13, 1) task(1, 26, 1) open(1, 6, 2) close(0, 25, 2) (1030s)
+  [P42C85-LP-s111] step 1500/4000 ce 1.2905 tau 0.77 pred(hit/on/true) one(1, 12, 1) task(1, 25, 1) open(1, 6, 2) close(0, 25, 2) (1256s)
+  [P42C85-LP-s111] step 1750/4000 ce 1.2768 tau 0.74 pred(hit/on/true) one(1, 10, 1) task(1, 23, 1) open(1, 6, 2) close(0, 25, 2) (1458s)
+  [P42C85-LP-s111] step 2000/4000 ce 1.2834 tau 0.71 pred(hit/on/true) one(1, 8, 1) task(1, 22, 1) open(1, 7, 2) close(0, 24, 2) (1660s)
+  [P42C85-LP-s111] step 2250/4000 ce 1.2535 tau 0.68 pred(hit/on/true) one(1, 7, 1) task(1, 22, 1) open(1, 9, 2) close(0, 22, 2) (1854s)
+  [P42C85-LP-s111] step 2500/4000 ce 1.3559 tau 0.65 pred(hit/on/true) one(1, 7, 1) task(1, 21, 1) open(1, 10, 2) close(0, 21, 2) (2056s)
+  [P42C85-LP-s111] step 2750/4000 ce 1.2917 tau 0.62 pred(hit/on/true) one(1, 8, 1) task(1, 21, 1) open(1, 10, 2) close(0, 21, 2) (2257s)
+  [P42C85-LP-s111] step 3000/4000 ce 1.3318 tau 0.59 pred(hit/on/true) one(1, 8, 1) task(1, 21, 1) open(1, 11, 2) close(0, 20, 2) (2458s)
+  [P42C85-LP-s111] step 3250/4000 ce 1.2047 tau 0.57 pred(hit/on/true) one(1, 8, 1) task(1, 20, 1) open(1, 12, 2) close(0, 19, 2) (2655s)
+  [P42C85-LP-s111] step 3500/4000 ce 1.2527 tau 0.55 pred(hit/on/true) one(1, 8, 1) task(1, 20, 1) open(1, 12, 2) close(0, 19, 2) (2855s)
+  [P42C85-LP-s111] step 3750/4000 ce 1.3137 tau 0.52 pred(hit/on/true) one(1, 8, 1) task(1, 18, 1) open(1, 13, 2) close(0, 18, 2) (3053s)
+  [P42C85-LP-s111] step 4000/4000 ce 1.1852 tau 0.50 pred(hit/on/true) one(1, 7, 1) task(1, 18, 1) open(1, 12, 2) close(0, 19, 2) (3251s)
+[P42-LP s111] ce={'256_train': 1.403, '256_hard': 2.359, '512': 1.359, '1024': 1.415}
+[P42-LP s111] acc_eval={'track': 0.581, 'modk': 1.0, 'dyck': 0.056, 'pair': 0.755}
+[p42 LP s111] bars=3/3 pair 0.7547 modk 1.0 ratio 0.6 predicates_exact=False {'one': {'learned_on': [0, 21, 28, 30, 31, 32, 40], 'truth': [21]}, 'task': {'learned_on': [4, 14, 15, 17, 18, 22, 24, 28, 29, 30, 33, 34, 35, 36, 37, 38, 39, 40], 'truth': [4]}, 'open': {'learned_on': [13, 14, 15, 16, 20, 22, 27, 30, 31, 32, 33, 35], 'truth': [29, 30]}, 'close': {'learned_on': [0, 3, 4, 17, 18, 19, 21, 23, 24, 25, 26, 28, 29, 34, 36, 37, 38, 39, 40], 'truth': [31, 32]}}
+[P42] DONE

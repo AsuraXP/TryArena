@@ -1,0 +1,35 @@
+[setup] device=cpu full=False cfg={'seeds': [0], 'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'n_heads': 4, 'k': 12, 'd_slot': 16}
+[run] tf_rope seed=0 params=100884 (elapsed 0.0min)
+  [tf_rope-s0] step 625/2500 CE 1.5432 (30s)
+  [tf_rope-s0] step 1250/2500 CE 1.3859 (61s)
+  [tf_rope-s0] step 1875/2500 CE 1.4825 (91s)
+  [tf_rope-s0] step 2500/2500 CE 1.3981 (121s)
+[run] machine seed=0 params=18432 (elapsed 2.1min)
+  [machine-s0] step 625/2500 CE 1.0912 (39s)
+  [machine-s0] step 1250/2500 CE 1.0725 (80s)
+  [machine-s0] step 1875/2500 CE 1.0536 (120s)
+  [machine-s0] step 2500/2500 CE 1.0783 (161s)
+[run] machine_mixed seed=0 params=18432 (elapsed 4.8min)
+  [machine_mixed-s0] step 625/2500 CE 1.9598 (43s)
+  [machine_mixed-s0] step 1250/2500 CE 1.6569 (85s)
+  [machine_mixed-s0] step 1875/2500 CE 1.8710 (125s)
+  [machine_mixed-s0] step 2500/2500 CE 1.6736 (165s)
+[run] hybrid_v2 seed=0 params=117953 (elapsed 7.6min)
+  [hybrid_v2-s0] step 625/2500 CE 0.9879 (68s)
+  [hybrid_v2-s0] step 1250/2500 CE 2.1433 (148s)
+  [hybrid_v2-s0] step 1875/2500 CE 1.7486 (222s)
+  [hybrid_v2-s0] step 2500/2500 CE 1.2958 (300s)
+
+====================================================================================================
+RESULTS  dCE = excess CE over analytic oracle (nats/token; 0 = perfect)
+====================================================================================================
+run                   fuzzy@64    [fuzzy@512   [fuzzy@2048  [fuzzy@4096  [structured@64structured@51structured@20structured@40
+tf_rope_s0            0.0472       0.99         1.1122       1.1402       0.0298       0.8831       1.2094       1.304          gate=-  g=None
+machine_s0            5.6149       5.6927       5.6606       5.6832       0.867        0.8539       0.8485       0.8425         gate=False  g=None
+machine_mixed_s0      4.2293       4.3096       4.3563       4.3097       0.6608       0.7345       0.7602       0.7759         gate=False  g=None
+hybrid_v2_s0          0.1125       0.9729       1.1451       1.1982       0.0371       1.0417       1.9155       2.2667         gate=True  g=0.943
+====================================================================================================
+
+########## PASTE-BACK BLOCK ##########
+{"experiment": "ARC2-C7-hybrid-v2", "device": "cpu", "full": false, "cfg": {"seeds": [0], "steps": 2500, "batch": 32, "train_len": 64, "eval_lens": [64, 512, 2048, 4096], "eval_reps": 2, "d_model": 64, "n_layers": 2, "n_heads": 4, "k": 12, "d_slot": 16}, "results": {"tf_rope_s0": {"fuzzy@64": 0.0472, "fuzzy@512": 0.99, "fuzzy@2048": 1.1122, "fuzzy@4096": 1.1402, "structured@64": 0.0298, "structured@512": 0.8831, "structured@2048": 1.2094, "structured@4096": 1.304, "gate_mean": null}, "machine_s0": {"fuzzy@64[hard]": 5.6149, "fuzzy@512[hard]": 5.6927, "fuzzy@2048[hard]": 5.6606, "fuzzy@4096[hard]": 5.6832, "structured@64[hard]": 0.867, "structured@512[hard]": 0.8539, "structured@2048[hard]": 0.8485, "structured@4096[hard]": 0.8425, "fuzzy@64[soft]": 5.5209, "fuzzy@512[soft]": 5.8524, "fuzzy@2048[soft]": 5.8477, "fuzzy@4096[soft]": 5.8746, "structured@64[soft]": 0.0863, "structured@512[soft]": 0.1826, "structured@2048[soft]": 0.3664, "structured@4096[soft]": 0.4725, "crystallized_gate": false, "gate_mean": null}, "machine_mixed_s0": {"fuzzy@64[hard]": 4.2293, "fuzzy@512[hard]": 4.3096, "fuzzy@2048[hard]": 4.3563, "fuzzy@4096[hard]": 4.3097, "structured@64[hard]": 0.6608, "structured@512[hard]": 0.7345, "structured@2048[hard]": 0.7602, "structured@4096[hard]": 0.7759, "fuzzy@64[soft]": 0.621, "fuzzy@512[soft]": 0.6408, "fuzzy@2048[soft]": 0.5993, "fuzzy@4096[soft]": 0.6243, "structured@64[soft]": 0.0488, "structured@512[soft]": 0.1885, "structured@2048[soft]": 0.5713, "structured@4096[soft]": 0.7302, "crystallized_gate": false, "gate_mean": null}, "hybrid_v2_s0": {"fuzzy@64[hard]": 0.1125, "fuzzy@512[hard]": 0.9729, "fuzzy@2048[hard]": 1.1451, "fuzzy@4096[hard]": 1.1982, "structured@64[hard]": 0.0371, "structured@512[hard]": 1.0417, "structured@2048[hard]": 1.9155, "structured@4096[hard]": 2.2667, "fuzzy@64[soft]": 0.1061, "fuzzy@512[soft]": 1.0426, "fuzzy@2048[soft]": 1.2296, "fuzzy@4096[soft]": 1.2764, "structured@64[soft]": 0.0378, "structured@512[soft]": 1.0218, "structured@2048[soft]": 1.9068, "structured@4096[soft]": 2.2629, "crystallized_gate": true, "gate_mean": 0.943}}, "wall_min": 12.7}
+############## END ###################

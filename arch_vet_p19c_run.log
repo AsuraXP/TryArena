@@ -1,0 +1,66 @@
+[VETDCC-big-mixdd seed 111] params=21257
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [VETDDC-mix-s111] step 250/4000 loss 1.3520 (180s)
+  [VETDDC-mix-s111] step 500/4000 loss 1.3158 (368s)
+  [VETDDC-mix-s111] step 750/4000 loss 1.0635 (559s)
+  [VETDDC-mix-s111] step 1000/4000 loss 1.0989 (751s)
+  [VETDDC-mix-s111] step 1250/4000 loss 0.8006 (948s)
+  [VETDDC-mix-s111] step 1500/4000 loss 0.8834 (1134s)
+  [VETDDC-mix-s111] step 1750/4000 loss 0.8153 (1322s)
+  [VETDDC-mix-s111] step 2000/4000 loss 0.9519 (1509s)
+  [VETDDC-mix-s111] step 2250/4000 loss 0.9589 (1694s)
+  [VETDDC-mix-s111] step 2500/4000 loss 0.7664 (1884s)
+  [VETDDC-mix-s111] step 2750/4000 loss 0.8191 (2074s)
+  [VETDDC-mix-s111] step 3000/4000 loss 0.7995 (2266s)
+  [VETDDC-mix-s111] step 3250/4000 loss 0.9819 (2455s)
+  [VETDDC-mix-s111] step 3500/4000 loss 0.9130 (2640s)
+  [VETDDC-mix-s111] step 3750/4000 loss 0.8730 (2825s)
+  [VETDDC-mix-s111] step 4000/4000 loss 0.7772 (3024s)
+[VETDDC-mix s111] ce={'256_train': 2.0, '256_hard': 2.651, '512': 2.036, '1024': 2.001}
+[VETDDC-mix s111] acc_eval={'track': 0.628, 'modk': 1.0, 'dyck': 0.0, 'pair': 0.547}
+[VETDDC-mix s111] dyck-close: {'close_d1': 0.1111, 'close_d2': 0.7525, 'close_d3': 0.9643, 'close_d4': 0.9646, 'close_d5': 0.9617, 'close_d6': 0.9286, 'close_d7': 0.9272, 'close_d8': 0.9127, 'close_d9': 0.9207, 'close_d10': 0.9066, 'close_d11': 0.9152, 'close_d12': 0.9129}
+[VETDCC-big-mixdd seed 222] params=21257
+  [VETDDC-mix-s222] step 250/4000 loss 1.3964 (185s)
+  [VETDDC-mix-s222] step 500/4000 loss 1.3031 (370s)
+  [VETDDC-mix-s222] step 750/4000 loss 1.0342 (554s)
+  [VETDDC-mix-s222] step 1000/4000 loss 1.0799 (740s)
+  [VETDDC-mix-s222] step 1250/4000 loss 0.8099 (925s)
+  [VETDDC-mix-s222] step 1500/4000 loss 0.8827 (1122s)
+  [VETDDC-mix-s222] step 1750/4000 loss 0.8257 (1304s)
+  [VETDDC-mix-s222] step 2000/4000 loss 0.9734 (1478s)
+  [VETDDC-mix-s222] step 2250/4000 loss 0.9713 (1658s)
+  [VETDDC-mix-s222] step 2500/4000 loss 0.7774 (1843s)
+  [VETDDC-mix-s222] step 2750/4000 loss 0.8406 (2028s)
+  [VETDDC-mix-s222] step 3000/4000 loss 0.8308 (2219s)
+  [VETDDC-mix-s222] step 3250/4000 loss 0.9959 (2408s)
+  [VETDDC-mix-s222] step 3500/4000 loss 0.9371 (2590s)
+  [VETDDC-mix-s222] step 3750/4000 loss 0.9020 (2771s)
+  [VETDDC-mix-s222] step 4000/4000 loss 0.8132 (2950s)
+[VETDDC-mix s222] ce={'256_train': 2.359, '256_hard': 2.508, '512': 2.553, '1024': 2.696}
+[VETDDC-mix s222] acc_eval={'track': 0.512, 'modk': 1.0, 'dyck': 0.0, 'pair': 0.623}
+[VETDDC-mix s222] dyck-close: {'close_d1': 0.0694, 'close_d2': 0.973, 'close_d3': 0.8705, 'close_d4': 0.9062, 'close_d5': 0.9133, 'close_d6': 0.9187, 'close_d7': 0.878, 'close_d8': 0.8686, 'close_d9': 0.862, 'close_d10': 0.8558, 'close_d11': 0.8627, 'close_d12': 0.8521}
+[VETDCC-big-mixdd seed 333] params=21257
+  [VETDDC-mix-s333] step 250/4000 loss 1.3924 (176s)
+  [VETDDC-mix-s333] step 500/4000 loss 1.3338 (359s)
+  [VETDDC-mix-s333] step 750/4000 loss 1.2169 (541s)
+  [VETDDC-mix-s333] step 1000/4000 loss 1.2507 (720s)
+  [VETDDC-mix-s333] step 1250/4000 loss 0.9454 (901s)
+  [VETDDC-mix-s333] step 1500/4000 loss 0.9608 (1087s)
+  [VETDDC-mix-s333] step 1750/4000 loss 0.8662 (1270s)
+  [VETDDC-mix-s333] step 2000/4000 loss 1.0202 (1456s)
+  [VETDDC-mix-s333] step 2250/4000 loss 1.0102 (1637s)
+  [VETDDC-mix-s333] step 2500/4000 loss 0.8161 (1818s)
+  [VETDDC-mix-s333] step 2750/4000 loss 0.8513 (1998s)
+  [VETDDC-mix-s333] step 3000/4000 loss 0.8376 (2181s)
+  [VETDDC-mix-s333] step 3250/4000 loss 1.0050 (2362s)
+  [VETDDC-mix-s333] step 3500/4000 loss 0.9478 (2541s)
+  [VETDDC-mix-s333] step 3750/4000 loss 0.9048 (2722s)
+  [VETDDC-mix-s333] step 4000/4000 loss 0.8165 (2900s)
+[VETDDC-mix s333] ce={'256_train': 2.607, '256_hard': 2.507, '512': 2.677, '1024': 2.667}
+[VETDDC-mix s333] acc_eval={'track': 0.465, 'modk': 1.0, 'dyck': 0.0, 'pair': 0.34}
+[VETDDC-mix s333] dyck-close: {'close_d1': 0.0, 'close_d2': 0.8039, 'close_d3': 0.8973, 'close_d4': 0.9479, 'close_d5': 0.9456, 'close_d6': 0.9127, 'close_d7': 0.8839, 'close_d8': 0.8833, 'close_d9': 0.8855, 'close_d10': 0.8847, 'close_d11': 0.8808, 'close_d12': 0.8772}
+[VETDCC-big-mixdd] SUMMARY {"dyck_close_d12_dist": [0.9129, 0.8521, 0.8772], "basin_dyck_d12_ge_85": 1.0, "modk_eval_dist": [1.0, 1.0, 1.0], "basin_modk_eq_1": 1.0, "pair_eval_dist": [0.5472, 0.6226, 0.3396], "basin_pair_ge_717": 0.0, "len_ratio_dist": [0.755, 1.075, 1.064], "basin_ratio_le_6": 0.0, "dyck_close_d12_mean": 0.8807}
+RESULT {"tag": "ARCH-VET-LM-P19C", "protocol": "missing 2x2 cell: VETDCC-big (21,257p) x the P19 depth-diverse mixdd corpus (dyck 2..6 weighted d-1 in the 4-task stream) x seeds 111/222/333, ctor under manual_seed, pool 512 L=256 seed 12345, 4000 steps batch 8; eval = P19's eval_full (task_acc train/eval + CE sweep) + eval_dyck (rt_close_acc d1-12). Matrix: P16 VETDCC-big x vanilla = pair 3/3 ratio 3/3; P19 STACKDCC2-big x mixdd = dyck 3/3 pair 1/3 ratio 0/3; P19B STACKDCC2-big x vanilla = dyck 0/3 pair 1/3 ratio 3/3.", "arms": {"VETDCC-big-mixdd": {"per_seed": {"111": {"ce": {"256_train": 1.9998, "256_hard": 2.6515, "512": 2.0361, "1024": 2.0007}, "acc_train_interval": {"track": 1.0, "modk": 1.0, "dyck": 0.0, "pair": 0.9847}, "acc_eval_interval": {"track": 0.6279, "modk": 1.0, "dyck": 0.0, "pair": 0.5472}, "len_ratio_1024_over_256hard": 0.755, "loss_curve": [[250, 1.352], [500, 1.3158], [750, 1.0635], [1000, 1.0989], [1250, 0.8006], [1500, 0.8834], [1750, 0.8153], [2000, 0.9519], [2250, 0.9589], [2500, 0.7664], [2750, 0.8191], [3000, 0.7995], [3250, 0.9819], [3500, 0.913], [3750, 0.873], [4000, 0.7772]], "dyck_close": {"close_d1": 0.1111, "close_d2": 0.7525, "close_d3": 0.9643, "close_d4": 0.9646, "close_d5": 0.9617, "close_d6": 0.9286, "close_d7": 0.9272, "close_d8": 0.9127, "close_d9": 0.9207, "close_d10": 0.9066, "close_d11": 0.9152, "close_d12": 0.9129}}, "222": {"ce": {"256_train": 2.3589, "256_hard": 2.5079, "512": 2.5525, "1024": 2.6961}, "acc_train_interval": {"track": 0.9444, "modk": 1.0, "dyck": 0.0, "pair": 1.0}, "acc_eval_interval": {"track": 0.5116, "modk": 1.0, "dyck": 0.0, "pair": 0.6226}, "len_ratio_1024_over_256hard": 1.075, "loss_curve": [[250, 1.3964], [500, 1.3031], [750, 1.0342], [1000, 1.0799], [1250, 0.8099], [1500, 0.8827], [1750, 0.8257], [2000, 0.9734], [2250, 0.9713], [2500, 0.7774], [2750, 0.8406], [3000, 0.8308], [3250, 0.9959], [3500, 0.9371], [3750, 0.902], [4000, 0.8132]], "dyck_close": {"close_d1": 0.0694, "close_d2": 0.973, "close_d3": 0.8705, "close_d4": 0.9062, "close_d5": 0.9133, "close_d6": 0.9187, "close_d7": 0.878, "close_d8": 0.8686, "close_d9": 0.862, "close_d10": 0.8558, "close_d11": 0.8627, "close_d12": 0.8521}}, "333": {"ce": {"256_train": 2.6072, "256_hard": 2.5071, "512": 2.677, "1024": 2.6671}, "acc_train_interval": {"track": 0.8333, "modk": 0.975, "dyck": 0.0, "pair": 0.9847}, "acc_eval_interval": {"track": 0.4651, "modk": 1.0, "dyck": 0.0, "pair": 0.3396}, "len_ratio_1024_over_256hard": 1.064, "loss_curve": [[250, 1.3924], [500, 1.3338], [750, 1.2169], [1000, 1.2507], [1250, 0.9454], [1500, 0.9608], [1750, 0.8662], [2000, 1.0202], [2250, 1.0102], [2500, 0.8161], [2750, 0.8513], [3000, 0.8376], [3250, 1.005], [3500, 0.9478], [3750, 0.9048], [4000, 0.8165]], "dyck_close": {"close_d1": 0.0, "close_d2": 0.8039, "close_d3": 0.8973, "close_d4": 0.9479, "close_d5": 0.9456, "close_d6": 0.9127, "close_d7": 0.8839, "close_d8": 0.8833, "close_d9": 0.8855, "close_d10": 0.8847, "close_d11": 0.8808, "close_d12": 0.8772}}}, "summary": {"dyck_close_d12_dist": [0.9129, 0.8521, 0.8772], "basin_dyck_d12_ge_85": 1.0, "modk_eval_dist": [1.0, 1.0, 1.0], "basin_modk_eq_1": 1.0, "pair_eval_dist": [0.5472, 0.6226, 0.3396], "basin_pair_ge_717": 0.0, "len_ratio_dist": [0.755, 1.075, 1.064], "basin_ratio_le_6": 0.0, "dyck_close_d12_mean": 0.8807}}}, "wall_s": 9173.7}
+DONE

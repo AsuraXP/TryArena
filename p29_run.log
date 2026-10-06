@@ -1,0 +1,20 @@
+[p29 s111 BEFORE] {'pair': 0.8585, 'modk': 1.0, 'track': 0.9535, 'ce_256hard': 2.8677, 'ce_1024': 1.7079, 'ratio': 0.596, 'dyck_d6': 1.0, 'dyck_d12': 0.9838, 'det_nll_hard': 1.3116, 'stoch_nll_hard': 2.668, 'joint_pair': 1.0, 'joint_dyck': 0.9908, 'bars': 4}
+  [coadapt-hard] step 200/600 loss 0.8988 (169s)
+  [coadapt-hard] step 400/600 loss 0.8806 (333s)
+  [coadapt-hard] step 600/600 loss 0.8211 (499s)
+[p29 s111 COADAPT-HARD] {'pair': 0.8491, 'modk': 1.0, 'track': 0.9535, 'ce_256hard': 2.8947, 'ce_1024': 1.4584, 'ratio': 0.504, 'dyck_d6': 1.0, 'dyck_d12': 0.9818, 'det_nll_hard': 1.801, 'stoch_nll_hard': 2.7951, 'joint_pair': 1.0, 'joint_dyck': 0.979, 'bars': 4}
+  [coadapt-soft] step 200/600 loss 0.8845 (197s)
+  [coadapt-soft] step 400/600 loss 0.8507 (364s)
+  [coadapt-soft] step 600/600 loss 0.8104 (532s)
+[p29 s111 COADAPT-SOFT] {'pair': 0.8585, 'modk': 1.0, 'track': 0.9535, 'ce_256hard': 2.9437, 'ce_1024': 1.4808, 'ratio': 0.503, 'dyck_d6': 1.0, 'dyck_d12': 0.9823, 'det_nll_hard': 1.9212, 'stoch_nll_hard': 2.8164, 'joint_pair': 1.0, 'joint_dyck': 0.9724, 'bars': 4}
+[p29 s222 BEFORE] {'pair': 0.8774, 'modk': 1.0, 'track': 0.7674, 'ce_256hard': 2.5058, 'ce_1024': 1.2592, 'ratio': 0.503, 'dyck_d6': 0.9683, 'dyck_d12': 0.9496, 'det_nll_hard': 2.1718, 'stoch_nll_hard': 2.5215, 'joint_pair': 0.9936, 'joint_dyck': 0.9108, 'bars': 4}
+  [coadapt-hard] step 200/600 loss 0.8125 (160s)
+  [coadapt-hard] step 400/600 loss 0.8438 (326s)
+  [coadapt-hard] step 600/600 loss 0.9974 (492s)
+[p29 s222 COADAPT-HARD] {'pair': 0.6981, 'modk': 1.0, 'track': 0.7209, 'ce_256hard': 2.3894, 'ce_1024': 1.2704, 'ratio': 0.532, 'dyck_d6': 0.9683, 'dyck_d12': 0.9437, 'det_nll_hard': 2.0275, 'stoch_nll_hard': 2.3816, 'joint_pair': 1.0, 'joint_dyck': 0.9672, 'bars': 3}
+  [coadapt-soft] step 200/600 loss 0.8070 (185s)
+  [coadapt-soft] step 400/600 loss 0.8307 (366s)
+  [coadapt-soft] step 600/600 loss 0.9843 (568s)
+[p29 s222 COADAPT-SOFT] {'pair': 0.717, 'modk': 1.0, 'track': 0.6744, 'ce_256hard': 2.4965, 'ce_1024': 1.2567, 'ratio': 0.503, 'dyck_d6': 0.9683, 'dyck_d12': 0.9442, 'det_nll_hard': 2.0999, 'stoch_nll_hard': 2.4545, 'joint_pair': 1.0, 'joint_dyck': 0.9633, 'bars': 4}
+[P29] SUMMARY {"frozen": {"bars": [4, 4], "pair": [0.8585, 0.8774], "modk": [1.0, 1.0], "ratio": [0.596, 0.503], "dyck_d12": [0.9838, 0.9496], "det_nll_hard": [1.3116, 2.1718], "stoch_nll_hard": [2.668, 2.5215], "joint_dyck": [0.9908, 0.9108]}, "coadapt-hard": {"bars": [4, 3], "pair": [0.8491, 0.6981], "modk": [1.0, 1.0], "ratio": [0.504, 0.532], "dyck_d12": [0.9818, 0.9437], "det_nll_hard": [1.801, 2.0275], "stoch_nll_hard": [2.7951, 2.3816], "joint_dyck": [0.979, 0.9672]}, "coadapt-soft": {"bars": [4, 4], "pair": [0.8585, 0.717], "modk": [1.0, 1.0], "ratio": [0.503, 0.503], "dyck_d12": [0.9823, 0.9442], "det_nll_hard": [1.9212, 2.0999], "stoch_nll_hard": [2.8164, 2.4545], "joint_dyck": [0.9724, 0.9633]}}
+[P29] DONE

@@ -1,0 +1,107 @@
+[p23] pool 1024
+[p23] nape s111 params=42672
+  [P23-nape-s111-lr0.001] step 500/6000 loss 1.1805 lr 9.97e-04 (26s)
+  [P23-nape-s111-lr0.001] step 1000/6000 loss 1.0804 lr 9.67e-04 (51s)
+  [P23-nape-s111-lr0.001] step 1500/6000 loss 1.1959 lr 9.05e-04 (76s)
+  [P23-nape-s111-lr0.001] step 2000/6000 loss 1.2344 lr 8.17e-04 (101s)
+  [P23-nape-s111-lr0.001] step 2500/6000 loss 1.1845 lr 7.08e-04 (127s)
+  [P23-nape-s111-lr0.001] step 3000/6000 loss 1.3603 lr 5.87e-04 (151s)
+  [P23-nape-s111-lr0.001] step 3500/6000 loss 1.2785 lr 4.64e-04 (174s)
+  [P23-nape-s111-lr0.001] step 4000/6000 loss 1.2178 lr 3.47e-04 (196s)
+  [P23-nape-s111-lr0.001] step 4500/6000 loss 1.3727 lr 2.45e-04 (219s)
+  [P23-nape-s111-lr0.001] step 5000/6000 loss 1.3691 lr 1.67e-04 (242s)
+  [P23-nape-s111-lr0.001] step 5500/6000 loss 0.7302 lr 1.17e-04 (266s)
+  [P23-nape-s111-lr0.001] step 6000/6000 loss 0.7050 lr 1.00e-04 (291s)
+[TF-nape s111] ce={'256_train': 1.409, '256_hard': 2.137, '512': 2.15, '1024': 2.895}
+[TF-nape s111] acc_eval={'track': 0.488, 'modk': 0.212, 'dyck': 0.0, 'pair': 0.415}
+[TF-nape s111] dyck-close: {'close_d1': 0.2951, 'close_d2': 0.924, 'close_d3': 0.9129, 'close_d4': 0.9729, 'close_d5': 0.9496, 'close_d6': 0.9067, 'close_d7': 0.8819, 'close_d8': 0.8422, 'close_d9': 0.8322, 'close_d10': 0.8128, 'close_d11': 0.8185, 'close_d12': 0.8083}
+[p23 TF-nape s111] pair=0.4151 modk=0.2115 ratio=1.355 dyck_d12=0.8083 bars=0
+[p23] nape s222 params=42672
+  [P23-nape-s222-lr0.001] step 500/6000 loss 1.1876 lr 9.97e-04 (23s)
+  [P23-nape-s222-lr0.001] step 1000/6000 loss 1.0616 lr 9.67e-04 (46s)
+  [P23-nape-s222-lr0.001] step 1500/6000 loss 1.2032 lr 9.05e-04 (69s)
+  [P23-nape-s222-lr0.001] step 2000/6000 loss 1.2355 lr 8.17e-04 (92s)
+  [P23-nape-s222-lr0.001] step 2500/6000 loss 1.3294 lr 7.08e-04 (116s)
+  [P23-nape-s222-lr0.001] step 3000/6000 loss 1.3423 lr 5.87e-04 (140s)
+  [P23-nape-s222-lr0.001] step 3500/6000 loss 1.2543 lr 4.64e-04 (164s)
+  [P23-nape-s222-lr0.001] step 4000/6000 loss 1.2014 lr 3.47e-04 (187s)
+  [P23-nape-s222-lr0.001] step 4500/6000 loss 1.3467 lr 2.45e-04 (211s)
+  [P23-nape-s222-lr0.001] step 5000/6000 loss 1.3431 lr 1.67e-04 (235s)
+  [P23-nape-s222-lr0.001] step 5500/6000 loss 0.7053 lr 1.17e-04 (260s)
+  [P23-nape-s222-lr0.001] step 6000/6000 loss 0.6827 lr 1.00e-04 (283s)
+[TF-nape s222] ce={'256_train': 1.373, '256_hard': 1.946, '512': 2.265, '1024': 3.314}
+[TF-nape s222] acc_eval={'track': 0.279, 'modk': 0.231, 'dyck': 0.0, 'pair': 0.151}
+[TF-nape s222] dyck-close: {'close_d1': 0.1944, 'close_d2': 0.9608, 'close_d3': 0.8594, 'close_d4': 0.8854, 'close_d5': 0.9133, 'close_d6': 0.9087, 'close_d7': 0.8504, 'close_d8': 0.7833, 'close_d9': 0.7432, 'close_d10': 0.7331, 'close_d11': 0.7672, 'close_d12': 0.7745}
+[p23 TF-nape s222] pair=0.1509 modk=0.2308 ratio=1.703 dyck_d12=0.7745 bars=0
+[p23] nape s333 params=42672
+  [P23-nape-s333-lr0.001] step 500/6000 loss 1.2792 lr 9.97e-04 (23s)
+  [P23-nape-s333-lr0.001] step 1000/6000 loss 1.1108 lr 9.67e-04 (46s)
+  [P23-nape-s333-lr0.001] step 1500/6000 loss 1.2095 lr 9.05e-04 (69s)
+  [P23-nape-s333-lr0.001] step 2000/6000 loss 1.2671 lr 8.17e-04 (92s)
+  [P23-nape-s333-lr0.001] step 2500/6000 loss 1.2730 lr 7.08e-04 (114s)
+  [P23-nape-s333-lr0.001] step 3000/6000 loss 1.3561 lr 5.87e-04 (137s)
+  [P23-nape-s333-lr0.001] step 3500/6000 loss 1.2662 lr 4.64e-04 (160s)
+  [P23-nape-s333-lr0.001] step 4000/6000 loss 1.2080 lr 3.47e-04 (182s)
+  [P23-nape-s333-lr0.001] step 4500/6000 loss 1.3661 lr 2.45e-04 (204s)
+  [P23-nape-s333-lr0.001] step 5000/6000 loss 1.3442 lr 1.67e-04 (228s)
+  [P23-nape-s333-lr0.001] step 5500/6000 loss 0.8136 lr 1.17e-04 (251s)
+  [P23-nape-s333-lr0.001] step 6000/6000 loss 0.8018 lr 1.00e-04 (273s)
+[TF-nape s333] ce={'256_train': 1.38, '256_hard': 2.033, '512': 1.799, '1024': 2.268}
+[TF-nape s333] acc_eval={'track': 0.372, 'modk': 0.25, 'dyck': 0.019, 'pair': 0.019}
+[TF-nape s333] dyck-close: {'close_d1': 0.5174, 'close_d2': 0.5123, 'close_d3': 0.9196, 'close_d4': 0.9479, 'close_d5': 0.9214, 'close_d6': 0.8829, 'close_d7': 0.872, 'close_d8': 0.8314, 'close_d9': 0.8068, 'close_d10': 0.7722, 'close_d11': 0.746, 'close_d12': 0.7159}
+[p23 TF-nape s333] pair=0.0189 modk=0.25 ratio=1.116 dyck_d12=0.7159 bars=0
+[P23 nape] SUMMARY {"bars_passed_per_seed": [0, 0, 0], "pair": [0.4151, 0.1509, 0.0189], "modk": [0.2115, 0.2308, 0.25], "ratio": [1.355, 1.703, 1.116], "dyck_d12": [0.8083, 0.7745, 0.7159]}
+[p23] alibi s111 params=42672
+  [P23-alibi-s111-lr0.001] step 500/6000 loss 0.6999 lr 9.97e-04 (23s)
+  [P23-alibi-s111-lr0.001] step 1000/6000 loss 0.6127 lr 9.67e-04 (46s)
+  [P23-alibi-s111-lr0.001] step 1500/6000 loss 0.8295 lr 9.05e-04 (69s)
+  [P23-alibi-s111-lr0.001] step 2000/6000 loss 0.9492 lr 8.17e-04 (93s)
+  [P23-alibi-s111-lr0.001] step 2500/6000 loss 0.9242 lr 7.08e-04 (116s)
+  [P23-alibi-s111-lr0.001] step 3000/6000 loss 1.2517 lr 5.87e-04 (139s)
+  [P23-alibi-s111-lr0.001] step 3500/6000 loss 1.1768 lr 4.64e-04 (162s)
+  [P23-alibi-s111-lr0.001] step 4000/6000 loss 1.1176 lr 3.47e-04 (185s)
+  [P23-alibi-s111-lr0.001] step 4500/6000 loss 1.2786 lr 2.45e-04 (208s)
+  [P23-alibi-s111-lr0.001] step 5000/6000 loss 1.2643 lr 1.67e-04 (230s)
+  [P23-alibi-s111-lr0.001] step 5500/6000 loss 0.4697 lr 1.17e-04 (253s)
+  [P23-alibi-s111-lr0.001] step 6000/6000 loss 0.4703 lr 1.00e-04 (276s)
+[TF-alibi s111] ce={'256_train': 1.274, '256_hard': 3.479, '512': 1.438, '1024': 1.678}
+[TF-alibi s111] acc_eval={'track': 0.256, 'modk': 0.135, 'dyck': 0.0, 'pair': 0.226}
+[TF-alibi s111] dyck-close: {'close_d1': 0.0, 'close_d2': 0.9706, 'close_d3': 0.8616, 'close_d4': 0.9708, 'close_d5': 0.9839, 'close_d6': 0.9722, 'close_d7': 0.9469, 'close_d8': 0.952, 'close_d9': 0.9452, 'close_d10': 0.9409, 'close_d11': 0.9441, 'close_d12': 0.9429}
+[p23 TF-alibi s111] pair=0.2264 modk=0.1346 ratio=0.482 dyck_d12=0.9429 bars=2
+[p23] alibi s222 params=42672
+  [P23-alibi-s222-lr0.001] step 500/6000 loss 0.7900 lr 9.97e-04 (23s)
+  [P23-alibi-s222-lr0.001] step 1000/6000 loss 0.6154 lr 9.67e-04 (47s)
+  [P23-alibi-s222-lr0.001] step 1500/6000 loss 0.8370 lr 9.05e-04 (70s)
+  [P23-alibi-s222-lr0.001] step 2000/6000 loss 0.9404 lr 8.17e-04 (94s)
+  [P23-alibi-s222-lr0.001] step 2500/6000 loss 0.9358 lr 7.08e-04 (116s)
+  [P23-alibi-s222-lr0.001] step 3000/6000 loss 1.2434 lr 5.87e-04 (140s)
+  [P23-alibi-s222-lr0.001] step 3500/6000 loss 1.1653 lr 4.64e-04 (163s)
+  [P23-alibi-s222-lr0.001] step 4000/6000 loss 1.1096 lr 3.47e-04 (186s)
+  [P23-alibi-s222-lr0.001] step 4500/6000 loss 1.2749 lr 2.45e-04 (210s)
+  [P23-alibi-s222-lr0.001] step 5000/6000 loss 1.2592 lr 1.67e-04 (235s)
+  [P23-alibi-s222-lr0.001] step 5500/6000 loss 0.4632 lr 1.17e-04 (258s)
+  [P23-alibi-s222-lr0.001] step 6000/6000 loss 0.4596 lr 1.00e-04 (280s)
+[TF-alibi s222] ce={'256_train': 1.28, '256_hard': 3.734, '512': 1.772, '1024': 2.417}
+[TF-alibi s222] acc_eval={'track': 0.395, 'modk': 0.212, 'dyck': 0.0, 'pair': 0.377}
+[TF-alibi s222] dyck-close: {'close_d1': 0.0, 'close_d2': 0.9363, 'close_d3': 0.8996, 'close_d4': 0.9646, 'close_d5': 0.9798, 'close_d6': 0.9683, 'close_d7': 0.9606, 'close_d8': 0.9549, 'close_d9': 0.9574, 'close_d10': 0.9423, 'close_d11': 0.9472, 'close_d12': 0.9475}
+[p23 TF-alibi s222] pair=0.3774 modk=0.2115 ratio=0.647 dyck_d12=0.9475 bars=1
+[p23] alibi s333 params=42672
+  [P23-alibi-s333-lr0.001] step 500/6000 loss 0.7927 lr 9.97e-04 (23s)
+  [P23-alibi-s333-lr0.001] step 1000/6000 loss 0.6836 lr 9.67e-04 (46s)
+  [P23-alibi-s333-lr0.001] step 1500/6000 loss 0.8688 lr 9.05e-04 (69s)
+  [P23-alibi-s333-lr0.001] step 2000/6000 loss 0.9859 lr 8.17e-04 (92s)
+  [P23-alibi-s333-lr0.001] step 2500/6000 loss 0.9697 lr 7.08e-04 (115s)
+  [P23-alibi-s333-lr0.001] step 3000/6000 loss 1.2485 lr 5.87e-04 (140s)
+  [P23-alibi-s333-lr0.001] step 3500/6000 loss 1.1783 lr 4.64e-04 (163s)
+  [P23-alibi-s333-lr0.001] step 4000/6000 loss 1.1172 lr 3.47e-04 (186s)
+  [P23-alibi-s333-lr0.001] step 4500/6000 loss 1.2858 lr 2.45e-04 (209s)
+  [P23-alibi-s333-lr0.001] step 5000/6000 loss 1.2729 lr 1.67e-04 (232s)
+  [P23-alibi-s333-lr0.001] step 5500/6000 loss 0.4650 lr 1.17e-04 (256s)
+  [P23-alibi-s333-lr0.001] step 6000/6000 loss 0.4728 lr 1.00e-04 (280s)
+[TF-alibi s333] ce={'256_train': 1.278, '256_hard': 3.281, '512': 1.442, '1024': 1.676}
+[TF-alibi s333] acc_eval={'track': 0.163, 'modk': 0.212, 'dyck': 0.0, 'pair': 0.038}
+[TF-alibi s333] dyck-close: {'close_d1': 0.1979, 'close_d2': 0.9804, 'close_d3': 0.9487, 'close_d4': 0.9604, 'close_d5': 0.9657, 'close_d6': 0.9782, 'close_d7': 0.9587, 'close_d8': 0.9529, 'close_d9': 0.9565, 'close_d10': 0.9457, 'close_d11': 0.9463, 'close_d12': 0.9503}
+[p23 TF-alibi s333] pair=0.0377 modk=0.2115 ratio=0.511 dyck_d12=0.9503 bars=2
+[P23 alibi] SUMMARY {"bars_passed_per_seed": [2, 1, 2], "pair": [0.2264, 0.3774, 0.0377], "modk": [0.1346, 0.2115, 0.2115], "ratio": [0.482, 0.647, 0.511], "dyck_d12": [0.9429, 0.9475, 0.9503]}
+RESULT {"tag": "ARCH-VET-LM-P23", "protocol": "mers\n   dramatically outperform the RoPE model on longer inputs\" (copy task,\n   length generalization). -> NoPE + ALiBi are the strongest\n   length-generalizing choices for small decoders; RoPE is the weakest.\n - arXiv 2506.16640 (ICLR 2026, ASEntmax/NAPE): \"RoPE models poorly\n   generalize beyond 4x\"; ALiBi induces attention windows with a clear\n   cutoff; NoPE induces content-driven sparsity; NAPE = half heads NoPE,\n   half ALiBi. -> we include a NAPE arm (mixed heads) as the strongest\n   published small-decoder recipe.\n - Kazemnejad et al. 2023 (NoPE) / Press et al. 2021 (ALiBi) originals.\n", "lr": 0.001, "warmup": 300, "arms": {"TF-nape": {"per_seed": {"111": {"params": 42672, "loss_curve": [[500, 1.1805], [1000, 1.0804], [1500, 1.1959], [2000, 1.2344], [2500, 1.1845], [3000, 1.3603], [3500, 1.2785], [4000, 1.2178], [4500, 1.3727], [5000, 1.3691], [5500, 0.7302], [6000, 0.705]], "ce": {"256_train": 1.4087, "256_hard": 2.1371, "512": 2.1499, "1024": 2.8954}, "acc_train_interval": {"track": 0.3889, "modk": 0.35, "dyck": 0.128, "pair": 0.7405}, "acc_eval_interval": {"track": 0.4884, "modk": 0.2115, "dyck": 0.0, "pair": 0.4151}, "len_ratio_1024_over_256hard": 1.355, "dyck_close": {"close_d1": 0.2951, "close_d2": 0.924, "close_d3": 0.9129, "close_d4": 0.9729, "close_d5": 0.9496, "close_d6": 0.9067, "close_d7": 0.8819, "close_d8": 0.8422, "close_d9": 0.8322, "close_d10": 0.8128, "close_d11": 0.8185, "close_d12": 0.8083}, "bars": 0}, "222": {"params": 42672, "loss_curve": [[500, 1.1876], [1000, 1.0616], [1500, 1.2032], [2000, 1.2355], [2500, 1.3294], [3000, 1.3423], [3500, 1.2543], [4000, 1.2014], [4500, 1.3467], [5000, 1.3431], [5500, 0.7053], [6000, 0.6827]], "ce": {"256_train": 1.3732, "256_hard": 1.9455, "512": 2.2652, "1024": 3.3141}, "acc_train_interval": {"track": 0.5, "modk": 0.2917, "dyck": 0.088, "pair": 0.7634}, "acc_eval_interval": {"track": 0.2791, "modk": 0.2308, "dyck": 0.0, "pair": 0.1509}, "len_ratio_1024_over_256hard": 1.703, "dyck_close": {"close_d1": 0.1944, "close_d2": 0.9608, "close_d3": 0.8594, "close_d4": 0.8854, "close_d5": 0.9133, "close_d6": 0.9087, "close_d7": 0.8504, "close_d8": 0.7833, "close_d9": 0.7432, "close_d10": 0.7331, "close_d11": 0.7672, "close_d12": 0.7745}, "bars": 0}, "333": {"params": 42672, "loss_curve": [[500, 1.2792], [1000, 1.1108], [1500, 1.2095], [2000, 1.2671], [2500, 1.273], [3000, 1.3561], [3500, 1.2662], [4000, 1.208], [4500, 1.3661], [5000, 1.3442], [5500, 0.8136], [6000, 0.8018]], "ce": {"256_train": 1.3802, "256_hard": 2.0325, "512": 1.799, "1024": 2.2682}, "acc_train_interval": {"track": 0.4603, "modk": 0.2917, "dyck": 0.072, "pair": 0.7099}, "acc_eval_interval": {"track": 0.3721, "modk": 0.25, "dyck": 0.0185, "pair": 0.0189}, "len_ratio_1024_over_256hard": 1.116, "dyck_close": {"close_d1": 0.5174, "close_d2": 0.5123, "close_d3": 0.9196, "close_d4": 0.9479, "close_d5": 0.9214, "close_d6": 0.8829, "close_d7": 0.872, "close_d8": 0.8314, "close_d9": 0.8068, "close_d10": 0.7722, "close_d11": 0.746, "close_d12": 0.7159}, "bars": 0}}, "summary": {"bars_passed_per_seed": [0, 0, 0], "pair": [0.4151, 0.1509, 0.0189], "modk": [0.2115, 0.2308, 0.25], "ratio": [1.355, 1.703, 1.116], "dyck_d12": [0.8083, 0.7745, 0.7159]}}, "TF-alibi": {"per_seed": {"111": {"params": 42672, "loss_curve": [[500, 0.6999], [1000, 0.6127], [1500, 0.8295], [2000, 0.9492], [2500, 0.9242], [3000, 1.2517], [3500, 1.1768], [4000, 1.1176], [4500, 1.2786], [5000, 1.2643], [5500, 0.4697], [6000, 0.4703]], "ce": {"256_train": 1.2739, "256_hard": 3.4788, "512": 1.4383, "1024": 1.6784}, "acc_train_interval": {"track": 1.0, "modk": 0.5583, "dyck": 0.144, "pair": 0.9924}, "acc_eval_interval": {"track": 0.2558, "modk": 0.1346, "dyck": 0.0, "pair": 0.2264}, "len_ratio_1024_over_256hard": 0.482, "dyck_close": {"close_d1": 0.0, "close_d2": 0.9706, "close_d3": 0.8616, "close_d4": 0.9708, "close_d5": 0.9839, "close_d6": 0.9722, "close_d7": 0.9469, "close_d8": 0.952, "close_d9": 0.9452, "close_d10": 0.9409, "close_d11": 0.9441, "close_d12": 0.9429}, "bars": 2}, "222": {"params": 42672, "loss_curve": [[500, 0.79], [1000, 0.6154], [1500, 0.837], [2000, 0.9404], [2500, 0.9358], [3000, 1.2434], [3500, 1.1653], [4000, 1.1096], [4500, 1.2749], [5000, 1.2592], [5500, 0.4632], [6000, 0.4596]], "ce": {"256_train": 1.2795, "256_hard": 3.7343, "512": 1.7723, "1024": 2.4167}, "acc_train_interval": {"track": 1.0, "modk": 0.6083, "dyck": 0.152, "pair": 1.0}, "acc_eval_interval": {"track": 0.3953, "modk": 0.2115, "dyck": 0.0, "pair": 0.3774}, "len_ratio_1024_over_256hard": 0.647, "dyck_close": {"close_d1": 0.0, "close_d2": 0.9363, "close_d3": 0.8996, "close_d4": 0.9646, "close_d5": 0.9798, "close_d6": 0.9683, "close_d7": 0.9606, "close_d8": 0.9549, "close_d9": 0.9574, "close_d10": 0.9423, "close_d11": 0.9472, "close_d12": 0.9475}, "bars": 1}, "333": {"params": 42672, "loss_curve": [[500, 0.7927], [1000, 0.6836], [1500, 0.8688], [2000, 0.9859], [2500, 0.9697], [3000, 1.2485], [3500, 1.1783], [4000, 1.1172], [4500, 1.2858], [5000, 1.2729], [5500, 0.465], [6000, 0.4728]], "ce": {"256_train": 1.278, "256_hard": 3.2808, "512": 1.4416, "1024": 1.6761}, "acc_train_interval": {"track": 1.0, "modk": 0.55, "dyck": 0.104, "pair": 1.0}, "acc_eval_interval": {"track": 0.1628, "modk": 0.2115, "dyck": 0.0, "pair": 0.0377}, "len_ratio_1024_over_256hard": 0.511, "dyck_close": {"close_d1": 0.1979, "close_d2": 0.9804, "close_d3": 0.9487, "close_d4": 0.9604, "close_d5": 0.9657, "close_d6": 0.9782, "close_d7": 0.9587, "close_d8": 0.9529, "close_d9": 0.9565, "close_d10": 0.9457, "close_d11": 0.9463, "close_d12": 0.9503}, "bars": 2}}, "summary": {"bars_passed_per_seed": [2, 1, 2], "pair": [0.2264, 0.3774, 0.0377], "modk": [0.1346, 0.2115, 0.2115], "ratio": [0.482, 0.647, 0.511], "dyck_d12": [0.9429, 0.9475, 0.9503]}}}, "wall_s": 1948}
+DONE

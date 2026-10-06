@@ -1,0 +1,80 @@
+[setup] unified cfg={'steps': 20000, 'batch': 32, 'n_echo': 8, 'n_icl': 16, 'n_mod7': 8, 'train_len': 63, 'eval_lens': [4096], 'eval_reps': 2, 'd_model': 16, 'KSTACK': 4096, 'p_rise': 0.9, 'p_fall': 0.02} VOCAB=45
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[setup] linattn_host cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 64, 'n_layers': 2, 'k': 12, 'd_slot': 16}
+[setup] sram-icl cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16}
+[arm] unified (host + stack + sram + router) params=6197
+  [uni s0] step 500/20000 lm 1.7840 rt 0.0001 (48s)
+  [uni s0] step 1000/20000 lm 1.7127 rt 0.0000 (97s)
+  [uni s0] step 1500/20000 lm 1.6738 rt 0.0000 (146s)
+  [uni s0] step 2000/20000 lm 1.6283 rt 0.0000 (194s)
+  [uni s0] step 2500/20000 lm 1.5996 rt 0.0000 (242s)
+  [uni s0] step 3000/20000 lm 1.5480 rt 0.0000 (289s)
+  [uni s0] step 3500/20000 lm 1.5265 rt 0.0000 (337s)
+  [uni s0] step 4000/20000 lm 1.5255 rt 0.0000 (386s)
+  [uni s0] step 4500/20000 lm 1.5195 rt 0.0000 (434s)
+  [uni s0] step 5000/20000 lm 1.4923 rt 0.0000 (482s)
+  [uni s0] step 5500/20000 lm 1.4921 rt 0.0000 (530s)
+  [uni s0] step 6000/20000 lm 1.5155 rt 0.0000 (577s)
+  [uni s0] step 6500/20000 lm 1.5126 rt 0.0000 (625s)
+  [uni s0] step 7000/20000 lm 1.4802 rt 0.0000 (673s)
+  [uni s0] step 7500/20000 lm 1.4607 rt 0.0000 (720s)
+  [uni s0] step 8000/20000 lm 1.4766 rt 0.0000 (768s)
+  [uni s0] step 8500/20000 lm 1.4682 rt 0.0000 (816s)
+  [uni s0] step 9000/20000 lm 1.4705 rt 0.0000 (864s)
+  [uni s0] step 9500/20000 lm 1.4788 rt 0.0000 (911s)
+  [uni s0] step 10000/20000 lm 1.4483 rt 0.0000 (959s)
+  [uni s0] step 10500/20000 lm 1.4481 rt 0.0000 (1008s)
+  [uni s0] step 11000/20000 lm 1.4654 rt 0.0000 (1056s)
+  [uni s0] step 11500/20000 lm 1.4645 rt 0.0000 (1105s)
+  [uni s0] step 12000/20000 lm 1.4517 rt 0.0000 (1154s)
+  [uni s0] step 12500/20000 lm 1.4549 rt 0.0000 (1204s)
+  [uni s0] step 13000/20000 lm 1.4690 rt 0.0000 (1252s)
+  [uni s0] step 13500/20000 lm 1.4936 rt 0.0000 (1300s)
+  [uni s0] step 14000/20000 lm 1.4588 rt 0.0000 (1348s)
+  [uni s0] step 14500/20000 lm 1.4666 rt 0.0000 (1397s)
+  [uni s0] step 15000/20000 lm 1.4552 rt 0.0000 (1446s)
+  [uni s0] step 15500/20000 lm 1.4539 rt 0.0000 (1495s)
+  [uni s0] step 16000/20000 lm 1.4627 rt 0.0000 (1543s)
+  [uni s0] step 16500/20000 lm 1.4609 rt 0.0000 (1591s)
+  [uni s0] step 17000/20000 lm 1.4428 rt 0.0000 (1639s)
+  [uni s0] step 17500/20000 lm 1.4523 rt 0.0000 (1687s)
+  [uni s0] step 18000/20000 lm 1.4600 rt 0.0000 (1736s)
+  [uni s0] step 18500/20000 lm 1.4680 rt 0.0000 (1784s)
+  [uni s0] step 19000/20000 lm 1.4659 rt 0.0000 (1832s)
+  [uni s0] step 19500/20000 lm 1.4365 rt 0.0000 (1881s)
+  [uni s0] step 20000/20000 lm 1.4315 rt 0.0000 (1929s)
+  {'echo': (1.1277, 1.0), 'icl': (0.2029, 0.4399, 1.0), 'mod7': (0.0064, 1.0), 'params': 6197}
+/home/user/TryArena/unified_20k.py:262: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[arm] micro TF (protocol baseline) params=102893
+  [tf] step 1000/20000 CE 1.8371 (42s)
+  [tf] step 2000/20000 CE 1.8319 (84s)
+  [tf] step 3000/20000 CE 1.8343 (125s)
+  [tf] step 4000/20000 CE 1.8379 (168s)
+  [tf] step 5000/20000 CE 1.8268 (209s)
+  [tf] step 6000/20000 CE 1.8305 (251s)
+  [tf] step 7000/20000 CE 1.8268 (292s)
+  [tf] step 8000/20000 CE 1.8337 (335s)
+  [tf] step 9000/20000 CE 1.8199 (376s)
+  [tf] step 10000/20000 CE 1.8307 (418s)
+  [tf] step 11000/20000 CE 1.8314 (460s)
+  [tf] step 12000/20000 CE 1.8349 (504s)
+  [tf] step 13000/20000 CE 1.8315 (547s)
+  [tf] step 14000/20000 CE 1.8290 (591s)
+  [tf] step 15000/20000 CE 1.8249 (634s)
+  [tf] step 16000/20000 CE 1.8220 (679s)
+  [tf] step 17000/20000 CE 1.8315 (723s)
+  [tf] step 18000/20000 CE 1.8268 (768s)
+  [tf] step 19000/20000 CE 1.8286 (812s)
+  [tf] step 20000/20000 CE 1.8273 (857s)
+  {'echo': (5.7951, 4.6942), 'icl': (4.6252, 2.4231), 'mod7': (4.9074, 3.3065), 'params': 102893}
+
+====================================================================================
+UNIFIED MACHINE @4096 (dCE per task; echo standalone cert 0.0106, icl
+target cert 0.022-0.027, mod7 cert 0.0025-0.0071) | icl = total|target
+====================================================================================
+unified_s0   params 6197    echo (1.1277, 1.0)  icl (0.2029, 0.4399, 1.0)  mod7 (0.0064, 1.0)
+micro_tf     params 102893  echo (5.7951, 4.6942)  icl (4.6252, 2.4231)  mod7 (4.9074, 3.3065)
+====================================================================================
+RESULT {"tag": "ARC2-C13-UNIFIED-20K", "runs": {"unified_s0": {"echo": [1.1277, 1.0], "icl": [0.2029, 0.4399, 1.0], "mod7": [0.0064, 1.0], "params": 6197}, "micro_tf": {"echo": [5.7951, 4.6942], "icl": [4.6252, 2.4231], "mod7": [4.9074, 3.3065], "params": 102893}}, "wall_s": 2798.2, "peak_mb": 1347.8}
+DONE

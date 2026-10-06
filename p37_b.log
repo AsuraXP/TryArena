@@ -1,0 +1,46 @@
+[p37] R2 label stats: P(lab|write-key)=0.925 P(lab|query-key)=0.000 P(lab|nonkey)=0.196
+[p37] R2:KRB-HIND params 21324
+/home/user/TryArena/arch_vet_p37.py:115: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  if step % 250 == 0: print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P37-R2-CF] step 250/4000 ce 2.0708 bce 0.524 (235s)
+  [P37-R2-CF] step 500/4000 ce 1.9665 bce 0.459 (471s)
+  [P37-R2-CF] step 750/4000 ce 1.8617 bce 0.416 (704s)
+  [P37-R2-CF] step 1000/4000 ce 1.8023 bce 0.417 (938s)
+  [P37-R2-CF] step 1250/4000 ce 1.8071 bce 0.419 (1175s)
+  [P37-R2-CF] step 1500/4000 ce 1.7940 bce 0.409 (1409s)
+  [P37-R2-CF] step 1750/4000 ce 1.7735 bce 0.412 (1645s)
+  [P37-R2-CF] step 2000/4000 ce 1.7605 bce 0.425 (1876s)
+  [P37-R2-CF] step 2250/4000 ce 1.7626 bce 0.421 (2106s)
+  [P37-R2-CF] step 2500/4000 ce 1.7307 bce 0.450 (2333s)
+  [P37-R2-CF] step 2750/4000 ce 1.6930 bce 0.431 (2571s)
+  [P37-R2-CF] step 3000/4000 ce 1.7196 bce 0.442 (2813s)
+  [P37-R2-CF] step 3250/4000 ce 1.6783 bce 0.454 (3046s)
+  [P37-R2-CF] step 3500/4000 ce 1.6892 bce 0.455 (3282s)
+  [P37-R2-CF] step 3750/4000 ce 1.6893 bce 0.465 (3525s)
+  [P37-R2-CF] step 4000/4000 ce 1.6993 bce 0.459 (3744s)
+[p37 R2:CF s111] {'n1_hard': 1.0, 'n2_hard': 1.0, 'n3_hard': 0.9921, 'n4_hard': 0.9688, 'n6_hard': 0.8833, 'n8_hard': 0.7917, 'n_train_mix_hard': 0.9929, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.0}}
+[P37] DONE
+[p37] R2 label stats: P(lab|write-key)=0.925 P(lab|query-key)=0.000 P(lab|nonkey)=0.196
+[p37] R2:KRB-HIND params 21324
+/home/user/TryArena/arch_vet_p37.py:115: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  if step % 250 == 0: print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P37-R2-CF85] step 250/4000 ce 2.0786 bce 0.525 (235s)
+  [P37-R2-CF85] step 500/4000 ce 1.9981 bce 0.487 (457s)
+  [P37-R2-CF85] step 750/4000 ce 1.9106 bce 0.435 (685s)
+  [P37-R2-CF85] step 1000/4000 ce 1.8076 bce 0.431 (964s)
+  [P37-R2-CF85] step 1250/4000 ce 1.7914 bce 0.438 (1216s)
+  [P37-R2-CF85] step 1500/4000 ce 1.7671 bce 0.430 (1471s)
+  [P37-R2-CF85] step 1750/4000 ce 1.7506 bce 0.442 (1728s)
+  [P37-R2-CF85] step 2000/4000 ce 1.7304 bce 0.453 (1988s)
+  [P37-R2-CF85] step 2250/4000 ce 1.6976 bce 0.453 (2255s)
+  [P37-R2-CF85] step 2500/4000 ce 1.6760 bce 0.473 (2526s)
+  [P37-R2-CF85] step 2750/4000 ce 1.6299 bce 0.461 (2794s)
+  [P37-R2-CF85] step 3000/4000 ce 1.6627 bce 0.476 (3068s)
+  [P37-R2-CF85] step 3250/4000 ce 1.6445 bce 0.491 (3338s)
+  [P37-R2-CF85] step 3500/4000 ce 1.6328 bce 0.489 (3617s)
+  [P37-R2-CF85] step 3750/4000 ce 1.6219 bce 0.491 (3899s)
+  [P37-R2-CF85] step 4000/4000 ce 1.6449 bce 0.484 (4174s)
+[p37 R2:CF85 s222] {'n1_hard': 1.0, 'n2_hard': 1.0, 'n3_hard': 0.9524, 'n4_hard': 0.9375, 'n6_hard': 0.75, 'n8_hard': 0.6736, 'n_train_mix_hard': 0.922, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 1.0, 'nonkey_fp': 0.0}}
+[P37] DONE

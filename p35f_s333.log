@@ -1,0 +1,42 @@
+[p35] R2 label stats: P(lab|write-key)=0.925 P(lab|query-key)=0.000 P(lab|nonkey)=0.196
+[p35] R2:KRB-HIND params 21324
+/home/user/TryArena/arch_vet_p35.py:142: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  if step % 250 == 0: print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} bce {float(bce):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P35-R2] step 250/4000 ce 2.0683 bce 0.527 (157s)
+  [P35-R2] step 500/4000 ce 2.0252 bce 0.510 (317s)
+  [P35-R2] step 750/4000 ce 2.0000 bce 0.437 (475s)
+  [P35-R2] step 1000/4000 ce 1.8333 bce 0.422 (666s)
+  [P35-R2] step 1250/4000 ce 1.7952 bce 0.435 (830s)
+  [P35-R2] step 1500/4000 ce 1.7754 bce 0.432 (993s)
+  [P35-R2] step 1750/4000 ce 1.7680 bce 0.437 (1155s)
+  [P35-R2] step 2000/4000 ce 1.7589 bce 0.450 (1322s)
+  [P35-R2] step 2250/4000 ce 1.7405 bce 0.443 (1479s)
+  [P35-R2] step 2500/4000 ce 1.7349 bce 0.458 (1639s)
+  [P35-R2] step 2750/4000 ce 1.7080 bce 0.437 (1795s)
+  [P35-R2] step 3000/4000 ce 1.7489 bce 0.453 (1953s)
+  [P35-R2] step 3250/4000 ce 1.7137 bce 0.464 (2113s)
+  [P35-R2] step 3500/4000 ce 1.7171 bce 0.463 (2272s)
+  [P35-R2] step 3750/4000 ce 1.6984 bce 0.472 (2433s)
+  [P35-R2] step 4000/4000 ce 1.7215 bce 0.461 (2589s)
+[p35 R2:SEEN s333] {'n1_hard': 1.0, 'n2_hard': 0.9783, 'n3_hard': 0.9524, 'n4_hard': 0.9187, 'n6_hard': 0.7917, 'n8_hard': 0.7292, 'n_train_mix_hard': 0.922, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.0}}
+[p35] R1 label stats: P(lab|write-key)=0.858 P(lab|query-key)=0.000 P(lab|nonkey)=0.203
+[p35] R1:KRB-HIND params 21324
+  [P35-R1] step 250/4000 ce 1.9211 bce 0.549 (154s)
+  [P35-R1] step 500/4000 ce 1.8391 bce 0.527 (307s)
+  [P35-R1] step 750/4000 ce 1.8627 bce 0.472 (463s)
+  [P35-R1] step 1000/4000 ce 1.7264 bce 0.447 (622s)
+  [P35-R1] step 1250/4000 ce 1.6981 bce 0.462 (780s)
+  [P35-R1] step 1500/4000 ce 1.6708 bce 0.443 (941s)
+  [P35-R1] step 1750/4000 ce 1.6468 bce 0.462 (1100s)
+  [P35-R1] step 2000/4000 ce 1.6457 bce 0.457 (1267s)
+  [P35-R1] step 2250/4000 ce 1.6506 bce 0.448 (1435s)
+  [P35-R1] step 2500/4000 ce 1.6429 bce 0.445 (1594s)
+  [P35-R1] step 2750/4000 ce 1.5824 bce 0.450 (1752s)
+  [P35-R1] step 3000/4000 ce 1.6074 bce 0.458 (1914s)
+  [P35-R1] step 3250/4000 ce 1.5739 bce 0.460 (2072s)
+  [P35-R1] step 3500/4000 ce 1.5762 bce 0.444 (2235s)
+  [P35-R1] step 3750/4000 ce 1.5692 bce 0.445 (2393s)
+  [P35-R1] step 4000/4000 ce 1.5773 bce 0.455 (2552s)
+[p35 R1:SEEN s333] {'n1_hard': 1.0, 'n2_hard': 1.0, 'n3_hard': 0.9683, 'n4_hard': 0.9231, 'n6_hard': 0.8496, 'n8_hard': 0.7703, 'n_train_mix_hard': 0.9556, 'params': 21324, 'diag': {'key_recall': 1.0, 'query_key_fp': 0.0, 'nonkey_fp': 0.0}}
+[P35] DONE

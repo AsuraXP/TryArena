@@ -1,0 +1,40 @@
+[c29b] bank cloned from entry state h11: {}
+[c29b] seed fitness = 0.2864
+[c29b] edit 7 (macros 2): 0.2864 -> 0.3060
+[c29b] edit 8 (macros 2): 0.3060 -> 0.3173
+[c29b] edit 14 (macros 2): 0.3214 -> 0.3285
+[c29b] edit 15 (macros 2): 0.3285 -> 0.3911
+[c29b] edit 17 (macros 2): 0.3911 -> 0.4245
+[c29b] edit 90 (macros 32): 0.4260 -> 0.4397
+[c29b] edit 285 (macros 89): 0.4476 -> 0.4634
+[c29b] edit 338 (macros 105): 0.4646 -> 0.5028
+[c29b] edit 341 (macros 105): 0.5028 -> 0.5222
+[c29b] edit 352 (macros 111): 0.5222 -> 0.5485
+[c29b] edit 374 (macros 119): 0.5485 -> 0.5951
+[c29b] edit 676 (macros 224): 0.5951 -> 0.6048
+[c29b] edit 727 (macros 240): 0.6048 -> 0.6504
+[c29b] edit 8792 (macros 2856): 0.6504 -> 0.6620
+[c29b] edit 9694 (macros 3168): 0.6639 -> 0.6908
+[c29b] edit 10527 (macros 3418): 0.6958 -> 0.7139
+[c29b] edit 10724 (macros 3489): 0.7177 -> 0.7253
+[c29b] edit 12626 (macros 4108): 0.7253 -> 0.7369
+[c29b] edit 13643 (macros 4447): 0.7369 -> 0.7508
+[c29b] edit 14909 (macros 4841): 0.7564 -> 0.7770
+[c29b] edit 19645 (macros 6303): 0.7777 -> 0.7910
+[c29b] edit 20360 (macros 6532): 0.7910 -> 0.8065
+[c29b] edit 20520 (macros 6588): 0.8065 -> 0.8150
+[c29b] edit 23300 (macros 7485): 0.8190 -> 0.8436
+[c29b] edit 23616 (macros 7588): 0.8448 -> 0.8654
+[c29b] edit 28335 (macros 9088): 0.8654 -> 0.8723
+[c29b] edit 29044 (macros 9315): 0.8723 -> 0.8787
+[c29b] edit 38208 (macros 12225): 0.8807 -> 0.8858
+[c29b] edit 38472 (macros 12314): 0.8858 -> 0.8951
+[c29b] edit 39970 (macros 12787): 0.8951 -> 0.9209
+[c29b] done: edits=64970 accepted=52 macros=20730 best=0.9209
+[cert] indist: 17/500 exact, passes=4.16 (want 4), trace_ok=True
+[cert] n16: 0/200 exact, passes=17.24 (want 17), trace_ok=True
+[cert] n32: 0/100 exact, passes=33.14 (want 33), trace_ok=True
+[cert] joint: 0/100 exact, passes=65.22 (want 65), trace_ok=True
+[verdict] {'S1': '17/500', 'S2': '0/200', 'S3': '0/100', 'S4': '0/100', 'S5': True, 'ALL': False}
+RESULT {"tag": "ARC2-C29B-P6-BANK", "search": {"edits": 64970, "accepted": 52, "macros": 20730, "fitness": 0.9209}, "cert": {"indist": {"exact": "17/500", "passes_mean": 4.16, "trace_ok": true}, "n16": {"exact": "0/200", "passes_mean": 17.24, "trace_ok": true}, "n32": {"exact": "0/100", "passes_mean": 33.14, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 65.22, "trace_ok": true}}, "verdict": {"S1": "17/500", "S2": "0/200", "S3": "0/100", "S4": "0/100", "S5": true, "ALL": false}, "wall_s": 613.7, "peak_mb": 500.8}
+DONE

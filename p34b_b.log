@@ -1,0 +1,22 @@
+[p34] R2:KRB-FIXH params 22446
+/home/user/TryArena/arch_vet_p34.py:158: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  if step % 250 == 0: print(f"  [{name}] step {step}/{steps} ce {float(ce):.4f} aux {float(model.aux):.3f} ({time.time()-t0:.0f}s)", flush=True)
+  [P34-R2-FIXH] step 250/4000 ce 2.0661 aux 1.311 (182s)
+  [P34-R2-FIXH] step 500/4000 ce 1.9919 aux 1.171 (367s)
+  [P34-R2-FIXH] step 750/4000 ce 1.9940 aux 1.441 (549s)
+  [P34-R2-FIXH] step 1000/4000 ce 1.9596 aux 1.237 (739s)
+  [P34-R2-FIXH] step 1250/4000 ce 1.9401 aux 1.552 (926s)
+  [P34-R2-FIXH] step 1500/4000 ce 1.8663 aux 1.251 (1121s)
+  [P34-R2-FIXH] step 1750/4000 ce 1.7778 aux 1.210 (1318s)
+  [P34-R2-FIXH] step 2000/4000 ce 1.7454 aux 1.269 (1506s)
+  [P34-R2-FIXH] step 2250/4000 ce 1.6883 aux 1.241 (1694s)
+  [P34-R2-FIXH] step 2500/4000 ce 1.6618 aux 1.690 (1885s)
+  [P34-R2-FIXH] step 2750/4000 ce 1.6409 aux 1.008 (2073s)
+  [P34-R2-FIXH] step 3000/4000 ce 1.6643 aux 1.142 (2254s)
+  [P34-R2-FIXH] step 3250/4000 ce 1.6285 aux 1.228 (2438s)
+  [P34-R2-FIXH] step 3500/4000 ce 1.6382 aux 1.165 (2622s)
+  [P34-R2-FIXH] step 3750/4000 ce 1.6407 aux 1.117 (2810s)
+  [P34-R2-FIXH] step 4000/4000 ce 1.6438 aux 1.029 (2992s)
+[p34 R2:KRB-FIXH] {'n1_hard': 1.0, 'n2_hard': 0.75, 'n3_hard': 0.6667, 'n4_hard': 0.6312, 'n6_hard': 0.425, 'n8_hard': 0.3576, 'n_train_mix_hard': 0.6809, 'params': 22446, 'diag': {'key_recall': 0.25, 'key_fp': 0.188, 'reset_on_T': False, 'reset_fp': 0.0, 'h1_ent': 1.721, 'h2_ent': 1.721, 'h1_cells': 6, 'h2_cells': 6, 'h1_eq_h2': 0.0}}
+[P34] DONE

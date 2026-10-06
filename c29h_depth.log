@@ -1,0 +1,42 @@
+[c29h] bank cloned from entry state h22: {18: 1, 19: 2, 22: 3, 20: 1, 21: 2, 23: 3, 17: 1, 16: 2}
+[c29h] seed fitness = 0.4289
+[c29h] edit 2 (macros 0): 0.4289 -> 0.4879
+[c29h] edit 9 (macros 2): 0.4879 -> 0.5242
+[c29h] edit 15 (macros 4): 0.5242 -> 0.5680
+[c29h] edit 53 (macros 19): 0.5680 -> 0.5730
+[c29h] edit 73 (macros 26): 0.5730 -> 0.6305
+[c29h] edit 88 (macros 33): 0.6305 -> 0.6485
+[c29h] edit 92 (macros 35): 0.6508 -> 0.6586
+[c29h] edit 98 (macros 35): 0.6586 -> 0.6649
+[c29h] edit 103 (macros 36): 0.6649 -> 0.7168
+[c29h] edit 240 (macros 73): 0.7168 -> 0.7257
+[c29h] edit 443 (macros 144): 0.7272 -> 0.7369
+[c29h] edit 539 (macros 170): 0.7369 -> 0.7813
+[c29h] edit 558 (macros 175): 0.7813 -> 0.7936
+[c29h] edit 581 (macros 187): 0.7936 -> 0.8514
+[c29h] edit 2861 (macros 951): 0.8564 -> 0.8883
+[c29h] edit 5115 (macros 1706): 0.8901 -> 0.9135
+[c29h] edit 5153 (macros 1717): 0.9135 -> 0.9250
+[c29h] edit 7783 (macros 2562): 0.9305 -> 0.9421
+[c29h] edit 18854 (macros 6168): 0.9528 -> 0.9692
+[c29h] edit 31528 (macros 10152): 0.9722 -> 0.9898
+[c29h] edit 31536 (macros 10155): 0.9898 -> 1.0078
+[c29h] edit 31584 (macros 10168): 1.0078 -> 1.0197
+[c29h] edit 31590 (macros 10170): 1.0197 -> 1.0244
+[c29h] edit 31907 (macros 10284): 1.0244 -> 1.0365
+[c29h] edit 32963 (macros 10631): 1.0365 -> 1.0482
+[c29h] edit 33078 (macros 10660): 1.0482 -> 1.0499
+[c29h] edit 34230 (macros 11026): 1.0499 -> 1.0533
+[c29h] edit 35844 (macros 11533): 1.0533 -> 1.0543
+[c29h] edit 37982 (macros 12201): 1.0543 -> 1.0545
+[c29h] edit 38161 (macros 12263): 1.0545 -> 1.0574
+[c29h] edit 39682 (macros 12762): 1.0574 -> 1.0632
+[c29h] edit 39912 (macros 12827): 1.0632 -> 1.0719
+[c29h] done: edits=64912 accepted=47 macros=20836 best=1.0719
+[cert] indist: 233/500 exact, passes=4.08 (want 4), trace_ok=True
+[cert] n16: 3/200 exact, passes=17.14 (want 17), trace_ok=True
+[cert] n32: 0/100 exact, passes=33.06 (want 33), trace_ok=True
+[cert] joint: 0/100 exact, passes=65.1 (want 65), trace_ok=True
+[verdict] {'S1': '233/500', 'S2': '3/200', 'S3': '0/100', 'S4': '0/100', 'S5': True, 'ALL': False}
+RESULT {"tag": "ARC2-C29H-P6-DEPTH", "search": {"edits": 64912, "accepted": 47, "macros": 20836, "fitness": 1.0719}, "cert": {"indist": {"exact": "233/500", "passes_mean": 4.08, "trace_ok": true}, "n16": {"exact": "3/200", "passes_mean": 17.14, "trace_ok": true}, "n32": {"exact": "0/100", "passes_mean": 33.06, "trace_ok": true}, "joint": {"exact": "0/100", "passes_mean": 65.1, "trace_ok": true}}, "verdict": {"S1": "233/500", "S2": "3/200", "S3": "0/100", "S4": "0/100", "S5": true, "ALL": false}, "wall_s": 1109.3, "peak_mb": 499.0}
+DONE

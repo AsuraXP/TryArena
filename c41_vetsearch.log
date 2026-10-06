@@ -1,0 +1,8 @@
+[c41] blank-genome fitness 0.0500
+  [c41] evals 1 best 0.0500 (0s)
+[c41] PERFECT train fitness at evals 877
+[c41] search done: evals 877 best 1.0000 (20s)
+[c41] S1 500/500 S2 200/200 S3 100/100 S4 100/100 S5 True trace True
+[bars] {'S1_ge_498of500': True, 'S2_200of200': True, 'S3_100of100': True, 'S4_100of100': True, 'S5_passes_nd+1': True, 'S5_one_mark_trace': True}
+RESULT {"tag": "ARC2-C41-VETSEARCH", "search": {"evals": 877, "train_fitness": 1.0, "wall_s": 54.7}, "cert": {"S1_indist": 500, "S2_n16": 200, "S3_n32": 100, "S4_n64": 100, "S5_passes_exact": true, "trace_ok": true, "bars": {"S1_ge_498of500": true, "S2_200of200": true, "S3_100of100": true, "S4_100of100": true, "S5_passes_nd+1": true, "S5_one_mark_trace": true}, "ALL": true, "discovered": true}, "wall_s": 54.7, "peak_mb": 496.9}
+DONE

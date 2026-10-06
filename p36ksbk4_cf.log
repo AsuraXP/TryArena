@@ -1,0 +1,37 @@
+  [P36-GK-s111] step 250/1000 loss 0.9245 (202s)
+  [P36-GK-s111] step 500/1000 loss 1.6382 (402s)
+  [P36-GK-s111] step 750/1000 loss 1.8522 (601s)
+  [P36-GK-s111] step 1000/1000 loss 0.9255 (801s)
+[p36 K=SBK4 C=F s111] bars=6/6 {'pair': 0.8585, 'modk': 1.0, 'ratio': 0.596, 'dyck_d12': 0.9838, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=0.9962 Kshare=0.9192 text 2.5081/2.5081 params 116858
+  [P36-GK-s222] step 250/1000 loss 1.1211 (204s)
+  [P36-GK-s222] step 500/1000 loss 1.7694 (411s)
+  [P36-GK-s222] step 750/1000 loss 1.8289 (620s)
+  [P36-GK-s222] step 1000/1000 loss 0.9553 (827s)
+[p36 K=SBK4 C=F s222] bars=6/6 {'pair': 0.8774, 'modk': 1.0, 'ratio': 0.503, 'dyck_d12': 0.9496, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=1.0 Kshare=0.9207 text 2.4997/2.4997 params 116858
+  [P36-GK-s333] step 250/1000 loss 1.2575 (204s)
+  [P36-GK-s333] step 500/1000 loss 1.6193 (409s)
+  [P36-GK-s333] step 750/1000 loss 1.8659 (612s)
+  [P36-GK-s333] step 1000/1000 loss 1.0501 (817s)
+[p36 K=SBK4 C=F s333] bars=6/6 {'pair': 0.8585, 'modk': 1.0, 'ratio': 0.443, 'dyck_d12': 0.9728, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=1.0 Kshare=0.9219 text 2.485/2.485 params 116858
+[P36] DONE
+  [P36-GK-s444] step 250/1000 loss 1.0278 (327s)
+  [P36-GK-s444] step 500/1000 loss 1.5224 (660s)
+  [P36-GK-s444] step 750/1000 loss 1.8379 (971s)
+  [P36-GK-s444] step 1000/1000 loss 0.8627 (1289s)
+[p36 K=SBK4 C=F s444] bars=6/6 {'pair': 0.9151, 'modk': 1.0, 'ratio': 0.546, 'dyck_d12': 0.9836, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=0.998 Kshare=0.96 text 2.5207/2.5207 params 116858
+  [P36-GK-s555] step 250/1000 loss 1.1467 (319s)
+  [P36-GK-s555] step 500/1000 loss 1.5768 (641s)
+  [P36-GK-s555] step 750/1000 loss 1.8178 (966s)
+  [P36-GK-s555] step 1000/1000 loss 0.9797 (1285s)
+[p36 K=SBK4 C=F s555] bars=6/6 {'pair': 0.8302, 'modk': 1.0, 'ratio': 0.504, 'dyck_d12': 0.9752, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=1.0 Kshare=0.9612 text 2.4965/2.4965 params 116858
+  [P36-GK-s666] step 250/1000 loss 1.1793 (322s)
+  [P36-GK-s666] step 500/1000 loss 1.6476 (646s)
+  [P36-GK-s666] step 750/1000 loss 1.8855 (982s)
+  [P36-GK-s666] step 1000/1000 loss 0.8383 (1300s)
+[p36 K=SBK4 C=F s666] bars=6/6 {'pair': 0.934, 'modk': 1.0, 'ratio': 0.433, 'dyck_d12': 0.9459, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=0.9982 Kshare=0.9036 text 2.4848/2.4848 params 116858
+  [P36-GK-s777] step 250/1000 loss 1.1037 (313s)
+  [P36-GK-s777] step 500/1000 loss 1.6182 (620s)
+  [P36-GK-s777] step 750/1000 loss 1.8589 (930s)
+  [P36-GK-s777] step 1000/1000 loss 0.9775 (1239s)
+[p36 K=SBK4 C=F s777] bars=6/6 {'pair': 0.934, 'modk': 1.0, 'ratio': 0.469, 'dyck_d12': 0.969, 'mqar_routed': {'n4': 1.0, 'n8': 1.0}, 'mqar_K_alone': {'n4': 1.0, 'n8': 1.0}} identity=1.0 Kshare=0.8867 text 2.467/2.467 params 116858
+[P36] DONE

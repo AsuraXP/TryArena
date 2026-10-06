@@ -1,0 +1,39 @@
+[c25a] stage k<=1 s0 lr=0.00500 CE 1.2009 crisp-probe 0/64
+[c25a] stage k<=1 s200 lr=0.00500 CE 0.9478 crisp-probe 0/64
+[c25a] stage k<=1 s400 lr=0.00500 CE 0.3780 crisp-probe 0/64
+[c25a] stage k<=1 s600 lr=0.00500 CE 0.1332 crisp-probe 31/64
+[c25a] stage k<=1 s800 lr=0.00500 CE 0.1249 crisp-probe 3/64
+[c25a] stage k<=1 s1000 lr=0.00500 CE 0.1126 crisp-probe 13/64
+[c25a] stage k<=1 s1200 lr=0.00500 CE 0.1840 crisp-probe 7/64
+[c25a] stage k<=1 s1400 lr=0.00500 CE 0.0026 crisp-probe 64/64
+[c25a] stage k<=2 s0 lr=0.00500 CE 0.0025 crisp-probe 64/64
+[c25a] stage k<=3 s0 lr=0.00500 CE 0.0025 crisp-probe 64/64
+[c25a] stage k<=4 s0 lr=0.00500 CE 0.0026 crisp-probe 64/64
+[c25a] restored best-probe checkpoint (probe 64/64)
+[c25a] rows changed vs counter seed: 18
+[c25a] counter-region rows changed: 0 (protocol reused intact)
+  tok    d0 st11: E 3->12  P 11->11
+  tok    d1 st 0: E 4->4  P 0->15
+  tok    d1 st11: E 4->3  P 11->15
+  tok    d2 st 0: E 5->5  P 0->15
+  tok    d2 st11: E 5->4  P 11->15
+  tok    d3 st 0: E 6->6  P 0->15
+  tok    d3 st11: E 6->5  P 11->15
+  tok    d4 st 0: E 7->7  P 0->15
+  tok    d4 st11: E 7->6  P 11->15
+  tok    d5 st 0: E 8->8  P 0->15
+  tok    d5 st11: E 8->7  P 11->15
+  tok    d6 st 0: E 9->9  P 0->15
+  tok    d6 st11: E 9->8  P 11->15
+  tok    d7 st 0: E 10->10  P 0->15
+  tok    d7 st11: E 10->9  P 11->15
+  tok    d8 st 0: E 11->11  P 0->15
+  tok    d8 st11: E 11->10  P 11->15
+  tok    d9 st11: E 12->11  P 11->0
+[cert] indist: 500/500 exact, passes=3.0 (want 3), trace_ok=True
+[cert] k16: 200/200 exact, passes=17.0 (want 17), trace_ok=True
+[cert] k64: 100/100 exact, passes=65.0 (want 65), trace_ok=True
+[cert] joint: 100/100 exact, passes=65.0 (want 65), trace_ok=True
+[verdict] {'S1': '500/500', 'S2': '200/200', 'S3': '100/100', 'S4': '100/100', 'S5': True, 'ALL': True}
+RESULT {"tag": "ARC2-C25A-P3-SUB", "cert": {"indist": {"exact": "500/500", "passes_mean": 3.0, "trace_ok": true}, "k16": {"exact": "200/200", "passes_mean": 17.0, "trace_ok": true}, "k64": {"exact": "100/100", "passes_mean": 65.0, "trace_ok": true}, "joint": {"exact": "100/100", "passes_mean": 65.0, "trace_ok": true}}, "verdict": {"S1": "500/500", "S2": "200/200", "S3": "100/100", "S4": "100/100", "S5": true, "ALL": true}, "steps": 1404, "rows_changed": 18, "counter_rows_changed": 0, "wall_s": 51.6, "peak_mb": 663.3}
+DONE

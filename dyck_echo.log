@@ -1,0 +1,27 @@
+[setup] dyck-echo cfg={'steps': 2500, 'batch': 32, 'train_len': 64, 'eval_lens': [64, 512, 2048, 4096], 'eval_reps': 2, 'd_model': 16, 'K': 4096, 'p_rise': 0.9, 'p_fall': 0.02}
+[run] loaded dyke_s0.pt (resume eval, no retrain)
+[run] ssm_d16_1 control params=2854
+  [ssm] step 500/2500 CE 0.7274 (6s)
+  [ssm] step 1000/2500 CE 0.7448 (12s)
+  [ssm] step 1500/2500 CE 0.7360 (19s)
+  [ssm] step 2000/2500 CE 0.6805 (25s)
+  [ssm] step 2500/2500 CE 0.6587 (31s)
+/home/user/TryArena/dyck_echo.py:187: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.enc = nn.TransformerEncoder(layer, n_layers)
+[run] tf_rope params=100358 (same budget)
+  [tf] step 500/2500 CE 0.6483 (23s)
+  [tf] step 1000/2500 CE 0.6709 (47s)
+  [tf] step 1500/2500 CE 0.6617 (71s)
+  [tf] step 2000/2500 CE 0.6393 (95s)
+  [tf] step 2500/2500 CE 0.6210 (115s)
+
+================================================================================
+RESULTS  dCE = excess CE over analytic oracle (nats/token; 0 = perfect)
+================================================================================
+run                             L64       L512      L2048     L4096     
+echo (host + exact-stack organ) -0.2774   -0.2761   -0.2927   -0.2935   
+ssm_d16_1 (same data)           -0.107    -0.1014   -0.1209   -0.1199   
+tf_rope                         -0.131    2.2526    2.723     1.4569    
+================================================================================
+RESULT {"tag": "ARC2-C8-DYCKECHO", "runs": {"echo (host + exact-stack organ)": {"L64": -0.2774, "L512": -0.2761, "L2048": -0.2927, "L4096": -0.2935}, "ssm_d16_1 (same data)": {"L64": -0.107, "L512": -0.1014, "L2048": -0.1209, "L4096": -0.1199}, "tf_rope": {"L64": -0.131, "L512": 2.2526, "L2048": 2.723, "L4096": 1.4569}}, "verdict": "hero dCE@4096 = -0.2935 (WIN if <= 0.10 while ssm >= 0.25 and tf >= 0.5); ssm = -0.1199; tf = 1.4569", "wall_s": 153.1, "peak_mb": 1348.8}
+DONE

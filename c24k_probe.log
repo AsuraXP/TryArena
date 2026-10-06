@@ -1,0 +1,6 @@
+[c24j] stage k<=1 s0 lr=0.00500 CE 2.4007 hard-probe 0/64
+[c24j] stage k<=1 s200 lr=0.00500 CE 2.0095 hard-probe 0/64
+[c24j] stage k<=1 s400 lr=0.00500 CE 0.9604 hard-probe 0/64
+[c24j] stage k<=1 s600 lr=0.00500 CE 0.1468 hard-probe 37/64
+[c24j] stage k<=1 s800 lr=0.00500 CE 0.1237 hard-probe 30/64
+[c24j] stage k<=1 s1000 lr=0.00500 CE 0.1142 hard-probe 18/64

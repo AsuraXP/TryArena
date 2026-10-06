@@ -1,0 +1,22 @@
+[p32] R2/TF-alibi params 42672 slots 8 keys 16
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [P32-R2-TF-alibi] step 250/4000 loss 1.8932 (8s)
+  [P32-R2-TF-alibi] step 500/4000 loss 1.7422 (16s)
+  [P32-R2-TF-alibi] step 750/4000 loss 1.6859 (25s)
+  [P32-R2-TF-alibi] step 1000/4000 loss 1.6326 (34s)
+  [P32-R2-TF-alibi] step 1250/4000 loss 1.5919 (42s)
+  [P32-R2-TF-alibi] step 1500/4000 loss 1.5706 (50s)
+  [P32-R2-TF-alibi] step 1750/4000 loss 1.5294 (58s)
+  [P32-R2-TF-alibi] step 2000/4000 loss 1.5252 (66s)
+  [P32-R2-TF-alibi] step 2250/4000 loss 1.5491 (74s)
+  [P32-R2-TF-alibi] step 2500/4000 loss 1.5472 (82s)
+  [P32-R2-TF-alibi] step 2750/4000 loss 1.4985 (90s)
+  [P32-R2-TF-alibi] step 3000/4000 loss 1.5496 (98s)
+  [P32-R2-TF-alibi] step 3250/4000 loss 1.5265 (106s)
+  [P32-R2-TF-alibi] step 3500/4000 loss 1.5100 (114s)
+  [P32-R2-TF-alibi] step 3750/4000 loss 1.5103 (122s)
+  [P32-R2-TF-alibi] step 4000/4000 loss 1.5402 (130s)
+[p32 R2/TF-alibi] {'n1_hard': 0.3091, 'n2_hard': 0.4783, 'n3_hard': 0.4762, 'n4_hard': 0.375, 'n6_hard': 0.3292, 'n8_hard': 0.2743, 'n_train_mix_hard': 0.383, 'params': 42672}
+[P32] DONE

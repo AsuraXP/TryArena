@@ -1,0 +1,31 @@
+[p23] pool 1024
+[p23] nope s111 params=42672
+arch_vet_lm.py:452: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  hist.append((step, round(float(loss), 4)))
+  [P23-nope-s111] step 250/6000 loss 1.2789 (8s)
+  [P23-nope-s111] step 500/6000 loss 1.2500 (15s)
+  [P23-nope-s111] step 750/6000 loss 1.2985 (23s)
+  [P23-nope-s111] step 1000/6000 loss 1.3565 (31s)
+  [P23-nope-s111] step 1250/6000 loss 1.2296 (39s)
+  [P23-nope-s111] step 1500/6000 loss 1.3459 (47s)
+  [P23-nope-s111] step 1750/6000 loss 1.3592 (55s)
+  [P23-nope-s111] step 2000/6000 loss 1.3622 (63s)
+  [P23-nope-s111] step 2250/6000 loss 1.4003 (70s)
+  [P23-nope-s111] step 2500/6000 loss 1.2636 (78s)
+  [P23-nope-s111] step 2750/6000 loss 1.3509 (85s)
+  [P23-nope-s111] step 3000/6000 loss 1.3848 (92s)
+  [P23-nope-s111] step 3250/6000 loss 1.2259 (99s)
+  [P23-nope-s111] step 3500/6000 loss 1.3076 (105s)
+  [P23-nope-s111] step 3750/6000 loss 1.3506 (113s)
+  [P23-nope-s111] step 4000/6000 loss 1.2514 (121s)
+  [P23-nope-s111] step 4250/6000 loss 1.4040 (129s)
+  [P23-nope-s111] step 4500/6000 loss 1.4003 (137s)
+  [P23-nope-s111] step 4750/6000 loss 1.2935 (144s)
+  [P23-nope-s111] step 5000/6000 loss 1.3779 (152s)
+  [P23-nope-s111] step 5250/6000 loss 1.3252 (159s)
+  [P23-nope-s111] step 5500/6000 loss 0.8863 (167s)
+  [P23-nope-s111] step 5750/6000 loss 0.8683 (174s)
+  [P23-nope-s111] step 6000/6000 loss 0.9046 (183s)
+[TF-nope s111] ce={'256_train': 1.515, '256_hard': 2.083, '512': 2.107, '1024': 3.014}
+[TF-nope s111] acc_eval={'track': 0.465, 'modk': 0.269, 'dyck': 0.0, 'pair': 0.472}
