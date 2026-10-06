@@ -41,7 +41,7 @@ Before building any mechanism, search (arXiv, GitHub, blogs) and cite it in the 
 
 ## THE NOVELTY GATE (NOVELTY.md — mandatory, every hypothesis)
 Your memory IS the standard path; it will regenerate Mamba/RWKV/NTM/Hopfield/MoE and our own dead ends under new names. So novelty is mechanical, not a feeling:
-1. Locate the hypothesis on the map in NOVELTY.md §B. Pick from unwalked cells.
+1. Locate the hypothesis on the map in NOVELTY.md §B. Pick from unwalked cells. Each cycle also ask: is there an AXIS missing from the map? A row nobody drew is worth more than an empty cell.
 2. Search to DISPROVE novelty (2+ queries aimed at finding it already done). If found, write the one-sentence delta or reject.
 3. Check the negatives ledger §C by FAILURE REASON, not name. Same disease under a new name → reject.
 4. Generate ≥4 candidates; kill every familiar one; run the survivor. None survive → generate again, never lower the bar.
