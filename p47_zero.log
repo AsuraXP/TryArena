@@ -1,0 +1,12 @@
+[P47] eval lens in=38 len=155 cnt=70 both=299 far=892
+  [SBC d16 M4 s1] step 0 tau 1.00 ce 3.597 gate 0.872 occ 1.00 (0s)
+  [SBC d16 M4 s1] step 500 tau 0.75 ce 2.356 gate 0.246 occ 0.73 (36s)
+  [SBC d16 M4 s1] step 1000 tau 0.56 ce 2.350 gate 0.164 occ 0.62 (70s)
+  [SBC d16 M4 s1] step 1500 tau 0.42 ce 2.352 gate 0.137 occ 0.55 (107s)
+  [SBC d16 M4 s1] step 2000 tau 0.32 ce 2.216 gate 0.123 occ 0.51 (140s)
+  [SBC d16 M4 s1] step 2500 tau 0.24 ce 2.160 gate 0.128 occ 0.47 (174s)
+  [SBC d16 M4 s1] step 3000 tau 0.18 ce 2.274 gate 0.114 occ 0.47 (206s)
+  [SBC d16 M4 s1] step 3500 tau 0.13 ce 2.157 gate 0.103 occ 0.41 (240s)
+  [SBC d16 M4 s1] step 3999 tau 0.10 ce 2.248 gate 0.100 occ 0.46 (273s)
+[p47 SBC d16 M4 s1] params 5034 in 0.419 len 0.443 cnt 0.247 both 0.286 far 0.240 gate val/fil (0.122, 0.039)
+  [SBC d16 M4 s2] step 0 tau 1.00 ce 3.562 gate 0.870 occ 1.00 (0s)

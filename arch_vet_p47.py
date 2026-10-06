@@ -27,7 +27,7 @@ V, PAD = T.V, T.PAD
 torch.set_num_threads(2)
 
 
-TIE, ST, GATE_INIT = False, True, 2.0
+TIE, ST, GATE_INIT, GMIN0 = False, False, 2.0, 0.2
 
 
 def hard(p):
@@ -40,26 +40,29 @@ class SBC(nn.Module):
     def __init__(self, d, M=8):
         super().__init__(); self.d, self.M = d, M
         self.E = nn.Embedding(V, d); self.ctrl = nn.GRUCell(d, d)
-        self.k = nn.Linear(2 * d, d); self.q = self.k if TIE else nn.Linear(2 * d, d); self.v = nn.Linear(2 * d, d)   # from local window [e_{t-1}, e_t]
+        # q,k in the SHARED embedding space with learned per-tap mixing (alignment = 4d params, not two d^2 maps)
+        self.ka = nn.Parameter(torch.full((2, d), 0.5)); self.qa = nn.Parameter(torch.full((2, d), 0.5))
+        self.v = nn.Linear(2 * d, d)
+        self.K0 = nn.Parameter(torch.randn(16, d) * 0.5)   # distinct learned initial slot keys: breaks slot symmetry (up to 16 slots)
         self.g = nn.Linear(d, 1); self.theta = nn.Parameter(torch.tensor(1.0))
         self.head = nn.Linear(2 * d + 1, V)
         nn.init.constant_(self.g.bias, GATE_INIT)   # +2: start writing everything (like a KV cache); learn to NOT write
 
-    def forward(self, x, tau=0.1, states=False, force_write=False):
-        B, L = x.shape; d, M = self.d, self.M; e = self.E(x)
-        h = torch.zeros(B, d); K = torch.zeros(B, M, d); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M)
+    def forward(self, x, tau=0.1, states=False, force_write=False, M=None, gmin=0.0):
+        B, L = x.shape; d = self.d; M = M or self.M; e = self.E(x)
+        h = torch.zeros(B, d); K = self.K0[:M].unsqueeze(0).expand(B, M, d).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M)
         outs, gates = [], []
         prev = torch.zeros(B, d)
         for t in range(L):
-            h = self.ctrl(e[:, t], h); win = torch.cat([prev, e[:, t]], -1); prev = e[:, t]
+            h = self.ctrl(e[:, t], h); win = torch.cat([prev, e[:, t]], -1); prev0 = prev; prev = e[:, t]
             logocc = torch.log(occ + 1e-4)
             # read
-            q = self.q(win); sim = torch.einsum("bd,bmd->bm", q, K) / math.sqrt(d)
+            q = self.qa[0] * e[:, t] + self.qa[1] * prev0; sim = torch.einsum("bd,bmd->bm", q, K) / math.sqrt(d)
             a = hard(torch.softmax((sim + logocc) / tau, -1)); r = torch.einsum("bm,bmd->bd", a, Vm)
             conf = (a * occ).sum(-1, keepdim=True)
             outs.append(self.head(torch.cat([h, r, conf], -1)))
             # write
-            k = self.k(win); v = self.v(win); g = torch.ones(B, 1) if force_write else torch.sigmoid(self.g(h)); gates.append(g)
+            k = self.ka[0] * e[:, t] + self.ka[1] * prev0; v = self.v(win); g = torch.ones(B, 1) if force_write else gmin + (1 - gmin) * torch.sigmoid(self.g(h)); gates.append(g)   # leaky: 'off' is never absorbing
             wsim = torch.einsum("bd,bmd->bm", k, K) / math.sqrt(d)
             m = hard(torch.softmax((wsim + logocc) / tau, -1))
             p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta)
@@ -77,7 +80,8 @@ def train(d, M, seed, steps, B, log, l1=0.0, warm=0):
     for s in range(steps):
         tau = 1.0 * (0.1 / 1.0) ** (s / max(steps - 1, 1))
         bt = T.make_batch(rng, B, (2, 4), 2, 4, with_pairs=False)
-        logits, gates, occ = m(bt["x"], tau=tau, states=True, force_write=(s < warm))
+        gmin = GMIN0 * (1 - s / max(steps - 1, 1))
+        logits, gates, occ = m(bt["x"], tau=tau, states=True, force_write=(s < warm), gmin=gmin)
         ce = T.ce_loss(logits, bt["x"], bt["ans"]); mask = (bt["x"] != PAD).float()
         gl = (gates * mask).sum() / mask.sum(); loss = ce + l1 * gl
         opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
@@ -87,10 +91,10 @@ def train(d, M, seed, steps, B, log, l1=0.0, warm=0):
 
 
 @torch.no_grad()
-def acc(m, batches, tau=0.05):
+def acc(m, batches, tau=0.05, M=None):
     m.eval(); c = t = 0
     for bt in batches:
-        p = m(bt["x"], tau=tau).argmax(-1)
+        p = m(bt["x"], tau=tau, M=M).argmax(-1)
         for i, poss in enumerate(bt["ans"]):
             for s in poss: c += int(p[i, s - 1].item() == bt["x"][i, s].item()); t += 1
     m.train(); return c / max(t, 1)
@@ -109,7 +113,7 @@ def write_profile(m, batches, tau=0.05):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--ds", default="16,32,64"); ap.add_argument("--M", type=int, default=8)
-    ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=8000); ap.add_argument("--B", type=int, default=16); ap.add_argument("--warm", type=int, default=0)
+    ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=8000); ap.add_argument("--B", type=int, default=16); ap.add_argument("--warm", type=int, default=0); ap.add_argument("--Meval", type=int, default=0)
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
     er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
     er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]
@@ -122,7 +126,8 @@ def main():
         for seed in map(int, a.seeds.split(",")):
             m = train(d, a.M, seed, a.steps, a.B, log, warm=a.warm)
             wp = write_profile(m, ev_in)
-            r = {"arm": "SBC", "warm": a.warm, "d": d, "M": a.M, "seed": seed, "params": T.n_params(m), "in": acc(m, ev_in), "len": acc(m, ev_len), "cnt": acc(m, ev_cnt), "both": acc(m, ev_both), "far": acc(m, ev_far), "gate_on_values": wp[0], "gate_on_filler": wp[1]}
+            Me = a.Meval or None
+            r = {"arm": "SBC", "warm": a.warm, "d": d, "M": a.M, "Meval": a.Meval or a.M, "seed": seed, "params": T.n_params(m), "in": acc(m, ev_in, M=Me), "len": acc(m, ev_len, M=Me), "cnt": acc(m, ev_cnt, M=Me), "both": acc(m, ev_both, M=Me), "far": acc(m, ev_far, M=Me), "gate_on_values": wp[0], "gate_on_filler": wp[1]}
             res["runs"].append(r); log(f"[p47 SBC d{d} M{a.M} s{seed}] params {r['params']} in {r['in']:.3f} len {r['len']:.3f} cnt {r['cnt']:.3f} both {r['both']:.3f} far {r['far']:.3f} gate val/fil {wp}")
     xs = [math.log2(r["params"]) for r in res["runs"]]
     if len(xs) >= 2:

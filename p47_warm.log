@@ -1,0 +1,13 @@
+[P47] eval lens in=38 len=155 cnt=70 both=299 far=892
+  [SBC d16 M8 s1] step 0 tau 1.00 ce 3.599 gate 1.000 occ 1.00 (0s)
+  [SBC d16 M8 s1] step 500 tau 0.75 ce 1.734 gate 1.000 occ 0.95 (33s)
+  [SBC d16 M8 s1] step 1000 tau 0.56 ce 1.672 gate 0.856 occ 0.93 (68s)
+  [SBC d16 M8 s1] step 1500 tau 0.42 ce 1.628 gate 0.857 occ 0.96 (102s)
+  [SBC d16 M8 s1] step 2000 tau 0.32 ce 1.568 gate 0.852 occ 0.93 (135s)
+  [SBC d16 M8 s1] step 2500 tau 0.24 ce 1.458 gate 0.842 occ 0.93 (172s)
+  [SBC d16 M8 s1] step 3000 tau 0.18 ce 1.561 gate 0.851 occ 0.90 (206s)
+  [SBC d16 M8 s1] step 3500 tau 0.13 ce 1.445 gate 0.835 occ 0.68 (240s)
+  [SBC d16 M8 s1] step 3999 tau 0.10 ce 1.530 gate 0.806 occ 0.86 (275s)
+[p47 SBC d16 M8 s1] params 5034 in 0.990 len 0.875 cnt 0.701 both 0.411 far 0.391 gate val/fil (0.989, 0.966)
+  [SBC d16 M8 s2] step 0 tau 1.00 ce 3.551 gate 1.000 occ 1.00 (0s)
+  [SBC d16 M8 s2] step 500 tau 0.75 ce 2.386 gate 1.000 occ 1.00 (33s)
