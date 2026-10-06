@@ -5637,3 +5637,32 @@ synthetic task (it must keep 1.0), then a text test where memory is
 *required*: entity re-mention CE (bytes of a name's second mention,
 far from its first) vs background CE — the right micro-measure of
 'generalizer on text'.
+C96 ADDENDUM — keys/queries/values from the controller state (kq=h),
+synthetic task, d32 M8, 2 seeds: in .430/.411 (= GRU floor), gate
+selective (.62-.68 on values, .08 filler) but reads never agree with
+writes. A history-mixing state cannot produce the same key for the
+same thing in two contexts; token embeddings can, trivially. The
+agreement must be BY CONSTRUCTION, not discovered.
+
+C97 — PRE-REGISTRATION: CHUNK-KEYED BINDING (the unit the learner makes).
+Design: a second small recurrent state c_t (the chunker) that is
+multiplied by (1-b_t) at a learned boundary b_t in [0,1]; the key of
+a chunk is c at its boundary, so it depends only on the chunk's own
+bytes (context-free by construction -> read/write agreement is
+automatic, the same chunk gives the same key anywhere). The boundary
+IS the write event (write alpha = b_t). Value = controller state at
+the boundary (what came after the chunk begins). Read: q = current
+chunker state (the chunk in progress), continuous, so the head sees
+'what followed this chunk last time' while typing it. Prior art:
+HM-RNN Chung+ 2016 (learned binary boundaries, ST estimators, no
+cardinality control, boundaries feed a hierarchy not a memory);
+Gated DeltaNet-2 arXiv 2605.22791 (erase/write gates on a dense
+state, no unit). Delta: boundaries define the KEY of a slot binding
+and the write event in a bounded set-structured state; keys are
+context-free by reset; no position signal. Tests: (a) synthetic P46
+task (must hold >= .95 in/len); (b) text: entity re-mention CE —
+synthetic dialogue bytes where names are introduced and re-mentioned
+200-800 bytes later; metric = CE on the re-mention bytes vs GRU/TF,
+plus background CE must not get worse. PREDICTION: re-mention CE
+drops by >= 30% vs GRU at d32; background CE within .02; TF
+re-mention CE fine in range, collapses at x4 length.
