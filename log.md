@@ -5412,3 +5412,28 @@ masked sampling, window 224. Measured: 100 bytes in ~13 s (window x
 2.4 ms/byte; no incremental-state API yet — engineering item). Output
 is log-ese ("for i in range(1, 1) / self.appen") because expert C's
 corpus is this repo's logs. Next: conversational corpus -> fresh C.
+
+C92 PHASE 2 — dialogue-trained expert C (arch_vet_p44.py). Corpora:
+small = chatterbot-corpus (156 KB, 1,823 dialogues); big = Cornell
+movie-dialog pairs shipped inside the nlpia 0.5.2 wheel (PyPI is the
+only reachable host) + small = 4.8 MB, 66,071 dialogues. Turn-aware
+streams (U bytes EOS). Val CE (nats/byte, held-out dialogues):
+| corpus | d | params | steps | val | note |
+| small | 48 | 43,600 | 4000 | 1.022 | 2.5 MIN per run (GRU alone is fast) |
+| small | 48 | 43,600 | 12000 | .979 | |
+| small | 96 | 114,544 | 8000 | .989 | overfit (train .62; best .947 @4k) |
+| big | 48 | 43,600 | 12000 | 1.600 | |
+| big | 96 | 114,544 | 12000 | 1.460 | |
+Routing on byte turns: 100% to C (route stats 80/80), so the chat
+quality IS expert C. Samples (big d96, temp .6 top-k 8): "no is the
+might go and a which to the business i want to get the compl..." —
+English words and clause shapes, but replies are nearly PROMPT-
+INDEPENDENT (same reply for Hello / Do you love me?). That is the
+characteristic failure of a 50-100k-param lexical model: the user turn
+barely conditions the reply distribution; generic priors dominate.
+DESIGN CONSEQUENCE (not a tuning item): conditioning on what was said
+must come from an exact organ, not from GRU capacity — the K expert's
+key->value binding with the user turn as key (retrieve an exact reply
+candidate from memory, let C realise it). That is Tier 2 and it is the
+architecture's own answer to "knowledge in memory, not weights".
+chat.py now reseeds per reply. RESULT ARCH-VET-LM-P44 x5 in jsonl.
