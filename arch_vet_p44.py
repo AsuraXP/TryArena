@@ -17,7 +17,8 @@ REPO = os.path.dirname(os.path.abspath(__file__)); os.chdir(REPO)
 import arch_vet_p26 as p26, arch_vet_p19 as p19
 CKPT = "p21_ckpt"; V0, VB, U, EOS, BOS = p26.V0, p26.VB, p26.U, p26.EOS, p26.BOS
 
-_dl = [d.split("\n") for d in open("corpus/chat_dialogues.txt", encoding="utf-8").read().strip().split("\n\n")]
+CORPUS = os.environ.get("P44_CORPUS", "corpus/chat_dialogues.txt")   # big = corpus/chat_dialogues_big.txt (Cornell movie pairs via nlpia 0.5.2 + chatterbot)
+_dl = [d.split("\n") for d in open(CORPUS, encoding="utf-8").read().strip().split("\n\n")]
 _cut = int(len(_dl) * 0.9); DLG_TR, DLG_VA = _dl[:_cut], _dl[_cut:]
 
 
@@ -30,11 +31,12 @@ def gen_chat_stream(rng, L=256, src=None):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--seeds", default="111"); ap.add_argument("--steps", type=int, default=4000); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--seeds", default="111"); ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--d", type=int, default=48); ap.add_argument("--layers", type=int, default=1); a = ap.parse_args()
+    tag = ("" if (a.d == 48 and a.layers == 1) else f"_d{a.d}l{a.layers}") + ("_big" if "big" in CORPUS else "")
     va = torch.stack([torch.tensor(gen_chat_stream(random.Random(99 + i), 256, DLG_VA)) for i in range(32)])
     out = {"tag": "ARCH-VET-LM-P44", "protocol": __doc__, "per_seed": {}, "corpus": {"dialogues": len(_dl), "train": len(DLG_TR), "val": len(DLG_VA)}}
     for seed in [int(s) for s in a.seeds.split(",")]:
-        torch.manual_seed(seed); m = p26.ByteGRU(VB, 48); n = p19.n_params(m)
+        torch.manual_seed(seed); m = p26.ByteGRU(VB, a.d, a.layers); n = p19.n_params(m)
         opt = torch.optim.AdamW(m.parameters(), lr=3e-3); torch.manual_seed(0); frng = random.Random(4242 + seed); t0 = time.time(); hist = []
         def val():
             m.eval()
@@ -45,9 +47,9 @@ def main():
             loss = F.cross_entropy(m(x[:, :256]).reshape(-1, VB), x[:, 1:257].reshape(-1))
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
             if step % 500 == 0:
-                ce = val(); hist.append((step, round(loss.item(), 4), ce)); print(f"  [P44-CCHAT-s{seed}] step {step}/{a.steps} train {loss.item():.4f} val {ce} ({time.time()-t0:.0f}s)", flush=True)
-        ce = val(); torch.save({"sd": m.state_dict(), "hist": hist}, f"{CKPT}/CCHAT_s{seed}.pt")
-        r = {"params": n, "val_chat_ce": ce, "hist": hist}; out["per_seed"][seed] = r; print(f"[p44 CCHAT s{seed}] {r}", flush=True)
+                ce = val(); hist.append((step, round(loss.item(), 4), ce)); print(f"  [P44-CCHAT{tag}-s{seed}] step {step}/{a.steps} train {loss.item():.4f} val {ce} ({time.time()-t0:.0f}s)", flush=True)
+        ce = val(); torch.save({"sd": m.state_dict(), "hist": hist}, f"{CKPT}/CCHAT{tag}_s{seed}.pt")
+        r = {"params": n, "d": a.d, "layers": a.layers, "steps": a.steps, "val_chat_ce": ce, "hist": hist}; out["per_seed"][seed] = r; print(f"[p44 CCHAT s{seed}] {r}", flush=True)
     open("log.jsonl", "a").write(json.dumps(out) + "\n"); print("[P44] DONE", flush=True)
 
 

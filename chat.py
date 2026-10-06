@@ -29,11 +29,20 @@ def enc(text): return [U] + [V0 + b for b in text.encode("utf-8", "replace")] + 
 def dec(toks): return bytes(t - V0 for t in toks if t >= V0).decode("utf-8", "replace")
 
 
+ROUTE_STATS = {"C": 0, "other": 0}
+
+
 @torch.no_grad()
-def reply(u, hist, temp, topk, max_new, window, bytes_only=True):
+def reply(u, hist, temp, topk, max_new, window, bytes_only=True, mode="routed"):
+    """mode: routed = full unified (router decides); C = byte expert only; safe = routed, but if the router picks a
+    symbolic expert inside a byte turn (whose byte logits are the -30 pad = uniform noise) fall back to C's logits."""
     toks = list(hist) + [U]; out = []
     for _ in range(max_new):
-        ctx = torch.tensor([toks[-window:]]); lg = u(ctx)[0, -1].clone()
+        ctx = torch.tensor([toks[-window:]])
+        if mode == "C": lg = u.u3.mC(ctx)[0, -1].clone()
+        else:
+            r = int(u.routes(ctx)[0, -1]); ROUTE_STATS["C" if r == 2 else "other"] += 1
+            lg = (u.u3.mC(ctx)[0, -1] if (mode == "safe" and r != 2) else u(ctx)[0, -1]).clone()
         if bytes_only: lg[1:V0] = -1e9; lg[EOS] = lg[EOS]      # allow bytes + EOS only (BOS/U/symbols masked)
         lg = lg / max(temp, 1e-3)
         if topk: v, i = lg.topk(topk); m = torch.full_like(lg, -1e9); m[i] = v; lg = m
@@ -47,15 +56,18 @@ def reply(u, hist, temp, topk, max_new, window, bytes_only=True):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--seed", type=int, default=111); ap.add_argument("--temp", type=float, default=0.8)
     ap.add_argument("--topk", type=int, default=20); ap.add_argument("--max", type=int, default=160); ap.add_argument("--window", type=int, default=224)
-    ap.add_argument("--once", default=None); ap.add_argument("--C", default="F", help="F = log-corpus C (certified rows), chat = CCHAT_s{seed}.pt (P44 dialogue expert)")
+    ap.add_argument("--once", default=None); ap.add_argument("--mode", default="safe", choices=["routed", "C", "safe"]); ap.add_argument("--C", default="F", help="F = log-corpus C (certified rows), chat = CCHAT_s{seed}.pt (P44 dialogue expert)")
     a = ap.parse_args()
     u = build_unified(a.seed); hist = [BOS]
-    if a.C == "chat": u.u3.mC.load_state_dict(torch.load(f"p21_ckpt/CCHAT_s{a.seed}.pt")["sd"]); print("[chat] expert C <- CCHAT (dialogue-trained)", flush=True)
+    if a.C != "F":
+        ck = f"p21_ckpt/CCHAT_s{a.seed}.pt" if a.C == "chat" else a.C; sd = torch.load(ck)["sd"]
+        d = sd["head.weight"].shape[1]; layers = sum(1 for k in sd if k.startswith("g.weight_ih_l")); u.u3.mC = p26.ByteGRU(VB, d, layers); u.u3.mC.load_state_dict(sd); u.u3.mC.eval()
+        print(f"[chat] expert C <- {ck} (d{d} l{layers}, {sum(v.numel() for v in sd.values())} p)", flush=True)
     print(f"[chat] unified seed {a.seed} loaded ({p19.n_params(u)} params). Ctrl-D to quit.", flush=True)
     def turn(text):
         nonlocal hist
-        hist = hist + enc(text); r, hist = reply(u, hist, a.temp, a.topk, a.max, a.window); return r
-    if a.once is not None: print(turn(a.once)); return
+        hist = hist + enc(text); r, hist = reply(u, hist, a.temp, a.topk, a.max, a.window, mode=a.mode); return r
+    if a.once is not None: print(turn(a.once)); print(f"[chat] route stats {ROUTE_STATS}", flush=True); return
     while True:
         try: text = input("you> ")
         except EOFError: print(); break
