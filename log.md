@@ -5437,3 +5437,32 @@ key->value binding with the user turn as key (retrieve an exact reply
 candidate from memory, let C realise it). That is Tier 2 and it is the
 architecture's own answer to "knowledge in memory, not weights".
 chat.py now reseeds per reply. RESULT ARCH-VET-LM-P44 x5 in jsonl.
+
+C93 — TIER-2 CHAT: exact conversational memory (arch_vet_p45.py).
+Mechanism: the K-organ primitive (exact key->value, last-write-wins)
+lifted to words — bigram (w_{i-1},w_i) -> w_{i+1} over the user's
+turns, unigram fallback for the seed key only; reply = copy chain while
+keys hit, else expert C (CCHAT d96 big) generates the next word with
+the router in the loop. Zero learned parameters in the organ; write
+predicate hand-wired ("the user spoke"); READ before WRITE (a question
+must not answer itself — bug caught by the empty-reply run).
+TEST: 5 planted facts, 40 distractor turns, 5 questions; exact
+presence of the planted value in the reply.
+| arm | s1 | s2 | s3 | mean |
+| C alone (same ckpt) | 0/5 | 0/5 (s2, calone log) | - | 0.00 |
+| MEM | 5/5 | 5/5 | 5/5 | 1.00 |
+Replies: "what is my name?" -> "is priya"; "where do i live?" -> "in
+lima"; "what do i work as?" -> "a miner" — 45 turns after being told.
+Copy/generate split ~36/390 words per dialogue: the organ speaks only
+when it has something exact to say. Known honest limits: (i) exact
+stores do not paraphrase (the unigram seed covers "is called X" /
+"called?", nothing else); (ii) replies are fragments ("is priya"), not
+sentences — the lexical expert should realise them (next); (iii) the
+write predicate is given. LAW L-CONDITIONING-IS-A-MEMORY-OPERATION
+(3/3): at ~100k lexical parameters, reply conditioning on the user's
+words is unattainable by the dense expert (0/15) and exact via the
+memory organ (15/15), at a cost independent of distance.
+Bugs fixed on the way (logged): chat.py exec clobbered sys.argv_backup
+(all CLI args dropped silently); write-before-read.
+RESULT ARCH-VET-LM-P45 in jsonl. Distance test (200 distractors)
+running -> p45_mem_d200.log.

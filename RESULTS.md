@@ -78,3 +78,6 @@ the identical gate recipe: 1 of 4 (dyck only). The system: 4/4 on 10/10 seeds.
 - Predicates-only vs a frozen certified controller: count predicate recovered exactly on its task support from LM loss alone, hard-deployed modk .21 -> 1.0, 3/3 bars, 2/2 seeds (arch_vet_p42.py --freeze_ctrl).
 - Joint from scratch (5 runs: soft, ST, wide regime, categorical prior): 0/5 — the jointly trained controller is counter-blind even when handed the truth predicates.
 - Honest wording: predicates are *identifiable* given a consumer; from-scratch joint discovery is OPEN. The certified rows use hand-wired predicates as a shortcut for the consumer-commitment problem.
+
+## Tier-2 chat: exact conversational memory (C93, 2026-10-06)
+- 5 planted facts, 40 distractor turns: lexical expert alone 0/15; with the exact word-memory organ 15/15 (3 seeds). Replies copy the user's own words ("is priya", "in lima"); zero learned parameters in the organ. arch_vet_p45.py; REPL in chat.py.

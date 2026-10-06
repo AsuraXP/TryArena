@@ -18,24 +18,29 @@ Arms: MEM (C + memory) vs C alone (same checkpoint, memory off). Prediction: C a
 independent of distance (that is the whole point: distance costs nothing in an exact store).
 """
 import sys, re, json, random, time, argparse, torch
-sys.argv_backup = sys.argv; sys.argv = ["x"]
-_c = {"__file__": "chat.py"}; exec(open("chat.py").read().split("\ndef main():")[0], _c); sys.argv = sys.argv_backup
+_ARGV45 = list(sys.argv); sys.argv = ["x"]
+_c = {"__file__": "chat.py"}; exec(open("chat.py").read().split("\ndef main():")[0], _c); sys.argv = _ARGV45
 build_unified, reply, enc, dec, p26 = _c["build_unified"], _c["reply"], _c["enc"], _c["dec"], _c["p26"]
 V0, U, EOS, BOS, VB = _c["V0"], _c["U"], _c["EOS"], _c["BOS"], _c["VB"]
 END = "<end>"
 
 
 def words(s): return re.findall(r"[a-z0-9']+|[.?!,]", s.lower())
+def wordsonly(s): return re.findall(r"[a-z0-9']+", s.lower())
 
 
 class WordMemory:
-    def __init__(self): self.m = {}; self.writes = 0
+    def __init__(self): self.m = {}; self.m1 = {}; self.writes = 0
 
     def write(self, text):
         w = words(text) + [END]
         for i in range(1, len(w) - 1): self.m[(w[i - 1], w[i])] = w[i + 1]; self.writes += 1
+        for i in range(0, len(w) - 1):
+            if w[i + 1] != END and w[i + 1] not in ".?!,": self.m1[w[i]] = w[i + 1]
 
-    def read(self, w1, w2): return self.m.get((w1, w2))
+    def read(self, w1, w2, allow_unigram=False):
+        h = self.m.get((w1, w2))
+        return h if h is not None or not allow_unigram else self.m1.get(w2)
 
 
 class MemChat:
@@ -56,11 +61,10 @@ class MemChat:
         return dec(out), False
 
     def turn(self, text, max_words=16):
-        if self.mem_on: self.mem.write(text)
-        self.hist = self.hist + enc(text); ctx = list(self.hist) + [U]; uw = words(text); said = []; reply_words = []
+        self.hist = self.hist + enc(text); ctx = list(self.hist) + [U]; uw = wordsonly(text); said = []; reply_words = []
         for _ in range(max_words):
-            key = (said[-2], said[-1]) if len(said) >= 2 else (uw[-2], uw[-1]) if len(uw) >= 2 else None
-            hit = self.mem.read(*key) if (self.mem_on and key) else None
+            seq = uw + said; key = (seq[-2], seq[-1]) if len(seq) >= 2 else None     # key = last two words of (user turn + reply so far)
+            hit = self.mem.read(*key, allow_unigram=(not said)) if (self.mem_on and key) else None
             if hit is not None:
                 if hit == END: break
                 w = hit + " "; self.stats["copied"] += 1
@@ -69,7 +73,9 @@ class MemChat:
                 if not w.strip(): break
             ctx += [V0 + b for b in w.encode("utf-8")]; reply_words.append(w); said += words(w)
             if hit is None and end: break
-        self.hist = ctx + [EOS]; return "".join(reply_words).strip()
+        self.hist = ctx + [EOS]
+        if self.mem_on: self.mem.write(text)      # READ first, WRITE after: the question must not answer itself
+        return "".join(reply_words).strip()
 
 
 FACTS = [("my name is {v}", "what is my name?", ["dana", "milo", "priya", "tomas", "yuki", "abeni", "lars", "noor"]),
