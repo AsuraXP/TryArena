@@ -47,8 +47,10 @@ def reply(u, hist, temp, topk, max_new, window, bytes_only=True):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--seed", type=int, default=111); ap.add_argument("--temp", type=float, default=0.8)
     ap.add_argument("--topk", type=int, default=20); ap.add_argument("--max", type=int, default=160); ap.add_argument("--window", type=int, default=224)
-    ap.add_argument("--once", default=None); a = ap.parse_args()
+    ap.add_argument("--once", default=None); ap.add_argument("--C", default="F", help="F = log-corpus C (certified rows), chat = CCHAT_s{seed}.pt (P44 dialogue expert)")
+    a = ap.parse_args()
     u = build_unified(a.seed); hist = [BOS]
+    if a.C == "chat": u.u3.mC.load_state_dict(torch.load(f"p21_ckpt/CCHAT_s{a.seed}.pt")["sd"]); print("[chat] expert C <- CCHAT (dialogue-trained)", flush=True)
     print(f"[chat] unified seed {a.seed} loaded ({p19.n_params(u)} params). Ctrl-D to quit.", flush=True)
     def turn(text):
         nonlocal hist
