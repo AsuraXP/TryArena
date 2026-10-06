@@ -5400,3 +5400,15 @@ to A s333 and omitted from the first run, 9 listed): answer-class NLL
 unified system beats the fair control on the 256-hard stream mean on
 9/9 seeds and on the answer class by ~3.3 nats on every seed. RESULT
 ARCH-VET-LM-P43 (7 more seeds) in jsonl.
+
+RECOVERY NOTE 6 (re-provision during C92 setup): torch wiped, repo HEAD
+reset to db74de5. fetch + reset --mixed FETCH_HEAD + checkout; torch
+2.14.1 reinstalled; verify 35/35. Lossless (remote had C91). Lost: the
+in-flight HW s333 -> C85 s333 chain (relaunch later).
+
+C92 PHASE 1 — chat.py: Tier-1 REPL around the certified unified system
+(no training). Full causal router in the generation loop, bytes+EOS
+masked sampling, window 224. Measured: 100 bytes in ~13 s (window x
+2.4 ms/byte; no incremental-state API yet — engineering item). Output
+is log-ese ("for i in range(1, 1) / self.appen") because expert C's
+corpus is this repo's logs. Next: conversational corpus -> fresh C.
