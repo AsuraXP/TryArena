@@ -28,6 +28,7 @@ torch.set_num_threads(2)
 
 
 TIE, ST, GATE_INIT, GMIN0 = False, False, 2.0, 0.2
+KQ_FROM = "win"   # 'win': per-tap mixes of [e_t, e_{t-1}] (P47 final) | 'h': learned maps of the controller state (chunk summary)
 
 
 def hard(p):
@@ -43,6 +44,7 @@ class SBC(nn.Module):
         # q,k in the SHARED embedding space with learned per-tap mixing (alignment = 4d params, not two d^2 maps)
         self.ka = nn.Parameter(torch.full((2, d), 0.5)); self.qa = nn.Parameter(torch.full((2, d), 0.5))
         self.v = nn.Linear(2 * d, d)
+        self.kh = nn.Linear(d, d); self.qh = nn.Linear(d, d); self.vh = nn.Linear(d, d)   # used when KQ_FROM == 'h'
         self.K0 = nn.Parameter(torch.randn(16, d) * 0.5)   # distinct learned initial slot keys: breaks slot symmetry (up to 16 slots)
         self.g = nn.Linear(d, 1); self.theta = nn.Parameter(torch.tensor(1.0))
         self.head = nn.Linear(2 * d + 1, V)
@@ -57,12 +59,12 @@ class SBC(nn.Module):
             h = self.ctrl(e[:, t], h); win = torch.cat([prev, e[:, t]], -1); prev0 = prev; prev = e[:, t]
             logocc = torch.log(occ + 1e-4)
             # read
-            q = self.qa[0] * e[:, t] + self.qa[1] * prev0; sim = torch.einsum("bd,bmd->bm", q, K) / math.sqrt(d)
+            q = self.qh(h) if KQ_FROM == 'h' else self.qa[0] * e[:, t] + self.qa[1] * prev0; sim = torch.einsum("bd,bmd->bm", q, K) / math.sqrt(d)
             a = hard(torch.softmax((sim + logocc) / tau, -1)); r = torch.einsum("bm,bmd->bd", a, Vm)
             conf = (a * occ).sum(-1, keepdim=True)
             outs.append(self.head(torch.cat([h, r, conf], -1)))
             # write
-            k = self.ka[0] * e[:, t] + self.ka[1] * prev0; v = self.v(win); g = torch.ones(B, 1) if force_write else gmin + (1 - gmin) * torch.sigmoid(self.g(h))   # leaky: 'off' is never absorbing
+            k = self.kh(h) if KQ_FROM == 'h' else self.ka[0] * e[:, t] + self.ka[1] * prev0; v = self.vh(h) if KQ_FROM == 'h' else self.v(win); g = torch.ones(B, 1) if force_write else gmin + (1 - gmin) * torch.sigmoid(self.g(h))   # leaky: 'off' is never absorbing
             if hardgate: g = (g > 0.5).float()
             gates.append(g)
             wsim = torch.einsum("bd,bmd->bm", k, K) / math.sqrt(d)
@@ -115,8 +117,9 @@ def write_profile(m, batches, tau=0.05):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--ds", default="16,32,64"); ap.add_argument("--M", type=int, default=8)
-    ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=8000); ap.add_argument("--B", type=int, default=16); ap.add_argument("--warm", type=int, default=0); ap.add_argument("--Meval", type=int, default=0)
+    ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=8000); ap.add_argument("--B", type=int, default=16); ap.add_argument("--warm", type=int, default=0); ap.add_argument("--Meval", type=int, default=0); ap.add_argument("--kq", default="win")
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
+    global KQ_FROM; KQ_FROM = a.kq
     er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
     er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]
     er = random.Random(997); ev_cnt = [T.make_batch(er, 16, (8, 8), 2, 4, False) for _ in range(12)]
@@ -129,7 +132,7 @@ def main():
             m = train(d, a.M, seed, a.steps, a.B, log, warm=a.warm)
             wp = write_profile(m, ev_in)
             Me = a.Meval or None
-            r = {"arm": "SBC", "warm": a.warm, "d": d, "M": a.M, "Meval": a.Meval or a.M, "seed": seed, "params": T.n_params(m), "in": acc(m, ev_in, M=Me), "len": acc(m, ev_len, M=Me), "cnt": acc(m, ev_cnt, M=Me), "both": acc(m, ev_both, M=Me), "far": acc(m, ev_far, M=Me), "far_hard": acc(m, ev_far, M=Me, hardgate=True), "both_hard": acc(m, ev_both, M=Me, hardgate=True), "gate_on_values": wp[0], "gate_on_filler": wp[1]}
+            r = {"arm": "SBC", "kq": a.kq, "warm": a.warm, "d": d, "M": a.M, "Meval": a.Meval or a.M, "seed": seed, "params": T.n_params(m), "in": acc(m, ev_in, M=Me), "len": acc(m, ev_len, M=Me), "cnt": acc(m, ev_cnt, M=Me), "both": acc(m, ev_both, M=Me), "far": acc(m, ev_far, M=Me), "far_hard": acc(m, ev_far, M=Me, hardgate=True), "both_hard": acc(m, ev_both, M=Me, hardgate=True), "gate_on_values": wp[0], "gate_on_filler": wp[1]}
             res["runs"].append(r); log(f"[p47 SBC d{d} M{a.M} s{seed}] params {r['params']} in {r['in']:.3f} len {r['len']:.3f} cnt {r['cnt']:.3f} both {r['both']:.3f} far {r['far']:.3f} | hardgate both {r['both_hard']:.3f} far {r['far_hard']:.3f} | gate val/fil {wp}")
     xs = [math.log2(r["params"]) for r in res["runs"]]
     if len(xs) >= 2:

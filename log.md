@@ -5615,3 +5615,25 @@ these sizes the TF may beat SBC in-range on bytes; reported as is.
 If (1) fails: the write event does not fire on text (gate stats
 logged) -> the binding core needs a text-shaped need (next: name/
 entity-heavy synthetic text) before claiming the generalizer target.
+C96 RESULT (seed 1, 3000 steps, L=128 bytes, dialogue corpus).
+| arm | params d16/32/64 | ce128 d16/32/64 | ce512 | ce1024 | slope ce128 |
+| TF  | 15k/42k/133k | 1.935/1.701/1.600 | 4.14/3.24/3.04 | 5.18/3.73/3.43 | -.106 |
+| GRU | 10k/23k/58k  | 2.018/1.803/1.644 | 2.00/1.81/1.64 | 1.99/1.78/1.60 | -.148 |
+| SBC | 15k/34k/84k  | 2.015/1.835/1.612 | 2.02/1.83/1.62 | 2.00/1.80/1.57 | -.164 |
+Pre-registered: (1) SBC<GRU at every size — FAILS (tie/-.03/+.03);
+(2) SBC ce1024<=ce128, TF degrades — HOLDS (TF 1.60->3.43 at d64,
+near-uniform 5.18 at d16; SBC 1.61->1.57); (3) SBC slope steeper
+than TF — marginal (-.164 vs -.106, single seed, not claimed).
+Gate on bytes: mean .98, on 100% of positions at every size. The
+write event never becomes an event on raw bytes: nothing at byte
+granularity is a fact, a 2-byte key cannot name a word, and the
+slots degrade to a smeared recency buffer that equals a GRU.
+LAW L-BINDING-NEEDS-A-UNIT: a binding core on text requires a
+learned segmentation — write events at chunk boundaries with keys
+that summarise the chunk. The unit is not given by the byte stream;
+the learner must make it. Next: keys/queries/values from the
+controller state (chunk summary) — first re-verified on the
+synthetic task (it must keep 1.0), then a text test where memory is
+*required*: entity re-mention CE (bytes of a name's second mention,
+far from its first) vs background CE — the right micro-measure of
+'generalizer on text'.
