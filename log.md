@@ -5740,3 +5740,15 @@ boundary, no gate: the taps are the unit. Everything learned, CE
 only, no position. PREDICTION: unseen-name CE <= 2.0 at d32 (-40%
 vs GRU), far within .2, background within .03 of GRU. If it fails:
 read attention on name bytes is inspected before anything else.
+C100 RESULT — FALSIFIED. WKB (W=6, M=32) d32 seed 1: unseen-name CE
+3.348 (GRU 3.395), far 3.300, bg 1.54. Pre-registered inspection:
+with a write every byte and ~250 distinct windows between intro and
+re-mention, 32 slots are overwritten ~8x before the read — the
+name's bindings are gone. P47 lived because its gate switched
+filler writes off; the gate was removed here to keep the key path
+decision-free. Capacity and selectivity are one problem.
+C100b (running): M=512 as the diagnostic. If unseen-name CE drops
+sharply, the mechanism is right and selectivity is learned AFTER
+the read works (anneal M down with a leaky gate) — consistent with
+L-NO-DECISION-IN-THE-KEY-PATH. If it does not drop, the window key
+itself fails on bytes (taps/collisions) and that is inspected next.

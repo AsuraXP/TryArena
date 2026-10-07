@@ -1,0 +1,11 @@
+  [CKB d32 s1] step 0 ce 5.533 b 0.596 (1s)
+  [CKB d32 s1] step 250 ce 2.140 b 0.658 (181s)
+  [CKB d32 s1] step 500 ce 1.746 b 0.636 (357s)
+  [CKB d32 s1] step 750 ce 1.636 b 0.611 (535s)
+  [CKB d32 s1] step 1000 ce 1.678 b 0.593 (716s)
+  [CKB d32 s1] step 1250 ce 1.521 b 0.582 (884s)
+  [CKB d32 s1] step 1500 ce 1.313 b 0.568 (1054s)
+  [CKB d32 s1] step 1750 ce 1.705 b 0.552 (1229s)
+  [CKB d32 s1] step 1999 ce 1.550 b 0.541 (1405s)
+[p49 CKB d32 s1] params 39044 name-CE in 1.3084 ood 3.348 far 3.3003 | bg 1.5381 1.5889 1.8231 | b sep/word 0.382/0.821
+[P49] DONE
