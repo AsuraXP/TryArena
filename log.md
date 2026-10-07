@@ -5693,3 +5693,29 @@ fixed thresholds to cut patches for a Transformer). Delta: learned
 boundary from self-surprise defining keys of a bounded binding
 memory, end-to-end. PREDICTION: boundary sep/word separates (>.5 vs
 <.2) and unseen-name CE <= 2.4 (-30% vs GRU) at d32.
+C98 RESULT — FALSIFIED. Surprise+entropy fed to the boundary (d32,
+seed 1, 2000 steps): unseen-name CE 3.198 (C97 3.208; GRU 3.395),
+boundary sep/word .313/.181 (predicted >.5/<.2). Background 1.49.
+Re-reading the failure: even with perfect boundaries, the value the
+read returns is a chunk-summary vector that the head must DECODE
+into the bytes of a name it never saw — an encoder/decoder code for
+arbitrary strings learned from 30 names. That is not learnable and
+is not the fault of the boundary. P47 worked because values were
+single tokens (trivially decodable). LAW L-VALUES-MUST-BE-REPLAYABLE:
+exact copying of novel strings needs bindings whose values are the
+next unit of the stream itself, not a compressed summary.
+
+C99 — PRE-REGISTRATION: PREFIX-KEYED BYTE BINDING (PKB).
+Inside the learner: key = c_t, the chunker's context-free prefix
+state (reset at learned boundaries; same prefix -> same key by
+construction), value = the NEXT BYTE's embedding; written every
+step (alpha = match-or-emptiest address; M=32 slots as state); read
+every step with q = c_t -> r = 'what followed this prefix last time
+in this dialogue'; head([h, r, conf]). Boundaries keep the surprise
+feed (so prefixes restart at word-like places) but nothing hinges on
+them being sharp. This is P47's key<-previous-token lifted to
+key<-previous-PREFIX; everything learned, CE only, no position.
+PREDICTION: unseen-name CE <= 2.0 at d32 (>= -40% vs GRU 3.395),
+far unseen within .2 of in-range, background within .03 of C97.
+If it fails with boundaries firing at spaces: slot capacity (32) or
+prefix collisions — inspect read attention on name bytes.
