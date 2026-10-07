@@ -5752,3 +5752,24 @@ sharply, the mechanism is right and selectivity is learned AFTER
 the read works (anneal M down with a leaky gate) — consistent with
 L-NO-DECISION-IN-THE-KEY-PATH. If it does not drop, the window key
 itself fails on bytes (taps/collisions) and that is inspected next.
+C100b RESULT — M=512: unseen-name CE 3.375 (M=32: 3.348; GRU 3.395);
+train-names 1.036; bg 1.53. Capacity is NOT the cause. Construction
+inspection: a fixed W=6 window at the re-mention ("night pr") and
+at the intro ("e is pr") contains different context bytes, so the
+key for the same name prefix differs until the name outgrows the
+window; names are 3-6 bytes. Fixed windows are context-polluted
+exactly where a reset should cut; learned resets collapse (C97-99).
+
+C101 — PRE-REGISTRATION: CONTENT-GATED WINDOW KEY (CGW).
+key_t = sum_{i<W} a_i * (prod_{j<i} s(e_{t-j})) * e_{t-i}, with
+s(e) = sigmoid(w_s . e) a learned per-byte pass factor (init ~.9) and
+a_i learned per-dim taps; W=8. A byte can learn to cut the context
+(s(' ')->0) but the key is a pure function of the window bytes: no
+state, no sequential decision, no absorbing off-state. Value = next
+byte, M=64, written every step; read with the same key. PREDICTION:
+unseen-name CE <= 2.2 at d32; s(' ') and s('\n') < .3 after
+training (the unit is discovered, not given); background within
+.03 of GRU. If it fails: log it as the fifth negative and move the
+unit question to the map as open; the core lane returns to the
+reasoning target (P47 is sound there) while the text unit is
+re-approached from the consumer side.
