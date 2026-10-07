@@ -5719,3 +5719,24 @@ PREDICTION: unseen-name CE <= 2.0 at d32 (>= -40% vs GRU 3.395),
 far unseen within .2 of in-range, background within .03 of C97.
 If it fails with boundaries firing at spaces: slot capacity (32) or
 prefix collisions — inspect read attention on name bytes.
+C99 RESULT — FALSIFIED. PKB d32 seed 1: unseen-name CE 3.326 (GRU
+3.395), far 3.300, bg 1.54; the boundary collapsed to 0.000 (never
+reset) -> c is a full-history state -> keys context-mixed -> read
+useless -> the learner is a GRU. Third consecutive negative on the
+unit (C97 .186/.184, C98 .313/.181, C99 0/0).
+LAW L-NO-DECISION-IN-THE-KEY-PATH: every learned discrete decision
+placed in the key path (write gate C95-early, boundary C97-99) has
+an absorbing off-state and a consumer that cannot pull it on; the
+one core that worked (P47) had NO decision in its key: a learned
+mix of a fixed window of token embeddings. Keys must be decision-
+free functions of the recent stream; selectivity may be learned
+only where the read already works.
+
+C100 — PRE-REGISTRATION: WINDOW-KEYED BYTE BINDING (WKB).
+key = sum_i a_i * e_{t-i}, i=0..W-1 (W=6, a_i learned per-dim),
+value = e_{t+1} (next byte), written every step, M=32 slots; read
+q = same window at the current step -> r; head([h, r, conf]). No
+boundary, no gate: the taps are the unit. Everything learned, CE
+only, no position. PREDICTION: unseen-name CE <= 2.0 at d32 (-40%
+vs GRU), far within .2, background within .03 of GRU. If it fails:
+read attention on name bytes is inspected before anything else.
