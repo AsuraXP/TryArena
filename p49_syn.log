@@ -1,0 +1,19 @@
+  [CKB-syn d32 s1] step 0 loss 3.585 b 0.644
+  [CKB-syn d32 s1] step 500 loss 2.217 b 0.390
+  [CKB-syn d32 s1] step 1000 loss 2.276 b 0.444
+  [CKB-syn d32 s1] step 1500 loss 2.311 b 0.389
+  [CKB-syn d32 s1] step 2000 loss 2.098 b 0.384
+  [CKB-syn d32 s1] step 2500 loss 2.059 b 0.330
+  [CKB-syn d32 s1] step 3000 loss 2.197 b 0.312
+  [CKB-syn d32 s1] step 3500 loss 2.041 b 0.236
+[p49 syn d32 s1] params 17290 in 0.419 len 0.458
+  [CKB-syn d32 s2] step 0 loss 3.642 b 0.612
+  [CKB-syn d32 s2] step 500 loss 1.941 b 0.360
+  [CKB-syn d32 s2] step 1000 loss 1.657 b 0.428
+  [CKB-syn d32 s2] step 1500 loss 1.588 b 0.455
+  [CKB-syn d32 s2] step 2000 loss 1.567 b 0.445
+  [CKB-syn d32 s2] step 2500 loss 1.607 b 0.413
+  [CKB-syn d32 s2] step 3000 loss 1.690 b 0.401
+  [CKB-syn d32 s2] step 3500 loss 1.706 b 0.402
+[p49 syn d32 s2] params 17290 in 0.990 len 0.992
+[P49] DONE

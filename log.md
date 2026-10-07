@@ -5666,3 +5666,30 @@ synthetic dialogue bytes where names are introduced and re-mentioned
 plus background CE must not get worse. PREDICTION: re-mention CE
 drops by >= 30% vs GRU at d32; background CE within .02; TF
 re-mention CE fine in range, collapses at x4 length.
+C97 RESULT — FALSIFIED on the pre-registered number (arch_vet_p49.py).
+Synthetic wiring check (learned boundaries, d32, 4000 steps): seed 1
+in .419 (collapsed), seed 2 in .990 / len .992 — the chunk-keyed
+mechanism reproduces P47 when boundaries lock in; bistable 1/2.
+Text (entity re-mention, L=320, 2000 steps, d32, seed 1; eval names
+UNSEEN in training; far = 10 filler lines, 4x length):
+| arm | params | name-CE train-names | name-CE UNSEEN | far UNSEEN | bg in/ood/far | boundary sep/word |
+| GRU | 22,976 | 1.310 | 3.395 | 3.384 | 1.55/1.59/1.84 | - |
+| TF  | 42,048 |  .886 | 4.507 | 4.804 | 1.46/1.64/3.60 | - |
+| CKB | 38,850 | 1.111 | 3.208 | 3.255 | 1.48/1.53/1.78 | .186/.184 |
+Unseen-name CE: -5% vs GRU (predicted >= -30%). TF memorises
+training names best and cannot copy unseen ones at all (4.5 > GRU)
+and collapses at 4x length. CKB has the best background CE and
+holds at distance, but its boundary fires equally at separators and
+inside words: no unit was learned. Reading: the only pressure to
+segment is the name re-mention (~5 bytes in 300); the read cannot
+help until boundaries exist and boundaries get no gradient until
+the read helps — the predicate/consumer bistability (C85) at the
+unit level. LAW L-UNIT-NEEDS-A-DENSE-SIGNAL: a learned boundary
+does not bootstrap from sparse downstream need alone.
+Next (C98): feed the boundary the learner's OWN per-byte surprise
+and predictive entropy (free, dense, available every step; Elman
+1990 word-boundary entropy; BLT 2024 uses a frozen auxiliary LM and
+fixed thresholds to cut patches for a Transformer). Delta: learned
+boundary from self-surprise defining keys of a bounded binding
+memory, end-to-end. PREDICTION: boundary sep/word separates (>.5 vs
+<.2) and unseen-name CE <= 2.4 (-30% vs GRU) at d32.
