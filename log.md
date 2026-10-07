@@ -5773,3 +5773,26 @@ training (the unit is discovered, not given); background within
 unit question to the map as open; the core lane returns to the
 reasoning target (P47 is sound there) while the text unit is
 re-approached from the consumer side.
+C101 RESULT — FALSIFIED (fifth). CGW d32 seed 1: unseen-name CE
+3.067 (best of the series; GRU 3.395, -10%), far 3.162, bg 1.55;
+learned pass factors space/nl/./a/e/p = .98/.96/.96/.96/.98/.98 —
+no byte learned to cut context; the unit was not discovered.
+SERIES C97-C101 (text copying of unseen names, d32, 2000 steps):
+boundary-chunk 3.208 | +surprise 3.198 | prefix-key 3.326 |
+window-key M32 3.348 | M512 3.375 | content-gated window 3.067 |
+GRU 3.395 | TF 4.507.
+LAW L-UNIT-IS-NOT-LEARNED-FROM-SPARSE-NEED: with the only pressure
+being ~5 bytes in 300, none of five learned-unit mechanisms (reset,
+surprise-fed reset, prefix state, fixed window, content-gated
+window) discovers word-like units under CE; the read never gets
+good enough to pull the unit into place and the unit never gets
+good enough to make the read useful. The synthetic binding task
+(P47, 9/9) differs in exactly one way: the unit is one token.
+STATUS: the unit of binding on text is OPEN (map axis, marked). The
+core lane returns to the reasoning target, where P47 is sound, and
+the text unit is re-approached from the CONSUMER side: make the
+read necessary at every byte (e.g. an objective where most bytes
+are copies of earlier spans: code, repeated structure, dialogue
+with heavy entity reuse) so that the unit has dense pressure — the
+same move that made predicates identifiable (C85). Not 'bigger
+model'; the pressure, not the capacity, is what was missing.
