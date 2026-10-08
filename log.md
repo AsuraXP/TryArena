@@ -5983,3 +5983,14 @@ the consumer use fast state; (3) binding identity is unit + selected
 context; (4) allocation must break ties; (5) arbitrary read heads learn
 to ignore state. Core lane returns now to C104's rule-learning / slope
 test. Fair random-name GRU/TF controls run once to close the number.
+C103 CLOSE — fair random-name controls (same stream/batches, d32, 2000):
+| arm | params | dense-unseen name CE | far sparse | background far |
+| GRU | 22,976 | 3.607 | 3.061 | 2.067 |
+| TF  | 42,048 | 3.489 | 4.814 | 2.992 |
+| C103e learned core + oracle unit/hard alloc | 47,241 | **2.756** | 3.041 | 2.176 |
+| C103f + tied decode | 47,242 | 2.930 | 3.065 | 2.102 |
+So unmemorizeable cases make the learned consumer use online state and
+produce a real 21–24% unseen-name gain over both controls. It would not
+survive deleting the learned key/state/head, but it DOES depend on oracle
+segmentation and algorithmic hard allocation; under the user's criterion
+that is diagnostic evidence, not deliverable progress. No more variants.

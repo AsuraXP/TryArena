@@ -1,0 +1,21 @@
+  [GRU d32 s1] step 0 ce 5.570 (0s)
+  [GRU d32 s1] step 250 ce 2.411 (19s)
+  [GRU d32 s1] step 500 ce 2.166 (38s)
+  [GRU d32 s1] step 750 ce 2.051 (57s)
+  [GRU d32 s1] step 1000 ce 1.916 (77s)
+  [GRU d32 s1] step 1250 ce 1.911 (97s)
+  [GRU d32 s1] step 1500 ce 1.868 (120s)
+  [GRU d32 s1] step 1750 ce 1.899 (141s)
+  [GRU d32 s1] step 1999 ce 1.829 (161s)
+[p49 GRU d32 s1] params 22976 name-CE in 3.126 ood 3.1329 far 3.0605 DENSE-unseen 3.6074 | bg 2.1473 2.0942 2.0668
+  [TF d32 s1] step 0 ce 5.758 (0s)
+  [TF d32 s1] step 250 ce 2.548 (7s)
+  [TF d32 s1] step 500 ce 2.304 (14s)
+  [TF d32 s1] step 750 ce 2.161 (21s)
+  [TF d32 s1] step 1000 ce 1.971 (28s)
+  [TF d32 s1] step 1250 ce 1.971 (35s)
+  [TF d32 s1] step 1500 ce 1.915 (42s)
+  [TF d32 s1] step 1750 ce 1.901 (49s)
+  [TF d32 s1] step 1999 ce 1.846 (56s)
+[p49 TF d32 s1] params 42048 name-CE in 3.097 ood 3.2763 far 4.8143 DENSE-unseen 3.4886 | bg 2.2919 2.2371 2.9923
+[P49] DONE
