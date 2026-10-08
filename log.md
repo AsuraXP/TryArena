@@ -5885,3 +5885,16 @@ initial keys (match-or-nearest, overwrite) — decision-free.
 C103b (running): oracle unit + PKB + role, addr = softmax(k.K/tau)
 only, M=256. PREDICTION: binding present >= .8 at name-byte reads,
 dense-unseen name-CE <= 2.0.
+C103b RESULT — pure content addressing (M=256, oracle unit): dense-unseen
+3.738, train CE rose 1.73->2.71 as tau annealed (unstable). FALSIFIED as
+stated. Diag on saved model: correct VALUE now in memory .45 (was 0),
+read-nearest==target .24 (was .03); re-mention query == first-mention
+query exactly in the context part (dist 0.0; z-part .5) — so the key
+design holds. But no current slot key is within 3.95 of the written
+key: the binding was OVERWRITTEN (nearest-initial-key hashing of ~250
+prefixes into 256 slots + soft blending). Defect localised to
+allocation, not to key, unit, or value.
+C103c (running): write = p*match + (1-p)*LRU-free, free =
+softmax(-(usage+index ramp)/tau), usage decays .98 and accumulates
+write+read weights; the ramp is the deterministic tie-breaker.
+PREDICTION: binding present >= .8; dense-unseen <= 2.0; stable train.
