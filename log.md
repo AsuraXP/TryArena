@@ -5922,3 +5922,13 @@ C103e (running): --randnames 1 (fresh random CV-string names each
 dialogue), otherwise = C103d. PREDICTION: dense-unseen <= 2.0 AND
 head-fed-exact-r CE < 1.0. GRU/TF controls on same random-name
 training queued after.
+C103e RESULT — random training names + ST hard alloc + distance read +
+oracle unit: dense-unseen 2.756 (C103d 3.612; fixed-name GRU 4.128).
+PREDICTION (<=2.0) FALSIFIED but largest single gain of the series.
+Diag: binding present .95, read-nearest .66; head fed EXACT r 2.26 ->
+the linear head is now the bottleneck (decoding an embedding through
+a 32x256 linear map). Eval-only tie (logits += beta E r) is worse
+(2.84 at beta .25): E rows are not orthogonal; must be trained in.
+C103f (running): --tie 1 (learned scalar beta, zero extra matrices).
+Controls GRU,TF on the SAME random-name training running in parallel.
+PREDICTION: C103f dense-unseen <= 2.0; GRU/TF random-name >= 3.5.
