@@ -5867,3 +5867,21 @@ Prior art check (to run): 'position-free role embeddings', 'coarse
 context bottleneck for associative keys'. PREDICTION (oracle unit,
 dense, d32): dense-unseen name-CE <= 2.0; unique-prefix-byte CE <=
 1.0; GRU unchanged. Then learned unit must reproduce within .3.
+C103 RESULT — RBK + oracle unit: dense-unseen 3.434 (oracle-PKB 3.566,
+GRU 4.128). FALSIFIED. Saved model inspected (diag49.py): at 148
+name-byte read positions the correct binding is present in memory
+0/148 times; the slot whose value is nearest the target is 5.5 away
+(embedding norm 5.8) — i.e. NO slot holds any clean byte; median
+occupancy .46 (M=64), .07 when the same model is run with M=512.
+Cause: the 'emptiest slot' address softmax(-occ/tau) is UNIFORM
+over tied empties, so every new key is smeared over all empty
+slots and values become averages. P47 survived because its match
+branch over ~8 random initial keys acted as a content hash; with
+hundreds of writes per text the smear wins. This was a bug in the
+address, present since C95, invisible on the synthetic task. LAW
+L-ADDRESS-MUST-BREAK-TIES: any 'free slot' rule needs a symmetry
+breaker; the clean form is pure content addressing over learned
+initial keys (match-or-nearest, overwrite) — decision-free.
+C103b (running): oracle unit + PKB + role, addr = softmax(k.K/tau)
+only, M=256. PREDICTION: binding present >= .8 at name-byte reads,
+dense-unseen name-CE <= 2.0.

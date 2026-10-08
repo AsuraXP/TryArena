@@ -31,6 +31,7 @@ SURPRISE = False
 PKB = False
 CGW = False   # C101: content-gated window taps (learned per-byte pass factor cuts context)
 DENSE = False
+PUREADDR = False   # C103b: address = softmax(k.K/tau) only (no empty branch, no p)
 ROLE = 0   # C103: dim of role bottleneck z = tanh(W_z h) appended to the prefix key (0 = off)   # C102: train on dense-reuse dialogues
 WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no boundary, no gate)
 MSLOTS = 8   # C99: key = prefix state c_t, value = next byte embedding, written every step   # C98: boundary also sees the learner's own surprise -log p(x_t) and entropy H_{t-1}   # soft | st (straight-through hard boundary) | force (b=1 every token: wiring control)
@@ -41,7 +42,7 @@ class CKB(nn.Module):
         super().__init__(); self.V, self.d, self.M = V, d, M
         self.E = nn.Embedding(V, d); self.gh = nn.GRUCell(d, d); self.gc = nn.GRUCell(d, d)
         self.b = nn.Linear(2 * d + 2, 1); nn.init.constant_(self.b.bias, BINIT)
-        self.theta = nn.Parameter(torch.tensor(1.0)); self.K0 = nn.Parameter(torch.randn(max(32, M), d) * 0.5)
+        self.theta = nn.Parameter(torch.tensor(1.0)); self.K0 = nn.Parameter(torch.randn(max(32, M), d + ROLE) * 0.5)
         self.head = nn.Linear(2 * d + 1, V)
         self.z = nn.Linear(d, max(ROLE, 1)); self.taps = nn.Parameter(torch.full((max(WKB, 1), d), 0.5)); self.ws = nn.Linear(d, 1); nn.init.constant_(self.ws.bias, 2.2)
 
@@ -56,7 +57,7 @@ class CKB(nn.Module):
     def forward(self, x, tau=0.1, gmin=0.0, M=None, states=False):
         B, L = x.shape; d = self.d; M = M or self.M; e = self.E(x)
         h = torch.zeros(B, d); c = torch.zeros(B, d); rl = torch.zeros(B, d); conf = torch.zeros(B, 1); pk = torch.zeros(B, d)
-        dk = d + ROLE; K = torch.cat([self.K0[:M], torch.zeros(M, ROLE)], -1).unsqueeze(0).expand(B, M, dk).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M); pk = torch.zeros(B, dk)
+        dk = d + ROLE; K = self.K0[:M].unsqueeze(0).expand(B, M, dk).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M); pk = torch.zeros(B, dk)
         outs, bs = [], []; surp = torch.zeros(B, 2)
         for t in range(L):
             h = self.gh(e[:, t], h); c = self.gc(e[:, t], c)
@@ -71,7 +72,7 @@ class CKB(nn.Module):
             if WKB:
                 qv = self.wkey(e, t, B, d)
             else: qv = torch.cat([c, torch.tanh(self.z(h))], -1) if ROLE else c
-            sim = torch.einsum("bd,bmd->bm", qv, K) / math.sqrt(d); a = torch.softmax((sim + logocc) / tau, -1)
+            sim = torch.einsum("bd,bmd->bm", qv, K) / math.sqrt(d); a = torch.softmax((sim + (0 if PUREADDR else logocc)) / tau, -1)
             r = torch.einsum("bm,bmd->bd", a, Vm); cf = (a * occ).sum(-1, keepdim=True)
             if PKB or WKB: rl, conf = r, cf
             else: rl = (1 - b) * rl + b * r; conf = (1 - b) * conf + b * cf
@@ -88,9 +89,11 @@ class CKB(nn.Module):
             if PKB:
                 # read: what followed this prefix last time?  (q = c_t; r already computed above with q = c)
                 # write: key = previous prefix state (pk), value = this byte's embedding
-                wsim = torch.einsum("bd,bmd->bm", pk, K) / math.sqrt(d); m = torch.softmax((wsim + logocc) / tau, -1)
-                p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta); empty = torch.softmax(-occ / tau, -1)
-                alpha = (p * m + (1 - p) * empty).unsqueeze(-1)
+                wsim = torch.einsum("bd,bmd->bm", pk, K) / math.sqrt(d)
+                if PUREADDR: alpha = torch.softmax(wsim / tau, -1).unsqueeze(-1)
+                else:
+                    m = torch.softmax((wsim + logocc) / tau, -1); p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta); empty = torch.softmax(-occ / tau, -1)
+                    alpha = (p * m + (1 - p) * empty).unsqueeze(-1)
                 K = (1 - alpha) * K + alpha * pk.unsqueeze(1); Vm = (1 - alpha) * Vm + alpha * e[:, t].unsqueeze(1); occ = occ + alpha.squeeze(-1) * (1 - occ)
                 pk = qv; c = c * (1 - b); continue
             # write (previous chunk -> this chunk) at the boundary
@@ -209,10 +212,10 @@ def boundary_profile(m, x):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
+    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
-    global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE; ROLE = a.role; DENSE = bool(a.dense); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
-    res = {"tag": "ARCH-VET-LM-P49", "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
+    global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE, PUREADDR; ROLE = a.role; DENSE = bool(a.dense); PUREADDR = bool(a.pure); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
+    res = {"tag": "ARCH-VET-LM-P49", "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
     if a.task == "synthetic":
         er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
         er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]
