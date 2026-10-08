@@ -5970,3 +5970,16 @@ Affected swap exactness >= .80 and unaffected prediction stability
 >= .95 for SBC+CT. If TF gains equally: generic augmentation, not the
 core. If neither gains: next-token CE already identifies this simple
 dependency or paired output transport still cannot assign credit.
+C103f RESULT — learned tied copy logit, random names, oracle unit,
+ST-hard memory: dense-unseen 2.930 (C103e untied 2.756), far 3.065;
+PREDICTION <=2.0 FALSIFIED. Learned beta = 0.056 (from .1): training
+suppresses the tied path because input-embedding dot products are not
+a decoding geometry. This closes the text-memory diagnostic. We DID
+isolate all required pieces, but only under oracle segmentation + hard
+allocation, i.e. exact scaffolding; polishing it further would repeat
+the rejected "store and emit" direction. Banked clues, not a product:
+(1) dense need forms a unit; (2) cases must be unmemorizeable to make
+the consumer use fast state; (3) binding identity is unit + selected
+context; (4) allocation must break ties; (5) arbitrary read heads learn
+to ignore state. Core lane returns now to C104's rule-learning / slope
+test. Fair random-name GRU/TF controls run once to close the number.
