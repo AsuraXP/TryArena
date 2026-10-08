@@ -5834,3 +5834,36 @@ separators given) to bound what the read path can deliver.
 PREDICTION: PKB-dense boundary forms (>.5/<.1) and dense-unseen
 CE <= 2.0; oracle <= 1.5. If oracle fails too: fault is the read
 path on bytes (attention/decoding), not the unit.
+C102b RESULT — the control that re-diagnoses the series.
+| arm (dense training, d32, seed 1) | dense-unseen | sparse transfer | boundary |
+| PKB + surprise (learned unit)      | 3.806 | 3.249 | 0.0/0.0 (collapsed) |
+| PKB + ORACLE unit (separators given) | 3.566 | 3.337 | 1.0/0.0 (given) |
+| GRU | 4.128 | 3.614 | - |
+Even with a perfect unit, prefix->next-byte bindings do not copy
+unseen names (-14% vs GRU, predicted <= 1.5). FALSIFIES the series
+hypothesis that the unit was the bottleneck. Construction: the
+context-free prefix key c("h") is identical at "hey h" and at the
+start of "hana"; the slot holds whatever followed "h" last. Short
+novel strings cannot be copied from a 1-2 byte cue by any context-
+free key — the disambiguating information is the ROLE ("a name is
+expected here; the names in this dialogue are {..}"). LAW
+L-IDENTITY-IS-UNIT-PLUS-CHOSEN-CONTEXT: a binding key must carry
+the context that matters and drop the context that does not; fully
+context-free keys collide, fully contextual keys (kq=h) never agree.
+The learner's job is to CHOOSE the context — this is the
+understanding problem itself, surfaced as a key-design constraint.
+Metric note: name-CE on bytes 2..n includes bytes whose prefix is
+ambiguous within the dialogue; next runs also report CE on bytes
+after the prefix is unique among that dialogue's names.
+
+C103 — PRE-REGISTRATION: ROLE-BOTTLENECK KEY (RBK).
+key_t = [ c_t (context-free prefix state, unit from oracle FIRST,
+learned second) ; z_t = tanh(W_z h_t) with dim(z)=4 ] — a strong
+bottleneck so the role vector is coarse and agreement across
+occurrences is easy (few dims to align), while still letting the
+learner select the context (speaker position vs 'hey X' vs mid-
+sentence). Value = next byte. Everything learned, CE only.
+Prior art check (to run): 'position-free role embeddings', 'coarse
+context bottleneck for associative keys'. PREDICTION (oracle unit,
+dense, d32): dense-unseen name-CE <= 2.0; unique-prefix-byte CE <=
+1.0; GRU unchanged. Then learned unit must reproduce within .3.

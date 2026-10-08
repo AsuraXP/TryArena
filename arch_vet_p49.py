@@ -30,7 +30,8 @@ BMODE = "soft"
 SURPRISE = False
 PKB = False
 CGW = False   # C101: content-gated window taps (learned per-byte pass factor cuts context)
-DENSE = False   # C102: train on dense-reuse dialogues
+DENSE = False
+ROLE = 0   # C103: dim of role bottleneck z = tanh(W_z h) appended to the prefix key (0 = off)   # C102: train on dense-reuse dialogues
 WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no boundary, no gate)
 MSLOTS = 8   # C99: key = prefix state c_t, value = next byte embedding, written every step   # C98: boundary also sees the learner's own surprise -log p(x_t) and entropy H_{t-1}   # soft | st (straight-through hard boundary) | force (b=1 every token: wiring control)
 
@@ -42,7 +43,7 @@ class CKB(nn.Module):
         self.b = nn.Linear(2 * d + 2, 1); nn.init.constant_(self.b.bias, BINIT)
         self.theta = nn.Parameter(torch.tensor(1.0)); self.K0 = nn.Parameter(torch.randn(max(32, M), d) * 0.5)
         self.head = nn.Linear(2 * d + 1, V)
-        self.taps = nn.Parameter(torch.full((max(WKB, 1), d), 0.5)); self.ws = nn.Linear(d, 1); nn.init.constant_(self.ws.bias, 2.2)
+        self.z = nn.Linear(d, max(ROLE, 1)); self.taps = nn.Parameter(torch.full((max(WKB, 1), d), 0.5)); self.ws = nn.Linear(d, 1); nn.init.constant_(self.ws.bias, 2.2)
 
     def wkey(self, e, t, B, d):
         win = torch.stack([e[:, t - i] if t - i >= 0 else torch.zeros(B, d) for i in range(WKB)], 1)   # B x W x d (i=0 newest)
@@ -55,7 +56,7 @@ class CKB(nn.Module):
     def forward(self, x, tau=0.1, gmin=0.0, M=None, states=False):
         B, L = x.shape; d = self.d; M = M or self.M; e = self.E(x)
         h = torch.zeros(B, d); c = torch.zeros(B, d); rl = torch.zeros(B, d); conf = torch.zeros(B, 1); pk = torch.zeros(B, d)
-        K = self.K0[:M].unsqueeze(0).expand(B, M, d).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M)
+        dk = d + ROLE; K = torch.cat([self.K0[:M], torch.zeros(M, ROLE)], -1).unsqueeze(0).expand(B, M, dk).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M); pk = torch.zeros(B, dk)
         outs, bs = [], []; surp = torch.zeros(B, 2)
         for t in range(L):
             h = self.gh(e[:, t], h); c = self.gc(e[:, t], c)
@@ -69,7 +70,7 @@ class CKB(nn.Module):
             # read with the chunk so far (at a boundary: the whole chunk)
             if WKB:
                 qv = self.wkey(e, t, B, d)
-            else: qv = c
+            else: qv = torch.cat([c, torch.tanh(self.z(h))], -1) if ROLE else c
             sim = torch.einsum("bd,bmd->bm", qv, K) / math.sqrt(d); a = torch.softmax((sim + logocc) / tau, -1)
             r = torch.einsum("bm,bmd->bd", a, Vm); cf = (a * occ).sum(-1, keepdim=True)
             if PKB or WKB: rl, conf = r, cf
@@ -91,7 +92,7 @@ class CKB(nn.Module):
                 p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta); empty = torch.softmax(-occ / tau, -1)
                 alpha = (p * m + (1 - p) * empty).unsqueeze(-1)
                 K = (1 - alpha) * K + alpha * pk.unsqueeze(1); Vm = (1 - alpha) * Vm + alpha * e[:, t].unsqueeze(1); occ = occ + alpha.squeeze(-1) * (1 - occ)
-                pk = c; c = c * (1 - b); continue
+                pk = qv; c = c * (1 - b); continue
             # write (previous chunk -> this chunk) at the boundary
             wsim = torch.einsum("bd,bmd->bm", pk, K) / math.sqrt(d); m = torch.softmax((wsim + logocc) / tau, -1)
             p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta); empty = torch.softmax(-occ / tau, -1)
@@ -208,10 +209,10 @@ def boundary_profile(m, x):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
+    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
-    global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE; DENSE = bool(a.dense); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
-    res = {"tag": "ARCH-VET-LM-P49", "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
+    global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE; ROLE = a.role; DENSE = bool(a.dense); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
+    res = {"tag": "ARCH-VET-LM-P49", "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
     if a.task == "synthetic":
         er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
         er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]
@@ -250,6 +251,7 @@ def main():
                         with torch.no_grad():
                             sp = torch.sigmoid(m.ws(m.E(torch.tensor([32, 10, 46, 97, 101, 112])))).squeeze(-1).tolist()
                         r["pass_sp_nl_dot_a_e_p"] = [round(v, 2) for v in sp]; log(f"   pass factors space/nl/./a/e/p {r['pass_sp_nl_dot_a_e_p']}")
+                    if a.save: torch.save(m.state_dict(), f"p21_ckpt/{a.save}_{arm}_d{d}_s{seed}.pt")
                     res["runs"].append(r); log(f"[p49 {arm} d{d} s{seed}] params {r['params']} name-CE in {r['in_name_ce']} ood {r['ood_names_name_ce']} far {r['far_ood_name_ce']} DENSE-unseen {r['dense_ood_name_ce']} | bg {r['in_bg_ce']} {r['ood_names_bg_ce']} {r['far_ood_bg_ce']}" + (f" | b sep/word {r['b_at_sep']}/{r['b_in_word']}" if arm == "CKB" else ""))
     with open("log.jsonl", "a") as fh: fh.write(json.dumps(res) + "\n")
     log("[P49] DONE")
