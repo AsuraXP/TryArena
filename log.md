@@ -5932,3 +5932,41 @@ a 32x256 linear map). Eval-only tie (logits += beta E r) is worse
 C103f (running): --tie 1 (learned scalar beta, zero extra matrices).
 Controls GRU,TF on the SAME random-name training running in parallel.
 PREDICTION: C103f dense-unseen <= 2.0; GRU/TF random-name >= 3.5.
+
+C104 — NOVELTY GATE + PRE-REGISTRATION: COUNTERFACTUAL TRANSPORT CORE (CT).
+MAP: objective cell "counterfactual consistency"; credit-assignment
+cell "charge the binding that was used". Missing axis found in C103:
+what slow weights are forbidden to memorize (now in NOVELTY.md).
+SEARCH TO DISPROVE (2026-10-08): CSR / Causal Consistency
+Regularization arXiv:2509.01544 perturbs a reasoning operator and
+maximizes answer-distribution distance; limitation: *any* changed
+answer satisfies it, so it does not identify the causal transport.
+Double Counterfactual Consistency arXiv:2602.16787 tests/restores an
+intervention at inference/reward time; no dependency-local target.
+Names Don't Matter arXiv:2601.23169 and SE-RRM arXiv:2603.02193 give
+exact symbol-renaming equivariance with known symbol classes/parallel
+streams or equivariant layers; they do not teach which fact a
+prediction depends on. C94 already killed generic state invariance.
+CANDIDATES: (1) multi-hop slot reread — KILL, MemN2N/NTM familiar;
+(2) AND-mask gradients across renamed examples — KILL, AND-mask/GAL/
+IGA familiar and dead-zone failure; (3) parallel symbol streams — KILL,
+arXiv:2601.23169 does it; (4) merely maximize output change after a
+fact edit — KILL, CSR and arbitrary-change loophole; (5) EXACT
+COUNTERFACTUAL TRANSPORT survives: a fact-value swap defines a known
+permutation old<->new ONLY at queries causally dependent on that fact,
+while unrelated query distributions must remain invariant. CE anchors
+both worlds. Delta from CSR: direction and locality of the effect are
+specified, not just sensitivity. Delta from C94: supervises the actual
+consumer output and the exact transformation, not an arbitrary latent
+distance.
+TEST (arch_vet_p50.py): same paired batches, 2000 steps, seed 1,
+d={16,32,64}; fair arms TF/TF+CT and SBC/SBC+CT. Train 2–4 facts,
+evaluate in-range, OOD filler length, 8 facts, both, and far x23;
+report accuracy slope vs log2(params) and intervention exactness.
+PREDICTION: SBC+CT far slope >= +.06 and mean far gain >= .10 over
+SBC-CE at matched sizes; at d64 far >= .80. TF+CT far <= .40 and its
+far slope <= SBC+CT (position-bound state cannot transport at x23).
+Affected swap exactness >= .80 and unaffected prediction stability
+>= .95 for SBC+CT. If TF gains equally: generic augmentation, not the
+core. If neither gains: next-token CE already identifies this simple
+dependency or paired output transport still cannot assign credit.
