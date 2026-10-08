@@ -5909,3 +5909,16 @@ training the memory never held anything. So: key design sound, value
 sound, allocation must be hard, head must be trained with a working
 memory. C103d (running): --pure 3 = ST hard allocation + distance read,
 oracle unit, M=256, ROLE=4. PREDICTION: dense-unseen <= 2.0.
+C103d RESULT — ST hard allocation + distance read (oracle unit): train
+stable (1.64), dense-unseen 3.612. PREDICTION (<=2.0) FALSIFIED. Diag:
+binding present .96, read-nearest==target .72 — the memory now holds
+and returns the byte. The head still ignores r: fed the EXACT target
+embedding as r it scores 3.67. Cause: fixed training-name list ->
+h memorizes names (in-dist 1.94), copying never needed in training =
+a shortcut in MY task, not in the core. L-COPY-NEEDS-UNMEMORIZABLE-
+TRAINING: a learner only acquires copy-through-memory when the
+training targets cannot be stored in the weights.
+C103e (running): --randnames 1 (fresh random CV-string names each
+dialogue), otherwise = C103d. PREDICTION: dense-unseen <= 2.0 AND
+head-fed-exact-r CE < 1.0. GRU/TF controls on same random-name
+training queued after.
