@@ -73,7 +73,8 @@ class CKB(nn.Module):
             if WKB:
                 qv = self.wkey(e, t, B, d)
             else: qv = torch.cat([c, torch.tanh(self.z(h))], -1) if ROLE else c
-            sim = torch.einsum("bd,bmd->bm", qv, K) / math.sqrt(d); a = torch.softmax((sim + (0 if PUREADDR else logocc)) / tau, -1)
+            if PUREADDR == 3: sim = -torch.cdist(qv[:, :d].unsqueeze(1), K[:, :, :d]).squeeze(1); a = torch.softmax(sim / tau + logocc, -1)
+            else: sim = torch.einsum("bd,bmd->bm", qv, K) / math.sqrt(d); a = torch.softmax((sim + (0 if PUREADDR else logocc)) / tau, -1)
             r = torch.einsum("bm,bmd->bd", a, Vm); cf = (a * occ).sum(-1, keepdim=True)
             if PKB or WKB: rl, conf = r, cf
             else: rl = (1 - b) * rl + b * r; conf = (1 - b) * conf + b * cf
@@ -91,7 +92,12 @@ class CKB(nn.Module):
                 # read: what followed this prefix last time?  (q = c_t; r already computed above with q = c)
                 # write: key = previous prefix state (pk), value = this byte's embedding
                 wsim = torch.einsum("bd,bmd->bm", pk, K) / math.sqrt(d)
-                if PUREADDR == 2:   # C103c: match else LRU-allocate (usage + index ramp breaks ties)
+                if PUREADDR == 3:   # C103d: HARD ST allocation: match if c-part key dist<1 else LRU(+ramp); read is distance-based
+                    dmat = torch.cdist(pk[:, :d].unsqueeze(1), K[:, :, :d]).squeeze(1); jm = dmat.argmin(-1); ok = dmat.gather(1, jm[:, None]).squeeze(1) < 1.0
+                    jf = (usage + self.ramp).argmin(-1); j = torch.where(ok, jm, jf); hard = F.one_hot(j, M).float()
+                    soft = torch.softmax(-dmat / tau, -1) * ok[:, None].float() + torch.softmax(-(usage + self.ramp) / tau, -1) * (~ok)[:, None].float()
+                    alpha = (hard + soft - soft.detach()).unsqueeze(-1); usage = 0.98 * usage + hard + a.detach()
+                elif PUREADDR == 2:   # C103c: match else LRU-allocate (usage + index ramp breaks ties)
                     m = torch.softmax(wsim / tau, -1); p = torch.sigmoid((wsim.max(-1, keepdim=True).values - self.theta) / 0.1)
                     free = torch.softmax((-usage - self.ramp) / tau, -1); alpha = (p * m + (1 - p) * free).unsqueeze(-1)
                     usage = 0.98 * usage + alpha.squeeze(-1) + a

@@ -5898,3 +5898,14 @@ C103c (running): write = p*match + (1-p)*LRU-free, free =
 softmax(-(usage+index ramp)/tau), usage decays .98 and accumulates
 write+read weights; the ramp is the deterministic tie-breaker.
 PREDICTION: binding present >= .8; dense-unseen <= 2.0; stable train.
+C103c RESULT — LRU+ramp soft allocation: dense-unseen 4.330 (worse);
+theta->.59 so the match branch fires for nearly every write -> same
+collision chains. FALSIFIED. Eval-time surgery on the saved C103c model
+(diag49.py, no retraining): HARD allocation (match if c-part key dist<1
+else LRU) -> binding present .97 (from .33), value exact; adding a
+DISTANCE read (c-part, occ-masked) -> read-nearest==target .81. The
+trained head ignores r (CE 4.1-4.4 whatever is fed) because during
+training the memory never held anything. So: key design sound, value
+sound, allocation must be hard, head must be trained with a working
+memory. C103d (running): --pure 3 = ST hard allocation + distance read,
+oracle unit, M=256, ROLE=4. PREDICTION: dense-unseen <= 2.0.
