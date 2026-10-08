@@ -30,6 +30,7 @@ BMODE = "soft"
 SURPRISE = False
 PKB = False
 CGW = False   # C101: content-gated window taps (learned per-byte pass factor cuts context)
+DENSE = False   # C102: train on dense-reuse dialogues
 WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no boundary, no gate)
 MSLOTS = 8   # C99: key = prefix state c_t, value = next byte embedding, written every step   # C98: boundary also sees the learner's own surprise -log p(x_t) and entropy H_{t-1}   # soft | st (straight-through hard boundary) | force (b=1 every token: wiring control)
 
@@ -126,6 +127,31 @@ def dialogue(rng, names, nfill):
     return txt.encode(), start, start + len(n)
 
 
+def dialogue_dense(rng, names, nlines):
+    """3 names recur on nearly every line; returns bytes and spans of every name occurrence after the first per name."""
+    ns = rng.sample(names, 3); seen = set(); lines = []; spans = []; pos = 0
+    tpl = ["{a}: hey {b}, " , "{a}: ", "{a}: {b}, ", "{a}: i told {b} that "]
+    for _ in range(nlines):
+        a, b = rng.sample(ns, 2); t = rng.choice(tpl); fill = rng.choice(LINES)[:60]
+        line = t.format(a=a, b=b) + fill + "\n"
+        for nm in (a, b):
+            i = line.find(nm)
+            while i >= 0:
+                if nm in seen: spans.append((pos + i, pos + i + len(nm)))
+                i = line.find(nm, i + 1)
+            seen.add(nm)
+        lines.append(line); pos += len(line)
+    return "".join(lines).encode(), spans
+
+
+def dense_batch(rng, B, names, nlines, L):
+    xs, spans = [], []
+    for _ in range(B):
+        t, sp = dialogue_dense(rng, names, nlines); t = list(t[:L + 1]); spans.append([(s0, min(s1, L)) for s0, s1 in sp if s0 < L - 1])
+        xs.append(t + [0] * (L + 1 - len(t)))
+    return torch.tensor(xs), spans
+
+
 def text_batch(rng, B, names, nfill, L):
     xs, spans = [], []
     for _ in range(B):
@@ -144,10 +170,12 @@ def name_ce(m, batches, arm):
         lg = m(x, tau=0.05) if arm == "CKB" else m(x)
         lp = F.log_softmax(lg[:, :-1], -1); tgt = x[:, 1:]
         nll = -lp.gather(-1, tgt.unsqueeze(-1)).squeeze(-1)
-        for i, (s0, s1) in enumerate(spans):
-            if s1 - 1 > s0:
-                tot += nll[i, s0:s1 - 1].sum().item(); n += (s1 - 1 - s0)       # name bytes after the first (first byte = pure guess)
-            msk = (tgt[i] != 0).clone(); msk[s0 - 1:s1 - 1] = False; bg += nll[i][msk].sum().item(); nb += msk.sum().item()
+        for i, sp in enumerate(spans):
+            sp = sp if isinstance(sp, list) else [sp]; msk = (tgt[i] != 0).clone()
+            for (s0, s1) in sp:
+                if s1 - 1 > s0: tot += nll[i, s0:s1 - 1].sum().item(); n += (s1 - 1 - s0)   # name bytes after the first
+                msk[max(s0 - 1, 0):s1 - 1] = False
+            bg += nll[i][msk].sum().item(); nb += msk.sum().item()
     m.train(); return round(tot / max(n, 1), 4), round(bg / max(nb, 1), 4)
 
 
@@ -156,7 +184,7 @@ def train_text(arm, d, seed, steps, B, L, log):
     m = A.TFMicro(256, d) if arm == "TF" else GRUCore(256, d) if arm == "GRU" else CKB(256, d, MSLOTS)
     opt = torch.optim.Adam(m.parameters(), lr=3e-3); t0 = time.time()
     for s in range(steps):
-        x, _ = text_batch(rng, B, NAMES_TR, rng.randint(1, 3), L)
+        x, _ = dense_batch(rng, B, NAMES_TR, 6, L) if DENSE else text_batch(rng, B, NAMES_TR, rng.randint(1, 3), L)
         if arm == "CKB":
             tau = 0.1 ** (s / max(steps - 1, 1)); gmin = GMIN0 * (1 - s / max(steps - 1, 1)); lg, bs, _ = m(x, tau=tau, gmin=gmin, states=True)
         else:
@@ -178,10 +206,10 @@ def boundary_profile(m, x):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
+    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
-    global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW; MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
-    res = {"tag": "ARCH-VET-LM-P49", "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
+    global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE; DENSE = bool(a.dense); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
+    res = {"tag": "ARCH-VET-LM-P49", "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
     if a.task == "synthetic":
         er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
         er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]
@@ -207,19 +235,20 @@ def main():
         er = random.Random(999); ev_in = [text_batch(er, 8, NAMES_TR, 2, a.L) for _ in range(8)]
         er = random.Random(998); ev_ood = [text_batch(er, 8, NAMES_OOD, 2, a.L) for _ in range(8)]
         er = random.Random(997); ev_far = [text_batch(er, 8, NAMES_OOD, 10, 4 * a.L) for _ in range(6)]
+        er = random.Random(996); ev_dense = [dense_batch(er, 8, NAMES_OOD, 6, a.L) for _ in range(8)]
         for arm in a.arms.split(","):
             for d in map(int, a.ds.split(",")):
                 for seed in map(int, a.seeds.split(",")):
                     m = train_text(arm, d, seed, a.steps, a.B, a.L, log)
                     r = {"arm": arm, "d": d, "seed": seed, "params": n_params(m)}
-                    for nm, ev in [("in", ev_in), ("ood_names", ev_ood), ("far_ood", ev_far)]:
+                    for nm, ev in [("in", ev_in), ("ood_names", ev_ood), ("far_ood", ev_far), ("dense_ood", ev_dense)]:
                         r[nm + "_name_ce"], r[nm + "_bg_ce"] = name_ce(m, ev, arm)
                     if arm == "CKB": r["b_at_sep"], r["b_in_word"] = boundary_profile(m, ev_in[0][0])
                     if arm == "CKB" and CGW:
                         with torch.no_grad():
                             sp = torch.sigmoid(m.ws(m.E(torch.tensor([32, 10, 46, 97, 101, 112])))).squeeze(-1).tolist()
                         r["pass_sp_nl_dot_a_e_p"] = [round(v, 2) for v in sp]; log(f"   pass factors space/nl/./a/e/p {r['pass_sp_nl_dot_a_e_p']}")
-                    res["runs"].append(r); log(f"[p49 {arm} d{d} s{seed}] params {r['params']} name-CE in {r['in_name_ce']} ood {r['ood_names_name_ce']} far {r['far_ood_name_ce']} | bg {r['in_bg_ce']} {r['ood_names_bg_ce']} {r['far_ood_bg_ce']}" + (f" | b sep/word {r['b_at_sep']}/{r['b_in_word']}" if arm == "CKB" else ""))
+                    res["runs"].append(r); log(f"[p49 {arm} d{d} s{seed}] params {r['params']} name-CE in {r['in_name_ce']} ood {r['ood_names_name_ce']} far {r['far_ood_name_ce']} DENSE-unseen {r['dense_ood_name_ce']} | bg {r['in_bg_ce']} {r['ood_names_bg_ce']} {r['far_ood_bg_ce']}" + (f" | b sep/word {r['b_at_sep']}/{r['b_in_word']}" if arm == "CKB" else ""))
     with open("log.jsonl", "a") as fh: fh.write(json.dumps(res) + "\n")
     log("[P49] DONE")
 

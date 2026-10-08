@@ -5796,3 +5796,21 @@ are copies of earlier spans: code, repeated structure, dialogue
 with heavy entity reuse) so that the unit has dense pressure — the
 same move that made predicates identifiable (C85). Not 'bigger
 model'; the pressure, not the capacity, is what was missing.
+
+C102 — PRE-REGISTRATION: THE UNIT UNDER DENSE CONSUMER PRESSURE.
+Map: 'unit of binding' axis, cell 'unit under dense consumer
+pressure' (open). Mechanisms unchanged from C101 (content-gated
+window key, next-byte value, M=64) and C98 (surprise-fed reset
+boundary) — only the DATA pressure changes: dense-reuse dialogues
+where 3 names (unseen at eval) recur on nearly every line
+("{n1}: hey {n2}, ..."), so a read is useful at ~15% of bytes
+instead of ~1.5%. Train 2000 steps d32 on dense; evaluate (a) dense
+unseen-name CE (re-mentions), (b) TRANSFER to the sparse C97 test
+unchanged, (c) learned pass factors / boundary profile. Baselines
+GRU and TF trained on the same dense stream. PREDICTION: under
+dense pressure CGW learns s(' ') < .3 (the unit appears) and dense
+unseen-name CE <= 1.5 vs GRU >= 2.5; and the SAME model transfers
+to sparse unseen-name CE <= 2.4 (the unit, once formed, is free).
+If the unit appears but does not transfer: it is data-bound, not a
+law. If it does not appear even here: pressure is not the lever
+either, and the unit axis is a wall to be stated.
