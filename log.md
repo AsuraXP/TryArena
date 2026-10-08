@@ -5814,3 +5814,23 @@ to sparse unseen-name CE <= 2.4 (the unit, once formed, is free).
 If the unit appears but does not transfer: it is data-bound, not a
 law. If it does not appear even here: pressure is not the lever
 either, and the unit axis is a wall to be stated.
+C102 RESULT (d32, seed 1, 2000 steps, dense-reuse training).
+| arm | dense-unseen name-CE | sparse-unseen (transfer) | far | unit evidence |
+| GRU | 4.128 | 3.614 | 3.517 | - |
+| TF  | 5.000 | 3.817 | 4.699 | - |
+| CGW (content-gated window) | 3.601 | 3.282 | 3.233 | pass factors .87-.97: no unit |
+| RESET+surprise (chunk values) | 3.805 | 3.348 | 3.272 | boundary sep/word .629/.057: UNIT FORMED |
+Half the prediction holds: under dense pressure the learned reset
+boundary becomes a word-like unit (.63/.06 vs .19/.18 sparse). The
+other half fails: with the unit present, copying still does not
+happen — this variant's values are chunk summaries, which cannot be
+decoded into unseen strings (L-VALUES-MUST-BE-REPLAYABLE, C98).
+The two halves are now each demonstrated in isolation: a learnable
+unit (needs dense pressure) and replayable byte values (P47/PKB).
+PKB's own boundary collapsed only under sparse pressure (C99).
+C102b (running): PKB (prefix-state key, next-byte value) + surprise
++ dense pressure, M=64; control: PKB with ORACLE unit (reset at
+separators given) to bound what the read path can deliver.
+PREDICTION: PKB-dense boundary forms (>.5/<.1) and dense-unseen
+CE <= 2.0; oracle <= 1.5. If oracle fails too: fault is the read
+path on bytes (attention/decoding), not the unit.

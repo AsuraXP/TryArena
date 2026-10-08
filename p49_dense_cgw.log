@@ -1,0 +1,12 @@
+  [CKB d32 s1] step 0 ce 5.611 b 0.596 (1s)
+  [CKB d32 s1] step 250 ce 2.199 b 0.558 (255s)
+  [CKB d32 s1] step 500 ce 1.955 b 0.551 (520s)
+  [CKB d32 s1] step 750 ce 1.782 b 0.544 (782s)
+  [CKB d32 s1] step 1000 ce 1.722 b 0.531 (1038s)
+  [CKB d32 s1] step 1250 ce 1.622 b 0.521 (1299s)
+  [CKB d32 s1] step 1500 ce 1.634 b 0.509 (1589s)
+  [CKB d32 s1] step 1750 ce 1.597 b 0.497 (1871s)
+  [CKB d32 s1] step 1999 ce 1.614 b 0.484 (2151s)
+   pass factors space/nl/./a/e/p [0.95, 0.87, 0.93, 0.96, 0.97, 0.94]
+[p49 CKB d32 s1] params 40165 name-CE in 1.88 ood 3.2817 far 3.2326 DENSE-unseen 3.6013 | bg 2.2986 2.271 2.2043 | b sep/word 0.277/0.472
+[P49] DONE

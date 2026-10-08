@@ -62,6 +62,8 @@ class CKB(nn.Module):
             b = gmin + (1 - gmin) * torch.sigmoid(self.b(torch.cat([h, c, surp if SURPRISE else torch.zeros(B, 2)], -1)))
             if BMODE == "st": b = (b > 0.5).float() + b - b.detach()
             elif BMODE == "force": b = torch.ones_like(b)
+            elif BMODE == "oracle":   # CONTROL ONLY: unit given = separator bytes (space, newline, , . : ? !)
+                xt = x[:, t]; b = ((xt == 32) | (xt == 10) | (xt == 44) | (xt == 46) | (xt == 58) | (xt == 63) | (xt == 33)).float().unsqueeze(-1)
             bs.append(b)
             logocc = torch.log(occ + 1e-4)
             # read with the chunk so far (at a boundary: the whole chunk)
