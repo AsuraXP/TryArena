@@ -6081,3 +6081,27 @@ stream (the GRU state already forgets enough) — a different wall;
 unit does not form -> the reward does not peak at words here; log
 the measured R and the b profile, declare and move to a different
 pressure, not a different wiring.
+
+C106 RESULT — PREDICTION HALF-FALSIFIED, CE FAR BEYOND TARGET.
+d32 47,242p, seed 1, 2000 steps, dense random-name stream:
+DENSE-unseen name-CE 2.252 (target <= 2.90; C105 no-unit 2.987;
+ORACLE unit C103e 2.756; GRU 3.607; TF 3.489) — 38% below GRU and
+below the oracle-boundary control. in 2.554, sparse-unseen 2.877,
+far 3.206 (worse than C105 3.054), bg 2.15/2.09/2.06; train CE 1.77
+(C105 1.95). BUT b sep/word at eval = 0.0/0.0: the sampled cut
+rate went .62 -> .18 (250) -> .15 -> .13 -> .095 -> .077 -> .047 ->
+.028 -> .000 while R rose .03 -> .41. The consumer-credited policy
+learned to STOP cutting, and the learner got better the whole way.
+Reading (not yet proven): with hard random resets in training the
+keys written from truncated states must still match keys from full
+states, so the recurrence gc itself learned history-invariant keys
+— the unit moved INTO the state, and the explicit boundary became
+unnecessary (hence the policy lets it die). If true, the gain is
+"invariance by stochastic truncation", not consumer credit.
+C106b — ABLATION PRE-REGISTERED: --bmode rand (fixed p=.1 hard
+random resets in training, none at eval, no boundary learning).
+PREDICTION: if dense-unseen <= 2.40 the mechanism is stochastic
+truncation and consumer-credit is unnecessary (then the result is a
+LEARNING-RULE finding: train the state under random truncation and
+it learns units by invariance); if >= 2.80 the credited early cuts
+mattered. Either way the number is a single seed until C106c.

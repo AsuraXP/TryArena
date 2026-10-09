@@ -45,6 +45,7 @@ PUREADDR = False   # C103b: address = softmax(k.K/tau) only (no empty branch, no
 # C103b pure content addressing = Tyulmankov et al. NeurIPS 2021 (softmax key match, slot overwrite), ALER arXiv 2610.00592 (one-slot Gumbel overwrite); here framed as a fix, not a novelty claim.
 ROLE = 0   # C103: dim of role bottleneck z = tanh(W_z h) appended to the prefix key (0 = off)   # C102: train on dense-reuse dialogues
 WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no boundary, no gate)
+RANDP = 0.1   # C106b fixed reset probability
 UTILW = 1.0   # C106 weight of the boundary REINFORCE loss
 MSLOTS = 8   # C99: key = prefix state c_t, value = next byte embedding, written every step   # C98: boundary also sees the learner's own surprise -log p(x_t) and entropy H_{t-1}   # soft | st (straight-through hard boundary) | force (b=1 every token: wiring control)
 
@@ -76,6 +77,7 @@ class CKB(nn.Module):
             h = self.gh(e[:, t], h); c = self.gc(e[:, t], c)
             b = gmin + (1 - gmin) * torch.sigmoid(self.b(torch.cat([h, c, surp if SURPRISE else torch.zeros(B, 2)], -1)))
             if BMODE == "st": b = (b > 0.5).float() + b - b.detach()
+            elif BMODE == "rand": b = (torch.bernoulli(torch.full_like(b, RANDP)) if self.training else torch.zeros_like(b)).detach()   # C106b ablation: fixed-rate random hard resets, no learning of b
             elif UTIL:
                 pb = b; b = (torch.bernoulli(pb) if self.training else (pb > 0.5).float()).detach()
                 logps.append(torch.log(torch.where(b > 0.5, pb, 1 - pb) + 1e-6).squeeze(-1))
