@@ -5994,3 +5994,29 @@ produce a real 21–24% unseen-name gain over both controls. It would not
 survive deleting the learned key/state/head, but it DOES depend on oracle
 segmentation and algorithmic hard allocation; under the user's criterion
 that is diagnostic evidence, not deliverable progress. No more variants.
+C104 RESULT — FALSIFIED (arch_vet_p50.py, seed 1, 2000 steps, lam 1).
+| arm | d16 far | d32 far | d64 far | far slope | CF exact d16/32/64 |
+| SBC   | .620 | .771 | .698 | +.022 | .78/.99/.88 |
+| SBCCT | .615 | .807 | .729 | +.033 | .83/.98/.86 |
+| TF    | .073 | .151 | .130 | +.015 | .70/.95/.23 |
+| TFCT  | .052 | .036 | .167 | +.031 | .64/.27/.98 |
+Mean far gain SBCCT-SBC = +.021 (predicted >= .10); far slope +.033
+(predicted >= +.06). Intervention exactness is already .78-.99
+under CE alone: next-token CE identifies this dependency by itself
+(the pre-registered alternative). TF arms at 2000 steps are
+unconverged/unstable (d64 CE-only in .417) — not interpretable; TF
+far <= .17 everywhere as before. CT is not the lever here; parked.
+
+C105 — PRE-REGISTRATION: ALL PIECES, NONE GIVEN.
+C103e isolated every requirement of copy-through-state on text
+(unit, replayable values, hard tie-breaking allocation, distance
+read, unmemorizable training names) but used an ORACLE unit. C102
+showed the learned reset+surprise unit forms under dense pressure
+(.629/.057). C105 = C103e config with the learned unit: --bmode
+soft --surprise 1 --pkb 1 --dense 1 --role 4 --pure 3 --randnames 1
+--M 256, d32, 2000 steps. PREDICTION: boundary sep/word >= .5/<= .1
+AND dense-unseen name-CE <= 3.0 (oracle 2.756; GRU 3.607). If the
+unit forms but CE stays > 3.3: the soft unit's residual leak breaks
+key agreement -> the unit must be hard at write time (ST). If the
+unit does not form with hard allocation present: allocation and
+unit compete for the same gradient — logged as such.
