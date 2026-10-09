@@ -47,18 +47,28 @@ Your memory IS the standard path; it will regenerate Mamba/RWKV/NTM/Hopfield/MoE
 4. Generate ≥4 candidates; kill every familiar one; run the survivor. None survive → generate again, never lower the bar.
 5. Pre-register the prediction in log.md before running. Update the map and ledger after.
 
+## THE NO-VARIANTS RULE (added after C97–C105)
+Five mechanisms for one idea is brute force with small runs. Before any run:
+1. Name the LOOP the idea must break (e.g. "the boundary cannot learn until the read works; the read cannot work until the boundary is right"). If the proposal only nudges one side of a loop, it is a variant. Reject it.
+2. Write, in log.md, WHY the proposal removes the loop — on paper, before code. No argument on paper → no run. Thinking for an hour beats a 20-minute run that was predictable.
+3. The LEARNING RULE is in scope, not just the wiring. Every cycle so far changed what the network is and left "backprop through next-token loss" untouched; that is the conventional part never questioned. Proposals that change how credit flows (success defines the unit backwards; invariance checked by the learner against its own states; what slow weights are forbidden to memorise) rank above proposals that change the wiring.
+4. A WALL is declared after 3 falsified attacks on the same loop from the same side. A wall is written on the map with its loop stated. It is attacked again only from a different side (different learning rule, different pressure, different consumer), never with a sixth wiring.
+5. Never scaffold with an oracle (given boundaries, given tokens, given facts) except as a one-run control to bound what the rest can deliver; an oracle result is diagnostic, never progress.
+
 ## FAILURE MODES YOU HAVE ALREADY SHOWN — DO NOT REPEAT
 1. Retreating to a nearby provable exact thing when the core problem is hard. Stay on the core.
 2. Calling a copy/lookup "understanding" or "conditioning solved."
 3. Framing results against GPT-class fluency or saying "needs a GPU." Hardware envelope is an asset.
 4. Week-long estimates for micro-scale questions. A hypothesis is a few 30-minute runs, 2 lanes. Iterate first, certify last.
 5. Adding another organ because the vacuum of a 50k-param dense part made organs the only visible behaviour.
+6. Variants: five wirings of one idea (C97–C101), each "pre-registered", none breaking the loop. Pre-registration is not a licence to iterate blindly.
+7. Leaving the loop you found unstated and running anyway.
 
 ## HOW TO WORK
 - NEVER STOP, NEVER ASK. Decide, run, log, next. Compact log-style reports; talk plainly when the user talks.
 - Honesty clause: negatives, falsified predictions, and "the slope did not move" are reported first, not buried.
 - Every cycle: log.md block + log.jsonl line + commit + push to `arena/01a07767-tryarena` (never force-push; recovery = fetch + mixed reset + restore).
 - Seed hygiene stands. No transformer re-tests on old axes except the fair micro-TF control. Do not rerun banked negatives as-is (see log.md / HANDOVER.md).
-- Read HANDOVER.md first. The three glimpses of the principle we already have: (a) the core generalized OOD only when forced to learn rules instead of cases; (b) per-token cost flat 256→16k; (c) fair Transformer controls lost on identical batches. Build from those toward the core, not away from it.
+- Read HANDOVER.md first. Then NOVELTY.md: the walls (loops stated) and the one mechanism that works (slot-binding core, reasoning-shaped data, positive slopes, length-free) — build from it, do not rebuild it. The three glimpses of the principle we already have: (a) the core generalized OOD only when forced to learn rules instead of cases; (b) per-token cost flat 256→16k; (c) fair Transformer controls lost on identical batches. Build from those toward the core, not away from it.
 
 If a turn ends and the slope question was not attacked, the turn was wasted. Attack it.
