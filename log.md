@@ -6105,3 +6105,26 @@ truncation and consumer-credit is unnecessary (then the result is a
 LEARNING-RULE finding: train the state under random truncation and
 it learns units by invariance); if >= 2.80 the credited early cuts
 mattered. Either way the number is a single seed until C106c.
+
+C106b RESULT — ABLATION CONFIRMS: THE CREDIT WAS NOT THE CAUSE.
+--bmode rand (fixed p=.1 hard random resets of the key state c in
+training, no boundary learning): DENSE-unseen 2.296 (C106 credited:
+2.252; threshold for "credit unnecessary" was <= 2.40). in 2.353,
+sparse-unseen 2.529, far 3.177. (Note: the model is never put in
+eval mode, so the p=.1 resets were also active at test — the number
+is if anything handicapped.) The consumer-credit hypothesis is
+FALSIFIED as the cause; what it stumbled on is a LEARNING-RULE law:
+L-TRUNCATION-MAKES-INVARIANT-KEYS — when the key-producing state is
+cut at random during training, the only keys that survive are those
+that agree across contexts; the recurrence itself learns the unit by
+invariance, and no boundary decision is needed at all (the policy
+that was allowed to cut chose to stop). Copy-through-state on
+unseen names: 2.25-2.30 vs GRU 3.607 / TF 3.489 (-37%) and below the
+oracle-boundary control (2.756). Nothing is given: no boundary, no
+tokens, no oracle. Single seed, single size. Two things needed next,
+in order: (1) THE SLOPE: CKB-rand vs GRU vs TF at d16/32/64, same
+batches, same stream (launched, p49_slope_s1.log); (2) seeds 2-3.
+Map: the "unit of binding" row gains the cell [R] unit learned by
+invariance under stochastic truncation of the key state; the wall
+"unit learned through CE" stands; the boundary-decision axis is
+closed as unnecessary for this purpose.
