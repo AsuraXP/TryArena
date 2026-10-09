@@ -6020,3 +6020,22 @@ unit forms but CE stays > 3.3: the soft unit's residual leak breaks
 key agreement -> the unit must be hard at write time (ST). If the
 unit does not form with hard allocation present: allocation and
 unit compete for the same gradient — logged as such.
+C105 RESULT — MIXED (d32, seed 1, 2000 steps, learned unit, no oracle).
+dense-unseen name-CE 2.987 (<= 3.0 met; oracle C103e 2.756; GRU 3.607;
+TF 3.489), sparse-unseen transfer 2.920, far 3.054, bg 2.21/2.15/2.10;
+boundary sep/word 0.0/0.0 — the learned reset collapsed (as in C99),
+so the first conjunct of the prediction FAILS while the CE conjunct
+holds. With no reset, the prefix state c is a full-history state;
+the hard-allocation + distance read still finds a usable match
+because random names make the slow weights unable to help, so the
+state is forced to carry them (L-COPY-NEEDS-UNMEMORIZABLE-TRAINING).
+What this does and does not show: the -17% unseen-name gain no
+longer depends on an oracle unit (that scaffold is gone); it still
+depends on ST-hard allocation (algorithmic tie-breaking, learned
+match threshold) — exact structure inside the learner, decision-
+free in the key path. It would not survive deleting the learned
+state/keys/head. Unit formation and hard allocation appear to
+compete for the same gradient (unit 0 whenever pure=3). Single seed.
+NEXT: (1) seeds 2,3 + GRU/TF at d16/32/64 on the same random-name
+stream for the slope (the number that counts); (2) ST-hard unit at
+write time (unit must be hard where allocation is hard).
