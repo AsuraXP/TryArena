@@ -6128,3 +6128,15 @@ Map: the "unit of binding" row gains the cell [R] unit learned by
 invariance under stochastic truncation of the key state; the wall
 "unit learned through CE" stands; the boundary-decision axis is
 closed as unnecessary for this purpose.
+
+C107 — SLOPE RUN (p49_slope_s1.log, seed 1, 2000 steps, identical
+batches, dense random-name stream; metric = unseen-name CE, lower
+is better). Controls done, CKB d16 done, d32/d64 running:
+| d  | GRU (p)        | TF (p)          | CKB-rand (p)     |
+| 16 | 3.243 (10,080) | 3.628 (15,008)  | 3.167 (21,322)   |
+| 32 | 3.607 (22,976) | 3.489 (42,048)  | 2.296 (47,242; C106b) |
+| 64 | 3.550 (57,984) | 3.633 (132,992) | pending          |
+far (OOD names): GRU 3.12/3.06/3.12; TF 5.91/4.81/3.36; CKB 2.95/3.18/-.
+Controls are FLAT in size (the stream is built so slow weights cannot
+help; GRU/TF gain nothing from 2-9x params). CKB-rand 16->32: -0.87
+nats per doubling. Interim: the gap widens with size on text.
