@@ -6140,3 +6140,25 @@ far (OOD names): GRU 3.12/3.06/3.12; TF 5.91/4.81/3.36; CKB 2.95/3.18/-.
 Controls are FLAT in size (the stream is built so slow weights cannot
 help; GRU/TF gain nothing from 2-9x params). CKB-rand 16->32: -0.87
 nats per doubling. Interim: the gap widens with size on text.
+
+C107 RESULT — SLOPE, seed 1 (p49_slope_s1.log). Unseen-name CE:
+| d  | GRU   | TF    | CKB-rand | gap CKB-GRU |
+| 16 | 3.243 | 3.628 | 3.167    | -0.08 |
+| 32 | 3.607 | 3.489 | 2.296    | -1.31 |
+| 64 | 3.550 | 3.633 | 2.397    | -1.15 |
+sparse-unseen (ood) CKB 2.990/2.529/2.351 (monotone); far CKB
+2.952/3.177/3.356 (WORSENS with size; GRU flat 3.1; TF 5.9/4.8/3.4).
+Least-squares slope per log2(params): CKB -0.303, GRU +0.118, TF
++0.003 nats. NEGATIVES FIRST: (1) the dense-unseen gap widens
+16->32 and then does NOT keep widening 32->64 (2.296 -> 2.397), so
+"steeper law" holds over one doubling only at this step count — d64
+fits training better (1.64 vs 1.80) without unseen gain; (2) far-OOD
+names get worse with size for CKB; (3) single seed. POSITIVES: the
+gap vs both controls is large at d32/d64 (-1.1 to -1.3 nats, -32 to
+-36%), the controls are flat in size by construction, and nothing is
+given (no boundary, tokens, oracle). Status: the text slope is
+attacked and partially moved; it is not yet a law. NEXT (in order):
+seeds 2,3 at d32/d64 (does 32->64 flatten reproducibly?); then the
+far-OOD worsening — likely the d64 head learning context shortcuts
+the random names cannot block, i.e. L-COPY-NEEDS-UNMEMORIZABLE-
+TRAINING applied to contexts, not names.
