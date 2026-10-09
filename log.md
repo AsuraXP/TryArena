@@ -6039,3 +6039,45 @@ compete for the same gradient (unit 0 whenever pure=3). Single seed.
 NEXT: (1) seeds 2,3 + GRU/TF at d16/32/64 on the same random-name
 stream for the slope (the number that counts); (2) ST-hard unit at
 write time (unit must be hard where allocation is hard).
+
+C106 — PRE-REGISTRATION (first cycle under the NO-VARIANTS RULE).
+THE LOOP (stated): in every unit attempt C97–C105 the boundary b_t
+learned only through the CE gradient that flows through the reads
+its keys enable. The reads cannot help until keys agree across
+occurrences; keys cannot agree until b is right; so b's gradient is
+~0 at init, the leak through a soft b is locally cheaper than a
+clean reset, and b collapses to 0. Five wirings nudged one side of
+this loop. WALL declared on the map: "unit learned through CE".
+WHY C106 REMOVES THE LOOP (paper): (1) b becomes a sampled HARD
+action with NO CE gradient — nothing has to be right for cuts to
+happen; at init cuts fall at random with p=.5, so for any two
+occurrences of a string both get a cut just before it with prob .25
+per pair, i.e. recurrence of keys is produced at a constant rate
+from step 0 without any learning. (2) The reward for a cut is local
+and measured, not back-propagated: a cut is rewarded when a key it
+started later hard-matches a slot (recurrence) AND that read lowered
+CE against the same head with the read zeroed (counterfactual
+gain). (3) The reward landscape peaks at the unit, not at either
+extreme: cutting everywhere gives single-byte keys that recur
+trivially but whose reads carry only bigram information the slow
+weights already have (gain ~0); cutting nowhere gives full-history
+keys that never recur (no match). Only cuts that start a recurring
+string whose continuation the weights cannot predict (unseen names)
+score. Hence the unit is defined backwards by its consumer. This is
+a change of LEARNING RULE (credit flow), not of wiring.
+NOVELTY: REBORN (2402.03988, REINFORCE boundaries, perplexity reward
+from a separate LM, speech); MGPO (2609.37930, counterfactual memory
+gain under a frozen reader, textual memory); LiB (recurrence-based
+chunking, no learner). None: byte-level, one learner, reward = own
+key recurrence x own read gain, joint with CE. Map: new cell in the
+"unit of binding" row x new axis "how the unit is credited".
+SETUP: C105 config (dense random-name stream, pkb, pure 3, role 4,
+M 256, d32, 2000 steps) with --bmode util (REINFORCE weight 1,
+batch-normalised advantage). PREDICTION: boundary sep/word >= .5 /
+<= .15 (forms where C105 gave 0/0) AND dense-unseen name-CE <= 2.90
+(C105 no-unit 2.987; oracle 2.756). ALTERNATIVES: unit forms, CE
+unchanged -> key agreement was not the binding constraint on this
+stream (the GRU state already forgets enough) — a different wall;
+unit does not form -> the reward does not peak at words here; log
+the measured R and the b profile, declare and move to a different
+pressure, not a different wiring.

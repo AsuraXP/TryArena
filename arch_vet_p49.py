@@ -10,6 +10,16 @@ length-free, but on bytes nothing is a unit (C96).  Here the unit is learned:
            latched r_l <- (1-b) r_l + b r so the head sees it while spelling the next chunk
   output   head([h_t, r_l, conf]) ; controller h_t = GRU_h(e_t)
 Everything learned; loss = CE only; no position signal; slots are state (grown at eval).
+C106 (--bmode util): the UNIT IS DEFINED BY ITS CONSUMER, BACKWARDS. The reset/boundary b_t is a
+sampled hard action that receives NO gradient from CE. Its only learning signal is a local reward:
+a cut is rewarded when the keys it started (a) later RECUR as a hard slot match and (b) that read
+lowered CE against a counterfactual no-read head. REINFORCE on b with that reward. Prior art and
+delta: REBORN (Tseng et al. 2024, arXiv 2402.03988) trains speech segment boundaries by REINFORCE
+with a perplexity-difference reward from a separate phoneme LM; MGPO (arXiv 2609.37930) credits
+textual-memory rewrites by counterfactual utility under a frozen reader; LiB (Yang 2022) selects
+units by recurrence with counterfactual evaluation, no neural learner. Delta: byte-level, online,
+inside one learner; reward = key recurrence x read gain of the learner's own slot state; no frozen
+reader, no separate LM, trained jointly with CE on everything else.
 Prior art (searched 2026-10-06): HM-RNN Chung+ 2016 (learned binary boundaries via ST,
 feeding a layer hierarchy, no memory, no cardinality control); Gated DeltaNet-2
 arXiv:2605.22791 (erase/write gates on a dense state, no unit).  Delta: boundaries
@@ -35,6 +45,7 @@ PUREADDR = False   # C103b: address = softmax(k.K/tau) only (no empty branch, no
 # C103b pure content addressing = Tyulmankov et al. NeurIPS 2021 (softmax key match, slot overwrite), ALER arXiv 2610.00592 (one-slot Gumbel overwrite); here framed as a fix, not a novelty claim.
 ROLE = 0   # C103: dim of role bottleneck z = tanh(W_z h) appended to the prefix key (0 = off)   # C102: train on dense-reuse dialogues
 WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no boundary, no gate)
+UTILW = 1.0   # C106 weight of the boundary REINFORCE loss
 MSLOTS = 8   # C99: key = prefix state c_t, value = next byte embedding, written every step   # C98: boundary also sees the learner's own surprise -log p(x_t) and entropy H_{t-1}   # soft | st (straight-through hard boundary) | force (b=1 every token: wiring control)
 
 
@@ -60,10 +71,14 @@ class CKB(nn.Module):
         h = torch.zeros(B, d); c = torch.zeros(B, d); rl = torch.zeros(B, d); conf = torch.zeros(B, 1); pk = torch.zeros(B, d)
         dk = d + ROLE; K = self.K0[:M].unsqueeze(0).expand(B, M, dk).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M); pk = torch.zeros(B, dk); usage = torch.zeros(B, M)
         outs, bs = [], []; surp = torch.zeros(B, 2)
+        UTIL = BMODE == "util"; cutpos = torch.zeros(B, dtype=torch.long); slot_cut = torch.zeros(B, M, dtype=torch.long); Rw = torch.zeros(B, L); logps = []
         for t in range(L):
             h = self.gh(e[:, t], h); c = self.gc(e[:, t], c)
             b = gmin + (1 - gmin) * torch.sigmoid(self.b(torch.cat([h, c, surp if SURPRISE else torch.zeros(B, 2)], -1)))
             if BMODE == "st": b = (b > 0.5).float() + b - b.detach()
+            elif UTIL:
+                pb = b; b = (torch.bernoulli(pb) if self.training else (pb > 0.5).float()).detach()
+                logps.append(torch.log(torch.where(b > 0.5, pb, 1 - pb) + 1e-6).squeeze(-1))
             elif BMODE == "force": b = torch.ones_like(b)
             elif BMODE == "oracle":   # CONTROL ONLY: unit given = separator bytes (space, newline, , . : ? !)
                 xt = x[:, t]; b = ((xt == 32) | (xt == 10) | (xt == 44) | (xt == 46) | (xt == 58) | (xt == 63) | (xt == 33)).float().unsqueeze(-1)
@@ -81,6 +96,12 @@ class CKB(nn.Module):
             lg = self.head(torch.cat([h, rl, conf], -1))
             if TIE: lg = lg + self.beta * (rl @ self.E.weight.t())
             outs.append(lg)
+            if UTIL and t + 1 < L:   # reward: hard recurrence x counterfactual read gain
+                with torch.no_grad():
+                    lg0 = self.head(torch.cat([h, torch.zeros_like(rl), torch.zeros_like(conf)], -1)); y = x[:, t + 1]
+                    gain = (F.cross_entropy(lg0, y, reduction="none") - F.cross_entropy(lg.detach(), y, reduction="none")).clamp(min=0)
+                    amax, jstar = a.max(-1); hit = (amax > 0.5) & (gain > 0.05); g = gain * hit.float()
+                    Rw.scatter_add_(1, slot_cut.gather(1, jstar[:, None]), g[:, None]); Rw.scatter_add_(1, cutpos[:, None], g[:, None])
             if SURPRISE and t + 1 < L:
                 lp = F.log_softmax(lg.detach(), -1); surp = torch.stack([-lp.gather(-1, x[:, t + 1:t + 2]).squeeze(-1) / 5.0, -(lp.exp() * lp).sum(-1) / 5.0], -1)
             if WKB:
@@ -108,6 +129,9 @@ class CKB(nn.Module):
                     m = torch.softmax((wsim + logocc) / tau, -1); p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta); empty = torch.softmax(-occ / tau, -1)
                     alpha = (p * m + (1 - p) * empty).unsqueeze(-1)
                 K = (1 - alpha) * K + alpha * pk.unsqueeze(1); Vm = (1 - alpha) * Vm + alpha * e[:, t].unsqueeze(1); occ = occ + alpha.squeeze(-1) * (1 - occ)
+                if UTIL:
+                    if PUREADDR == 3: slot_cut.scatter_(1, j[:, None], cutpos[:, None])
+                    cutpos = torch.where(b.squeeze(-1) > 0.5, torch.full_like(cutpos, min(t + 1, L - 1)), cutpos)
                 pk = qv; c = c * (1 - b); continue
             # write (previous chunk -> this chunk) at the boundary
             wsim = torch.einsum("bd,bmd->bm", pk, K) / math.sqrt(d); m = torch.softmax((wsim + logocc) / tau, -1)
@@ -116,6 +140,8 @@ class CKB(nn.Module):
             K = (1 - alpha) * K + alpha * pk.unsqueeze(1); Vm = (1 - alpha) * Vm + alpha * c.unsqueeze(1); occ = occ + alpha.squeeze(-1) * (1 - occ)
             pk = (1 - b) * pk + b * c; c = c * (1 - b)
         logits = torch.stack(outs, 1); bs = torch.cat(bs, 1)
+        if UTIL and self.training:
+            lp = torch.stack(logps, 1); adv = (Rw - Rw.mean()) / (Rw.std() + 1e-3); self.aux_loss = -(adv.detach() * lp).mean(); self.aux_R = Rw.mean().item()
         return (logits, bs, occ) if states else logits
 
 
@@ -215,9 +241,11 @@ def train_text(arm, d, seed, steps, B, L, log):
             tau = 0.1 ** (s / max(steps - 1, 1)); gmin = GMIN0 * (1 - s / max(steps - 1, 1)); lg, bs, _ = m(x, tau=tau, gmin=gmin, states=True)
         else:
             lg = m(x); bs = None
-        loss = ce_all(lg, x); opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
+        loss = ce_all(lg, x)
+        if BMODE == "util" and arm == "CKB": loss = loss + UTILW * m.aux_loss
+        opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
         if s % 250 == 0 or s == steps - 1:
-            log(f"  [{arm} d{d} s{seed}] step {s} ce {loss.item():.3f}" + (f" b {bs[x != 0].mean().item():.3f}" if bs is not None else "") + f" ({time.time()-t0:.0f}s)")
+            log(f"  [{arm} d{d} s{seed}] step {s} ce {loss.item():.3f}" + (f" b {bs[x != 0].mean().item():.3f}" if bs is not None else "") + (f" R {m.aux_R:.3f}" if BMODE == "util" and arm == "CKB" else "") + f" ({time.time()-t0:.0f}s)")
     return m
 
 
