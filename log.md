@@ -6195,3 +6195,25 @@ after seed 2: if flattening reproduces, (c) must restore the 32->64
 gain (d64 unseen < d32 unseen by >= .10) and stop far-OOD worsening;
 if (d) alone does the same, (c) is unnecessary and the law is the
 truncation law applied twice.
+
+C107 RESULT — seed 2 (p49_slope_s2.log). Unseen-name CE, d32 / d64:
+GRU 3.371 / 3.686; TF 3.514 / 3.385; CKB-rand 2.222 / 2.387.
+Two-seed means: GRU 3.49/3.62, TF 3.50/3.51, CKB 2.26/2.39.
+far: CKB 3.096 -> 3.300 (worsens again); GRU 3.17/3.21; TF 6.98/3.47.
+CONFIRMED NEGATIVE: the 32->64 flattening is real (both seeds d64 is
+~.15 WORSE than d32 on unseen names while fitting training better,
+1.64 vs 1.78) and far-OOD worsens with size. The gap vs controls is
+stable and large (-1.2 nats at both sizes, 2 seeds), but the
+WIDENING stops at d64. The C108 loop stands: growth feeds the slow
+weights, not the state.
+C108 — PRE-REGISTERED. Runs at d64, seed 1, same config:
+ (c) --ccred 1 : gradient into the h/head path scaled per position
+     by (1 - read confidence); state/key path unchanged.
+ (d) --hcut 0.1: random hard reset of h in training (control).
+PREDICTION: (c) d64 unseen <= 2.16 (>= .10 below the d32 mean 2.26,
+i.e. the 32->64 gain restored) AND far <= 3.10 (no worsening). If
+(d) achieves the same, (c) is unnecessary and the law is truncation
+applied to both streams. If neither moves d64, the weights absorb
+the dependency through a path other than h (e.g. E or the head's
+read weights), and the credit gate must move there — logged as such,
+not run as a sixth variant.
