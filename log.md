@@ -6233,3 +6233,19 @@ state") is therefore NOT confirmed as the cause of the flattening;
 the cause is still open. (d) --hcut 0.1 control running.
 Ledger: complementary credit by read confidence — negative, failure
 reason: the gated path carries the LM, not the shortcut.
+
+C109 — PRE-REGISTRATION (cause of the 32->64 flattening, second
+hypothesis; mechanical, not a learning idea). The hard match rule
+in the key path is "nearest stored key at L2 distance < 1.0" with
+the SAME constant at every d. State vectors scale ~sqrt(d), so at
+d64 the rule is ~1.4x stricter than at d32 and at d16 ~1.4x looser:
+d64 fragments one name over several slots (fewer matches, more
+allocations, 256 slots fill, reads miss), d16 over-merges. This
+predicts exactly the observed shape: best at d32, worse on both
+sides, train CE still improving at d64 (the LM part is fine).
+--dscale 1: threshold = 1.0 * sqrt(d/32) (identical at d32).
+PREDICTION: d64 unseen <= 2.16 (restores the 32->64 gain) and d16
+unseen > baseline 3.17 is NOT required (d16 may also improve or
+not). If d64 does not move: the match rule is not the cause; the
+remaining candidate is the fixed slot count M=256 vs d (capacity),
+which would be tested by M=512 at d64 — one run, not a series.
