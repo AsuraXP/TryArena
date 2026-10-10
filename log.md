@@ -6162,3 +6162,36 @@ seeds 2,3 at d32/d64 (does 32->64 flatten reproducibly?); then the
 far-OOD worsening — likely the d64 head learning context shortcuts
 the random names cannot block, i.e. L-COPY-NEEDS-UNMEMORIZABLE-
 TRAINING applied to contexts, not names.
+
+C108 — CANDIDATES (written while slope seed 2 runs; no run yet).
+THE LOOP behind the 32->64 flattening and the far-OOD worsening
+(if seed 2 reproduces them): the larger the slow weights, the more
+of each dependency they absorb from surface context cues; whatever
+the weights absorb is never demanded of the state; what is not
+demanded of the state is not learned there; so growth feeds the
+weights, not the core — the exact bargain the Transformer makes.
+Walked cures (dropout, weight decay, data augmentation, bigger
+data) all leave the credit flow unchanged. Candidates:
+ (a) [familiar: regularization] stronger dropout on h — KILL.
+ (b) [walked: our own] random names also for all content words —
+     KILL (same disease as C103d from the other side; destroys LM).
+ (c) [learning rule] COMPLEMENTARY CREDIT: the slow weights receive
+     gradient at a position only in proportion to how little the
+     episodic read already explained there (1 - read confidence x
+     read-gain), and the state/key path receives gradient in the
+     complementary proportion. Weights are forbidden, by credit
+     flow, to duplicate what the state can carry. Not a loss term,
+     a gate on gradient routing. Searched: CLS theory (McClelland)
+     and fast/slow-weight training (2605.12484) divide labour by
+     learning RATE or by channel, never by per-position credit
+     conditioned on the read; no match found. UNWALKED.
+ (d) [learning rule] TRUNCATE THE WEIGHTS' VIEW: like C106b cut the
+     key state, randomly cut the predictor state h in training so
+     the head cannot rely on long context either; the state (slots)
+     becomes the only long-range path. Risk: a variant of C106b on
+     the other stream; kept only as the control for (c).
+SURVIVOR: (c), with (d) as its one control. Prediction to be fixed
+after seed 2: if flattening reproduces, (c) must restore the 32->64
+gain (d64 unseen < d32 unseen by >= .10) and stop far-OOD worsening;
+if (d) alone does the same, (c) is unnecessary and the law is the
+truncation law applied twice.
