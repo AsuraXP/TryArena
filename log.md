@@ -6217,3 +6217,19 @@ applied to both streams. If neither moves d64, the weights absorb
 the dependency through a path other than h (e.g. E or the head's
 read weights), and the credit gate must move there — logged as such,
 not run as a sixth variant.
+
+C108c RESULT — FALSIFIED. d64 seed 1, --ccred 1: unseen 2.425
+(baseline d64 2.397; target <= 2.16), far 3.453 (worse), background
+CE 3.86/3.80/3.38 (baseline 2.05/1.99/1.94) and train CE rising
+2.03 -> 2.64 after step 1000 as read confidence grew. Starving the
+weights' path per position did not push the dependency into the
+state; it destroyed the language model and left the unseen-name
+number where it was. Reading: the state was ALREADY carrying the
+names at d32 (-1.2 nats vs controls); what grows at d64 is not a
+weight shortcut for names but the head's use of h for everything
+else, so gating h gradient by read confidence removes the wrong
+thing. The C108 loop statement ("growth feeds the weights, not the
+state") is therefore NOT confirmed as the cause of the flattening;
+the cause is still open. (d) --hcut 0.1 control running.
+Ledger: complementary credit by read confidence — negative, failure
+reason: the gated path carries the LM, not the shortcut.
