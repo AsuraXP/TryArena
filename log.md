@@ -6257,3 +6257,15 @@ baseline: truncating h is a mild regulariser for the LM). So neither
 the credit gate nor h-truncation restores the 32->64 gain: the
 "weights absorb the dependency" loop is NOT the cause. Ledger entry
 closed. C109 (size-free match threshold) launched, p49_c109.log.
+
+C109 RESULT — FALSIFIED. d64 --dscale 1 (threshold 1.41): unseen
+2.487 (baseline 2.397, target 2.16) — looser matching made it WORSE,
+so over-fragmentation is not the cause (if anything d64 over-merges).
+Three hypotheses on the 32->64 flattening falsified: weights absorb
+the dependency (C108c/d), match scale (C109). WALL declared on the
+map: "unseen-name gain stops at d64 — cause unknown". What is known:
+train CE improves, bg CE improves, sparse-unseen (ood) improves
+(2.53 -> 2.35), ONLY dense-unseen and far-OOD worsen. Remaining
+unrun candidate: slot capacity (M=512 at d64), launched as the last
+single-run check (p49_c110.log); after that this wall is attacked
+only from a different side (different stream or different read).
