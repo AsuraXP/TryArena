@@ -1,0 +1,11 @@
+  [CKB d64 s1] step 0 ce 5.570 b 0.101 (3s)
+  [CKB d64 s1] step 250 ce 2.052 b 0.114 (605s)
+  [CKB d64 s1] step 500 ce 1.883 b 0.092 (1199s)
+  [CKB d64 s1] step 750 ce 1.821 b 0.114 (1784s)
+  [CKB d64 s1] step 1000 ce 1.715 b 0.090 (2367s)
+  [CKB d64 s1] step 1250 ce 1.740 b 0.107 (2889s)
+  [CKB d64 s1] step 1500 ce 1.768 b 0.092 (3393s)
+  [CKB d64 s1] step 1750 ce 1.809 b 0.093 (3882s)
+  [CKB d64 s1] step 1999 ce 1.793 b 0.105 (4382s)
+[p49 CKB d64 s1] params 117514 name-CE in 2.6788 ood 2.804 far 3.2269 DENSE-unseen 2.3559 | bg 1.978 1.921 1.8874 | b sep/word 0.102/0.103
+[P49] DONE

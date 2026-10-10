@@ -6249,3 +6249,11 @@ unseen > baseline 3.17 is NOT required (d16 may also improve or
 not). If d64 does not move: the match rule is not the cause; the
 remaining candidate is the fixed slot count M=256 vs d (capacity),
 which would be tested by M=512 at d64 — one run, not a series.
+
+C108d RESULT — control, no effect on the question. d64 --hcut 0.1:
+unseen 2.356 (baseline 2.397, target 2.16 — not reached), far 3.227
+(slightly better than 3.356), bg 1.98/1.92/1.89 (better than
+baseline: truncating h is a mild regulariser for the LM). So neither
+the credit gate nor h-truncation restores the 32->64 gain: the
+"weights absorb the dependency" loop is NOT the cause. Ledger entry
+closed. C109 (size-free match threshold) launched, p49_c109.log.
