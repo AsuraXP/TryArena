@@ -45,6 +45,8 @@ PUREADDR = False   # C103b: address = softmax(k.K/tau) only (no empty branch, no
 # C103b pure content addressing = Tyulmankov et al. NeurIPS 2021 (softmax key match, slot overwrite), ALER arXiv 2610.00592 (one-slot Gumbel overwrite); here framed as a fix, not a novelty claim.
 ROLE = 0   # C103: dim of role bottleneck z = tanh(W_z h) appended to the prefix key (0 = off)   # C102: train on dense-reuse dialogues
 WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no boundary, no gate)
+CCRED = 0   # C108c complementary credit: gradient into the h/head path scaled by (1 - read confidence) per position
+HCUT = 0.0   # C108d control: random hard reset of predictor state h in training with this prob
 RANDP = 0.1   # C106b fixed reset probability
 UTILW = 1.0   # C106 weight of the boundary REINFORCE loss
 MSLOTS = 8   # C99: key = prefix state c_t, value = next byte embedding, written every step   # C98: boundary also sees the learner's own surprise -log p(x_t) and entropy H_{t-1}   # soft | st (straight-through hard boundary) | force (b=1 every token: wiring control)
@@ -95,7 +97,11 @@ class CKB(nn.Module):
             r = torch.einsum("bm,bmd->bd", a, Vm); cf = (a * occ).sum(-1, keepdim=True)
             if PKB or WKB: rl, conf = r, cf
             else: rl = (1 - b) * rl + b * r; conf = (1 - b) * conf + b * cf
-            lg = self.head(torch.cat([h, rl, conf], -1))
+            if CCRED:
+                W = self.head.weight; lg_h = h @ W[:, :d].t() + self.head.bias; lg_r = torch.cat([rl, conf], -1) @ W[:, d:].t()
+                g = conf.detach().clamp(0, 1); lg = lg_h.detach() + (lg_h - lg_h.detach()) * (1 - g) + lg_r
+            else: lg = self.head(torch.cat([h, rl, conf], -1))
+            if HCUT > 0 and self.training: h = h * (torch.rand(B, 1) > HCUT).float()
             if TIE: lg = lg + self.beta * (rl @ self.E.weight.t())
             outs.append(lg)
             if UTIL and t + 1 < L:   # reward: hard recurrence x counterfactual read gain
@@ -262,10 +268,11 @@ def boundary_profile(m, x):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
+    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
+    global CCRED, HCUT; CCRED = a.ccred; HCUT = a.hcut
     global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE, PUREADDR, RANDNAMES, TIE; ROLE = a.role; DENSE = bool(a.dense); PUREADDR = a.pure; RANDNAMES = bool(a.randnames); TIE = bool(a.tie); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
-    res = {"tag": "ARCH-VET-LM-P49", "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
+    res = {"tag": "ARCH-VET-LM-P49", "ccred": a.ccred, "hcut": a.hcut, "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
     if a.task == "synthetic":
         er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
         er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]
