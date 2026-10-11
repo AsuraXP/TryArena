@@ -6377,3 +6377,17 @@ improves 16->32 and then stops. Stated plainly: on the binding
 stream the core's law is steeper than the Transformer's on length,
 and at least parallel-and-above on OOD names; the d64 flattening
 was slot overflow (C113) and is gone with M=256.
+
+C115 — PRE-REGISTRATION: COMPOSITION ON MICRO (2-hop). Stream: K
+links "a = b" and K facts "b = v", shuffled; query "Q Q a =" must
+answer v, which is never stated next to a. This is the smallest
+instance of "answer a question nobody wrote down". The current core
+reads its memory into the HEAD only; the read value never re-enters
+the key path, so a chain cannot be followed inside the state.
+PREDICTION (negative expected): CKB 2-hop acc < .30 at every size,
+TF < .30 as well; 1-hop control unchanged (~.9). If CKB solves it
+anyway, the state already composes through h and the next mechanism
+question is moot. If not, the next mechanism (pre-registered
+separately, searched first) is read RE-ENTRY: the recalled value is
+consumed by the learner as if it were heard — through the same
+input embedding, so keys stay invariant — not a side channel.

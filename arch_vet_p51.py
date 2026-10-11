@@ -22,11 +22,27 @@ _argv = sys.argv; sys.argv = ["p49"]
 _src = open("/home/user/TryArena/arch_vet_p49.py").read().replace('if __name__ == "__main__":\n    main()', '')
 P = type(sys)("p49"); exec(compile(_src, "arch_vet_p49.py", "exec"), P.__dict__); sys.argv = _argv
 
-V = 70; PAD, DOT, QQ, EQ = 0, 1, 2, 67
+V = 70; PAD, DOT, QQ, EQ = 0, 1, 2, 67; HOP = 1
 TR = list(range(3, 51)); NM, VL = TR[:24], TR[24:]   # train: names from NM, values from VL; ood = roles swapped (embeddings seen, roles novel)
 
 
+def make_seq2(rng, K, syms, nq):
+    """2-hop: K name->name links (a = b) and K name->value facts (b = v); query 'Q Q a =' -> v (never stated)."""
+    ns, vs = (NM, VL) if syms == 'tr' else (VL, VL)
+    A = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]; Bn = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]
+    vals = [(rng.choice(vs), rng.choice(vs)) for _ in range(K)]
+    facts = [(a, b) for a, b in zip(A, Bn)] + [(b, v) for b, v in zip(Bn, vals)]; rng.shuffle(facts)
+    x = []
+    for n, v in facts: x += [n[0], n[1], EQ, v[0], v[1], DOT]
+    tgt = [0] * len(x)
+    for _ in range(nq):
+        i = rng.randrange(K); a, v = A[i], vals[i]
+        x += [QQ, QQ, a[0], a[1], EQ, v[0], v[1], DOT]; tgt += [0, 0, 0, 0, 0, 1, 1, 0]
+    return x, tgt
+
+
 def make_seq(rng, K, syms, nq):
+    if HOP == 2: return make_seq2(rng, K, syms, nq)
     ns, vs = (NM, VL) if syms == 'tr' else (VL, VL)   # ood: names made of symbols never seen as names (values unchanged)
     names = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]
     vals = [(rng.choice(vs), rng.choice(vs)) for _ in range(K)]
@@ -82,8 +98,8 @@ def main():
     ap.add_argument("--steps", type=int, default=400); ap.add_argument("--B", type=int, default=16); ap.add_argument("--K", type=int, default=6); ap.add_argument("--nq", type=int, default=4)
     ap.add_argument("--bmode", default="rand"); ap.add_argument("--randp", type=float, default=0.1); ap.add_argument("--M", type=int, default=64)
     ap.add_argument("--lowmem", type=int, default=1); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--threads", type=int, default=1)
-    ap.add_argument("--tag", default="p51"); ap.add_argument("--out", default="")
-    a = ap.parse_args(); torch.set_num_threads(a.threads)
+    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--out", default="")
+    a = ap.parse_args(); torch.set_num_threads(a.threads); global HOP; HOP = a.hop
     P.BMODE, P.RANDP, P.MSLOTS, P.LOWMEM, P.KNORM, P.DSCALE = a.bmode, a.randp, a.M, a.lowmem, a.knorm, a.dscale
     P.PKB, P.PUREADDR, P.ROLE, P.SURPRISE, P.DENSE, P.RANDNAMES = 1, 3, 4, 1, True, True
     out = open(a.out, "a") if a.out else None
