@@ -1,0 +1,33 @@
+{
+ "script": "arch_vet_p51.py",
+ "jobs": [
+  {
+   "tag": "base_s1",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3  --seeds 1 --tag base"
+  },
+  {
+   "tag": "base_s2",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3  --seeds 2 --tag base"
+  },
+  {
+   "tag": "look_s1",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --look 1 --seeds 1 --tag look"
+  },
+  {
+   "tag": "look_s2",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --look 1 --seeds 2 --tag look"
+  },
+  {
+   "tag": "inner_s1",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --seeds 1 --tag inner"
+  },
+  {
+   "tag": "inner_s2",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --seeds 2 --tag inner"
+  },
+  {
+   "tag": "tf_s1",
+   "args": "--arms TF --ds 32 --steps 1200 --hop 3 --seeds 1 --tag tf"
+  }
+ ]
+}
