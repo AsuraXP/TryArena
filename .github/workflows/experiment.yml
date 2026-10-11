@@ -1,0 +1,32 @@
+name: experiment
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "arch_vet_p51.py (micro) or arch_vet_p49.py (text)"
+        default: "arch_vet_p51.py"
+      jobs:
+        description: 'JSON list of {"tag":..., "args":...}; one runner per entry'
+        required: true
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        job: ${{ fromJSON(inputs.jobs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q torch numpy --index-url https://download.pytorch.org/whl/cpu
+      - name: run
+        run: |
+          python ${{ inputs.script }} ${{ matrix.job.args }} --threads 4 > "run_${{ matrix.job.tag }}.log" 2>&1 || true
+          tail -n 30 "run_${{ matrix.job.tag }}.log"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.job.tag }}
+          path: run_${{ matrix.job.tag }}.log
