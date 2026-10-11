@@ -1,0 +1,7 @@
+  [CKB d32 s2] step 0 loss 14.448 (1s)
+  [CKB d32 s2] step 100 loss 6.400 (81s)
+  [CKB d32 s2] step 200 loss 5.485 (160s)
+  [CKB d32 s2] step 300 loss 6.876 (239s)
+  [CKB d32 s2] step 399 loss 7.136 (317s)
+[hopx0.1 CKB d32 s2] params 29278 in 2.059/0.462 ood 2.569/0.341 len 2.368/0.358 | first-symbol acc in/ood/len 0.073/0.055/0.034 | hopw@q [0.266, 0.087, 0.343, 0.304] hopw_all [0.343, 0.145, 0.243, 0.269]
+[P51] [{"arm": "CKB", "d": 32, "seed": 2, "params": 29278, "hopw_at_q": [0.266, 0.087, 0.343, 0.304], "hopw_all": [0.343, 0.145, 0.243, 0.269], "im_loss": 0.0, "in_ce": 2.059, "in_acc": 0.462, "in_a1": 0.073, "ood_ce": 2.569, "ood_acc": 0.341, "ood_a1": 0.055, "len_ce": 2.368, "len_acc": 0.358, "len_a1": 0.034, "tag": "hopx0.1"}]
