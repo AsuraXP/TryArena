@@ -42,7 +42,29 @@ def make_seq2(rng, K, syms, nq):
     return x, tgt
 
 
+def make_seq4(rng, K, syms, nq):
+    """C122 hops in time: same facts as make_seq2; each query is either the TWO-STEP form 'Q a = b . Q b = v .' (two 1-hop reads in
+    real time, both scored) or the ONE-STEP form 'Q Q a = v .' on a DIFFERENT link (never the same i, so the one-step answer is never a
+    recency copy). Eval (MIXEVAL) is one-step only."""
+    ns, vs = (NM, VL) if syms == 'tr' else (VL, VL)
+    A = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]; Bn = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]
+    vals = [(rng.choice(vs), rng.choice(vs)) for _ in range(K)]
+    facts = [(a, b) for a, b in zip(A, Bn)] + [(b, v) for b, v in zip(Bn, vals)]; rng.shuffle(facts)
+    x = []
+    for n, v in facts: x += [n[0], n[1], EQ, v[0], v[1], DOT]
+    tgt = [0] * len(x); idx = list(range(K)); rng.shuffle(idx); two = set(idx[:K // 2]); one = [i for i in idx if i not in two]
+    for _ in range(nq):
+        if rng.random() < 0.5 or not one:
+            i = rng.choice(sorted(two)); a, b, v = A[i], Bn[i], vals[i]
+            x += [QQ, a[0], a[1], EQ, b[0], b[1], DOT, QQ, b[0], b[1], EQ, v[0], v[1], DOT]; tgt += [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 1, 2, 0]
+        else:
+            i = rng.choice(one); a, v = A[i], vals[i]
+            x += [QQ, QQ, a[0], a[1], EQ, v[0], v[1], DOT]; tgt += [0, 0, 0, 0, 0, 1, 2, 0]
+    return x, tgt
+
+
 def make_seq(rng, K, syms, nq):
+    if HOP == 4: return make_seq2(rng, K, syms, nq) if MIXEVAL else make_seq4(rng, K, syms, nq)
     if HOP == 2 or (HOP == 3 and (MIXEVAL or rng.random() < 0.5)): return make_seq2(rng, K, syms, nq)
     ns, vs = (NM, VL) if syms == 'tr' else (VL, VL)   # ood: names made of symbols never seen as names (values unchanged)
     names = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]

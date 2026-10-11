@@ -6668,3 +6668,31 @@ b then "b =" -> v, so each hop is a 1-hop read under 1-hop pressure),
 and the question is whether it then does the 2-hop query in one step
 after having done it in two — transfer across depth in time, not
 depth inside a step.
+
+C122 — PRE-REGISTRATION: HOPS IN TIME (new side: the chain is run as
+real steps, not inside one). Map: composition axis, cell "depth across
+time → depth in a step" — unwalked in our ledger; nearest prior work
+is chain-of-thought distillation / "internalising CoT" (Deng et al.
+2023 arXiv:2311.01460, 2024 arXiv:2405.14838), which removes written
+steps from a Transformer gradually; here nothing is removed and no
+step is written at query time — the stream simply contains both
+forms on DISJOINT links and the question is transfer. LOOP: the inner
+chain gc(read, c) must produce the key the heard path would produce,
+but it only ever sees gradient through the final answer (C116–C121).
+REMOVAL: in the two-step form the learner emits b and then HEARS b,
+so the heard path for "a → b → read" is trained directly under 1-hop
+pressure; the inner chain performs the identical operation (gc on the
+recalled b-embedding), so its key is now trained by the heard path,
+and the one-step form only has to route through it. Candidates
+killed: (a) CoT-distillation schedule — walked, Transformer-specific;
+(b) same-link two-step then one-step — recency copy, oracle-like;
+(c) auxiliary loss tying inner key to heard key — that is C117,
+banked negative. Survivor: disjoint-link transfer (--hop 4). Runs on
+Actions: base vs inner3, d32, 400 steps, seeds 1,2; eval one-step
+2-hop only. PREDICTION: inner3 one-step first-symbol >= .55 (C119
+.44/.46 under mixed pressure) and base <= .35. Falsified if inner3
+<= .50: then the inner chain is not the heard path even when the
+heard path is trained, and the whole "recalled token re-enters the
+state" family is closed (wall from four sides) — composition must
+then come from the representation (keys that already contain their
+successor), not from reading twice.
