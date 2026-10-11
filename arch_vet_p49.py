@@ -149,7 +149,10 @@ class CKB(nn.Module):
                 if REPOSE:   # C123b fresh track: blank state consumes the recalled tokens, then the learned query shape; read with that key
                     cq = torch.zeros(B, d)
                     for _k in range(INNER):
-                        cq = self.gc(rs[_k], cq); qq = self.gc(self.qshape.unsqueeze(0).expand(B, d), cq)
+                        rin = rs[_k]
+                        if REPOSE == 2:   # C123c: sharp recalled token — snap the soft read to its nearest embedding (straight-through)
+                            idx = torch.cdist(rin.unsqueeze(1), self.E.weight.unsqueeze(0)).squeeze(1).argmin(-1); rin = rin + (self.E.weight[idx] - rin).detach()
+                        cq = self.gc(rin, cq); qq = self.gc(self.qshape.unsqueeze(0).expand(B, d), cq)
                         if KNORM: qq = F.normalize(qq, dim=-1) * 4.0
                         sq = -torch.cdist(qq.unsqueeze(1), K[:, :, :d]).squeeze(1); aq = torch.softmax(sq / tau + logocc, -1)
                         rs.append(torch.einsum("bm,bmd->bd", aq, Vm)); cfs.append((aq * occ).sum(-1, keepdim=True)); ahs.append(aq.argmax(-1))

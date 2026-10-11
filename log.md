@@ -6776,3 +6776,20 @@ recalled tokens (hop index 5) lands on b_v0 > .4; 2-hop first-symbol
 >= .60 at d32 (ceiling .45; 1-hop ceiling .87); d64 >= d32. Falsified
 if first-symbol <= .50 or h5_b_v0 < .2. Runs: inner3 repose1 hop3,
 d32 and d64, 400 steps, seeds 1,2 (Actions).
+
+C123b — RESULT (Actions 38153133040): FALSIFIED. Re-posed reads land
+on b_v0 0.0/0.0 at every depth (h4,h5,h6), gate gives them ≤.004;
+first-symbol .424/.451 (d32) .443/.456 (d64) — the ceiling, unmoved.
+Falsifying read: the fresh track consumed SOFT reads (blends over
+slots, .84 on the right slot but a blend), so the prefix it builds is
+off the manifold of heard prefixes and the key it mints matches
+nothing. That is a mechanism defect in the re-pose, not in the idea
+— one argued control before closing: C123c, recalled tokens snapped
+to the nearest embedding (straight-through) before entering the fresh
+track (--repose 2), so the fresh prefix is built from exact heard
+symbols. PREDICTION unchanged (h5_b_v0 > .4, first-symbol >= .60).
+If it still lands at 0 the fresh-track key differs from the heard
+key for a reason other than input sharpness (e.g. the boundary
+reset is partial, so heard fact-start states are not blank) and the
+re-pose family is closed; the next side is the WRITE: write each
+fact also under a blank-start key so a re-posed prefix can match.
