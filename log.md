@@ -6793,3 +6793,22 @@ key for a reason other than input sharpness (e.g. the boundary
 reset is partial, so heard fact-start states are not blank) and the
 re-pose family is closed; the next side is the WRITE: write each
 fact also under a blank-start key so a re-posed prefix can match.
+
+C123c — RESULT (Actions 38154256544): FALSIFIED. Sharp (snapped)
+recalled tokens into the fresh track: re-posed reads still land on
+b_v0 0.0/0.0; first-symbol .448/.448. The fresh-from-zero prefix
+"b0 b1 <shape>" does not match the heard key for "b0 b1 =" even with
+exact symbols, so the mismatch is on the HEARD side: fact-start
+states are not blank (the learned boundary reset at DOT is partial,
+and the key carries the previous fact's residue), and/or the shape
+vector cannot stand in for EQ consumed from that residue. RE-POSE
+family closed ([F] soft, [F] sharp). What remains true from C123a:
+composition on this memory needs a key that the READ side can
+reconstruct from recalled symbols alone; the current write side keys
+facts by a context-laden prefix state that nothing but the stream
+itself can reproduce. Next side (write): each slot ALSO keyed by a
+context-free prefix (blank-start run over the current unit's tokens)
+so a re-posed prefix can match — the learner's own second key, not a
+given one. Pre-registration next cycle after the usual gates; the
+C123 harness (hopland) is the acceptance measure: h5_b_v0 must move
+off 0 before any accuracy number is read.

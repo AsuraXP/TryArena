@@ -392,3 +392,6 @@ Composition loop touched from wiring [W], pressure [F: one step then plateau .46
 
 ## State after C122
 WALL declared on "recalled token re-enters state" (C116–C122), ceiling .45 under every pressure/rule. Hypothesised loop: key ambiguity (b appears as value in a-fact and as name in b-fact; keys are state-typed). Next: (1) diagnostic — in p49 inner path, record hop-1 attention mass on the slot written at the b-fact vs the a-fact for 2-hop queries (needs slot provenance from p51's make_seq2: fact order is shuffled, so tag slots by write position); (2) if ≈50/50 → C123 role-typed keys (address = state ⊕ role-of-position; role learned, not given). Actions for all runs.
+
+## State after C123
+Harness: `--inner S` reports `hopland` (hop-k landing on a_b0/a_b1/a_dot/b_v0 slots) — use it as the acceptance measure for any composition mechanism; `--repose {1,2}` fresh re-pose track (closed, [F]). Finding: the chain chases continuation; re-posed fresh prefixes never match heard keys because heard fact-start states are not blank. Next: write side — a second, context-free key per slot (blank-start run over the unit's own tokens), learned, so that a recalled prefix can address it. Measure h5_b_v0 first.
