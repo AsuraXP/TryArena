@@ -115,6 +115,25 @@ def run(arm, d, seed, steps, B, K, nq, log):
                 x, mk = batch(er, 16, kk, syms, nq); lg = fwd(m, arm, x, 0.1); ce, ac, a1 = q_metrics(lg, x, mk); ces.append(ce); accs.append(ac); a1s.append(a1)
             if arm == "CKB" and P.LOOK and nm == "in":
                 W = torch.stack(m._w2, 1); qpos = mk[:, 1:] == 1; res["hop2w_at_q"] = [round(v, 3) for v in W[:, :-1][qpos].mean(0).tolist()]; res["hop2w_all"] = [round(v, 3) for v in W.mean((0, 1)).tolist()]
+            if arm == "CKB" and P.INNER and nm == "in" and HOP in (2, 3, 4) and m._jw:   # C123 diagnostic: where does each hop land?
+                AH = torch.stack(m._ah, 1); JW = torch.stack(m._jw, 1); xs = x.tolist(); hits = {}
+                for bb in range(x.shape[0]):
+                    s = xs[bb]; nf = next((i for i, v in enumerate(s) if v == QQ), len(s)) // 6
+                    facts = {(s[6 * f], s[6 * f + 1]): f for f in range(nf)}
+                    t = nf * 6
+                    while t + 7 < len(s):
+                        if s[t] == QQ and s[t + 1] == QQ:
+                            a = (s[t + 2], s[t + 3]); tq = t + 4
+                            if a in facts:
+                                fa = facts[a]; b = (s[6 * fa + 3], s[6 * fa + 4])
+                                if b in facts:
+                                    fb = facts[b]; want = {"a_b0": 6 * fa + 3, "a_b1": 6 * fa + 4, "a_dot": 6 * fa + 5, "b_v0": 6 * fb + 3}
+                                    for hk in range(AH.shape[2]):
+                                        for nmk, tw in want.items():
+                                            key = (hk, nmk); hits.setdefault(key, [0, 0]); hits[key][1] += 1; hits[key][0] += int(AH[bb, tq, hk] == JW[bb, tw])
+                            t += 8
+                        else: t += 7
+                res["hopland"] = {f"h{k}_{n}": round(v[0] / max(v[1], 1), 3) for (k, n), v in sorted(hits.items())}
             if arm == "CKB" and P.INNER and nm == "in":
                 W = torch.stack(m._w, 1); qpos = mk[:, 1:] == 1; res["hopw_at_q"] = [round(v, 3) for v in W[:, :-1][qpos].mean(0).tolist()]; res["hopw_all"] = [round(v, 3) for v in W.mean((0, 1)).tolist()]; res["im_loss"] = round(float(m.im_loss), 4)
             res[nm + "_ce"] = round(sum(ces) / 6, 3); res[nm + "_acc"] = round(sum(accs) / 6, 3); res[nm + "_a1"] = round(sum(a1s) / 6, 3)

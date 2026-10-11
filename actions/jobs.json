@@ -2,21 +2,13 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "base4_s1",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 4  --seeds 1 --tag base4"
+   "tag": "diag_s1",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --seeds 1 --tag diag"
   },
   {
-   "tag": "base4_s2",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 4  --seeds 2 --tag base4"
-  },
-  {
-   "tag": "inner4_s1",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 4 --inner 3 --seeds 1 --tag inner4"
-  },
-  {
-   "tag": "inner4_s2",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 4 --inner 3 --seeds 2 --tag inner4"
+   "tag": "diag_s2",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --seeds 2 --tag diag"
   }
  ],
- "nonce": 1791725231
+ "nonce": 1791733476
 }

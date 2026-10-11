@@ -101,7 +101,7 @@ class CKB(nn.Module):
         dk = d + ROLE; K = self.K0[:M].unsqueeze(0).expand(B, M, dk).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M); pk = torch.zeros(B, dk); usage = torch.zeros(B, M)
         outs, bs = [], []; surp = torch.zeros(B, 2)
         UTIL = BMODE == "util"; cutpos = torch.zeros(B, dtype=torch.long); slot_cut = torch.zeros(B, M, dtype=torch.long); Rw = torch.zeros(B, L); logps = []
-        im_loss = torch.zeros(()); hx_loss = torch.zeros(()); r0_prev = None; c_prev = None; self._w = []; V2 = torch.zeros(B, M, d); jhist = []; self._w2 = []
+        im_loss = torch.zeros(()); hx_loss = torch.zeros(()); r0_prev = None; c_prev = None; self._w = []; self._ah = []; self._jw = []; V2 = torch.zeros(B, M, d); jhist = []; self._w2 = []
         for t in range(L):
             c_prev = c; h = self.gh(e[:, t], h); c = self.gc(e[:, t], c)
             if IMCONS and r0_prev is not None and self.training:
@@ -134,13 +134,13 @@ class CKB(nn.Module):
                 w2 = torch.softmax(self.hop2(h), -1); self._w2.append(w2.detach())
                 r = sum(w2[:, k:k + 1] * rs2[k] for k in range(LOOKH + 1)); cf = sum(w2[:, k:k + 1] * cfs2[k] for k in range(LOOKH + 1))
             if INNER and PUREADDR == 3:   # C116 inner recall: imagine the recalled token, read again (S hops); learner mixes hops
-                rs, cfs, cs, rk = [r], [cf], c, r
+                rs, cfs, cs, rk = [r], [cf], c, r; ahs = [a.argmax(-1)]
                 for _k in range(INNER):
                     cs = self.gc(rk, cs); qs = cs
                     if KNORM: qs = F.normalize(qs, dim=-1) * 4.0
                     sk = -torch.cdist(qs.unsqueeze(1), K[:, :, :d]).squeeze(1); ak = torch.softmax(sk / tau + logocc, -1)
-                    rk = torch.einsum("bm,bmd->bd", ak, Vm); rs.append(rk); cfs.append((ak * occ).sum(-1, keepdim=True))
-                w = torch.softmax(self.hopw(h), -1); self._w.append(w.detach())
+                    rk = torch.einsum("bm,bmd->bd", ak, Vm); rs.append(rk); cfs.append((ak * occ).sum(-1, keepdim=True)); ahs.append(ak.argmax(-1))
+                w = torch.softmax(self.hopw(h), -1); self._w.append(w.detach()); self._ah.append(torch.stack(ahs, 1))
                 if HOPX > 0:   # C121 hard hop choice with exploration; gate trained toward the per-hop-CE winner
                     nh = INNER + 1; j = w.argmax(-1)
                     if self.training:
@@ -195,7 +195,7 @@ class CKB(nn.Module):
                     m = torch.softmax((wsim + logocc) / tau, -1); p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta); empty = torch.softmax(-occ / tau, -1)
                     alpha = (p * m + (1 - p) * empty).unsqueeze(-1)
                 if LOWMEM and PUREADDR == 3:   # hard row write: O(B d) saved per step instead of O(B M d); no ST address gradient
-                    bi = torch.arange(B); K = K.clone(); K[bi, j] = pk; Vm = Vm.clone(); Vm[bi, j] = e[:, t]; occ = occ + hard * (1 - occ)
+                    bi = torch.arange(B); self._jw.append(j); K = K.clone(); K[bi, j] = pk; Vm = Vm.clone(); Vm[bi, j] = e[:, t]; occ = occ + hard * (1 - occ)
                     if LOOK:
                         jhist.append(j)
                         if len(jhist) > LOOK: jo = jhist.pop(0); V2 = V2.clone(); V2[bi, jo] = qv[:, :d]

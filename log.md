@@ -6723,3 +6723,25 @@ the b-as-name slot. Pre-registered as C123 after a one-run DIAGNOSTIC
 split ≈ 50/50 to license the mechanism; if hop 1 already lands on the
 b-fact slot, the ceiling is elsewhere and the role idea is dead
 before it is built.
+
+C123a — DIAGNOSTIC (pre-registered). Paper walk of the inner chain
+on the 2-hop stream, done before measuring: a slot stores (state
+before token t) -> token t. At query "QQ QQ a0 a1 =" hop 0 should
+land on the a-fact slot written at b0 (key = state "a0 a1 ="). Hop 1
+consumes the recalled b0 WITHOUT resetting state, so its key is the
+state "a0 a1 = b0" — that is the a-fact slot of b1, the CONTINUATION
+of the first fact, not the b-fact. Hop 2 consumes b1 -> key = state
+"a0 a1 = b0 b1" -> the a-fact DOT slot. Hop 3 consumes DOT -> state
+resets -> nowhere. The chain can never form the key "b0 b1 =" that
+the b-fact's v0 slot carries, because that key needs a FRESH prefix
+state over the recalled tokens plus the query shape, and no hop ever
+re-poses. If this is right the .45 ceiling is not a 50/50 ambiguity
+(C122 hypothesis, withdrawn on paper) but hop 0 getting the answer
+whenever the blend of continuation reads happens to help, and the
+new mechanism must RE-POSE: a second, fresh state track that consumes
+the recalled tokens and then a learned query-shape vector, and reads
+with THAT key. PREDICTION (measured: fraction of 2-hop queries where
+hop k's attention argmax equals the slot written at a given stream
+position; trained inner3 d32 hop3 400 steps, Actions): h1 lands on
+a_b1 > .4 and on b_v0 < .15; h2 on a_dot > .3. Falsified if h1 lands
+on b_v0 > .3 (then the key is formed and the loss is downstream).
