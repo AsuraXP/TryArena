@@ -386,3 +386,6 @@ State of the core: `arch_vet_p47.py` SBC (slot-binding core) is the first core-l
 
 ## State after C120
 Composition wall: wiring [W] (C116–118), pressure [P then F] (C119: +.17, C120: plateau .46, no slope). Next = learning-rule side, C121: local per-hop target in p51 `--inner` path (score hop k's read against the binding the correct chain passes through; stop-grad on the target). Run on Actions (edit actions/jobs.json, push). Standing prompt is clean (STANDING_PROMPT.md).
+
+## State after C121
+Composition loop touched from wiring [W], pressure [F: one step then plateau .46], credit [F: C121 below base]. Next = hops in time: a stream where the 2-hop query is first posed as two consecutive 1-hop queries ("Q a =" -> b, "Q b =" -> v) and later as the one-step "QQ a ="; measure whether the one-step form improves after the two-step form was learned (transfer across depth). Needs a `--hop 4` stream in p51. Run on Actions.

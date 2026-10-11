@@ -6643,3 +6643,28 @@ PREDICTION: hopw@q becomes non-degenerate (hops 1 or 2 > .15) AND
 first-symbol <= .50 at both HOPX; then the depth gate is not the
 bottleneck and the chain itself (gc re-consuming its read) is, which
 sends the attack to hops-in-time.
+
+C121 — RESULT (Actions 38141456502): FALSIFIED, and below base.
+2-hop first-symbol d32 400 steps:
+  hopx 0.3  .232/.161/.143  .208/.169/.148   hopw@q [.66,.07,.11,.16] [.55,.11,.16,.18]
+  hopx 0.1  .229/.208/.133  .073/.055/.034   hopw@q [.46,.10,.22,.23] [.27,.09,.34,.30]
+  (base .26–.29; soft inner3 .44–.46)
+The gate did become non-degenerate (first half of the prediction
+met) and it did NOT help: accuracy fell to base or below. Reading:
+the per-hop-CE argmin is noisy per position, the gate follows the
+noise, and the hard choice throws away what the soft mixture was
+actually doing — the [.4 hop0 + .6 hop3] blend IS the useful
+computation (a fixed linear blend of a shallow and a deep read), not
+a choice between hops. Giving each hop its own gradient did not make
+any hop a good intermediate. Conclusion (as pre-registered): the depth
+GATE is not the bottleneck; the chain is — gc re-consuming its own
+read never produces a key that lands on the second fact (the C117
+imagination-consistency negative said the same from the other side).
+Three sides now touched on this loop: wiring [W], pressure [F after
+one step], credit [F]. Next and last in-step side is none; the attack
+moves to HOPS IN TIME: the learner carries the recalled intermediate
+in its own state across REAL steps (the stream itself asks "a =" ->
+b then "b =" -> v, so each hop is a 1-hop read under 1-hop pressure),
+and the question is whether it then does the 2-hop query in one step
+after having done it in two — transfer across depth in time, not
+depth inside a step.
