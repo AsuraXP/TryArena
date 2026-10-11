@@ -60,6 +60,12 @@ WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no 
 IMCONS = 0.0   # C117: imagination-consistency weight — gc(read_{t-1}, c_{t-1}) must land on the heard state c_t (self-target, no supervision)
 LOOKH = 3   # C118 number of chained look-ahead hops
 LOOK = 0   # C118: look-ahead values — each slot also stores the learner's own key-state LOOK steps after the write (delayed write from heard data); hop 2 = ordinary read with the recalled key
+HOPX = 0.0   # C121: hop-exploration credit. Loop: read-space hop mixture gives hop k gradient ∝ w_k; w_k≈0 ⇒ no gradient ⇒ w_k stays 0 (rich-get-richer in the
+# hop gate), so intermediate hops never learn to be good intermediates (C116–C120, weights frozen [.4,0,0,.6]). Removal (learning rule, not wiring): HARD hop
+# choice per position; with prob HOPX the hop is drawn uniformly (exploration), else the gate's argmax; the chosen hop alone feeds the head, so each hop gets
+# the FULL CE gradient on its own path whenever drawn; the gate is trained separately toward the hop with the lowest per-hop CE (detached target).
+# Related but different: ε-greedy / noisy-top-k expert routing (Shazeer et al. 2017 arXiv:1701.06538) adds noise to a soft gate for load balance; expert-
+# choice routing (Zhou et al. 2022 arXiv:2202.09368) routes tokens by expert; neither trains a gate on a per-expert loss oracle over READ DEPTH in a memory.
 INNER = 0   # C116: inner recall — the state re-consumes its own read (a next-token embedding) through gc, reads again, S times; learned hop mixture
 LOWMEM = 0   # hard index write (memory O(B d)/step); drops the straight-through address gradient
 KNORM = 0   # C111: size-free keys — the c-part of query and stored keys is L2-normalised to norm 4 before distance match/read
@@ -95,7 +101,7 @@ class CKB(nn.Module):
         dk = d + ROLE; K = self.K0[:M].unsqueeze(0).expand(B, M, dk).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M); pk = torch.zeros(B, dk); usage = torch.zeros(B, M)
         outs, bs = [], []; surp = torch.zeros(B, 2)
         UTIL = BMODE == "util"; cutpos = torch.zeros(B, dtype=torch.long); slot_cut = torch.zeros(B, M, dtype=torch.long); Rw = torch.zeros(B, L); logps = []
-        im_loss = torch.zeros(()); r0_prev = None; c_prev = None; self._w = []; V2 = torch.zeros(B, M, d); jhist = []; self._w2 = []
+        im_loss = torch.zeros(()); hx_loss = torch.zeros(()); r0_prev = None; c_prev = None; self._w = []; V2 = torch.zeros(B, M, d); jhist = []; self._w2 = []
         for t in range(L):
             c_prev = c; h = self.gh(e[:, t], h); c = self.gc(e[:, t], c)
             if IMCONS and r0_prev is not None and self.training:
@@ -135,7 +141,18 @@ class CKB(nn.Module):
                     sk = -torch.cdist(qs.unsqueeze(1), K[:, :, :d]).squeeze(1); ak = torch.softmax(sk / tau + logocc, -1)
                     rk = torch.einsum("bm,bmd->bd", ak, Vm); rs.append(rk); cfs.append((ak * occ).sum(-1, keepdim=True))
                 w = torch.softmax(self.hopw(h), -1); self._w.append(w.detach())
-                r = sum(w[:, k:k + 1] * rs[k] for k in range(INNER + 1)); cf = sum(w[:, k:k + 1] * cfs[k] for k in range(INNER + 1))
+                if HOPX > 0:   # C121 hard hop choice with exploration; gate trained toward the per-hop-CE winner
+                    nh = INNER + 1; j = w.argmax(-1)
+                    if self.training:
+                        ex = torch.rand(B) < HOPX; j = torch.where(ex, torch.randint(0, nh, (B,)), j)
+                        if t + 1 < L:
+                            with torch.no_grad():
+                                y = x[:, t + 1]; ces = torch.stack([F.cross_entropy(self.head(torch.cat([h, rs[k], cfs[k]], -1)), y, reduction="none") for k in range(nh)], 1)
+                            hx_loss = hx_loss + F.cross_entropy(self.hopw(h), ces.argmin(-1)) / L
+                    oh = F.one_hot(j, nh).float()
+                    r = sum(oh[:, k:k + 1] * rs[k] for k in range(nh)); cf = sum(oh[:, k:k + 1] * cfs[k] for k in range(nh))
+                else:
+                    r = sum(w[:, k:k + 1] * rs[k] for k in range(INNER + 1)); cf = sum(w[:, k:k + 1] * cfs[k] for k in range(INNER + 1))
             if PKB or WKB: rl, conf = r, cf
             else: rl = (1 - b) * rl + b * r; conf = (1 - b) * conf + b * cf
             if CCRED:
@@ -194,7 +211,7 @@ class CKB(nn.Module):
             alpha = (b * (p * m + (1 - p) * empty)).unsqueeze(-1)
             K = (1 - alpha) * K + alpha * pk.unsqueeze(1); Vm = (1 - alpha) * Vm + alpha * c.unsqueeze(1); occ = occ + alpha.squeeze(-1) * (1 - occ)
             pk = (1 - b) * pk + b * c; c = c * (1 - b)
-        logits = torch.stack(outs, 1); bs = torch.cat(bs, 1); self.im_loss = im_loss
+        logits = torch.stack(outs, 1); bs = torch.cat(bs, 1); self.im_loss = im_loss; self.hx_loss = hx_loss
         if UTIL and self.training:
             lp = torch.stack(logps, 1); adv = (Rw - Rw.mean()) / (Rw.std() + 1e-3); self.aux_loss = -(adv.detach() * lp).mean(); self.aux_R = Rw.mean().item()
         return (logits, bs, occ) if states else logits

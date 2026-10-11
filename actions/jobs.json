@@ -2,41 +2,21 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "base_d32_s1",
-   "args": "--arms CKB --steps 800 --M 256 --hop 3 --ds 32  --seeds 1 --tag base"
+   "tag": "hopx3_s1",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --hopx 0.3 --seeds 1 --tag hopx0.3"
   },
   {
-   "tag": "base_d32_s2",
-   "args": "--arms CKB --steps 800 --M 256 --hop 3 --ds 32  --seeds 2 --tag base"
+   "tag": "hopx3_s2",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --hopx 0.3 --seeds 2 --tag hopx0.3"
   },
   {
-   "tag": "base_d64_s1",
-   "args": "--arms CKB --steps 800 --M 256 --hop 3 --ds 64  --seeds 1 --tag base"
+   "tag": "hopx1_s1",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --hopx 0.1 --seeds 1 --tag hopx0.1"
   },
   {
-   "tag": "base_d64_s2",
-   "args": "--arms CKB --steps 800 --M 256 --hop 3 --ds 64  --seeds 2 --tag base"
-  },
-  {
-   "tag": "inner_d32_s1",
-   "args": "--arms CKB --steps 800 --M 256 --hop 3 --ds 32 --inner 3 --seeds 1 --tag inner"
-  },
-  {
-   "tag": "inner_d32_s2",
-   "args": "--arms CKB --steps 800 --M 256 --hop 3 --ds 32 --inner 3 --seeds 2 --tag inner"
-  },
-  {
-   "tag": "inner_d64_s1",
-   "args": "--arms CKB --steps 800 --M 256 --hop 3 --ds 64 --inner 3 --seeds 1 --tag inner"
-  },
-  {
-   "tag": "inner_d64_s2",
-   "args": "--arms CKB --steps 800 --M 256 --hop 3 --ds 64 --inner 3 --seeds 2 --tag inner"
-  },
-  {
-   "tag": "tf_d64_s1",
-   "args": "--arms TF --ds 64 --steps 2400 --hop 3 --seeds 1 --tag tf"
+   "tag": "hopx1_s2",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --hopx 0.1 --seeds 2 --tag hopx0.1"
   }
  ],
- "nonce": 1791722258
+ "nonce": 1791723625
 }

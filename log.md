@@ -6618,3 +6618,28 @@ the LEARNING RULE: a local target per hop (hop k's output is scored
 against the key that hop k+1 actually used on the correct path, or
 against the stored binding's value), so an intermediate read gets
 gradient of its own. That is next (C121), micro first, on Actions.
+
+C121 — PRE-REGISTRATION: HOP-EXPLORATION CREDIT (learning-rule side
+of the composition wall; third side after wiring [W] and pressure
+[F]). Candidates considered: (a) oracle slot target per hop — oracle,
+control only, rejected; (b) attention-entropy sharpening per hop —
+familiar regulariser, nudges one side, rejected; (c) probability-space
+hop mixture (MoE likelihood) — responsibility still ∝ w_k, same
+disease, rejected on paper; (d) hard hop choice with ε-exploration +
+gate trained toward the per-hop-CE winner — survivor. LOOP: in a
+read-space mixture the gradient to hop k is ∝ w_k, w_k≈0 ⇒ no
+gradient ⇒ w_k stays 0; C116–C120 all show weights frozen at
+[.4,0,0,.6]. REMOVAL: with prob HOPX a position's hop is drawn
+uniformly and that hop alone feeds the head, so every hop receives
+full CE gradient on its own path regardless of the gate; the gate
+learns from a detached per-hop-CE argmin, so it can only follow hop
+quality, never starve it. Novelty: noisy-top-k routing (Shazeer 2017)
+and expert-choice (Zhou 2022) perturb a soft gate for load balance
+across experts; none trains a depth gate from per-depth loss in a
+memory reader. Runs (Actions): --hop 3 --inner 3 --hopx {0.3, 0.1},
+d32, 400 steps, seeds 1,2; control inner3 hopx 0 from C119.
+PREDICTION: hopw@q becomes non-degenerate (hops 1 or 2 > .15) AND
+2-hop first-symbol >= .55 (C119/120 plateau .44–.47). Falsified if
+first-symbol <= .50 at both HOPX; then the depth gate is not the
+bottleneck and the chain itself (gc re-consuming its read) is, which
+sends the attack to hops-in-time.
