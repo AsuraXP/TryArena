@@ -6459,3 +6459,27 @@ solved by capacity; text — open, four causes falsified (ccred,
 hcut, dscale/knorm, capacity). Next attack on text must come from
 the read side with FORGETTING of stale slots (occupancy decay), a
 different side from all four — pre-register before running.
+
+C117 — PRE-REGISTRATION: IMAGINATION CONSISTENCY (learning rule).
+LOOP (from C116): imagined reads are noisy until hops are used; hops
+are not used while imagined reads are noisy. WHY THIS REMOVES IT:
+the imagined path gc(read, state) can be trained on HEARD data alone
+— at every position the learner already has the heard next state
+c_t and its own hop-0 read r_{t-1} that predicted that token; the
+self-target ||gc(r_{t-1}, c_{t-1}) - c_t||^2 teaches the recurrence
+to land on the heard state when fed a recalled token, using the
+1-hop reads that already work (.9). No hop is ever supervised, no
+oracle; the hop mixture then sees clean imagined states from step
+one, so the bootstrap no longer depends on itself. This changes how
+credit flows (a self-consistency target computed by the learner
+from its own states), not the wiring. Searched: self-consistent
+latent world models (MuZero/SC-Direct) impose state consistency in
+RL rollouts; no instance of recurrence consistency between heard
+and recalled input for an episodic slot memory in a language
+learner. --imcons 1 --inner 3.
+PREDICTION (micro, d32, M=256, 400 steps): 2-hop first-symbol acc
+>= .55 in and >= .40 len (baseline .255/.138; inner alone .258);
+1-hop in acc >= .85. If < .35: the imagined state lands on the
+heard state but the mixture still never chooses hops -> the
+mixture, not the imagination, is the loop; attack it next from the
+credit side (not by forcing hops).
