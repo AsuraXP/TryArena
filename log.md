@@ -6535,3 +6535,25 @@ hops >= 2. If first-symbol < .35 with hop weights on hops >= 2: the
 recalled states do not match stored keys (invariance insufficient
 between '=' and '.' contexts) — then the next question is key
 invariance, not composition machinery. 
+
+C118 RESULT — FALSIFIED. look 1, 3 chained hops, d32: 2-hop first-
+symbol .268 in / .214 ood / .156 len (baseline .255/.211/.138).
+1-hop control intact (.897 in, .853 len; first-symbol .867). Hop
+weights at query positions: hop0 .42, hop1 .37, hop2 .11, hop3 .10
+— the learner uses ONE look-ahead hop (which cannot reach v) and
+never the deeper ones; CE never rewarded them, so whether recalled
+states match stored keys at depth 2–3 remains unmeasured (the pre-
+registered "else" branch). WALL DECLARED: "multi-hop inside one
+step" — three attacks from this side (inner recall C116,
+imagination consistency C117, look-ahead key-typed values C118),
+all flat at ~.26. Loop as now understood: a chain of k soft reads
+only pays off when all k are right; CE gives no gradient to a hop
+whose predecessors are wrong; so depth never bootstraps inside a
+single step whatever is stored. Sides not yet tried: (1) hops in
+TIME — the learner gets real steps between question and answer and
+must use its own state (not its output) across them; (2) a
+learning rule that rewards a hop by the correctness of the NEXT
+hop's match (local, not end-to-end CE); (3) curriculum-free depth:
+train on 1-hop and 2-hop mixed so hop-1 reads are correct before
+depth is demanded — this one is a pressure change and is the
+cheapest; it is pre-registered next, not run blind.
