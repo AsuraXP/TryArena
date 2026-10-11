@@ -389,3 +389,6 @@ Composition wall: wiring [W] (C116–118), pressure [P then F] (C119: +.17, C120
 
 ## State after C121
 Composition loop touched from wiring [W], pressure [F: one step then plateau .46], credit [F: C121 below base]. Next = hops in time: a stream where the 2-hop query is first posed as two consecutive 1-hop queries ("Q a =" -> b, "Q b =" -> v) and later as the one-step "QQ a ="; measure whether the one-step form improves after the two-step form was learned (transfer across depth). Needs a `--hop 4` stream in p51. Run on Actions.
+
+## State after C122
+WALL declared on "recalled token re-enters state" (C116–C122), ceiling .45 under every pressure/rule. Hypothesised loop: key ambiguity (b appears as value in a-fact and as name in b-fact; keys are state-typed). Next: (1) diagnostic — in p49 inner path, record hop-1 attention mass on the slot written at the b-fact vs the a-fact for 2-hop queries (needs slot provenance from p51's make_seq2: fact order is shuffled, so tag slots by write position); (2) if ≈50/50 → C123 role-typed keys (address = state ⊕ role-of-position; role learned, not given). Actions for all runs.

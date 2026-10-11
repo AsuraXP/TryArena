@@ -6696,3 +6696,30 @@ heard path is trained, and the whole "recalled token re-enters the
 state" family is closed (wall from four sides) — composition must
 then come from the representation (keys that already contain their
 successor), not from reading twice.
+
+C122 — RESULT (Actions 38143227498): FALSIFIED.
+  base4   one-step 2-hop first-symbol .247/.185/.133  .258/.185/.138
+  inner4                                .448/.354/.323  .456/.284/.307   hopw@q [.51,0,0,.47] [.41,0,0,.55]
+Training the heard path a→b→read directly (two-step form, 1-hop
+pressure, scored) moves the one-step form NOT AT ALL relative to
+mixed pressure (C119 .440/.458, C120 .445–.474). Same plateau, same
+frozen hop weights. Four pressures/rules (2-hop only, mixed, credit,
+hops in time) all land at .45±.02 — that is not a learning failure
+curve, it is a CEILING of the mechanism. WALL from four sides:
+"recalled token re-enters the state and reads again" (C116 wiring,
+C118 look-ahead values, C119/120 pressure, C121 credit, C122 time).
+Written to the map. What the ceiling says: with ~half the 2-hop
+queries right regardless of how the chain is trained, the recalled
+key is ambiguous between two stored slots — the C118 paper walk
+already found it: the state after "b0 b1" occurs in BOTH facts
+(as the name of the b-fact and as the value of the a-fact), and
+keys are state-typed, so a recalled b lands on either with equal
+right. The chain is fine; the REPRESENTATION of the key does not
+separate "b as a name" from "b as a value". That is where
+composition must come from next: keys that carry ROLE (name-side vs
+value-side) as part of the address, so the recalled b addresses only
+the b-as-name slot. Pre-registered as C123 after a one-run DIAGNOSTIC
+(attention mass of hop 1 on b-fact vs a-fact slot) that must show the
+split ≈ 50/50 to license the mechanism; if hop 1 already lands on the
+b-fact slot, the ceiling is elsewhere and the role idea is dead
+before it is built.
