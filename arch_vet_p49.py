@@ -45,6 +45,7 @@ PUREADDR = False   # C103b: address = softmax(k.K/tau) only (no empty branch, no
 # C103b pure content addressing = Tyulmankov et al. NeurIPS 2021 (softmax key match, slot overwrite), ALER arXiv 2610.00592 (one-slot Gumbel overwrite); here framed as a fix, not a novelty claim.
 ROLE = 0   # C103: dim of role bottleneck z = tanh(W_z h) appended to the prefix key (0 = off)   # C102: train on dense-reuse dialogues
 WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no boundary, no gate)
+KNORM = 0   # C111: size-free keys — the c-part of query and stored keys is L2-normalised to norm 4 before distance match/read
 DSCALE = 0   # C109: scale the hard-match threshold with sqrt(d/32) so the state keys' match rule is size-free
 MTHR = 1.0
 CCRED = 0   # C108c complementary credit: gradient into the h/head path scaled by (1 - read confidence) per position
@@ -94,6 +95,7 @@ class CKB(nn.Module):
             if WKB:
                 qv = self.wkey(e, t, B, d)
             else: qv = torch.cat([c, torch.tanh(self.z(h))], -1) if ROLE else c
+            if KNORM: qv = torch.cat([F.normalize(qv[:, :d], dim=-1) * 4.0, qv[:, d:]], -1)
             if PUREADDR == 3: sim = -torch.cdist(qv[:, :d].unsqueeze(1), K[:, :, :d]).squeeze(1); a = torch.softmax(sim / tau + logocc, -1)
             else: sim = torch.einsum("bd,bmd->bm", qv, K) / math.sqrt(d); a = torch.softmax((sim + (0 if PUREADDR else logocc)) / tau, -1)
             r = torch.einsum("bm,bmd->bd", a, Vm); cf = (a * occ).sum(-1, keepdim=True)
@@ -270,11 +272,11 @@ def boundary_profile(m, x):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
+    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
-    global CCRED, HCUT, DSCALE; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale
+    global CCRED, HCUT, DSCALE, KNORM; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale; KNORM = a.knorm
     global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE, PUREADDR, RANDNAMES, TIE; ROLE = a.role; DENSE = bool(a.dense); PUREADDR = a.pure; RANDNAMES = bool(a.randnames); TIE = bool(a.tie); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
-    res = {"tag": "ARCH-VET-LM-P49", "ccred": a.ccred, "dscale": a.dscale, "hcut": a.hcut, "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
+    res = {"tag": "ARCH-VET-LM-P49", "ccred": a.ccred, "dscale": a.dscale, "knorm": a.knorm, "hcut": a.hcut, "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
     if a.task == "synthetic":
         er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
         er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]

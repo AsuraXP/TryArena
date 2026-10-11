@@ -6278,3 +6278,19 @@ of examples as B=8 x 2000): ~2.6x more hypotheses per hour. Must
 re-baseline before comparing: CKB-rand d32 and d64 under the new
 regime running now (p49_fast_d32/d64.log). All further C1xx numbers
 are reported against the fast-regime baseline, not the B=8 one.
+Correction: B=32 is memory-bound (3.2 GB for d32: the autograd
+graph holds B x M x d per byte-step), so the fast regime is two
+single-thread B=8 processes in parallel (~1.85x), same regime as all
+prior numbers — no re-baseline needed. Lanes now: C110 (M=512, d64)
+and C111.
+
+C111 — PRE-REGISTRATION (d64 wall, attacked from the READ side).
+The read is softmax(-||q-K||/tau) and the match is ||q-K|| < 1 on
+raw GRU states whose norm grows with d and with training. At d64 a
+sharper, larger-norm state makes the read brittle (tiny drift ->
+miss) and the match over-merge (C109 showed looser = worse). Size-
+free keys: L2-normalise the c-part of query/key to a fixed norm (4)
+so distance = angle at every d. --knorm 1. PREDICTION: d64 unseen
+<= 2.16 (gain restored) with d32 not worse than 2.26 (run next). If
+d64 does not move and C110 does not either, the wall is attacked
+next from the DATA side (is the stream too small for d64?).
