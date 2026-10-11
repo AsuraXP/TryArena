@@ -6600,3 +6600,21 @@ inner3 first-symbol 2-hop gain over base GROWS from d32 to d64 (gap
 d64 > gap d32 by >= .05) and reaches >= .55 at d64. Falsified if the
 gap shrinks or inner3 d64 < .50: then mixed pressure only unlocks a
 fixed-depth read and the learning-rule side (local hop reward) is next.
+
+C120 — RESULT (Actions 38139982345): FALSIFIED. 2-hop first-symbol,
+800 steps, seeds 1/2:
+  base   d32 .258/.307   d64 .292/.286
+  inner3 d32 .445/.464   d64 .474/.471   (TF d64 2400 steps .245)
+Gap d32 .17 -> d64 .18 (needed +.05); inner3 d64 .47 < .50. Also
+400->800 steps changes nothing (.44 -> .445): a PLATEAU at ~.46, not
+a slow climb. Hop weights identical at every size and seed
+([.4, 0, 0, .6]): the chain is used as ONE deeper read, never as a
+sequence of corrected reads; hops 1–2 carry zero weight. Diagnosis
+after C116–C120: pressure got the first hop right and bought a fixed
+step (+.17), but CE still only credits the final read, so no hop
+learns to be a good INTERMEDIATE. Wiring side: wall (C116–C118).
+Pressure side: one step then plateau (C119–C120). Remaining side is
+the LEARNING RULE: a local target per hop (hop k's output is scored
+against the key that hop k+1 actually used on the correct path, or
+against the stored binding's value), so an intermediate read gets
+gradient of its own. That is next (C121), micro first, on Actions.

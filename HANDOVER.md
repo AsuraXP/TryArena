@@ -383,3 +383,6 @@ State of the core: `arch_vet_p47.py` SBC (slot-binding core) is the first core-l
 - One ubuntu runner per entry (4 CPU/16 GB, 6 h cap, ≤20 parallel). `--threads 4` is appended. Jobs continue after the turn ends.
 - Artifact/log download hosts are NOT reachable from the sandbox; the `collect` job commits all logs to `actions/results/<run_id>/run_<tag>.log` on the branch. Read with `git pull --rebase origin arena/01a07767-tryarena`. Status: `gh run list --limit 3`, `gh api repos/AsuraXP/TryArena/actions/runs/<id>/jobs --jq '.jobs[]|.name,.conclusion'`.
 - Before local pushes always `git pull --rebase` first (runner commits land on the same branch).
+
+## State after C120
+Composition wall: wiring [W] (C116–118), pressure [P then F] (C119: +.17, C120: plateau .46, no slope). Next = learning-rule side, C121: local per-hop target in p51 `--inner` path (score hop k's read against the binding the correct chain passes through; stop-grad on the target). Run on Actions (edit actions/jobs.json, push). Standing prompt is clean (STANDING_PROMPT.md).
