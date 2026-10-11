@@ -6269,3 +6269,12 @@ train CE improves, bg CE improves, sparse-unseen (ood) improves
 unrun candidate: slot capacity (M=512 at d64), launched as the last
 single-run check (p49_c110.log); after that this wall is attacked
 only from a different side (different stream or different read).
+
+THROUGHPUT FIX (user: "why would micro scale take days"). Profiled:
+1.2 s/step at B=8 is per-step Python/autograd overhead over 257
+bytes, not compute; 2 threads give ~nothing. New regime: two
+single-thread processes in parallel, B=32 x 600 steps (same number
+of examples as B=8 x 2000): ~2.6x more hypotheses per hour. Must
+re-baseline before comparing: CKB-rand d32 and d64 under the new
+regime running now (p49_fast_d32/d64.log). All further C1xx numbers
+are reported against the fast-regime baseline, not the B=8 one.
