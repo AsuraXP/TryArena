@@ -1,0 +1,15 @@
+  [TF d32 s1] step 0 loss 13.301 (0s)
+  [TF d32 s1] step 100 loss 8.675 (1s)
+  [TF d32 s1] step 200 loss 8.590 (3s)
+  [TF d32 s1] step 300 loss 8.491 (4s)
+  [TF d32 s1] step 400 loss 8.414 (6s)
+  [TF d32 s1] step 500 loss 8.417 (7s)
+  [TF d32 s1] step 600 loss 8.376 (9s)
+  [TF d32 s1] step 700 loss 8.259 (10s)
+  [TF d32 s1] step 800 loss 8.025 (11s)
+  [TF d32 s1] step 900 loss 7.785 (13s)
+  [TF d32 s1] step 1000 loss 7.828 (14s)
+  [TF d32 s1] step 1100 loss 7.479 (16s)
+  [TF d32 s1] step 1199 loss 7.200 (17s)
+[tf TF d32 s1] params 29958 in 2.663/0.171 ood 2.915/0.143 len 12.683/0.026 | first-symbol acc in/ood/len 0.161/0.128/0.047
+[P51] [{"arm": "TF", "d": 32, "seed": 1, "params": 29958, "in_ce": 2.663, "in_acc": 0.171, "in_a1": 0.161, "ood_ce": 2.915, "ood_acc": 0.143, "ood_a1": 0.128, "len_ce": 12.683, "len_acc": 0.026, "len_a1": 0.047, "tag": "tf"}]
