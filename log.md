@@ -6340,3 +6340,22 @@ Earlier draft OODs were unfair (held-out symbols = untrained
 embeddings; swapped roles = never-emitted outputs); both gave 0 for
 every arm and were discarded before any claim.
 NEXT (micro, minutes): d64 wall — seeds 2,3 (noise?), M=256, knorm.
+
+C113 RESULT — THE d64 WALL FALLS ON MICRO (p51_wall.log).
+Seeds 2,3 at M=64: d32 len .796/.788, d64 len .741/.602 — the d64
+decline is real on micro (3 seeds: d32 .793, d64 .686).
+knorm (size-free keys): FALSIFIED again — worse at both sizes
+(d32 len .71, d64 .707); closed, same reason as dscale.
+M=256 (seed 1): d32 len .863, d64 len .913 -> the decline is GONE
+and the slope is positive (in .893/.901, ood .878/.915).
+CAUSE: every token writes; the len test has 2K facts x 6 tokens +
+queries = ~100 writes into M=64 slots; slots are overwritten unless
+writes MATCH existing keys, and a larger d matches less (sharper
+states), so d64 overflows first. The "flattening" was slot overflow,
+not a learning failure. Law L-CAPACITY-IS-MATCHES: with write-every-
+token, effective capacity = M + (number of writes that merge); size
+reduces merging, so M must grow with d or writes must be gated by
+units. The text analogue is exact: L=257 bytes, M=256 slots.
+PREDICTION (C110 text, relaunched, d64 M=512): unseen <= 2.16
+(below the d32 2.31 under lowmem) and far no worse than 3.17.
+Micro confirmation of M=256 at d64 with seeds 2,3 running.

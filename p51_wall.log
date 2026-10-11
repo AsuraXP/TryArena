@@ -1,0 +1,51 @@
+  [CKB d32 s2] step 0 loss 12.777 (0s)
+  [CKB d32 s1] step 0 loss 12.985 (0s)
+  [CKB d32 s2] step 100 loss 3.555 (21s)
+  [CKB d32 s1] step 100 loss 2.884 (30s)
+  [CKB d32 s2] step 200 loss 3.081 (41s)
+  [CKB d32 s1] step 200 loss 2.921 (59s)
+  [CKB d32 s2] step 300 loss 2.611 (61s)
+  [CKB d32 s2] step 399 loss 3.189 (83s)
+[seeds CKB d32 s2] params 22102 in 0.625/0.883 ood 0.602/0.888 len 1.072/0.796
+  [CKB d32 s3] step 0 loss 12.683 (0s)
+  [CKB d32 s1] step 300 loss 2.796 (90s)
+  [CKB d32 s3] step 100 loss 3.062 (20s)
+  [CKB d32 s1] step 399 loss 2.757 (118s)
+[M256 CKB d32 s1] params 29014 in 0.612/0.893 ood 0.674/0.878 len 0.786/0.863
+  [CKB d64 s1] step 0 loss 12.780 (0s)
+  [CKB d32 s3] step 200 loss 2.676 (40s)
+  [CKB d32 s3] step 300 loss 3.240 (60s)
+  [CKB d32 s3] step 399 loss 2.301 (80s)
+  [CKB d64 s1] step 100 loss 2.808 (44s)
+[seeds CKB d32 s3] params 22102 in 0.589/0.898 ood 0.645/0.882 len 1.128/0.788
+  [CKB d64 s2] step 0 loss 12.791 (0s)
+  [CKB d64 s2] step 100 loss 2.276 (24s)
+  [CKB d64 s1] step 200 loss 2.563 (85s)
+  [CKB d64 s2] step 200 loss 2.578 (49s)
+  [CKB d64 s2] step 300 loss 2.471 (73s)
+  [CKB d64 s1] step 300 loss 2.602 (125s)
+  [CKB d64 s2] step 399 loss 2.363 (96s)
+[seeds CKB d64 s2] params 68374 in 0.498/0.914 ood 0.519/0.911 len 1.311/0.741
+  [CKB d64 s3] step 0 loss 12.819 (0s)
+  [CKB d64 s1] step 399 loss 2.130 (166s)
+  [CKB d64 s3] step 100 loss 2.770 (24s)
+[M256 CKB d64 s1] params 81430 in 0.523/0.901 ood 0.49/0.915 len 0.513/0.913
+[P51] [{"arm": "CKB", "d": 32, "seed": 1, "params": 29014, "in_ce": 0.612, "in_acc": 0.893, "ood_ce": 0.674, "ood_acc": 0.878, "len_ce": 0.786, "len_acc": 0.863, "tag": "M256"}, {"arm": "CKB", "d": 64, "seed": 1, "params": 81430, "in_ce": 0.523, "in_acc": 0.901, "ood_ce": 0.49, "ood_acc": 0.915, "len_ce": 0.513, "len_acc": 0.913, "tag": "M256"}]
+  [CKB d32 s1] step 0 loss 12.723 (0s)
+  [CKB d64 s3] step 200 loss 2.480 (48s)
+  [CKB d32 s1] step 100 loss 3.390 (22s)
+  [CKB d64 s3] step 300 loss 2.403 (73s)
+  [CKB d32 s1] step 200 loss 2.038 (43s)
+  [CKB d32 s1] step 300 loss 3.769 (65s)
+  [CKB d64 s3] step 399 loss 2.265 (96s)
+[seeds CKB d64 s3] params 68374 in 0.4/0.93 ood 0.557/0.898 len 1.936/0.602
+[P51] [{"arm": "CKB", "d": 32, "seed": 2, "params": 22102, "in_ce": 0.625, "in_acc": 0.883, "ood_ce": 0.602, "ood_acc": 0.888, "len_ce": 1.072, "len_acc": 0.796, "tag": "seeds"}, {"arm": "CKB", "d": 32, "seed": 3, "params": 22102, "in_ce": 0.589, "in_acc": 0.898, "ood_ce": 0.645, "ood_acc": 0.882, "len_ce": 1.128, "len_acc": 0.788, "tag": "seeds"}, {"arm": "CKB", "d": 64, "seed": 2, "params": 68374, "in_ce": 0.498, "in_acc": 0.914, "ood_ce": 0.519, "ood_acc": 0.911, "len_ce": 1.311, "len_acc": 0.741, "tag": "seeds"}, {"arm": "CKB", "d": 64, "seed": 3, "params": 68374, "in_ce": 0.4, "in_acc": 0.93, "ood_ce": 0.557, "ood_acc": 0.898, "len_ce": 1.936, "len_acc": 0.602, "tag": "seeds"}]
+  [CKB d32 s1] step 399 loss 3.789 (86s)
+[knorm CKB d32 s1] params 22102 in 0.844/0.839 ood 1.264/0.755 len 1.371/0.71
+  [CKB d64 s1] step 0 loss 12.851 (0s)
+  [CKB d64 s1] step 100 loss 2.238 (24s)
+  [CKB d64 s1] step 200 loss 3.073 (49s)
+  [CKB d64 s1] step 300 loss 3.413 (74s)
+  [CKB d64 s1] step 399 loss 3.147 (99s)
+[knorm CKB d64 s1] params 68374 in 0.584/0.888 ood 1.179/0.764 len 1.253/0.707
+[P51] [{"arm": "CKB", "d": 32, "seed": 1, "params": 22102, "in_ce": 0.844, "in_acc": 0.839, "ood_ce": 1.264, "ood_acc": 0.755, "len_ce": 1.371, "len_acc": 0.71, "tag": "knorm"}, {"arm": "CKB", "d": 64, "seed": 1, "params": 68374, "in_ce": 0.584, "in_acc": 0.888, "ood_ce": 1.179, "ood_acc": 0.764, "len_ce": 1.253, "len_acc": 0.707, "tag": "knorm"}]
