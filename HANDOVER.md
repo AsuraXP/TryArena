@@ -377,3 +377,9 @@ State of the core: `arch_vet_p47.py` SBC (slot-binding core) is the first core-l
 **C117:** imagination consistency falsified (.276); diagnostic shows hop mixture uses hops (.28/.10 on hops 2/3 at queries) but imagined reads are wrong → L-COMPOSITION-NEEDS-KEY-TYPED-VALUES. Next: C118 look-ahead values (slot stores future key-state, delayed write from heard data) on micro 2-hop; search + pre-register first. Text d64 wall: next = stale-slot forgetting.
 
 **C118:** look-ahead values falsified (.268; hop weights .42/.37/.11/.10). WALL: multi-hop inside one step (C116–C118). Next sides: hops in time; local hop reward; mixed 1-hop/2-hop pressure (cheapest, pre-register first).
+
+## Compute: GitHub Actions (added after C118)
+- `actions/jobs.json` = {"script": ..., "jobs": [{"tag","args"}, ...], "nonce"}; any pushed change to it on `arena/**` triggers `.github/workflows/experiment.yml` (push trigger; `workflow_dispatch` is unusable because the file is not on `main` and the sandbox token has no Actions scope).
+- One ubuntu runner per entry (4 CPU/16 GB, 6 h cap, ≤20 parallel). `--threads 4` is appended. Jobs continue after the turn ends.
+- Artifact/log download hosts are NOT reachable from the sandbox; the `collect` job commits all logs to `actions/results/<run_id>/run_<tag>.log` on the branch. Read with `git pull --rebase origin arena/01a07767-tryarena`. Status: `gh run list --limit 3`, `gh api repos/AsuraXP/TryArena/actions/runs/<id>/jobs --jq '.jobs[]|.name,.conclusion'`.
+- Before local pushes always `git pull --rebase` first (runner commits land on the same branch).
