@@ -6406,3 +6406,23 @@ recalled value is consumed through the same input embedding as a
 heard symbol, so the state after "Q Q a =" becomes the state after
 "b =" and the second hop is a plain read. Prediction to be fixed
 then: first-symbol 2-hop >= .7 in and >= .6 len at d32.
+
+C116 — PRE-REGISTRATION: INNER RECALL (composition inside the state).
+LOOP it breaks: the read value reaches only the head, so a chain
+"a -> b -> v" needs b to re-enter the key path, but nothing in the
+wiring lets the state hear what it recalled. INNER RECALL: at each
+position the key-state consumes its own read (the recalled next-
+token embedding) through the SAME recurrence gc, reads again, S=3
+times; a learned softmax over hops (from h) mixes the reads. Hops
+run on the episodic slot state, through the same embedding path as
+heard tokens, so keys stay invariant; cost O(S) per token at any
+length. Searched: DiscoLoop (2607.00341) loops a Transformer with a
+decoded embedding channel over parametric memory; memory networks
+use fixed hop layers. Delta in code header. Novel cell: "read
+re-entry through the state's own input path".
+PREDICTION (micro, d32, M=256, 400 steps): 2-hop FIRST-SYMBOL acc
+>= .60 in and >= .45 len (baseline .255 / .138); 1-hop in acc stays
+>= .85. If the first-symbol acc stays < .35: the soft hop mixture
+or the imagined-token path does not form under CE alone — logged,
+and the next attack is a different pressure (hop supervision is NOT
+allowed; that would be an oracle).

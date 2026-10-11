@@ -9,6 +9,12 @@ length-free, but on bytes nothing is a unit (C96).  Here the unit is learned:
   read     at boundary: q = c_t -> r = sum a_j V_j   ("what followed this chunk last time");
            latched r_l <- (1-b) r_l + b r so the head sees it while spelling the next chunk
   output   head([h_t, r_l, conf]) ; controller h_t = GRU_h(e_t)
+C116 (--inner S): INNER RECALL. At each position the key-state re-consumes its own read (the recalled
+next-token embedding) through the same recurrence gc, reads the slots again, S times; a learned mixture over
+hops feeds the head. Prior art: DiscoLoop (arXiv 2607.00341) loops a Transformer with a decoded discrete
+embedding channel over PARAMETRIC memory; memory networks / looped transformers do fixed hops with separate
+layers. Delta: hops run the recurrent key-state itself on recalled tokens from the EPISODIC slot state (facts
+of this context), the same embedding path as heard tokens (keys stay invariant), O(S) per token at any length.
 Everything learned; loss = CE only; no position signal; slots are state (grown at eval).
 C106 (--bmode util): the UNIT IS DEFINED BY ITS CONSUMER, BACKWARDS. The reset/boundary b_t is a
 sampled hard action that receives NO gradient from CE. Its only learning signal is a local reward:
@@ -45,6 +51,7 @@ PUREADDR = False   # C103b: address = softmax(k.K/tau) only (no empty branch, no
 # C103b pure content addressing = Tyulmankov et al. NeurIPS 2021 (softmax key match, slot overwrite), ALER arXiv 2610.00592 (one-slot Gumbel overwrite); here framed as a fix, not a novelty claim.
 ROLE = 0   # C103: dim of role bottleneck z = tanh(W_z h) appended to the prefix key (0 = off)   # C102: train on dense-reuse dialogues
 WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no boundary, no gate)
+INNER = 0   # C116: inner recall — the state re-consumes its own read (a next-token embedding) through gc, reads again, S times; learned hop mixture
 LOWMEM = 0   # hard index write (memory O(B d)/step); drops the straight-through address gradient
 KNORM = 0   # C111: size-free keys — the c-part of query and stored keys is L2-normalised to norm 4 before distance match/read
 DSCALE = 0   # C109: scale the hard-match threshold with sqrt(d/32) so the state keys' match rule is size-free
@@ -63,7 +70,7 @@ class CKB(nn.Module):
         self.b = nn.Linear(2 * d + 2, 1); nn.init.constant_(self.b.bias, BINIT)
         self.theta = nn.Parameter(torch.tensor(1.0)); self.K0 = nn.Parameter(torch.randn(max(32, M), d + ROLE) * 0.5); self.register_buffer('ramp', torch.arange(max(32, M)).float()[:M] * 1e-3); self.beta = nn.Parameter(torch.tensor(0.1))
         self.head = nn.Linear(2 * d + 1, V)
-        self.z = nn.Linear(d, max(ROLE, 1)); self.taps = nn.Parameter(torch.full((max(WKB, 1), d), 0.5)); self.ws = nn.Linear(d, 1); nn.init.constant_(self.ws.bias, 2.2)
+        self.hopw = nn.Linear(d, max(INNER, 0) + 1); self.z = nn.Linear(d, max(ROLE, 1)); self.taps = nn.Parameter(torch.full((max(WKB, 1), d), 0.5)); self.ws = nn.Linear(d, 1); nn.init.constant_(self.ws.bias, 2.2)
 
     def wkey(self, e, t, B, d):
         win = torch.stack([e[:, t - i] if t - i >= 0 else torch.zeros(B, d) for i in range(WKB)], 1)   # B x W x d (i=0 newest)
@@ -100,6 +107,15 @@ class CKB(nn.Module):
             if PUREADDR == 3: sim = -torch.cdist(qv[:, :d].unsqueeze(1), K[:, :, :d]).squeeze(1); a = torch.softmax(sim / tau + logocc, -1)
             else: sim = torch.einsum("bd,bmd->bm", qv, K) / math.sqrt(d); a = torch.softmax((sim + (0 if PUREADDR else logocc)) / tau, -1)
             r = torch.einsum("bm,bmd->bd", a, Vm); cf = (a * occ).sum(-1, keepdim=True)
+            if INNER and PUREADDR == 3:   # C116 inner recall: imagine the recalled token, read again (S hops); learner mixes hops
+                rs, cfs, cs, rk = [r], [cf], c, r
+                for _k in range(INNER):
+                    cs = self.gc(rk, cs); qs = cs
+                    if KNORM: qs = F.normalize(qs, dim=-1) * 4.0
+                    sk = -torch.cdist(qs.unsqueeze(1), K[:, :, :d]).squeeze(1); ak = torch.softmax(sk / tau + logocc, -1)
+                    rk = torch.einsum("bm,bmd->bd", ak, Vm); rs.append(rk); cfs.append((ak * occ).sum(-1, keepdim=True))
+                w = torch.softmax(self.hopw(h), -1)
+                r = sum(w[:, k:k + 1] * rs[k] for k in range(INNER + 1)); cf = sum(w[:, k:k + 1] * cfs[k] for k in range(INNER + 1))
             if PKB or WKB: rl, conf = r, cf
             else: rl = (1 - b) * rl + b * r; conf = (1 - b) * conf + b * cf
             if CCRED:
@@ -276,11 +292,11 @@ def boundary_profile(m, x):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
+    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
-    global CCRED, HCUT, DSCALE, KNORM; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale; KNORM = a.knorm; global LOWMEM; LOWMEM = a.lowmem; torch.set_num_threads(a.threads)
+    global CCRED, HCUT, DSCALE, KNORM; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale; KNORM = a.knorm; global LOWMEM, INNER; LOWMEM = a.lowmem; INNER = a.inner; torch.set_num_threads(a.threads)
     global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE, PUREADDR, RANDNAMES, TIE; ROLE = a.role; DENSE = bool(a.dense); PUREADDR = a.pure; RANDNAMES = bool(a.randnames); TIE = bool(a.tie); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
-    res = {"tag": "ARCH-VET-LM-P49", "ccred": a.ccred, "dscale": a.dscale, "knorm": a.knorm, "lowmem": a.lowmem, "hcut": a.hcut, "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
+    res = {"tag": "ARCH-VET-LM-P49", "ccred": a.ccred, "dscale": a.dscale, "knorm": a.knorm, "lowmem": a.lowmem, "inner": a.inner, "hcut": a.hcut, "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
     if a.task == "synthetic":
         er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
         er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]
