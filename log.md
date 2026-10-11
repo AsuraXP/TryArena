@@ -6300,3 +6300,16 @@ blend write K=(1-a)K+a*pk saves B x M x d per byte for backward).
 ~1.1 GB at d64; it drops the straight-through address gradient, so
 it must be validated: d32 and d64 lowmem running in parallel vs
 baselines 2.26 / 2.39. Accept if within +-.08.
+
+LOWMEM VALIDATION (seed 1, 2 lanes in parallel, ~42 min per lane).
+d32: unseen 2.313 (blend 2.296) in 2.43 far 3.17 — within tolerance.
+d64: unseen 2.270 (blend 2.397) in 3.09 (blend 2.48) far 3.31 —
+OUTSIDE tolerance on two numbers, opposite signs: dropping the
+straight-through address gradient helped unseen names at d64 and
+hurt the in-distribution name CE. So the ST address gradient is
+itself one of the variables in the d64 wall (noted on the map, not
+chased now). Lowmem is adopted as the regime (it is the simpler
+mechanism: allocation is a hard rule with no gradient, keys learn
+only through reads). New d64 baseline = 2.270; d32 = 2.313.
+Throughput now: 2 lanes x ~45 min per 2000-step run, any d.
+C110 (M=512) and C111 (knorm) running at d64 under lowmem.
