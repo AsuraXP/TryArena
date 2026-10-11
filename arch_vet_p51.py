@@ -19,7 +19,8 @@ sys.path.insert(0, "/home/user/TryArena")
 import arch_vet_lm as A
 
 _argv = sys.argv; sys.argv = ["p49"]
-_src = open("/home/user/TryArena/arch_vet_p49.py").read().replace('if __name__ == "__main__":\n    main()', '')
+import os as _os
+_src = open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "arch_vet_p49.py")).read().replace('if __name__ == "__main__":\n    main()', '')
 P = type(sys)("p49"); exec(compile(_src, "arch_vet_p49.py", "exec"), P.__dict__); sys.argv = _argv
 
 V = 70; PAD, DOT, QQ, EQ = 0, 1, 2, 67; HOP = 1; MIXEVAL = False
