@@ -6447,3 +6447,15 @@ aloud in its own state, not in the output) so that the second hop
 is an ordinary read on an ordinary heard-like state. Pre-register
 next cycle after search. Ledger: inner recall (soft, in-step) —
 negative, failure reason: imagination bootstrap.
+
+C110 RESULT (text, d64, M=512, lowmem) — FALSIFIED. unseen 2.463 vs
+M=256 lowmem 2.270 (target <= 2.16); far 3.357 (worse); in 3.12. More
+slots made text WORSE. So the slot-overflow explanation, which fixed
+the d64 decline on micro (C113), does NOT transfer to text: on the
+dialogue stream the extra capacity keeps stale keys alive that the
+distance read then confuses with fresh ones (merging, not overflow,
+is the text-side failure). Honest state of the d64 wall: micro —
+solved by capacity; text — open, four causes falsified (ccred,
+hcut, dscale/knorm, capacity). Next attack on text must come from
+the read side with FORGETTING of stale slots (occupancy decay), a
+different side from all four — pre-register before running.
