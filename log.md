@@ -6557,3 +6557,19 @@ hop's match (local, not end-to-end CE); (3) curriculum-free depth:
 train on 1-hop and 2-hop mixed so hop-1 reads are correct before
 depth is demanded — this one is a pressure change and is the
 cheapest; it is pre-registered next, not run blind.
+
+C119 — PRE-REGISTRATION: MIXED PRESSURE (different side of the
+composition wall: pressure, not machinery). LOOP: deeper hops get no
+CE gradient until shallower hops are right; in a 2-hop-only stream
+the 1-hop reads at the bridge are never demanded, so they are never
+right. REMOVAL: train on a 50/50 mix of 1-hop and 2-hop sequences
+(--hop 3); 1-hop queries force the bridge read "a =" -> b to be
+correct in the same slots the chain needs; the chain's first hop is
+then right from the start, and depth gets gradient. Evaluation is
+2-hop only. Run on GitHub Actions (first dispatch of the workflow):
+arms = {baseline (no hops), look 1 x 3 hops, inner 3} x d32, 400
+steps, M=256, seeds 1,2. PREDICTION: with mixed pressure at least
+one hop mechanism reaches first-symbol >= .45 in (2-hop-only:
+.268/.258); baseline stays < .35. If all stay < .35: pressure is not
+the missing piece and the wall is attacked next from the learning-
+rule side (local hop reward).

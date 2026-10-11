@@ -22,7 +22,7 @@ _argv = sys.argv; sys.argv = ["p49"]
 _src = open("/home/user/TryArena/arch_vet_p49.py").read().replace('if __name__ == "__main__":\n    main()', '')
 P = type(sys)("p49"); exec(compile(_src, "arch_vet_p49.py", "exec"), P.__dict__); sys.argv = _argv
 
-V = 70; PAD, DOT, QQ, EQ = 0, 1, 2, 67; HOP = 1
+V = 70; PAD, DOT, QQ, EQ = 0, 1, 2, 67; HOP = 1; MIXEVAL = False
 TR = list(range(3, 51)); NM, VL = TR[:24], TR[24:]   # train: names from NM, values from VL; ood = roles swapped (embeddings seen, roles novel)
 
 
@@ -42,7 +42,7 @@ def make_seq2(rng, K, syms, nq):
 
 
 def make_seq(rng, K, syms, nq):
-    if HOP == 2: return make_seq2(rng, K, syms, nq)
+    if HOP == 2 or (HOP == 3 and (MIXEVAL or rng.random() < 0.5)): return make_seq2(rng, K, syms, nq)
     ns, vs = (NM, VL) if syms == 'tr' else (VL, VL)   # ood: names made of symbols never seen as names (values unchanged)
     names = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]
     vals = [(rng.choice(vs), rng.choice(vs)) for _ in range(K)]
@@ -83,6 +83,7 @@ def run(arm, d, seed, steps, B, K, nq, log):
         lg = fwd(m, arm, x, tau); loss = P.ce_all(lg, x) + 2.0 * F.cross_entropy(lg[:, :-1][mk[:, 1:] > 0], x[:, 1:][mk[:, 1:] > 0])
         loss = loss + (P.IMCONS * m.im_loss if arm == 'CKB' and P.IMCONS else 0); opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
         if s % 100 == 0 or s == steps - 1: log(f"  [{arm} d{d} s{seed}] step {s} loss {loss.item():.3f} ({time.time()-t0:.0f}s)")
+    global MIXEVAL; MIXEVAL = True
     er = random.Random(999); res = {"arm": arm, "d": d, "seed": seed, "params": P.n_params(m)}
     with torch.no_grad():
         for nm, (kk, syms) in {"in": (K, "tr"), "ood": (K, "swap"), "len": (2 * K, "tr")}.items():
@@ -94,6 +95,7 @@ def run(arm, d, seed, steps, B, K, nq, log):
             if arm == "CKB" and P.INNER and nm == "in":
                 W = torch.stack(m._w, 1); qpos = mk[:, 1:] == 1; res["hopw_at_q"] = [round(v, 3) for v in W[:, :-1][qpos].mean(0).tolist()]; res["hopw_all"] = [round(v, 3) for v in W.mean((0, 1)).tolist()]; res["im_loss"] = round(float(m.im_loss), 4)
             res[nm + "_ce"] = round(sum(ces) / 6, 3); res[nm + "_acc"] = round(sum(accs) / 6, 3); res[nm + "_a1"] = round(sum(a1s) / 6, 3)
+    MIXEVAL = False
     return res
 
 
