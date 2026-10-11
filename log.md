@@ -6391,3 +6391,18 @@ question is moot. If not, the next mechanism (pre-registered
 separately, searched first) is read RE-ENTRY: the recalled value is
 consumed by the learner as if it were heard — through the same
 input embedding, so keys stay invariant — not a side channel.
+
+C115 RESULT — PREDICTION HOLDS (after catching a measurement trap).
+Aggregate 2-hop acc looked like .576/.561 (d32/d64) vs TF .036, but
+the second value symbol is 1-hop-recallable from the first (fact
+"b = v1 v2" is in memory), so it inflated the number. FIRST-SYMBOL
+accuracy — the only honest 2-hop measure — is .255 in / .211 ood /
+.138 len at d32 (chance .04). Six times chance, far from solved: the
+core composes weakly, through h, with no mechanism for it. TF at
+chance on everything, 1-hop control unchanged. The harness now
+reports first-symbol accuracy on every run.
+NEXT (searched + pre-registered next cycle): read re-entry — the
+recalled value is consumed through the same input embedding as a
+heard symbol, so the state after "Q Q a =" becomes the state after
+"b =" and the second hop is a plain read. Prediction to be fixed
+then: first-symbol 2-hop >= .7 in and >= .6 len at d32.

@@ -1,0 +1,32 @@
+  [CKB d32 s1] step 0 loss 12.842 (1s)
+  [CKB d32 s1] step 100 loss 5.646 (54s)
+  [CKB d32 s1] step 200 loss 6.250 (108s)
+  [CKB d32 s1] step 300 loss 6.243 (157s)
+  [CKB d32 s1] step 399 loss 5.630 (205s)
+[hop2 CKB d32 s1] params 29014 in 1.936/0.576 ood 2.352/0.473 len 2.374/0.428
+  [CKB d64 s1] step 0 loss 12.794 (1s)
+  [CKB d64 s1] step 100 loss 5.101 (71s)
+  [CKB d64 s1] step 200 loss 5.792 (142s)
+  [CKB d64 s1] step 300 loss 6.080 (214s)
+  [CKB d64 s1] step 399 loss 6.099 (293s)
+[hop2 CKB d64 s1] params 81430 in 2.036/0.561 ood 2.237/0.491 len 2.483/0.424
+  [TF d32 s1] step 0 loss 13.368 (0s)
+  [TF d32 s1] step 100 loss 8.531 (2s)
+  [TF d32 s1] step 200 loss 8.490 (5s)
+  [TF d32 s1] step 300 loss 8.496 (7s)
+  [TF d32 s1] step 399 loss 8.466 (9s)
+[hop2 TF d32 s1] params 29958 in 3.199/0.036 ood 3.203/0.051 len 8.068/0.012
+  [TF d64 s1] step 0 loss 13.053 (0s)
+  [TF d64 s1] step 100 loss 8.552 (4s)
+  [TF d64 s1] step 200 loss 8.581 (8s)
+  [TF d64 s1] step 300 loss 8.558 (12s)
+  [TF d64 s1] step 399 loss 8.471 (16s)
+[hop2 TF d64 s1] params 108998 in 3.208/0.035 ood 3.215/0.036 len 10.275/0.009
+[P51] [{"arm": "CKB", "d": 32, "seed": 1, "params": 29014, "in_ce": 1.936, "in_acc": 0.576, "ood_ce": 2.352, "ood_acc": 0.473, "len_ce": 2.374, "len_acc": 0.428, "tag": "hop2"}, {"arm": "CKB", "d": 64, "seed": 1, "params": 81430, "in_ce": 2.036, "in_acc": 0.561, "ood_ce": 2.237, "ood_acc": 0.491, "len_ce": 2.483, "len_acc": 0.424, "tag": "hop2"}, {"arm": "TF", "d": 32, "seed": 1, "params": 29958, "in_ce": 3.199, "in_acc": 0.036, "ood_ce": 3.203, "ood_acc": 0.051, "len_ce": 8.068, "len_acc": 0.012, "tag": "hop2"}, {"arm": "TF", "d": 64, "seed": 1, "params": 108998, "in_ce": 3.208, "in_acc": 0.035, "ood_ce": 3.215, "ood_acc": 0.036, "len_ce": 10.275, "len_acc": 0.009, "tag": "hop2"}]
+  [CKB d32 s1] step 0 loss 12.842 (1s)
+  [CKB d32 s1] step 100 loss 5.646 (55s)
+  [CKB d32 s1] step 200 loss 6.250 (109s)
+  [CKB d32 s1] step 300 loss 6.243 (161s)
+  [CKB d32 s1] step 399 loss 5.630 (213s)
+[hop2a CKB d32 s1] params 29014 in 1.936/0.576 ood 2.352/0.473 len 2.374/0.428 | first-symbol acc in/ood/len 0.255/0.211/0.138
+[P51] [{"arm": "CKB", "d": 32, "seed": 1, "params": 29014, "in_ce": 1.936, "in_acc": 0.576, "in_a1": 0.255, "ood_ce": 2.352, "ood_acc": 0.473, "ood_a1": 0.211, "len_ce": 2.374, "len_acc": 0.428, "len_a1": 0.138, "tag": "hop2a"}]

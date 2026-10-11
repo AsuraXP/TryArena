@@ -37,7 +37,7 @@ def make_seq2(rng, K, syms, nq):
     tgt = [0] * len(x)
     for _ in range(nq):
         i = rng.randrange(K); a, v = A[i], vals[i]
-        x += [QQ, QQ, a[0], a[1], EQ, v[0], v[1], DOT]; tgt += [0, 0, 0, 0, 0, 1, 1, 0]
+        x += [QQ, QQ, a[0], a[1], EQ, v[0], v[1], DOT]; tgt += [0, 0, 0, 0, 0, 1, 2, 0]
     return x, tgt
 
 
@@ -51,7 +51,7 @@ def make_seq(rng, K, syms, nq):
     tgt = [0] * len(x)
     for _ in range(nq):
         i = rng.randrange(K); n, v = names[i], vals[i]
-        x += [QQ, n[0], n[1], EQ, v[0], v[1], DOT]; tgt += [0, 0, 0, 0, 1, 1, 0]
+        x += [QQ, n[0], n[1], EQ, v[0], v[1], DOT]; tgt += [0, 0, 0, 0, 1, 2, 0]
     return x, tgt
 
 
@@ -65,7 +65,8 @@ def batch(rng, B, K, syms, nq):
 def q_metrics(lg, x, m):
     """CE and exact acc on positions whose NEXT token is a queried value symbol (mask m marks the value positions)."""
     pm = m[:, 1:] > 0; lgp = lg[:, :-1][pm]; y = x[:, 1:][pm]
-    return F.cross_entropy(lgp, y).item(), (lgp.argmax(-1) == y).float().mean().item()
+    p1 = m[:, 1:] == 1; a1 = (lg[:, :-1][p1].argmax(-1) == x[:, 1:][p1]).float().mean().item()
+    return F.cross_entropy(lgp, y).item(), (lgp.argmax(-1) == y).float().mean().item(), a1
 
 
 def fwd(m, arm, x, tau):
@@ -85,10 +86,10 @@ def run(arm, d, seed, steps, B, K, nq, log):
     er = random.Random(999); res = {"arm": arm, "d": d, "seed": seed, "params": P.n_params(m)}
     with torch.no_grad():
         for nm, (kk, syms) in {"in": (K, "tr"), "ood": (K, "swap"), "len": (2 * K, "tr")}.items():
-            ces, accs = [], []
+            ces, accs, a1s = [], [], []
             for _ in range(6):
-                x, mk = batch(er, 16, kk, syms, nq); lg = fwd(m, arm, x, 0.1); ce, ac = q_metrics(lg, x, mk); ces.append(ce); accs.append(ac)
-            res[nm + "_ce"] = round(sum(ces) / 6, 3); res[nm + "_acc"] = round(sum(accs) / 6, 3)
+                x, mk = batch(er, 16, kk, syms, nq); lg = fwd(m, arm, x, 0.1); ce, ac, a1 = q_metrics(lg, x, mk); ces.append(ce); accs.append(ac); a1s.append(a1)
+            res[nm + "_ce"] = round(sum(ces) / 6, 3); res[nm + "_acc"] = round(sum(accs) / 6, 3); res[nm + "_a1"] = round(sum(a1s) / 6, 3)
     return res
 
 
@@ -111,7 +112,7 @@ def main():
         for d in [int(v) for v in a.ds.split(",")]:
             for seed in [int(v) for v in a.seeds.split(",")]:
                 r = run(arm, d, seed, a.steps, a.B, a.K, a.nq, log); r["tag"] = a.tag; rows.append(r)
-                log(f"[{a.tag} {arm} d{d} s{seed}] params {r['params']} in {r['in_ce']}/{r['in_acc']} ood {r['ood_ce']}/{r['ood_acc']} len {r['len_ce']}/{r['len_acc']}")
+                log(f"[{a.tag} {arm} d{d} s{seed}] params {r['params']} in {r['in_ce']}/{r['in_acc']} ood {r['ood_ce']}/{r['ood_acc']} len {r['len_ce']}/{r['len_acc']} | first-symbol acc in/ood/len {r['in_a1']}/{r['ood_a1']}/{r['len_a1']}")
     log("[P51] " + json.dumps(rows))
 
 
