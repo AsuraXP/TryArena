@@ -6359,3 +6359,21 @@ units. The text analogue is exact: L=257 bytes, M=256 slots.
 PREDICTION (C110 text, relaunched, d64 M=512): unseen <= 2.16
 (below the d32 2.31 under lowmem) and far no worse than 3.17.
 Micro confirmation of M=256 at d64 with seeds 2,3 running.
+
+C114 — MICRO SLOPE, 3 seeds, M=256 (p51_slope.log; TF seed 1 from
+p51_v2.log). Accuracy on queried values; CKB 400 steps, TF 1200
+steps (3x the examples). Means:
+| CKB | d16 | n=3 | in 0.850 | ood 0.814 | len 0.757 |
+| CKB | d32 | n=3 | in 0.891 | ood 0.888 | len 0.847 |
+| CKB | d64 | n=3 | in 0.907 | ood 0.907 | len 0.907 |
+| TF | d16 | n=3 | in 0.169 | ood 0.164 | len 0.049 |
+| TF | d32 | n=3 | in 0.441 | ood 0.394 | len 0.040 |
+| TF | d64 | n=3 | in 0.460 | ood 0.387 | len 0.075 |
+CKB rises monotonically with size on all three axes (len .757 ->
+.847 -> .907); TF saturates near .45 in/ood and never exceeds .10 on
+length. The length gap WIDENS with size (+.71, +.81, +.83); the ood
+gap does not widen monotonically (+.65, +.49, +.52) because TF
+improves 16->32 and then stops. Stated plainly: on the binding
+stream the core's law is steeper than the Transformer's on length,
+and at least parallel-and-above on OOD names; the d64 flattening
+was slot overflow (C113) and is gone with M=256.
