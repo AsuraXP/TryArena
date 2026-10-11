@@ -15,6 +15,12 @@ hops feeds the head. Prior art: DiscoLoop (arXiv 2607.00341) loops a Transformer
 embedding channel over PARAMETRIC memory; memory networks / looped transformers do fixed hops with separate
 layers. Delta: hops run the recurrent key-state itself on recalled tokens from the EPISODIC slot state (facts
 of this context), the same embedding path as heard tokens (keys stay invariant), O(S) per token at any length.
+C118 (--look D): LOOK-AHEAD VALUES. Besides the next-token embedding, each slot stores (written D steps later,
+from heard data) the learner's own key-state D steps after the write. A recalled look-ahead state IS a key, so
+the second hop is one ordinary read; a 2-way learned mixture (from h) blends hop-0 and hop-1 reads. Prior art:
+MARCH (arXiv 2608.12435) banks PAST recurrent states as retrievable anchors; KV-MemNNs do multi-hop with
+separate hop layers over token-typed values. Delta: value channel typed as the learner's FUTURE key-state,
+delayed write, hop = read-with-recalled-key, no imagination, no hop supervision.
 Everything learned; loss = CE only; no position signal; slots are state (grown at eval).
 C106 (--bmode util): the UNIT IS DEFINED BY ITS CONSUMER, BACKWARDS. The reset/boundary b_t is a
 sampled hard action that receives NO gradient from CE. Its only learning signal is a local reward:
@@ -52,6 +58,8 @@ PUREADDR = False   # C103b: address = softmax(k.K/tau) only (no empty branch, no
 ROLE = 0   # C103: dim of role bottleneck z = tanh(W_z h) appended to the prefix key (0 = off)   # C102: train on dense-reuse dialogues
 WKB = 0   # C100: key = learned per-tap mix of the last WKB byte embeddings (no boundary, no gate)
 IMCONS = 0.0   # C117: imagination-consistency weight — gc(read_{t-1}, c_{t-1}) must land on the heard state c_t (self-target, no supervision)
+LOOKH = 3   # C118 number of chained look-ahead hops
+LOOK = 0   # C118: look-ahead values — each slot also stores the learner's own key-state LOOK steps after the write (delayed write from heard data); hop 2 = ordinary read with the recalled key
 INNER = 0   # C116: inner recall — the state re-consumes its own read (a next-token embedding) through gc, reads again, S times; learned hop mixture
 LOWMEM = 0   # hard index write (memory O(B d)/step); drops the straight-through address gradient
 KNORM = 0   # C111: size-free keys — the c-part of query and stored keys is L2-normalised to norm 4 before distance match/read
@@ -71,7 +79,7 @@ class CKB(nn.Module):
         self.b = nn.Linear(2 * d + 2, 1); nn.init.constant_(self.b.bias, BINIT)
         self.theta = nn.Parameter(torch.tensor(1.0)); self.K0 = nn.Parameter(torch.randn(max(32, M), d + ROLE) * 0.5); self.register_buffer('ramp', torch.arange(max(32, M)).float()[:M] * 1e-3); self.beta = nn.Parameter(torch.tensor(0.1))
         self.head = nn.Linear(2 * d + 1, V)
-        self.hopw = nn.Linear(d, max(INNER, 0) + 1); self.z = nn.Linear(d, max(ROLE, 1)); self.taps = nn.Parameter(torch.full((max(WKB, 1), d), 0.5)); self.ws = nn.Linear(d, 1); nn.init.constant_(self.ws.bias, 2.2)
+        self.hopw = nn.Linear(d, max(INNER, 0) + 1); self.hop2 = nn.Linear(d, LOOKH + 1); self.z = nn.Linear(d, max(ROLE, 1)); self.taps = nn.Parameter(torch.full((max(WKB, 1), d), 0.5)); self.ws = nn.Linear(d, 1); nn.init.constant_(self.ws.bias, 2.2)
 
     def wkey(self, e, t, B, d):
         win = torch.stack([e[:, t - i] if t - i >= 0 else torch.zeros(B, d) for i in range(WKB)], 1)   # B x W x d (i=0 newest)
@@ -87,7 +95,7 @@ class CKB(nn.Module):
         dk = d + ROLE; K = self.K0[:M].unsqueeze(0).expand(B, M, dk).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M); pk = torch.zeros(B, dk); usage = torch.zeros(B, M)
         outs, bs = [], []; surp = torch.zeros(B, 2)
         UTIL = BMODE == "util"; cutpos = torch.zeros(B, dtype=torch.long); slot_cut = torch.zeros(B, M, dtype=torch.long); Rw = torch.zeros(B, L); logps = []
-        im_loss = torch.zeros(()); r0_prev = None; c_prev = None; self._w = []
+        im_loss = torch.zeros(()); r0_prev = None; c_prev = None; self._w = []; V2 = torch.zeros(B, M, d); jhist = []; self._w2 = []
         for t in range(L):
             c_prev = c; h = self.gh(e[:, t], h); c = self.gc(e[:, t], c)
             if IMCONS and r0_prev is not None and self.training:
@@ -112,6 +120,13 @@ class CKB(nn.Module):
             else: sim = torch.einsum("bd,bmd->bm", qv, K) / math.sqrt(d); a = torch.softmax((sim + (0 if PUREADDR else logocc)) / tau, -1)
             r = torch.einsum("bm,bmd->bd", a, Vm); cf = (a * occ).sum(-1, keepdim=True)
             r0_prev = r
+            if LOOK and PUREADDR == 3:   # C118: recalled key-typed value -> ordinary reads, chained LOOKH times
+                rs2, cfs2, kk = [r], [cf], torch.einsum("bm,bmd->bd", a, V2)
+                for _h in range(LOOKH):
+                    s2 = -torch.cdist(kk.unsqueeze(1), K[:, :, :d]).squeeze(1); a2 = torch.softmax(s2 / tau + logocc, -1)
+                    rs2.append(torch.einsum("bm,bmd->bd", a2, Vm)); cfs2.append((a2 * occ).sum(-1, keepdim=True)); kk = torch.einsum("bm,bmd->bd", a2, V2)
+                w2 = torch.softmax(self.hop2(h), -1); self._w2.append(w2.detach())
+                r = sum(w2[:, k:k + 1] * rs2[k] for k in range(LOOKH + 1)); cf = sum(w2[:, k:k + 1] * cfs2[k] for k in range(LOOKH + 1))
             if INNER and PUREADDR == 3:   # C116 inner recall: imagine the recalled token, read again (S hops); learner mixes hops
                 rs, cfs, cs, rk = [r], [cf], c, r
                 for _k in range(INNER):
@@ -164,6 +179,9 @@ class CKB(nn.Module):
                     alpha = (p * m + (1 - p) * empty).unsqueeze(-1)
                 if LOWMEM and PUREADDR == 3:   # hard row write: O(B d) saved per step instead of O(B M d); no ST address gradient
                     bi = torch.arange(B); K = K.clone(); K[bi, j] = pk; Vm = Vm.clone(); Vm[bi, j] = e[:, t]; occ = occ + hard * (1 - occ)
+                    if LOOK:
+                        jhist.append(j)
+                        if len(jhist) > LOOK: jo = jhist.pop(0); V2 = V2.clone(); V2[bi, jo] = qv[:, :d]
                 else:
                     K = (1 - alpha) * K + alpha * pk.unsqueeze(1); Vm = (1 - alpha) * Vm + alpha * e[:, t].unsqueeze(1); occ = occ + alpha.squeeze(-1) * (1 - occ)
                 if UTIL:
@@ -297,9 +315,9 @@ def boundary_profile(m, x):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
+    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
-    global CCRED, HCUT, DSCALE, KNORM; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale; KNORM = a.knorm; global LOWMEM, INNER; LOWMEM = a.lowmem; INNER = a.inner; global IMCONS; IMCONS = a.imcons; torch.set_num_threads(a.threads)
+    global CCRED, HCUT, DSCALE, KNORM; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale; KNORM = a.knorm; global LOWMEM, INNER; LOWMEM = a.lowmem; INNER = a.inner; global LOOK, LOOKH; LOOK = a.look; LOOKH = a.lookh; global IMCONS; IMCONS = a.imcons; torch.set_num_threads(a.threads)
     global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE, PUREADDR, RANDNAMES, TIE; ROLE = a.role; DENSE = bool(a.dense); PUREADDR = a.pure; RANDNAMES = bool(a.randnames); TIE = bool(a.tie); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
     res = {"tag": "ARCH-VET-LM-P49", "ccred": a.ccred, "dscale": a.dscale, "knorm": a.knorm, "lowmem": a.lowmem, "inner": a.inner, "hcut": a.hcut, "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
     if a.task == "synthetic":

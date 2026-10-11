@@ -89,6 +89,8 @@ def run(arm, d, seed, steps, B, K, nq, log):
             ces, accs, a1s = [], [], []
             for _ in range(6):
                 x, mk = batch(er, 16, kk, syms, nq); lg = fwd(m, arm, x, 0.1); ce, ac, a1 = q_metrics(lg, x, mk); ces.append(ce); accs.append(ac); a1s.append(a1)
+            if arm == "CKB" and P.LOOK and nm == "in":
+                W = torch.stack(m._w2, 1); qpos = mk[:, 1:] == 1; res["hop2w_at_q"] = [round(v, 3) for v in W[:, :-1][qpos].mean(0).tolist()]; res["hop2w_all"] = [round(v, 3) for v in W.mean((0, 1)).tolist()]
             if arm == "CKB" and P.INNER and nm == "in":
                 W = torch.stack(m._w, 1); qpos = mk[:, 1:] == 1; res["hopw_at_q"] = [round(v, 3) for v in W[:, :-1][qpos].mean(0).tolist()]; res["hopw_all"] = [round(v, 3) for v in W.mean((0, 1)).tolist()]; res["im_loss"] = round(float(m.im_loss), 4)
             res[nm + "_ce"] = round(sum(ces) / 6, 3); res[nm + "_acc"] = round(sum(accs) / 6, 3); res[nm + "_a1"] = round(sum(a1s) / 6, 3)
@@ -101,9 +103,9 @@ def main():
     ap.add_argument("--steps", type=int, default=400); ap.add_argument("--B", type=int, default=16); ap.add_argument("--K", type=int, default=6); ap.add_argument("--nq", type=int, default=4)
     ap.add_argument("--bmode", default="rand"); ap.add_argument("--randp", type=float, default=0.1); ap.add_argument("--M", type=int, default=64)
     ap.add_argument("--lowmem", type=int, default=1); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--threads", type=int, default=1)
-    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
+    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
     a = ap.parse_args(); torch.set_num_threads(a.threads); global HOP; HOP = a.hop
-    P.BMODE, P.RANDP, P.MSLOTS, P.LOWMEM, P.KNORM, P.DSCALE, P.INNER, P.IMCONS = a.bmode, a.randp, a.M, a.lowmem, a.knorm, a.dscale, a.inner, a.imcons
+    P.BMODE, P.RANDP, P.MSLOTS, P.LOWMEM, P.KNORM, P.DSCALE, P.INNER, P.IMCONS, P.LOOK, P.LOOKH = a.bmode, a.randp, a.M, a.lowmem, a.knorm, a.dscale, a.inner, a.imcons, a.look, a.lookh
     P.PKB, P.PUREADDR, P.ROLE, P.SURPRISE, P.DENSE, P.RANDNAMES = 1, 3, 4, 1, True, True
     out = open(a.out, "a") if a.out else None
     def log(s):
@@ -114,7 +116,7 @@ def main():
         for d in [int(v) for v in a.ds.split(",")]:
             for seed in [int(v) for v in a.seeds.split(",")]:
                 r = run(arm, d, seed, a.steps, a.B, a.K, a.nq, log); r["tag"] = a.tag; rows.append(r)
-                log(f"[{a.tag} {arm} d{d} s{seed}] params {r['params']} in {r['in_ce']}/{r['in_acc']} ood {r['ood_ce']}/{r['ood_acc']} len {r['len_ce']}/{r['len_acc']} | first-symbol acc in/ood/len {r['in_a1']}/{r['ood_a1']}/{r['len_a1']}" + (f" | hopw@q {r.get('hopw_at_q')} hopw_all {r.get('hopw_all')}" if 'hopw_at_q' in r else ""))
+                log(f"[{a.tag} {arm} d{d} s{seed}] params {r['params']} in {r['in_ce']}/{r['in_acc']} ood {r['ood_ce']}/{r['ood_acc']} len {r['len_ce']}/{r['len_acc']} | first-symbol acc in/ood/len {r['in_a1']}/{r['ood_a1']}/{r['len_a1']}" + (f" | hopw@q {r.get('hopw_at_q')} hopw_all {r.get('hopw_all')}" if 'hopw_at_q' in r else "") + (f" | hop2w@q {r.get('hop2w_at_q')} all {r.get('hop2w_all')}" if 'hop2w_at_q' in r else ""))
     log("[P51] " + json.dumps(rows))
 
 

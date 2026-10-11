@@ -6511,3 +6511,27 @@ key — no imagination. Loop broken because both channels are filled
 from heard data; nothing has to be right before chaining works.
 Prediction to be fixed at pre-registration (target first-symbol
 >= .6 in, >= .45 len at d32). Micro only until it survives.
+
+C118 — PRE-REGISTRATION: LOOK-AHEAD VALUES (what is stored changes).
+LOOP (C116/C117): the recalled value is a token, not a key; chaining
+needs imagination, which cannot bootstrap. REMOVAL: each slot also
+stores, written 1 step later from HEARD data, the learner's own key-
+state after the next token (V2). A recalled V2 is a key; hop k is an
+ordinary read with the recalled key, chained up to 3 times; a
+learned softmax over hops 0..3 (from h) mixes. Nothing has to be
+right before chaining works: both channels fill from what was heard
+and the 1-hop reads already work. Searched: MARCH (2608.12435) banks
+PAST states; KV-MemNNs use hop layers over token values; no future-
+key-state value channel found. Delta in code header.
+Paper walk of the chain on this stream: "a a2 =" -> V2 state("= b1")
+-> V2 state("= b1 b2") -> keys ~state("b1 b2") which exist TWICE
+(end of the a-fact, value '.'; start of the b-fact, value '=') ->
+V2 of the right one = state("b1 b2 =") -> v1. The collision at hop 2
+caps this at ~.5 unless the learner's role dims break it. So:
+PREDICTION (micro, d32, M=256, 400 steps, --look 1 --lookh 3):
+2-hop first-symbol >= .45 in (baseline .255; C116/C117 .258/.276),
+len >= .30; 1-hop in acc >= .85; hop weights at queries put >= .4 on
+hops >= 2. If first-symbol < .35 with hop weights on hops >= 2: the
+recalled states do not match stored keys (invariance insufficient
+between '=' and '.' contexts) — then the next question is key
+invariance, not composition machinery. 
