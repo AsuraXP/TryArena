@@ -6573,3 +6573,30 @@ one hop mechanism reaches first-symbol >= .45 in (2-hop-only:
 .268/.258); baseline stays < .35. If all stay < .35: pressure is not
 the missing piece and the wall is attacked next from the learning-
 rule side (local hop reward).
+
+C119 — RESULT (Actions run 38139456863, logs in actions/results/38139456863/).
+Mixed 1-hop/2-hop pressure, 2-hop-only eval, d32 M=256 400 steps:
+  base   first-symbol in/ood/len  .292/.229/.156  .260/.232/.154
+  inner3                          .440/.346/.344  .458/.312/.315   hopw@q [.39,.00,.00,.61]
+  look1                           .271/.203/.161  .273/.214/.169   hop2w@q [.82,.01,.03,.15]
+  TF d32 1200 steps               .161/.128/.047
+Prediction (>= .45 for at least one hop mechanism; base < .35): met at
+seed 2 (.458), .440 at seed 1 — borderline, call it CONFIRMED IN
+DIRECTION, not in magnitude. The decisive change is the hop usage:
+under 2-hop-only pressure (C116) inner hops >=2 held ~0 weight; under
+mixed pressure the last hop carries .55–.61 at queries. The loop
+"deep hops get no gradient until shallow reads are right" is broken by
+PRESSURE, not by machinery — the C116 wiring was adequate all along.
+Look-ahead values (C118) still gain nothing (its chained reads never
+weight up) — stays [F]. OOD/len lift over base (+.11/+.18) is larger
+than in-range (+.17), i.e. the gain is composition not memorisation.
+Negative: .44–.46 is far from the 1-hop ceiling (.87); hop weights
+at [.39, 0, 0, .61] mean the model uses hop 0 OR hop 3, no
+intermediate — the chain is being used as a single deeper read.
+
+C120 — PRE-REGISTRATION (slope). Same arms, base vs inner3, d32 and
+d64, 800 steps, seeds 1,2 (+TF d64 2400 steps) on Actions. PREDICTION:
+inner3 first-symbol 2-hop gain over base GROWS from d32 to d64 (gap
+d64 > gap d32 by >= .05) and reaches >= .55 at d64. Falsified if the
+gap shrinks or inner3 d64 < .50: then mixed pressure only unlocks a
+fixed-depth read and the learning-rule side (local hop reward) is next.

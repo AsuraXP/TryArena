@@ -355,3 +355,4 @@
 {"cycle": "C110", "text": true, "d": 64, "M": 512, "unseen": 2.463, "baseline_M256": 2.27, "status": "falsified on text; micro capacity fix does not transfer"}
 {"cycle": "C117", "harness": "p51", "imcons": 1, "inner": 3, "d": 32, "first_symbol": {"in": 0.276, "ood": 0.214, "len": 0.174}, "hopw_at_q": [0.591, 0.021, 0.284, 0.103], "status": "falsified; mixture uses hops, imagined reads wrong; law: composition needs key-typed values"}
 {"cycle": "C118", "harness": "p51", "look": 1, "lookh": 3, "d": 32, "first_symbol": {"in": 0.268, "ood": 0.214, "len": 0.156}, "hopw_at_q": [0.417, 0.373, 0.11, 0.099], "status": "falsified; WALL: multi-hop inside one step (C116-C118)"}
+{"id":"C119","claim":"mixed 1/2-hop pressure unlocks inner hops","result":"confirmed-in-direction","first_sym_2hop":{"base":[0.292,0.260],"inner3":[0.440,0.458],"look1":[0.271,0.273],"tf":0.161},"hopw_q_inner":[0.39,0.0,0.0,0.61],"d":32,"steps":400,"run":"38139456863"}
