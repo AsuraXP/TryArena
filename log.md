@@ -6745,3 +6745,34 @@ hop k's attention argmax equals the slot written at a given stream
 position; trained inner3 d32 hop3 400 steps, Actions): h1 lands on
 a_b1 > .4 and on b_v0 < .15; h2 on a_dot > .3. Falsified if h1 lands
 on b_v0 > .3 (then the key is formed and the loss is downstream).
+
+C123a — RESULT (Actions 38152556758): paper walk CONFIRMED exactly.
+Hop landing (fraction of 2-hop queries whose hop-k argmax slot is the
+slot written at that stream position), seeds 1/2:
+  h0 -> a_b0 .84/.83   h1 -> a_b1 .62/.59   h2 -> a_dot .59/.42
+  h1 -> b_v0 .00/.00   h3 -> b_v0 .13/.17 (after DOT the state resets
+  and lands near fact starts by chance)
+The chain is not ambiguous and not under-trained: it follows the
+first fact's continuation (b0, b1, DOT) with high confidence, exactly
+as the recurrence dictates, and never mints the key "b0 b1 =". The
+.45 ceiling is the blend of hop0 and the useless deep read. C122's
+50/50-ambiguity hypothesis withdrawn.
+
+C123b — PRE-REGISTRATION: RE-POSE (--repose 1). LOOP: consuming a
+recalled token into the current state continues the old prefix;
+composition needs a NEW prefix made of the recalled tokens. REMOVAL:
+a fresh state track (same gc, blank start) consumes the recalled
+tokens r_1..r_k, then a learned query-shape vector, and reads with
+that key; these reads join the hop gate. Nothing given. Candidates
+killed: (a) feed EQ embedding as shape — oracle token, control only;
+(b) reset the main state at hop 1 — destroys the continuation reads
+the chain needs to recover b1; (c) store facts under both name and
+value keys at write time — doubles memory and still reads
+continuation; (d) role-typed keys (C122 plan) — solves an ambiguity
+that does not exist. Novelty: IP-LQR / KV-MemNN update a query
+vector with retrieved content; none re-run the sequence model from
+blank over recalled tokens. PREDICTION: re-posed read after two
+recalled tokens (hop index 5) lands on b_v0 > .4; 2-hop first-symbol
+>= .60 at d32 (ceiling .45; 1-hop ceiling .87); d64 >= d32. Falsified
+if first-symbol <= .50 or h5_b_v0 < .2. Runs: inner3 repose1 hop3,
+d32 and d64, 400 steps, seeds 1,2 (Actions).

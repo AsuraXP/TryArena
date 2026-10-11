@@ -147,9 +147,9 @@ def main():
     ap.add_argument("--steps", type=int, default=400); ap.add_argument("--B", type=int, default=16); ap.add_argument("--K", type=int, default=6); ap.add_argument("--nq", type=int, default=4)
     ap.add_argument("--bmode", default="rand"); ap.add_argument("--randp", type=float, default=0.1); ap.add_argument("--M", type=int, default=64)
     ap.add_argument("--lowmem", type=int, default=1); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--threads", type=int, default=1)
-    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--hopx", type=float, default=0.0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
+    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--repose", type=int, default=0); ap.add_argument("--hopx", type=float, default=0.0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
     a = ap.parse_args(); torch.set_num_threads(a.threads); global HOP; HOP = a.hop
-    P.BMODE, P.RANDP, P.MSLOTS, P.LOWMEM, P.KNORM, P.DSCALE, P.INNER, P.IMCONS, P.LOOK, P.LOOKH, P.HOPX = a.bmode, a.randp, a.M, a.lowmem, a.knorm, a.dscale, a.inner, a.imcons, a.look, a.lookh, a.hopx
+    P.BMODE, P.RANDP, P.MSLOTS, P.LOWMEM, P.KNORM, P.DSCALE, P.INNER, P.IMCONS, P.LOOK, P.LOOKH, P.HOPX, P.REPOSE = a.bmode, a.randp, a.M, a.lowmem, a.knorm, a.dscale, a.inner, a.imcons, a.look, a.lookh, a.hopx, a.repose
     P.PKB, P.PUREADDR, P.ROLE, P.SURPRISE, P.DENSE, P.RANDNAMES = 1, 3, 4, 1, True, True
     out = open(a.out, "a") if a.out else None
     def log(s):

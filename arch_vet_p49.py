@@ -66,6 +66,12 @@ HOPX = 0.0   # C121: hop-exploration credit. Loop: read-space hop mixture gives 
 # the FULL CE gradient on its own path whenever drawn; the gate is trained separately toward the hop with the lowest per-hop CE (detached target).
 # Related but different: ε-greedy / noisy-top-k expert routing (Shazeer et al. 2017 arXiv:1701.06538) adds noise to a soft gate for load balance; expert-
 # choice routing (Zhou et al. 2022 arXiv:2202.09368) routes tokens by expert; neither trains a gate on a per-expert loss oracle over READ DEPTH in a memory.
+REPOSE = 0   # C123b: RE-POSE. Diagnostic C123a showed the inner chain chases the first fact's continuation (hop1 -> b1 slot .62, hop2 -> DOT slot .5,
+# hop1 -> goal slot 0.0): consuming a recalled token into the CURRENT state yields the key "a0 a1 = b0", never "b0 b1 =". Removal: a second, FRESH
+# state track consumes the recalled tokens from zero and then a learned query-shape vector; the read with that key is offered to the hop gate.
+# Nothing is given: the shape vector, the fresh-track GRU (shared gc) and the gate are all learned. Prior art checked: latent query reformulation
+# for multi-hop QA (IP-LQR, 2022) updates a question encoding with retrieved context in a Transformer QA reader; KV-MemNN hops add the read to
+# the query vector. Neither re-runs the sequence model from a blank state over the recalled tokens to mint a fresh prefix key.
 INNER = 0   # C116: inner recall — the state re-consumes its own read (a next-token embedding) through gc, reads again, S times; learned hop mixture
 LOWMEM = 0   # hard index write (memory O(B d)/step); drops the straight-through address gradient
 KNORM = 0   # C111: size-free keys — the c-part of query and stored keys is L2-normalised to norm 4 before distance match/read
@@ -85,7 +91,7 @@ class CKB(nn.Module):
         self.b = nn.Linear(2 * d + 2, 1); nn.init.constant_(self.b.bias, BINIT)
         self.theta = nn.Parameter(torch.tensor(1.0)); self.K0 = nn.Parameter(torch.randn(max(32, M), d + ROLE) * 0.5); self.register_buffer('ramp', torch.arange(max(32, M)).float()[:M] * 1e-3); self.beta = nn.Parameter(torch.tensor(0.1))
         self.head = nn.Linear(2 * d + 1, V)
-        self.hopw = nn.Linear(d, max(INNER, 0) + 1); self.hop2 = nn.Linear(d, LOOKH + 1); self.z = nn.Linear(d, max(ROLE, 1)); self.taps = nn.Parameter(torch.full((max(WKB, 1), d), 0.5)); self.ws = nn.Linear(d, 1); nn.init.constant_(self.ws.bias, 2.2)
+        self.hopw = nn.Linear(d, max(INNER, 0) + 1 + (INNER if REPOSE else 0)); self.qshape = nn.Parameter(torch.randn(d) * 0.1); self.hop2 = nn.Linear(d, LOOKH + 1); self.z = nn.Linear(d, max(ROLE, 1)); self.taps = nn.Parameter(torch.full((max(WKB, 1), d), 0.5)); self.ws = nn.Linear(d, 1); nn.init.constant_(self.ws.bias, 2.2)
 
     def wkey(self, e, t, B, d):
         win = torch.stack([e[:, t - i] if t - i >= 0 else torch.zeros(B, d) for i in range(WKB)], 1)   # B x W x d (i=0 newest)
@@ -140,6 +146,13 @@ class CKB(nn.Module):
                     if KNORM: qs = F.normalize(qs, dim=-1) * 4.0
                     sk = -torch.cdist(qs.unsqueeze(1), K[:, :, :d]).squeeze(1); ak = torch.softmax(sk / tau + logocc, -1)
                     rk = torch.einsum("bm,bmd->bd", ak, Vm); rs.append(rk); cfs.append((ak * occ).sum(-1, keepdim=True)); ahs.append(ak.argmax(-1))
+                if REPOSE:   # C123b fresh track: blank state consumes the recalled tokens, then the learned query shape; read with that key
+                    cq = torch.zeros(B, d)
+                    for _k in range(INNER):
+                        cq = self.gc(rs[_k], cq); qq = self.gc(self.qshape.unsqueeze(0).expand(B, d), cq)
+                        if KNORM: qq = F.normalize(qq, dim=-1) * 4.0
+                        sq = -torch.cdist(qq.unsqueeze(1), K[:, :, :d]).squeeze(1); aq = torch.softmax(sq / tau + logocc, -1)
+                        rs.append(torch.einsum("bm,bmd->bd", aq, Vm)); cfs.append((aq * occ).sum(-1, keepdim=True)); ahs.append(aq.argmax(-1))
                 w = torch.softmax(self.hopw(h), -1); self._w.append(w.detach()); self._ah.append(torch.stack(ahs, 1))
                 if HOPX > 0:   # C121 hard hop choice with exploration; gate trained toward the per-hop-CE winner
                     nh = INNER + 1; j = w.argmax(-1)
@@ -152,7 +165,7 @@ class CKB(nn.Module):
                     oh = F.one_hot(j, nh).float()
                     r = sum(oh[:, k:k + 1] * rs[k] for k in range(nh)); cf = sum(oh[:, k:k + 1] * cfs[k] for k in range(nh))
                 else:
-                    r = sum(w[:, k:k + 1] * rs[k] for k in range(INNER + 1)); cf = sum(w[:, k:k + 1] * cfs[k] for k in range(INNER + 1))
+                    r = sum(w[:, k:k + 1] * rs[k] for k in range(len(rs))); cf = sum(w[:, k:k + 1] * cfs[k] for k in range(len(rs)))
             if PKB or WKB: rl, conf = r, cf
             else: rl = (1 - b) * rl + b * r; conf = (1 - b) * conf + b * cf
             if CCRED:
