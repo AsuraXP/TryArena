@@ -6426,3 +6426,24 @@ PREDICTION (micro, d32, M=256, 400 steps): 2-hop FIRST-SYMBOL acc
 or the imagined-token path does not form under CE alone — logged,
 and the next attack is a different pressure (hop supervision is NOT
 allowed; that would be an oracle).
+
+C116 RESULT — FALSIFIED. inner 3, d32, M=256: first-symbol 2-hop
+.258 in / .216 ood / .143 len — identical to the baseline (.255 /
+.211 / .138); 1-hop part unchanged. The hop mixture evidently stays
+on hop 0. The loop re-appears one level up: imagined reads are
+noisy until the hops are used, and the hops are not used while the
+imagined reads are noisy — the same bootstrap shape as the boundary
+wall (C97–C105). Three concrete suspects, NOT to be tried as
+variants of the same wiring: (i) the imagined token is a soft
+mixture r, not a committed symbol, so the imagined state never
+equals a heard state (DiscoLoop's "representation mismatch" — their
+cure, decoding to a discrete embedding, is a walked path); (ii) the
+imagined state continues from c instead of from the invariant
+chunk-start state the random resets produced; (iii) three soft hops
+compound. Per the no-variants rule the next attack must change the
+side: make the hops happen in TIME rather than inside a step — i.e.
+let the learner emit its recalled tokens as real steps (think
+aloud in its own state, not in the output) so that the second hop
+is an ordinary read on an ordinary heard-like state. Pre-register
+next cycle after search. Ledger: inner recall (soft, in-step) —
+negative, failure reason: imagination bootstrap.
