@@ -6294,3 +6294,9 @@ so distance = angle at every d. --knorm 1. PREDICTION: d64 unseen
 <= 2.16 (gain restored) with d32 not worse than 2.26 (run next). If
 d64 does not move and C110 does not either, the wall is attacked
 next from the DATA side (is the stream too small for d64?).
+Second correction: two d64 processes thrashed the 4 GB box (the
+blend write K=(1-a)K+a*pk saves B x M x d per byte for backward).
+--lowmem 1: hard row write (index_put), 1.66x faster per step and
+~1.1 GB at d64; it drops the straight-through address gradient, so
+it must be validated: d32 and d64 lowmem running in parallel vs
+baselines 2.26 / 2.39. Accept if within +-.08.
