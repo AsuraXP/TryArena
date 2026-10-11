@@ -1,0 +1,11 @@
+  [CKB d64 s2] step 0 loss 12.794 (0s)
+  [CKB d64 s2] step 100 loss 3.918 (37s)
+  [CKB d64 s2] step 200 loss 3.502 (72s)
+  [CKB d64 s2] step 300 loss 4.099 (106s)
+  [CKB d64 s2] step 400 loss 4.325 (141s)
+  [CKB d64 s2] step 500 loss 6.259 (175s)
+  [CKB d64 s2] step 600 loss 5.180 (209s)
+  [CKB d64 s2] step 700 loss 5.034 (243s)
+  [CKB d64 s2] step 799 loss 4.865 (277s)
+[base CKB d64 s2] params 81755 in 1.709/0.602 ood 3.882/0.126 len 2.171/0.451 | first-symbol acc in/ood/len 0.286/0.234/0.174
+[P51] [{"arm": "CKB", "d": 64, "seed": 2, "params": 81755, "in_ce": 1.709, "in_acc": 0.602, "in_a1": 0.286, "ood_ce": 3.882, "ood_acc": 0.126, "ood_a1": 0.234, "len_ce": 2.171, "len_acc": 0.451, "len_a1": 0.174, "tag": "base"}]

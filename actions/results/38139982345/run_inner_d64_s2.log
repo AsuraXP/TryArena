@@ -1,0 +1,11 @@
+  [CKB d64 s2] step 0 loss 12.788 (1s)
+  [CKB d64 s2] step 100 loss 3.935 (89s)
+  [CKB d64 s2] step 200 loss 4.102 (177s)
+  [CKB d64 s2] step 300 loss 3.594 (264s)
+  [CKB d64 s2] step 400 loss 3.464 (349s)
+  [CKB d64 s2] step 500 loss 3.505 (433s)
+  [CKB d64 s2] step 600 loss 3.558 (517s)
+  [CKB d64 s2] step 700 loss 4.071 (600s)
+  [CKB d64 s2] step 799 loss 2.766 (682s)
+[inner CKB d64 s2] params 81950 in 1.266/0.695 ood 4.578/0.107 len 2.09/0.488 | first-symbol acc in/ood/len 0.471/0.177/0.266 | hopw@q [0.414, 0.003, 0.003, 0.58] hopw_all [0.473, 0.122, 0.236, 0.169]
+[P51] [{"arm": "CKB", "d": 64, "seed": 2, "params": 81950, "hopw_at_q": [0.414, 0.003, 0.003, 0.58], "hopw_all": [0.473, 0.122, 0.236, 0.169], "im_loss": 0.0, "in_ce": 1.266, "in_acc": 0.695, "in_a1": 0.471, "ood_ce": 4.578, "ood_acc": 0.107, "ood_a1": 0.177, "len_ce": 2.09, "len_acc": 0.488, "len_a1": 0.266, "tag": "inner"}]
