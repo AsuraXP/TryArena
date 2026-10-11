@@ -6313,3 +6313,30 @@ mechanism: allocation is a hard rule with no gradient, keys learn
 only through reads). New d64 baseline = 2.270; d32 = 2.313.
 Throughput now: 2 lanes x ~45 min per 2000-step run, any d.
 C110 (M=512) and C111 (knorm) running at d64 under lowmem.
+
+C112 — MICRO HARNESS (arch_vet_p51.py). Random-symbol binding stream
+(fresh 2-symbol names/values per sequence: unmemorizable; K=6 facts,
+4 queries; ood = names from symbols never seen as names; len = 2K).
+Same core (CKB lowmem/rand), same controls, ~2.5 min per arm-size.
+Lanes run only while a turn is open (processes freeze between turns)
+— one more reason runs must be minutes. Seed 1; CKB 400 steps,
+controls 1200 steps (3x the examples, to rule out "unconverged"):
+| arm (steps) | d  | params  | in acc | ood acc | len acc |
+| GRU (1200)  | 16 | 3,942   | .031 | .036 | .046 |
+| GRU (1200)  | 32 | 10,886  | .031 | .038 | .046 |
+| GRU (1200)  | 64 | 33,990  | .095 | .081 | .072 |
+| TF  (1200)  | 16 | 8,870   | .145 | .169 | .034 |
+| TF  (1200)  | 32 | 29,958  | .570 | .549 | .069 |
+| TF  (1200)  | 64 | 108,998 | .579 | .469 | .078 |
+| CKB (400)   | 16 | 8,182   | .859 | .776 | .738 |
+| CKB (400)   | 32 | 22,102  | .908 | .898 | .794 |
+| CKB (400)   | 64 | 68,374  | .935 | .914 | .716 |
+NEGATIVE FIRST: CKB length accuracy does NOT improve 32->64 (.794 ->
+.716) — the same d64 flattening as on text, reproduced in minutes.
+POSITIVE: with a third of the examples CKB beats TF by +.34 in, +.45
+ood, +.64 len at d64; TF length acc collapses (<.08) at every size;
+GRU does not learn the task at all in 1200 steps.
+Earlier draft OODs were unfair (held-out symbols = untrained
+embeddings; swapped roles = never-emitted outputs); both gave 0 for
+every arm and were discarded before any claim.
+NEXT (micro, minutes): d64 wall — seeds 2,3 (noise?), M=256, knorm.
