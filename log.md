@@ -6483,3 +6483,31 @@ PREDICTION (micro, d32, M=256, 400 steps): 2-hop first-symbol acc
 heard state but the mixture still never chooses hops -> the
 mixture, not the imagination, is the loop; attack it next from the
 credit side (not by forcing hops).
+
+C117 RESULT — FALSIFIED, WITH THE DIAGNOSTIC THAT MATTERS.
+imcons 1 + inner 3, d32: first-symbol 2-hop .276 in / .214 ood /
+.174 len (baseline .255/.211/.138); 1-hop unchanged (.898 in, .818
+len; first-symbol .844). Hop-mixture weights AT QUERY positions:
+hop0 .59, hop1 .02, hop2 .28, hop3 .10 (all positions: .52/.08/
+.20/.20). So the pre-registered alternative is wrong too: the
+mixture DOES choose hops; the imagined reads are simply not the
+right ones. The imagination path is the problem, not the credit.
+WHY (structural, not tunable): a binding here is key = prefix STATE,
+value = next-TOKEN embedding. Composition needs the recalled thing
+to be usable as a key, but a token embedding is not a state; to
+turn it into one the learner must imagine 3 steps (b1, b2, '=')
+through its own recurrence from a context that never occurred,
+and errors compound. Law L-COMPOSITION-NEEDS-KEY-TYPED-VALUES: a
+learner can chain bindings only if what it recalls is of the same
+type as what it looks up with. Ledger: inner recall + imagination
+consistency — negative, reason: value/key type mismatch.
+C118 — CANDIDATE FOR NEXT CYCLE (to be searched + pre-registered):
+LOOK-AHEAD VALUES. Each slot stores, besides the next-token
+embedding (for output), the learner's own key-state a few steps
+later (written with delay, from heard data only). Under the random-
+reset invariance that state ~ the key the learner would form on
+hearing "b1 b2" fresh, so hop 2 is an ORDINARY read with a recalled
+key — no imagination. Loop broken because both channels are filled
+from heard data; nothing has to be right before chaining works.
+Prediction to be fixed at pre-registration (target first-symbol
+>= .6 in, >= .45 len at d32). Micro only until it survives.

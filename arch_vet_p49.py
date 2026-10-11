@@ -87,7 +87,7 @@ class CKB(nn.Module):
         dk = d + ROLE; K = self.K0[:M].unsqueeze(0).expand(B, M, dk).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M); pk = torch.zeros(B, dk); usage = torch.zeros(B, M)
         outs, bs = [], []; surp = torch.zeros(B, 2)
         UTIL = BMODE == "util"; cutpos = torch.zeros(B, dtype=torch.long); slot_cut = torch.zeros(B, M, dtype=torch.long); Rw = torch.zeros(B, L); logps = []
-        im_loss = torch.zeros(()); r0_prev = None; c_prev = None
+        im_loss = torch.zeros(()); r0_prev = None; c_prev = None; self._w = []
         for t in range(L):
             c_prev = c; h = self.gh(e[:, t], h); c = self.gc(e[:, t], c)
             if IMCONS and r0_prev is not None and self.training:
@@ -119,7 +119,7 @@ class CKB(nn.Module):
                     if KNORM: qs = F.normalize(qs, dim=-1) * 4.0
                     sk = -torch.cdist(qs.unsqueeze(1), K[:, :, :d]).squeeze(1); ak = torch.softmax(sk / tau + logocc, -1)
                     rk = torch.einsum("bm,bmd->bd", ak, Vm); rs.append(rk); cfs.append((ak * occ).sum(-1, keepdim=True))
-                w = torch.softmax(self.hopw(h), -1)
+                w = torch.softmax(self.hopw(h), -1); self._w.append(w.detach())
                 r = sum(w[:, k:k + 1] * rs[k] for k in range(INNER + 1)); cf = sum(w[:, k:k + 1] * cfs[k] for k in range(INNER + 1))
             if PKB or WKB: rl, conf = r, cf
             else: rl = (1 - b) * rl + b * r; conf = (1 - b) * conf + b * cf

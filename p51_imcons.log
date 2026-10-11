@@ -1,0 +1,21 @@
+  [CKB d32 s1] step 0 loss 13.014 (1s)
+  [CKB d32 s1] step 0 loss 12.912 (2s)
+  [CKB d32 s1] step 100 loss 3.658 (86s)
+  [CKB d32 s1] step 100 loss 5.958 (139s)
+  [CKB d32 s1] step 200 loss 2.588 (163s)
+  [CKB d32 s1] step 300 loss 3.698 (241s)
+  [CKB d32 s1] step 200 loss 5.670 (273s)
+  [CKB d32 s1] step 399 loss 2.774 (323s)
+[imcons1hop CKB d32 s1] params 29146 in 0.6/0.898 ood 0.693/0.866 len 1.011/0.818 | first-symbol acc in/ood/len 0.844/0.807/0.75
+[P51] [{"arm": "CKB", "d": 32, "seed": 1, "params": 29146, "in_ce": 0.6, "in_acc": 0.898, "in_a1": 0.844, "ood_ce": 0.693, "ood_acc": 0.866, "ood_a1": 0.807, "len_ce": 1.011, "len_acc": 0.818, "len_a1": 0.75, "tag": "imcons1hop"}]
+  [CKB d32 s1] step 300 loss 5.549 (412s)
+  [CKB d32 s1] step 399 loss 4.993 (539s)
+[imcons CKB d32 s1] params 29146 in 1.659/0.591 ood 2.307/0.484 len 2.174/0.456 | first-symbol acc in/ood/len 0.276/0.214/0.174
+[P51] [{"arm": "CKB", "d": 32, "seed": 1, "params": 29146, "in_ce": 1.659, "in_acc": 0.591, "in_a1": 0.276, "ood_ce": 2.307, "ood_acc": 0.484, "ood_a1": 0.214, "len_ce": 2.174, "len_acc": 0.456, "len_a1": 0.174, "tag": "imcons"}]
+  [CKB d32 s1] step 0 loss 12.912 (1s)
+  [CKB d32 s1] step 100 loss 5.958 (136s)
+  [CKB d32 s1] step 200 loss 5.670 (265s)
+  [CKB d32 s1] step 300 loss 5.549 (397s)
+  [CKB d32 s1] step 399 loss 4.993 (533s)
+[diag CKB d32 s1] params 29146 in 1.659/0.591 ood 2.307/0.484 len 2.174/0.456 | first-symbol acc in/ood/len 0.276/0.214/0.174 | hopw@q [0.591, 0.021, 0.284, 0.103] hopw_all [0.523, 0.084, 0.197, 0.196]
+[P51] [{"arm": "CKB", "d": 32, "seed": 1, "params": 29146, "hopw_at_q": [0.591, 0.021, 0.284, 0.103], "hopw_all": [0.523, 0.084, 0.197, 0.196], "im_loss": 0.1087, "in_ce": 1.659, "in_acc": 0.591, "in_a1": 0.276, "ood_ce": 2.307, "ood_acc": 0.484, "ood_a1": 0.214, "len_ce": 2.174, "len_acc": 0.456, "len_a1": 0.174, "tag": "diag"}]

@@ -89,6 +89,8 @@ def run(arm, d, seed, steps, B, K, nq, log):
             ces, accs, a1s = [], [], []
             for _ in range(6):
                 x, mk = batch(er, 16, kk, syms, nq); lg = fwd(m, arm, x, 0.1); ce, ac, a1 = q_metrics(lg, x, mk); ces.append(ce); accs.append(ac); a1s.append(a1)
+            if arm == "CKB" and P.INNER and nm == "in":
+                W = torch.stack(m._w, 1); qpos = mk[:, 1:] == 1; res["hopw_at_q"] = [round(v, 3) for v in W[:, :-1][qpos].mean(0).tolist()]; res["hopw_all"] = [round(v, 3) for v in W.mean((0, 1)).tolist()]; res["im_loss"] = round(float(m.im_loss), 4)
             res[nm + "_ce"] = round(sum(ces) / 6, 3); res[nm + "_acc"] = round(sum(accs) / 6, 3); res[nm + "_a1"] = round(sum(a1s) / 6, 3)
     return res
 
@@ -112,7 +114,7 @@ def main():
         for d in [int(v) for v in a.ds.split(",")]:
             for seed in [int(v) for v in a.seeds.split(",")]:
                 r = run(arm, d, seed, a.steps, a.B, a.K, a.nq, log); r["tag"] = a.tag; rows.append(r)
-                log(f"[{a.tag} {arm} d{d} s{seed}] params {r['params']} in {r['in_ce']}/{r['in_acc']} ood {r['ood_ce']}/{r['ood_acc']} len {r['len_ce']}/{r['len_acc']} | first-symbol acc in/ood/len {r['in_a1']}/{r['ood_a1']}/{r['len_a1']}")
+                log(f"[{a.tag} {arm} d{d} s{seed}] params {r['params']} in {r['in_ce']}/{r['in_acc']} ood {r['ood_ce']}/{r['ood_acc']} len {r['len_ce']}/{r['len_acc']} | first-symbol acc in/ood/len {r['in_a1']}/{r['ood_a1']}/{r['len_a1']}" + (f" | hopw@q {r.get('hopw_at_q')} hopw_all {r.get('hopw_all')}" if 'hopw_at_q' in r else ""))
     log("[P51] " + json.dumps(rows))
 
 
