@@ -1,12 +1,15 @@
 # Experiment fan-out. Trigger: push a change to actions/jobs.json on this branch
 # (workflow_dispatch is unavailable: the workflow is not on the default branch and
 # the sandbox token has no Actions scope). One ubuntu runner (4 CPU/16 GB) per entry.
-# Fetch: gh run list --workflow=experiment.yml ; gh run download <id> -D actions/out
+# Results come back by git: the collect job commits actions/results/<run_id>/*.log to the
+# branch (artifact/log hosts are not reachable from the sandbox). Fetch with git pull --rebase.
 name: experiment
 on:
   push:
     branches: ["arena/**"]
     paths: ["actions/jobs.json"]
+permissions:
+  contents: write
 jobs:
   plan:
     runs-on: ubuntu-latest
@@ -35,9 +38,23 @@ jobs:
       - run: pip install -q torch numpy --index-url https://download.pytorch.org/whl/cpu
       - name: run
         run: |
-          python ${{ needs.plan.outputs.script }} ${{ matrix.job.args }} --threads 4 > "run_${{ matrix.job.tag }}.log" 2>&1 || true
+          python -u ${{ needs.plan.outputs.script }} ${{ matrix.job.args }} --threads 4 > "run_${{ matrix.job.tag }}.log" 2>&1 || true
           tail -n 30 "run_${{ matrix.job.tag }}.log"
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.job.tag }}
           path: run_${{ matrix.job.tag }}.log
+  collect:
+    needs: run
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/download-artifact@v4
+        with: { path: actions/results/${{ github.run_id }}, merge-multiple: true }
+      - run: |
+          git config user.name actions-runner; git config user.email actions@users.noreply.github.com
+          git add actions/results
+          git commit -qm "results ${{ github.run_id }} [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep 10; done
