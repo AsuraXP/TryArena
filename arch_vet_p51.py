@@ -115,6 +115,10 @@ def run(arm, d, seed, steps, B, K, nq, log):
                 x, mk = batch(er, 16, kk, syms, nq); lg = fwd(m, arm, x, 0.1); ce, ac, a1 = q_metrics(lg, x, mk); ces.append(ce); accs.append(ac); a1s.append(a1)
             if arm == "CKB" and P.LOOK and nm == "in":
                 W = torch.stack(m._w2, 1); qpos = mk[:, 1:] == 1; res["hop2w_at_q"] = [round(v, 3) for v in W[:, :-1][qpos].mean(0).tolist()]; res["hop2w_all"] = [round(v, 3) for v in W.mean((0, 1)).tolist()]
+            if arm == "CKB" and nm == "in":   # C124b diagnostic: does the learner's boundary fire at DOT? (b-rate at DOT vs elsewhere)
+                with torch.no_grad():
+                    _, bsx, _ = m(x, tau=tau, gmin=0.0, states=True); bsx = bsx.squeeze(-1)
+                    res["b_dot"] = round(bsx[x == DOT].mean().item(), 3); res["b_other"] = round(bsx[(x != DOT) & (x != PAD)].mean().item(), 3); res["b_hard_dot"] = round((bsx[x == DOT] > 0.5).float().mean().item(), 3)
             if arm == "CKB" and P.INNER and nm == "in" and HOP in (2, 3, 4) and m._jw:   # C123 diagnostic: where does each hop land?
                 AH = torch.stack(m._ah, 1); JW = torch.stack(m._jw, 1); xs = x.tolist(); hits = {}
                 for bb in range(x.shape[0]):

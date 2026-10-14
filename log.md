@@ -6838,3 +6838,17 @@ h5_b_v0 < .2: then either the learner's boundary does not fire at
 DOT (check b-rate, one control) or the shape vector cannot stand in
 for EQ, and the write-side family gets one more argued attempt at
 most. Runs: d32 seeds 1,2 and d64 seeds 1,2, 400 steps (Actions).
+
+PARALLEL LANES (launched together on Actions while C124 runs):
+C124b — CONTROL/diagnostic: boundary rate. If the learner's boundary
+does not fire at DOT, K2 is not context-free and C124 fails for a
+reason unrelated to the idea. Measured: mean b at DOT, elsewhere,
+fraction >.5 at DOT (inner3 hop3 d32 400 steps). Expect b_dot > .8,
+b_other < .1; if b_dot < .5 the C124 falsifier is void and a hard-
+boundary control follows.
+C125 — SLOPE CURVE, 2-hop composition, 3 sizes: base, inner3 (mixed
+pressure) and fair TF at d16 (d32/d64 exist: C120). Needed for any
+slope statement; prediction: inner3 gap over TF at d16 < d32 (gap
+grows with size at the low end) — if the gap at d16 is already the
+same .2, the mechanism is size-free and the slope claim is dead on
+this axis.

@@ -2,21 +2,29 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "k2_d32_s1",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 1 --tag k2"
+   "tag": "brate_s1",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --seeds 1 --tag brate"
   },
   {
-   "tag": "k2_d32_s2",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 2 --tag k2"
+   "tag": "base_d16_s1",
+   "args": "--arms CKB --ds 16 --steps 800 --M 256 --hop 3  --seeds 1 --tag base"
   },
   {
-   "tag": "k2_d64_s1",
-   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 1 --tag k2"
+   "tag": "base_d16_s2",
+   "args": "--arms CKB --ds 16 --steps 800 --M 256 --hop 3  --seeds 2 --tag base"
   },
   {
-   "tag": "k2_d64_s2",
-   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 2 --tag k2"
+   "tag": "inner_d16_s1",
+   "args": "--arms CKB --ds 16 --steps 800 --M 256 --hop 3 --inner 3 --seeds 1 --tag inner"
+  },
+  {
+   "tag": "inner_d16_s2",
+   "args": "--arms CKB --ds 16 --steps 800 --M 256 --hop 3 --inner 3 --seeds 2 --tag inner"
+  },
+  {
+   "tag": "tf_d16_s1",
+   "args": "--arms TF --ds 16 --steps 2400 --hop 3 --seeds 1 --tag tf"
   }
  ],
- "nonce": 1791975318
+ "nonce": 1791975905
 }
