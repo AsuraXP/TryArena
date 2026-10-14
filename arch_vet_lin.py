@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.E = nn.Embedding(V, d); self.P = nn.Linear(d, dk, bias=False); self.Ph = nn.Linear(d, dk, bias=False)
@@ -26,7 +26,7 @@ class LIN(nn.Module):
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
         self.g = nn.GRUCell(2 * d, d)
         self.mix = nn.Linear(d, 3)   # r0 (1-hop), r1 (continuation), rq (re-posed)
-        self.head = nn.Linear(2 * d, V)
+        self.head = nn.Linear(2 * d, V); self.hopce = hopce; self.head2 = nn.Linear(2 * d, V)   # C129: t+2 head for the continuation read
 
     def key(self, k, e, h):
         lam = torch.sigmoid(self.lam)
@@ -38,7 +38,7 @@ class LIN(nn.Module):
 
     def forward(self, x, **kw):
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x)
-        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; win = []
+        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; self._reads = []; self._hs = []; win = []; l0, l1 = [], []
         lam = torch.sigmoid(self.lam); sP = self.P(self.shape).unsqueeze(0)
         for t in range(L):
             et = e[:, t]
@@ -58,7 +58,13 @@ class LIN(nn.Module):
             elif self.keyfn == "lin": qq = lam * lam * self.P(r0) + lam * self.P(r1) + sP   # RE-POSE: writer's key function on recalled symbols
             else: qq = self.Ph(self.g(torch.cat([r1, r0], -1), h))
             rq = torch.einsum("bk,bkd->bd", F.normalize(qq, dim=-1), W)
-            w = torch.softmax(self.mix(h), -1); self._mix.append(w.detach())
+            w = torch.softmax(self.mix(h), -1); self._mix.append(w.detach()); self._reads.append(torch.stack([r0, r1, rq], 1).detach()); self._hs.append(h.detach())
             r = w[:, 0:1] * r0 + w[:, 1:2] * r1 + w[:, 2:3] * rq
             outs.append(self.head(torch.cat([h, r], -1)))
+            if self.hopce: l0.append(self.head(torch.cat([h, r0], -1))); l1.append(self.head2(torch.cat([h, r1], -1)))
+        self.aux = torch.zeros(())
+        if self.hopce:   # C129 LEARNING RULE: each hop read must be a standalone predictor of a real stream target (t+1 for r0, t+2 for r1); no oracle
+            L0 = torch.stack(l0, 1); L1 = torch.stack(l1, 1)
+            self.aux = self.hopce * (F.cross_entropy(L0[:, :-1].reshape(-1, L0.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)
+                                     + F.cross_entropy(L1[:, :-2].reshape(-1, L1.shape[-1]), x[:, 2:].reshape(-1), ignore_index=0))
         return torch.stack(outs, 1)

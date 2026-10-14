@@ -7021,3 +7021,28 @@ SLOPE (2-hop first-symbol, in-range, best no-oracle learner vs fair TF, same bat
   Provisional until: d16 roles point, 4 seeds per size, and a text proxy. Nothing here is a box: delete the learned
   parts (P, R, shape, controller, head) and nothing reads anything.
 Negatives held in view: 2-hop OOD; d64 s2 1-hop OOD .48 outlier; length at d32 2-hop .32–.38.
+
+C129a — INSTRUMENT (paper first, then one local run). Per-hop decode through the head at 2-hop queries (LIN roles4 d32
+s1, first-symbol .716/.203/.341): in-range r0->b0 n/a (head never emits name symbols at query positions; decoder
+artifact), rq->v0 .625; OOD r0->b0 .656, r1->b1 .391, rq->v0 .141; length rq->v0 .281. Nearest-embedding decode is
+useless (.14–.37 even in-range): the reads are blends, not symbols, and the head untangles them linearly. So in OOD the
+first two hops are mostly right and the RE-POSED read fails: the algebraic re-pose is applied to noisy blends and the
+noise compounds (key = R2⊙P r0 + R1⊙P r1 + R0⊙P s with r0, r1 blends). The representation is right; the reads are not
+clean, because nothing in the objective asks them to be.
+
+C129 — PRE-REGISTRATION (LEARNING-RULE axis, cycle 1; representation axis parked after two cycles per remedy §1).
+LOOP: the only loss is CE on the mixed read; r0 and r1 get gradient only through the mixture, so they are as clean as
+the final prediction needs in-distribution and no cleaner; in OOD the blend noise compounds in the algebra. REMOVAL
+(rule, not wiring): each hop read must be a standalone predictor of a REAL stream target that exists at every position
+— r0 predicts x_{t+1}, r1 predicts x_{t+2} (its own head), weight --hopce 1. No oracle, no boundary, no task label:
+the targets are the next two tokens of the stream. Reads that are clean standalone predictors are clean inputs to the
+re-pose. Candidates killed: (a) snap reads to nearest embedding between hops (resonator/FREKI cleanup) — walked, and the
+decode instrument shows reads are not near embeddings; (b) orthogonality penalty on W values — regulariser, nudges;
+(c) more roles/bigger key — capacity, not rule; (d) contrastive read-vs-embedding loss — oracle-free but equivalent to
+(a) in soft form. Novelty: multi-token prediction (Gloeckle et al. 2024, arXiv:2404.19737) trains t+2 heads on the same
+trunk state; here the t+2 target trains the CONTINUATION READ of a memory, which is the quantity the composition
+re-uses — that is the delta. Instrument check: HOP 3 training is 50/50 mixed; the aux targets apply at every position
+including facts; ignore_index=0 drops PAD. PREDICTION: 2-hop OOD >= .40 at d32 and d64 (was .20–.30), in-range not
+below C128 (.70/.86), length up. Falsified if OOD < .30 — then clean reads are not the bottleneck and the OOD defect
+is in the key algebra on swapped roles. Runs (Actions): hopce 1, roles 4, hop 3, d32/d64, seeds 1,2 + hopce 0.3 d32 s1
++ 1-hop d32 s1 (second proxy) + d16 roles4 hopce0/1 s1 (owed slope point).

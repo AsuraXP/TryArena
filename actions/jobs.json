@@ -2,37 +2,37 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "r4_h3_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --seeds 1 --tag r4h3"
+   "tag": "hc1_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --hopce 1 --seeds 1 --tag hc1"
   },
   {
-   "tag": "r4_h3_d32_s2",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --seeds 2 --tag r4h3"
+   "tag": "hc1_d32_s2",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --hopce 1 --seeds 2 --tag hc1"
   },
   {
-   "tag": "r4_h3_d64_s1",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --seeds 1 --tag r4h3"
+   "tag": "hc1_d64_s1",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --hopce 1 --seeds 1 --tag hc1"
   },
   {
-   "tag": "r4_h3_d64_s2",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --seeds 2 --tag r4h3"
+   "tag": "hc1_d64_s2",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --hopce 1 --seeds 2 --tag hc1"
   },
   {
-   "tag": "r4_h1_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --roles 4 --seeds 1 --tag r4h1"
+   "tag": "hc03_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --hopce 0.3 --seeds 1 --tag hc03"
   },
   {
-   "tag": "r4_h1_d32_s2",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --roles 4 --seeds 2 --tag r4h1"
+   "tag": "hc1_h1_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --roles 4 --hopce 1 --seeds 1 --tag hc1h1"
   },
   {
-   "tag": "r4_h1_d64_s1",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 1 --roles 4 --seeds 1 --tag r4h1"
+   "tag": "r4_d16_s1",
+   "args": "--arms LIN --ds 16 --steps 800 --hop 3 --roles 4 --seeds 1 --tag r4d16"
   },
   {
-   "tag": "r4_h1_d64_s2",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 1 --roles 4 --seeds 2 --tag r4h1"
+   "tag": "hc1_d16_s1",
+   "args": "--arms LIN --ds 16 --steps 800 --hop 3 --roles 4 --hopce 1 --seeds 1 --tag hc1d16"
   }
  ],
- "nonce": 1791981925
+ "nonce": 1791986025
 }
