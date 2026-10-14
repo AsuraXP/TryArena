@@ -7046,3 +7046,17 @@ including facts; ignore_index=0 drops PAD. PREDICTION: 2-hop OOD >= .40 at d32 a
 below C128 (.70/.86), length up. Falsified if OOD < .30 — then clean reads are not the bottleneck and the OOD defect
 is in the key algebra on swapped roles. Runs (Actions): hopce 1, roles 4, hop 3, d32/d64, seeds 1,2 + hopce 0.3 d32 s1
 + 1-hop d32 s1 (second proxy) + d16 roles4 hopce0/1 s1 (owed slope point).
+
+C129 — RESULT (Actions 38575708844 + local s3): FALSIFIED. Per-hop stream-target rule (hopce 1), 2-hop first-symbol
+in/ood/len: d32 .721/.221/.419 .680/.297/.370 .747/.156/.385(local) | d64 .831/.211/.622 .846/.310/.651 | hopce .3 d32
+.695/.206/.419. OOD unchanged from C128 (.20–.30 -> .16–.31; needed >= .40); in-range unchanged; length +.05 at d32.
+1-hop proxy unchanged (.943/.823/.898). OOD decode of r0/r1 did get cleaner in some seeds (s2: .67/.70 -> rq .41) but
+not reliably, and rq stays .17–.41. As pre-registered: clean reads are NOT the bottleneck; the OOD defect sits in the
+key algebra / memory under swapped roles. Owed slope point: d16 roles4 .354 (hopce .339); TF d16 .185.
+Paper note for the next cycle (no run yet): in OOD every symbol in the sequence comes from one 24-symbol pool, names
+and values alike, so the fast-weight matrix holds ~50 writes whose keys share symbols at every offset; one read
+tolerates the crosstalk (1-hop OOD .82), a chain of three multiplies it. That is a superposition-capacity property of
+a d×d outer-product memory, i.e. representation, not rule. Next instrument: margin (correct vs runner-up) of the
+re-posed read in-range vs OOD, and the same at 2x key width — if margin tracks width the limit is capacity and the
+representation axis gets its third cycle on key geometry (sparse/high-dim keys, Kanerva-style), else the role binding
+itself is wrong for shared pools. Axis ledger: representation 2 cycles (both moved), learning rule 1 cycle (falsified).

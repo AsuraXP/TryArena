@@ -407,3 +407,9 @@ Harness: `--inner S` reports `hopland` (hop-k landing on a_b0/a_b1/a_dot/b_v0 sl
 - Best numbers: 2-hop in-range d32 .70, d64 .86; 1-hop .94/.82/.90. OPEN DEFECT: 2-hop OOD .2–.3. Diagnose on paper first (why does the re-posed key fail when names are value symbols, although 1-hop OOD works?). Candidates: the recalled r0/r1 for OOD names are read from a W where those symbols also appear as values of other facts (continuation read r1 collides); check with a landing/decoding instrument for r0, r1 in OOD before any change.
 - Remedy quota: representation axis has had 2 cycles (C127, C128), both loop-breaking; a third may follow, then the learning-rule axis must get a turn regardless. Read path of CKB remains frozen.
 - Still owed for the slope claim: d16 roles point, 4 seeds/size, a text proxy for LIN (needs a p49-style byte harness arm).
+
+## State after C129
+- C129 (learning rule: per-hop t+1/t+2 targets, `--hopce`) falsified for 2-hop OOD; keep flag, do not retune.
+- Instruments in p51 for LIN: `decode_{in,ood,len}` = head-decode of r0/r1/rq at 2-hop queries vs b0/b1/v0 (r0/r1 in-range decode is a known artifact: head never emits name symbols there).
+- Next: margin instrument for rq (correct minus runner-up logit) in-range vs OOD at kmult 2 and 4 (`LIN(kmult=)` exists in the class; expose a flag). Decide capacity vs binding from that, then representation cycle 3 or back to the rule.
+- Slope table (2-hop in-range, LIN roles4 vs TF): d16 .35/.185, d32 .70/.16, d64 .86/.245. OOD .2–.3 vs TF .13 — not a win yet. Length d64 .63 vs .016.
