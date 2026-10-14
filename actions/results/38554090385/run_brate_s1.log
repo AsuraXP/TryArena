@@ -1,0 +1,7 @@
+  [CKB d32 s1] step 0 loss 12.912 (1s)
+  [CKB d32 s1] step 100 loss 4.755 (85s)
+  [CKB d32 s1] step 200 loss 4.051 (166s)
+  [CKB d32 s1] step 300 loss 3.500 (248s)
+  [CKB d32 s1] step 399 loss 4.143 (327s)
+[brate CKB d32 s1] params 29310 in 1.39/0.686 ood 2.253/0.512 len 2.014/0.512 | first-symbol acc in/ood/len 0.456/0.354/0.323 | hopw@q [0.451, 0.002, 0.001, 0.546] hopw_all [0.785, 0.03, 0.156, 0.029]
+[P51] [{"arm": "CKB", "d": 32, "seed": 1, "params": 29310, "b_dot": 0.117, "b_other": 0.099, "b_hard_dot": 0.117, "hopland": {"h0_a_b0": 0.75, "h0_a_b1": 0.0, "h0_a_dot": 0.0, "h0_b_v0": 0.016, "h1_a_b0": 0.0, "h1_a_b1": 0.531, "h1_a_dot": 0.031, "h1_b_v0": 0.0, "h2_a_b0": 0.0, "h2_a_b1": 0.0, "h2_a_dot": 0.453, "h2_b_v0": 0.016, "h3_a_b0": 0.016, "h3_a_b1": 0.0, "h3_a_dot": 0.0, "h3_b_v0": 0.141}, "hopw_at_q": [0.451, 0.002, 0.001, 0.546], "hopw_all": [0.785, 0.03, 0.156, 0.029], "im_loss": 0.0, "in_ce": 1.39, "in_acc": 0.686, "in_a1": 0.456, "ood_ce": 2.253, "ood_acc": 0.512, "ood_a1": 0.354, "len_ce": 2.014, "len_acc": 0.512, "len_a1": 0.323, "tag": "brate"}]

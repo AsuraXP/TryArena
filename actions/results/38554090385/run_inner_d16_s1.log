@@ -1,0 +1,11 @@
+  [CKB d16 s1] step 0 loss 12.746 (1s)
+  [CKB d16 s1] step 100 loss 9.193 (77s)
+  [CKB d16 s1] step 200 loss 5.238 (154s)
+  [CKB d16 s1] step 300 loss 5.037 (231s)
+  [CKB d16 s1] step 400 loss 4.572 (303s)
+  [CKB d16 s1] step 500 loss 4.121 (374s)
+  [CKB d16 s1] step 600 loss 4.764 (445s)
+  [CKB d16 s1] step 700 loss 3.729 (516s)
+  [CKB d16 s1] step 799 loss 3.949 (586s)
+[inner CKB d16 s1] params 12174 in 1.542/0.656 ood 2.522/0.477 len 2.111/0.516 | first-symbol acc in/ood/len 0.409/0.292/0.258 | hopw@q [0.533, 0.001, 0.01, 0.456] hopw_all [0.728, 0.033, 0.178, 0.06]
+[P51] [{"arm": "CKB", "d": 16, "seed": 1, "params": 12174, "b_dot": 0.094, "b_other": 0.101, "b_hard_dot": 0.094, "hopland": {"h0_a_b0": 0.844, "h0_a_b1": 0.0, "h0_a_dot": 0.0, "h0_b_v0": 0.031, "h1_a_b0": 0.0, "h1_a_b1": 0.516, "h1_a_dot": 0.0, "h1_b_v0": 0.0, "h2_a_b0": 0.0, "h2_a_b1": 0.0, "h2_a_dot": 0.375, "h2_b_v0": 0.0, "h3_a_b0": 0.0, "h3_a_b1": 0.0, "h3_a_dot": 0.0, "h3_b_v0": 0.297}, "hopw_at_q": [0.533, 0.001, 0.01, 0.456], "hopw_all": [0.728, 0.033, 0.178, 0.06], "im_loss": 0.0, "in_ce": 1.542, "in_acc": 0.656, "in_a1": 0.409, "ood_ce": 2.522, "ood_acc": 0.477, "ood_a1": 0.292, "len_ce": 2.111, "len_acc": 0.516, "len_a1": 0.258, "tag": "inner"}]

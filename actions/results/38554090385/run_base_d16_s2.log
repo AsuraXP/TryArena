@@ -1,0 +1,11 @@
+  [CKB d16 s2] step 0 loss 12.895 (0s)
+  [CKB d16 s2] step 100 loss 9.371 (16s)
+  [CKB d16 s2] step 200 loss 5.281 (32s)
+  [CKB d16 s2] step 300 loss 4.385 (48s)
+  [CKB d16 s2] step 400 loss 4.517 (64s)
+  [CKB d16 s2] step 500 loss 4.900 (80s)
+  [CKB d16 s2] step 600 loss 4.607 (96s)
+  [CKB d16 s2] step 700 loss 4.783 (111s)
+  [CKB d16 s2] step 799 loss 4.473 (127s)
+[base CKB d16 s2] params 12123 in 1.627/0.594 ood 2.708/0.452 len 2.153/0.46 | first-symbol acc in/ood/len 0.31/0.221/0.18
+[P51] [{"arm": "CKB", "d": 16, "seed": 2, "params": 12123, "b_dot": 0.094, "b_other": 0.092, "b_hard_dot": 0.094, "in_ce": 1.627, "in_acc": 0.594, "in_a1": 0.31, "ood_ce": 2.708, "ood_acc": 0.452, "ood_a1": 0.221, "len_ce": 2.153, "len_acc": 0.46, "len_a1": 0.18, "tag": "base"}]
