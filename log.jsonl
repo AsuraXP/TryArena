@@ -362,3 +362,4 @@
 {"id":"C123a","claim":"inner chain chases first-fact continuation, never mints b-name key","result":"confirmed","hopland":{"h0_a_b0":[0.844,0.828],"h1_a_b1":[0.625,0.594],"h2_a_dot":[0.594,0.422],"h1_b_v0":[0.0,0.0],"h3_b_v0":[0.125,0.172]},"run":"38152556758"}
 {"id":"C123b","claim":"re-posed fresh-prefix key finds the b-fact","result":"falsified","h5_b_v0":[0.0,0.0,0.0,0.0],"first_sym_2hop":{"d32":[0.424,0.451],"d64":[0.443,0.456]},"run":"38153133040"}
 {"id":"C123c","claim":"sharp re-pose matches heard key","result":"falsified","h5_b_v0":[0.0,0.0],"first_sym_2hop":[0.448,0.448],"run":"38154256544"}
+{"id":"C124","claim":"context-free second key lets re-posed read find the b-fact","result":"confirmed 1/4 runs","h5_b_v0":{"d32":[0.0,0.0],"d64":[0.656,0.0]},"first_sym_2hop":{"d32":[0.438,0.445],"d64":[0.732,0.401]},"d64_s1_ood_len":[0.565,0.594],"run":"38552943174"}

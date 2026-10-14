@@ -6852,3 +6852,37 @@ slope statement; prediction: inner3 gap over TF at d16 < d32 (gap
 grows with size at the low end) — if the gap at d16 is already the
 same .2, the mechanism is size-free and the slope claim is dead on
 this axis.
+
+C124 — RESULT (Actions 38552943174): CEILING BROKEN, in 1 of 4 runs.
+  d32 s1  fs .438/.263/.323  h5_b_v0 .000   gate@q hop5 .004
+  d32 s2  fs .445/.326/.372  h5_b_v0 .000   gate hop5 .001
+  d64 s1  fs .732/.565/.594  h5_b_v0 .656   gate hop5 .633   <- first break of the .45 wall (C116–C123c)
+  d64 s2  fs .401/.193/.276  h5_b_v0 .000   gate hop5 .003
+Pre-registered threshold (h5 landing > .4, first-symbol >= .60) met at
+d64 s1: the re-posed read against the context-free key lands on the
+goal slot .66 of the time, the gate adopts it (.63), 2-hop
+first-symbol .73 in-range / .57 OOD / .59 length (1-hop ceiling .87;
+TF d64 .25). Falsifier (<.2) hit in the other three seeds: landing
+exactly 0, gate never above .005. So: the MECHANISM is real and
+sufficient when found, and its DISCOVERY is unreliable. Two readings
+of 0.0 vs .66 with nothing in between: a chicken-and-egg — the shape
+vector only trains through gradient ∝ gate weight on hop 5, and the
+gate only weights hop 5 once it is right (the C121 starvation loop,
+now with a real payoff behind it). Negative kept in view: 3/4 seeds
+are at or below the old ceiling, and d64 s2 is the worst OOD number
+of the series.
+
+C126 — PRE-REGISTRATION (discovery): annealed uniform floor on the
+hop gate (--gfloor 0.5 --gwarm 150). LOOP: gradient to hop k ∝ w_k,
+w_k≈0 until hop k is right, hop k only becomes right by gradient.
+REMOVAL: a floor guarantees every hop a share of gradient for the
+first 150 steps while keeping the SOFT blend (C121: hard choice
+destroys the computation); after warm-up the gate is free, so the
+final model is the same object as C124. Candidates killed: (a) ε
+hard choice — C121 [F]; (b) separate higher LR for the shape vector —
+no gradient at all to scale; (c) auxiliary loss pulling shape vector
+toward EQ embedding — oracle token; (d) more seeds only — measures,
+does not fix. PREDICTION: discovery (h5_b_v0 > .4) in >= 3 of 4 runs
+(d32 s1,s2; d64 s1,s2) vs 1/4 without; falsified if <= 1/4. In
+parallel, C124 seeds 3,4 at d64 and d32 (no floor) to pin the base
+discovery rate — same jobs file, 8 runners.

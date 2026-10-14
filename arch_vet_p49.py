@@ -70,6 +70,10 @@ HOPX = 0.0   # C121: hop-exploration credit. Loop: read-space hop mixture gives 
 # fact-start states carry residue (the learned reset is soft: c <- c(1-b)). Removal: a parallel state track cz runs the same gc but is HARD-reset to
 # zero whenever the learner's own boundary fires (b>.5); every slot also stores K2 = cz before the token. The re-pose track reads against K2, so a key
 # minted from recalled symbols alone can address a fact. The boundary, the track and the shape vector are all the learner's; no token or unit is given.
+GATEFLOOR = 0.0   # C126: soft uniform floor on the hop gate, annealed to 0 by step GATEWARM (set per step by the harness via m.gfloor). Loop: a hop
+# that is right but unweighted gets gradient ∝ w_k ≈ 0 and so never trains its own key (shape vector), while C124 shows the re-posed hop, once
+# found, carries .63 of the gate and breaks the ceiling (.73). The floor keeps the SOFT blend (C121 showed hard choice destroys it) and only
+# guarantees every hop a minimum share of gradient early; after warm-up the gate is free.
 REPOSE = 0   # C123b: RE-POSE. Diagnostic C123a showed the inner chain chases the first fact's continuation (hop1 -> b1 slot .62, hop2 -> DOT slot .5,
 # hop1 -> goal slot 0.0): consuming a recalled token into the CURRENT state yields the key "a0 a1 = b0", never "b0 b1 =". Removal: a second, FRESH
 # state track consumes the recalled tokens from zero and then a learned query-shape vector; the read with that key is offered to the hop gate.
@@ -160,7 +164,7 @@ class CKB(nn.Module):
                         if KNORM: qq = F.normalize(qq, dim=-1) * 4.0
                         sq = -torch.cdist(qq.unsqueeze(1), (K2 if REPOSE == 3 else K[:, :, :d])).squeeze(1); aq = torch.softmax(sq / tau + logocc, -1)
                         rs.append(torch.einsum("bm,bmd->bd", aq, Vm)); cfs.append((aq * occ).sum(-1, keepdim=True)); ahs.append(aq.argmax(-1))
-                w = torch.softmax(self.hopw(h), -1); self._w.append(w.detach()); self._ah.append(torch.stack(ahs, 1))
+                w = torch.softmax(self.hopw(h), -1); gf = getattr(self, 'gfloor', 0.0); w = (1 - gf) * w + gf / w.shape[1] if gf > 0 else w; self._w.append(w.detach()); self._ah.append(torch.stack(ahs, 1))
                 if HOPX > 0:   # C121 hard hop choice with exploration; gate trained toward the per-hop-CE winner
                     nh = INNER + 1; j = w.argmax(-1)
                     if self.training:
