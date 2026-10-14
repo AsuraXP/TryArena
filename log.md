@@ -6812,3 +6812,29 @@ so a re-posed prefix can match — the learner's own second key, not a
 given one. Pre-registration next cycle after the usual gates; the
 C123 harness (hopland) is the acceptance measure: h5_b_v0 must move
 off 0 before any accuracy number is read.
+
+C124 — PRE-REGISTRATION: CONTEXT-FREE SECOND KEY (write side;
+--repose 3). LOOP: a key minted from recalled symbols alone (fresh
+prefix) can never equal a heard key that carries residue of the
+previous unit; C123b/c measured exactly that (goal landing 0.0 under
+soft and sharp re-pose). REMOVAL: the write side also stores K2 =
+the state of a track that is hard-reset at the learner's OWN
+boundary (b>.5) — the same gc, blank start per unit — so every fact
+has one key that is a pure function of its own tokens; the re-pose
+track (sharp recalled tokens -> fresh gc -> learned shape vector)
+reads against K2. Candidates killed: (a) make the main reset hard —
+changes the 1-hop core that works, and C106 banked hard resets as
+worse; (b) key facts by their first two tokens' embeddings (no
+recurrence) — a given unit structure, oracle-shaped; (c) read-side
+denoising of heard keys — cannot remove residue it does not know.
+Novelty: dual-key memories exist (content + position keys in
+Transformer-XL-style relative attention; "key-value-key" triples in
+KG embedding) but none pairs a context-laden prefix key with a
+self-segmented context-free prefix key for the same slot in a
+recurrent learner. PREDICTION: goal landing of the re-posed read
+after two recalled tokens (h5_b_v0) > .4 (was 0.0); 2-hop
+first-symbol >= .60 at d32 (ceiling .45; 1-hop .87). Falsified if
+h5_b_v0 < .2: then either the learner's boundary does not fire at
+DOT (check b-rate, one control) or the shape vector cannot stand in
+for EQ, and the write-side family gets one more argued attempt at
+most. Runs: d32 seeds 1,2 and d64 seeds 1,2, 400 steps (Actions).

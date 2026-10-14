@@ -66,6 +66,10 @@ HOPX = 0.0   # C121: hop-exploration credit. Loop: read-space hop mixture gives 
 # the FULL CE gradient on its own path whenever drawn; the gate is trained separately toward the hop with the lowest per-hop CE (detached target).
 # Related but different: ε-greedy / noisy-top-k expert routing (Shazeer et al. 2017 arXiv:1701.06538) adds noise to a soft gate for load balance; expert-
 # choice routing (Zhou et al. 2022 arXiv:2202.09368) routes tokens by expert; neither trains a gate on a per-expert loss oracle over READ DEPTH in a memory.
+# C124 (--repose 3): CONTEXT-FREE SECOND KEY on the write side. C123b/c showed a re-posed fresh prefix never matches heard keys because heard
+# fact-start states carry residue (the learned reset is soft: c <- c(1-b)). Removal: a parallel state track cz runs the same gc but is HARD-reset to
+# zero whenever the learner's own boundary fires (b>.5); every slot also stores K2 = cz before the token. The re-pose track reads against K2, so a key
+# minted from recalled symbols alone can address a fact. The boundary, the track and the shape vector are all the learner's; no token or unit is given.
 REPOSE = 0   # C123b: RE-POSE. Diagnostic C123a showed the inner chain chases the first fact's continuation (hop1 -> b1 slot .62, hop2 -> DOT slot .5,
 # hop1 -> goal slot 0.0): consuming a recalled token into the CURRENT state yields the key "a0 a1 = b0", never "b0 b1 =". Removal: a second, FRESH
 # state track consumes the recalled tokens from zero and then a learned query-shape vector; the read with that key is offered to the hop gate.
@@ -107,7 +111,7 @@ class CKB(nn.Module):
         dk = d + ROLE; K = self.K0[:M].unsqueeze(0).expand(B, M, dk).clone(); Vm = torch.zeros(B, M, d); occ = torch.zeros(B, M); pk = torch.zeros(B, dk); usage = torch.zeros(B, M)
         outs, bs = [], []; surp = torch.zeros(B, 2)
         UTIL = BMODE == "util"; cutpos = torch.zeros(B, dtype=torch.long); slot_cut = torch.zeros(B, M, dtype=torch.long); Rw = torch.zeros(B, L); logps = []
-        im_loss = torch.zeros(()); hx_loss = torch.zeros(()); r0_prev = None; c_prev = None; self._w = []; self._ah = []; self._jw = []; V2 = torch.zeros(B, M, d); jhist = []; self._w2 = []
+        im_loss = torch.zeros(()); hx_loss = torch.zeros(()); r0_prev = None; c_prev = None; self._w = []; self._ah = []; self._jw = []; V2 = torch.zeros(B, M, d); K2 = torch.zeros(B, M, d); cz = torch.zeros(B, d); jhist = []; self._w2 = []
         for t in range(L):
             c_prev = c; h = self.gh(e[:, t], h); c = self.gc(e[:, t], c)
             if IMCONS and r0_prev is not None and self.training:
@@ -150,11 +154,11 @@ class CKB(nn.Module):
                     cq = torch.zeros(B, d)
                     for _k in range(INNER):
                         rin = rs[_k]
-                        if REPOSE == 2:   # C123c: sharp recalled token — snap the soft read to its nearest embedding (straight-through)
+                        if REPOSE >= 2:   # C123c: sharp recalled token — snap the soft read to its nearest embedding (straight-through)
                             idx = torch.cdist(rin.unsqueeze(1), self.E.weight.unsqueeze(0)).squeeze(1).argmin(-1); rin = rin + (self.E.weight[idx] - rin).detach()
                         cq = self.gc(rin, cq); qq = self.gc(self.qshape.unsqueeze(0).expand(B, d), cq)
                         if KNORM: qq = F.normalize(qq, dim=-1) * 4.0
-                        sq = -torch.cdist(qq.unsqueeze(1), K[:, :, :d]).squeeze(1); aq = torch.softmax(sq / tau + logocc, -1)
+                        sq = -torch.cdist(qq.unsqueeze(1), (K2 if REPOSE == 3 else K[:, :, :d])).squeeze(1); aq = torch.softmax(sq / tau + logocc, -1)
                         rs.append(torch.einsum("bm,bmd->bd", aq, Vm)); cfs.append((aq * occ).sum(-1, keepdim=True)); ahs.append(aq.argmax(-1))
                 w = torch.softmax(self.hopw(h), -1); self._w.append(w.detach()); self._ah.append(torch.stack(ahs, 1))
                 if HOPX > 0:   # C121 hard hop choice with exploration; gate trained toward the per-hop-CE winner
@@ -211,7 +215,7 @@ class CKB(nn.Module):
                     m = torch.softmax((wsim + logocc) / tau, -1); p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta); empty = torch.softmax(-occ / tau, -1)
                     alpha = (p * m + (1 - p) * empty).unsqueeze(-1)
                 if LOWMEM and PUREADDR == 3:   # hard row write: O(B d) saved per step instead of O(B M d); no ST address gradient
-                    bi = torch.arange(B); self._jw.append(j); K = K.clone(); K[bi, j] = pk; Vm = Vm.clone(); Vm[bi, j] = e[:, t]; occ = occ + hard * (1 - occ)
+                    bi = torch.arange(B); self._jw.append(j); K = K.clone(); K[bi, j] = pk; K2 = K2.clone(); K2[bi, j] = cz; Vm = Vm.clone(); Vm[bi, j] = e[:, t]; occ = occ + hard * (1 - occ)
                     if LOOK:
                         jhist.append(j)
                         if len(jhist) > LOOK: jo = jhist.pop(0); V2 = V2.clone(); V2[bi, jo] = qv[:, :d]
@@ -220,7 +224,7 @@ class CKB(nn.Module):
                 if UTIL:
                     if PUREADDR == 3: slot_cut.scatter_(1, j[:, None], cutpos[:, None])
                     cutpos = torch.where(b.squeeze(-1) > 0.5, torch.full_like(cutpos, min(t + 1, L - 1)), cutpos)
-                pk = qv; c = c * (1 - b); continue
+                pk = qv; c = c * (1 - b); cz = self.gc(e[:, t], cz) * (b.detach() <= 0.5).float(); continue
             # write (previous chunk -> this chunk) at the boundary
             wsim = torch.einsum("bd,bmd->bm", pk, K) / math.sqrt(d); m = torch.softmax((wsim + logocc) / tau, -1)
             p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta); empty = torch.softmax(-occ / tau, -1)

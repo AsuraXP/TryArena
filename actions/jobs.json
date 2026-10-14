@@ -2,13 +2,21 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "repose2_d32_s1",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 2 --seeds 1 --tag repose2"
+   "tag": "k2_d32_s1",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 1 --tag k2"
   },
   {
-   "tag": "repose2_d32_s2",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 2 --seeds 2 --tag repose2"
+   "tag": "k2_d32_s2",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 2 --tag k2"
+  },
+  {
+   "tag": "k2_d64_s1",
+   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 1 --tag k2"
+  },
+  {
+   "tag": "k2_d64_s2",
+   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 2 --tag k2"
   }
  ],
- "nonce": 1791734950
+ "nonce": 1791975318
 }
