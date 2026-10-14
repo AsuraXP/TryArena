@@ -6945,3 +6945,37 @@ d32 .46 (inner3; K2 not found), d64 .73 (K2 found 3/4). TF: .185 /
 .16 / .245. Gap .22 -> .30 -> .49: widening with size for the first
 time on a reasoning axis — provisional, because the d64 number
 depends on discovery (3/4) and d32 discovery is 0/4. Not certified.
+
+C127 — PRE-REGISTRATION (REPRESENTATION axis; new learner, file
+arch_vet_lin.py; read path of CKB untouched per remedy §1).
+Question first: what learner has a state in which the second hop is
+an operation on the representation? Answer tried: the writer's key
+is a linear decaying bound sum of symbol embeddings, k_t = lam k_{t-1}
++ P e_t, memory is a fast-weight matrix W += k_{t-1} (x) e_t, reads
+are dense linear r = W k. Because the key function has no controller
+in it, the reader can RE-EXECUTE it on recalled symbols: q = lam^2 P
+r0 + lam P r1 + P s (s learned shape). Composition is algebra on the
+representation. Dense linear reads pass gradient to every hop from
+step 0, so the gate-starvation loop of C116–C126 cannot form.
+Instrument (remedy §4, read from the code): hop 3 = 50/50 1-hop/2-hop
+training, eval 2-hop only; LIN ignores tau/gmin; W decays by a
+learned sigmoid (init .98); keys L2-normalised at write and read; the
+GRU controller sees (token, previous read) and only mixes three
+reads (1-hop, continuation, re-posed) and feeds the head.
+Novelty: Fast Weight Memory (Schlag et al. ICLR 2021) chains
+retrievals with LSTM-made TPR keys and succeeded at ~1M steps; the
+delta is a controller-free linear key so re-posing is exact; the
+STATED REASON is tested by the control --keyfn ctrl (key = P h from
+the controller, FWM-style) with everything else identical (remedy §2).
+Two proxies (remedy §3): 2-hop stream (hop 3) AND the 1-hop stream
+(hop 1) and the hops-in-time stream (hop 4) it was not designed for.
+Candidates killed: HRR convolution binding (Plate; same algebra,
+costlier, no new reason), TPR with given roles (oracle roles),
+multiplicative RNN (composition = matrix product but no addressable
+binding), FWM as-is (walked).
+PREDICTION: LIN-lin 2-hop first-symbol >= .60 at d32 and d64 in
+>= 3/4 runs, with the re-posed read carrying > .4 of the mix at
+queries; LIN-ctrl <= .40 at the same sizes; LIN-lin 1-hop >= .80 at
+d32. Falsified if lin <= .45 (the C116–C126 ceiling) or if ctrl
+matches lin (reason wrong). 800 steps; runs on Actions, 16 jobs.
+Local smoke: 1-hop d16 150 steps .34 first-symbol in 13 s.
