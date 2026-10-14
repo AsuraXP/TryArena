@@ -6911,3 +6911,37 @@ progress by itself (oracle); it licenses the next loop — the learner
 must SEGMENT to own this key, which puts C106's banked "learned
 boundary worse than random" back on the table from a new side: the
 boundary now has a consumer (the composition read) it never had.
+
+C126 — RESULT (Actions 38555079339): gate floor FALSIFIED for
+discovery: 1/4 (d64 s1 again: fs .742/.664/.562, h5 .56); d32 0/2,
+d64 s2 0. The floor is not what decides discovery.
+C124 seeds 3,4 (same run): d64 s3 fs .727/.617/.604 h5 .42;
+d64 s4 fs .719/.383/.609 h5 .14 (gate on a re-posed hop, landing
+split across h4/h5); d32 s3 .258, s4 .430, h5 0. Discovery tally for
+re-pose+K2 without any oracle: d64 3/4, d32 0/4. The break is SIZE-
+DEPENDENT: at d64 the mechanism is found in most seeds and lifts
+2-hop first-symbol from the .45 ceiling to .72–.74 in-range, .38–.66
+OOD, .56–.61 length (TF d64 .245/.133/.016; base .29).
+C124c — RESULT (Actions 38556182835): the ORACLE-clean key is WORSE:
+0/4 discovery, fs .36–.45. So the pre-registered story "K2 must be
+context-free" is falsified in its own control. What works at d64 is
+the second track as it actually ran: never reset at eval, randomly
+reset in training — a slow, from-the-start prefix state whose own
+forgetting makes recent tokens dominate, read by a fresh track over
+the recalled symbols. Why the exact-clean key fails is not known;
+candidate reasons for the next measurement, not for a new wiring:
+(i) with exact keys the distance is large until the shape vector
+equals EQ and the sharp read (tau -> .1) passes no gradient; the
+blurrier un-reset key gives a soft early match that trains the
+shape vector; (ii) d32 lacks the capacity for the slow track to be
+approximately unit-local. C127 (next): measure, over training, the
+distance from the fresh-track key to the goal slot's K2 and to the
+nearest wrong slot, for d32/d64, oracle/no-oracle — one instrument,
+four runs, then decide.
+
+STATE OF THE SLOPE after this session: 2-hop composition first-
+symbol, no oracle, best-found mechanism per size: d16 .41 (inner3),
+d32 .46 (inner3; K2 not found), d64 .73 (K2 found 3/4). TF: .185 /
+.16 / .245. Gap .22 -> .30 -> .49: widening with size for the first
+time on a reasoning axis — provisional, because the d64 number
+depends on discovery (3/4) and d32 discovery is 0/4. Not certified.

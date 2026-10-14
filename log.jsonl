@@ -365,3 +365,6 @@
 {"id":"C124","claim":"context-free second key lets re-posed read find the b-fact","result":"confirmed 1/4 runs","h5_b_v0":{"d32":[0.0,0.0],"d64":[0.656,0.0]},"first_sym_2hop":{"d32":[0.438,0.445],"d64":[0.732,0.401]},"d64_s1_ood_len":[0.565,0.594],"run":"38552943174"}
 {"id":"C124b","claim":"learned boundary fires at DOT","result":"no: b_dot≈b_other≈0.1 (harness bmode=rand, no learned boundary)","run":"38554090385"}
 {"id":"C125","claim":"inner3 gap over TF grows with size","result":"falsified","first_sym_2hop":{"d16":{"base":[0.276,0.31],"inner3":[0.409,0.294],"tf":0.185}},"run":"38554090385"}
+{"id":"C126","claim":"gate floor raises K2 discovery to >=3/4","result":"falsified 1/4","run":"38555079339"}
+{"id":"C124s34","first_sym_2hop":{"d64_s3":[0.727,0.617,0.604],"d64_s4":[0.719,0.383,0.609],"d32_s3":0.258,"d32_s4":0.43},"discovery":{"d64":"3/4","d32":"0/4"},"run":"38555079339"}
+{"id":"C124c","claim":"oracle-clean K2 (reset at DOT) raises discovery","result":"falsified 0/4, worse","first_sym":[0.448,0.432,0.357,0.409],"run":"38556182835"}

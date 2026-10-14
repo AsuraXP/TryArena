@@ -395,3 +395,9 @@ WALL declared on "recalled token re-enters state" (C116–C122), ceiling .45 und
 
 ## State after C123
 Harness: `--inner S` reports `hopland` (hop-k landing on a_b0/a_b1/a_dot/b_v0 slots) — use it as the acceptance measure for any composition mechanism; `--repose {1,2}` fresh re-pose track (closed, [F]). Finding: the chain chases continuation; re-posed fresh prefixes never match heard keys because heard fact-start states are not blank. Next: write side — a second, context-free key per slot (blank-start run over the unit's own tokens), learned, so that a recalled prefix can address it. Measure h5_b_v0 first.
+
+## State after C124–C126 (parallel Actions session)
+- Mechanism that broke the 2-hop ceiling: `--inner 3 --repose 3` (slow second key track K2 written per slot; fresh re-pose track with snapped recalled tokens + learned shape vector reads K2). d64: 3/4 seeds .72–.74; d32: 0/4. Oracle-clean K2 (`--czoracle 1`) is WORSE — do not pursue "context-free" framing. Gate floor (`--gfloor`) does nothing for discovery.
+- Micro harness uses `--bmode rand` (no learned boundary; b≈.1 everywhere, measured C124b). Any boundary-dependent idea must account for this.
+- Slope table (2-hop first-symbol, best no-oracle mechanism vs TF): d16 .41/.185, d32 .46/.16, d64 .73/.245. Provisional.
+- Next C127: instrument the distance between the fresh-track key and the goal slot's K2 vs nearest wrong slot across training (d32/d64) to learn why d32 never discovers and why the clean key fails; decide the mechanism change from the measurement, not before.
