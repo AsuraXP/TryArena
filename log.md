@@ -7005,3 +7005,19 @@ C127. PREDICTION: 1-hop OOD >= .75 at d32 (was .41); 2-hop in-range not below C1
 .11). Falsified if OOD stays < .25 — then offsets are not the roles the task needs and the axis gets its third cycle on a
 different binding (role from the learner's own segmentation). Local smoke (d16, 150 steps, 1-hop): .557/.443/.341 vs
 C127-lin .34 at the same budget — already OOD-positive. Runs: roles 4, lin, d32/d64, hop 3 and hop 1, seeds 1,2.
+
+C128 — RESULT (Actions 38566264177 + local seed 3), 800 steps, first-symbol in/ood/len:
+  1-hop roles4: d32 .940/.823/.896 .966/.904/.768 | d64 .948/.802/.911 .945/.484/.904   (C127-lin .898/.414/.771; ctrl .922/.758/.810; CKB ~.87/.85)
+  2-hop roles4: d32 .716/.203/.341 .690/.279/.323 (.680/.188/.383 local s3) | d64 .859/.281/.638 .862/.302/.628
+  re-posed read share at queries .74–.89 in 5/5 runs.
+Pre-registered: 1-hop OOD >= .75 at d32 — MET (.82/.90). 2-hop in-range not below C127 — MET and far above (.41 -> .70 at
+d32, .56 -> .86 at d64). 2-hop OOD >= .30 — NOT MET (.20–.30; d64 s2 .302 only). So: role binding fixes the collision for
+1-hop OOD, lifts 2-hop in-range to the 1-hop range at d64, but 2-hop OOD remains weak (.11 -> .25, OOD CE 3–4).
+Stated reason tested: the only change from C127 is the key binding (decay -> learned offset roles); in-range and OOD both
+move, re-posed share rises. The remaining OOD gap is a separate defect to be diagnosed on paper before any run.
+SLOPE (2-hop first-symbol, in-range, best no-oracle learner vs fair TF, same batches, 800/2400 steps):
+  d16: LIN-lin .30 (roles not run) | TF .185      d32: LIN-roles .70 | TF .16      d64: LIN-roles .86 | TF .245
+  gap .11 -> .54 -> .62, widening; length d64 .63 vs TF .016. OOD column NOT in the win column yet (.2–.3 vs TF .13).
+  Provisional until: d16 roles point, 4 seeds per size, and a text proxy. Nothing here is a box: delete the learned
+  parts (P, R, shape, controller, head) and nothing reads anything.
+Negatives held in view: 2-hop OOD; d64 s2 1-hop OOD .48 outlier; length at d32 2-hop .32–.38.

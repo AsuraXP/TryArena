@@ -401,3 +401,9 @@ Harness: `--inner S` reports `hopland` (hop-k landing on a_b0/a_b1/a_dot/b_v0 sl
 - Micro harness uses `--bmode rand` (no learned boundary; b≈.1 everywhere, measured C124b). Any boundary-dependent idea must account for this.
 - Slope table (2-hop first-symbol, best no-oracle mechanism vs TF): d16 .41/.185, d32 .46/.16, d64 .73/.245. Provisional.
 - Next C127: instrument the distance between the fresh-track key and the goal slot's K2 vs nearest wrong slot across training (d32/d64) to learn why d32 never discovers and why the clean key fails; decide the mechanism change from the measurement, not before.
+
+## State after C127–C128 (representation axis, new learner)
+- `arch_vet_lin.py` LIN(V,d,keyfn,roles): fast-weight matrix memory, keys = sum_i R_i ⊙ P e_{t-i} (roles=4) or decaying sum (roles=0); reader re-executes the key function on recalled symbols (re-pose is algebra). Harness arm `--arms LIN --roles 4`. ~30× cheaper than CKB (d32 800 steps ≈ 2.5 min on 2 cores).
+- Best numbers: 2-hop in-range d32 .70, d64 .86; 1-hop .94/.82/.90. OPEN DEFECT: 2-hop OOD .2–.3. Diagnose on paper first (why does the re-posed key fail when names are value symbols, although 1-hop OOD works?). Candidates: the recalled r0/r1 for OOD names are read from a W where those symbols also appear as values of other facts (continuation read r1 collides); check with a landing/decoding instrument for r0, r1 in OOD before any change.
+- Remedy quota: representation axis has had 2 cycles (C127, C128), both loop-breaking; a third may follow, then the learning-rule axis must get a turn regardless. Read path of CKB remains frozen.
+- Still owed for the slope claim: d16 roles point, 4 seeds/size, a text proxy for LIN (needs a p49-style byte harness arm).
