@@ -1,0 +1,11 @@
+  [LIN d16 s1] step 0 loss 15.736 (0s)
+  [LIN d16 s1] step 100 loss 8.789 (31s)
+  [LIN d16 s1] step 200 loss 6.755 (61s)
+  [LIN d16 s1] step 300 loss 5.563 (92s)
+  [LIN d16 s1] step 400 loss 5.370 (123s)
+  [LIN d16 s1] step 500 loss 4.587 (154s)
+  [LIN d16 s1] step 600 loss 4.477 (184s)
+  [LIN d16 s1] step 700 loss 3.818 (214s)
+  [LIN d16 s1] step 799 loss 4.221 (243s)
+[r4d16 LIN d16 s1] params 9392 in 1.574/0.591 ood 4.277/0.202 len 2.298/0.405 | first-symbol acc in/ood/len 0.354/0.148/0.198
+[P51] [{"arm": "LIN", "d": 16, "seed": 1, "params": 9392, "decode_in": [0.0, 0.0, 0.062], "mix_at_q": [0.691, 0.087, 0.222], "in_ce": 1.574, "in_acc": 0.591, "in_a1": 0.354, "decode_ood": [0.391, 0.062, 0.016], "ood_ce": 4.277, "ood_acc": 0.202, "ood_a1": 0.148, "decode_len": [0.0, 0.0, 0.031], "len_ce": 2.298, "len_acc": 0.405, "len_a1": 0.198, "tag": "r4d16"}]

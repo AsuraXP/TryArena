@@ -1,0 +1,11 @@
+  [LIN d64 s1] step 0 loss 25.789 (0s)
+  [LIN d64 s1] step 100 loss 8.953 (27s)
+  [LIN d64 s1] step 200 loss 8.130 (53s)
+  [LIN d64 s1] step 300 loss 7.432 (79s)
+  [LIN d64 s1] step 400 loss 6.621 (105s)
+  [LIN d64 s1] step 500 loss 6.221 (131s)
+  [LIN d64 s1] step 600 loss 6.456 (157s)
+  [LIN d64 s1] step 700 loss 5.772 (183s)
+  [LIN d64 s1] step 799 loss 5.979 (208s)
+[hc1 LIN d64 s1] params 77072 in 0.468/0.879 ood 4.193/0.294 len 1.108/0.701 | first-symbol acc in/ood/len 0.831/0.211/0.622
+[P51] [{"arm": "LIN", "d": 64, "seed": 1, "params": 77072, "decode_in": [0.0, 0.0, 0.797], "mix_at_q": [0.127, 0.003, 0.87], "in_ce": 0.468, "in_acc": 0.879, "in_a1": 0.831, "decode_ood": [0.484, 0.25, 0.172], "ood_ce": 4.193, "ood_acc": 0.294, "ood_a1": 0.211, "decode_len": [0.0, 0.0, 0.547], "len_ce": 1.108, "len_acc": 0.701, "len_a1": 0.622, "tag": "hc1"}]
