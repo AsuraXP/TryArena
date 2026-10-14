@@ -1,0 +1,11 @@
+  [LIN d16 s2] step 0 loss 15.951 (0s)
+  [LIN d16 s2] step 100 loss 9.013 (26s)
+  [LIN d16 s2] step 200 loss 7.261 (51s)
+  [LIN d16 s2] step 300 loss 5.620 (76s)
+  [LIN d16 s2] step 400 loss 5.679 (101s)
+  [LIN d16 s2] step 500 loss 5.635 (125s)
+  [LIN d16 s2] step 600 loss 5.139 (150s)
+  [LIN d16 s2] step 700 loss 5.472 (176s)
+  [LIN d16 s2] step 799 loss 4.805 (200s)
+[linh3 LIN d16 s2] params 6954 in 1.859/0.551 ood 6.152/0.115 len 2.488/0.4 | first-symbol acc in/ood/len 0.297/0.062/0.195
+[P51] [{"arm": "LIN", "d": 16, "seed": 2, "params": 6954, "mix_at_q": [0.999, 0.0, 0.001], "in_ce": 1.859, "in_acc": 0.551, "in_a1": 0.297, "ood_ce": 6.152, "ood_acc": 0.115, "ood_a1": 0.062, "len_ce": 2.488, "len_acc": 0.4, "len_a1": 0.195, "tag": "linh3"}]

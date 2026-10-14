@@ -1,0 +1,11 @@
+  [LIN d32 s2] step 0 loss 22.502 (0s)
+  [LIN d32 s2] step 100 loss 6.648 (20s)
+  [LIN d32 s2] step 200 loss 5.202 (40s)
+  [LIN d32 s2] step 300 loss 3.753 (60s)
+  [LIN d32 s2] step 400 loss 4.073 (80s)
+  [LIN d32 s2] step 500 loss 4.174 (100s)
+  [LIN d32 s2] step 600 loss 3.682 (120s)
+  [LIN d32 s2] step 700 loss 4.263 (139s)
+  [LIN d32 s2] step 799 loss 3.349 (159s)
+[linh3 LIN d32 s2] params 20490 in 1.218/0.668 ood 4.19/0.288 len 4.575/0.415 | first-symbol acc in/ood/len 0.414/0.109/0.049
+[P51] [{"arm": "LIN", "d": 32, "seed": 2, "params": 20490, "mix_at_q": [0.281, 0.159, 0.56], "in_ce": 1.218, "in_acc": 0.668, "in_a1": 0.414, "ood_ce": 4.19, "ood_acc": 0.288, "ood_a1": 0.109, "len_ce": 4.575, "len_acc": 0.415, "len_a1": 0.049, "tag": "linh3"}]
