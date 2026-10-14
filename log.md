@@ -6886,3 +6886,28 @@ does not fix. PREDICTION: discovery (h5_b_v0 > .4) in >= 3 of 4 runs
 (d32 s1,s2; d64 s1,s2) vs 1/4 without; falsified if <= 1/4. In
 parallel, C124 seeds 3,4 at d64 and d32 (no floor) to pin the base
 discovery rate — same jobs file, 8 runners.
+
+C124b — RESULT (Actions 38554090385): the boundary does NOT fire at
+DOT: b_dot .09–.12 = b_other .09–.10 at every size. Cause: the micro
+harness runs --bmode rand (C106b: fixed 10% random resets in
+training, b=0 at eval), so there is NO learned segmentation here and
+K2 is not context-free as pre-registered — at eval cz is never reset
+and K2 is a from-the-start prefix that only approximates a unit key
+through the GRU's own forgetting. That is why d64 s1 could still find
+it and why the others could not. C124's pre-registration was wrong
+about its own instrument; recorded as such. The idea is intact; the
+test was not clean.
+C125 — RESULT (same run): d16 2-hop first-symbol base .276/.310,
+inner3 .409/.294, TF .185. With d32 (.44/.46 vs TF .16) and d64
+(.47 vs .25): inner3–TF gap .17 → .28 → .22 — no monotone slope on
+the mixed-pressure mechanism; stands as pre-registered (slope claim
+dead on this axis for inner3-without-K2).
+
+C124c — CONTROL (one run, oracle): cz reset at DOT (--czoracle 1),
+so K2 is exactly a context-free unit key. Purpose: ceiling of the
+re-pose+K2 mechanism when the key is clean. PREDICTION: discovery
+(h5_b_v0 > .4) in >= 3/4 runs, first-symbol >= .65 at d64. Not
+progress by itself (oracle); it licenses the next loop — the learner
+must SEGMENT to own this key, which puts C106's banked "learned
+boundary worse than random" back on the table from a new side: the
+boundary now has a consumer (the composition read) it never had.

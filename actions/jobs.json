@@ -2,37 +2,21 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "gf_d32_s1",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --gfloor 0.5 --gwarm 150 --seeds 1 --tag gf"
+   "tag": "czo_d32_s1",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --czoracle 1 --seeds 1 --tag czo"
   },
   {
-   "tag": "gf_d32_s2",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --gfloor 0.5 --gwarm 150 --seeds 2 --tag gf"
+   "tag": "czo_d32_s2",
+   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --czoracle 1 --seeds 2 --tag czo"
   },
   {
-   "tag": "gf_d64_s1",
-   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --gfloor 0.5 --gwarm 150 --seeds 1 --tag gf"
+   "tag": "czo_d64_s1",
+   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --czoracle 1 --seeds 1 --tag czo"
   },
   {
-   "tag": "gf_d64_s2",
-   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --gfloor 0.5 --gwarm 150 --seeds 2 --tag gf"
-  },
-  {
-   "tag": "k2_d32_s3",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 3 --tag k2"
-  },
-  {
-   "tag": "k2_d32_s4",
-   "args": "--arms CKB --ds 32 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 4 --tag k2"
-  },
-  {
-   "tag": "k2_d64_s3",
-   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 3 --tag k2"
-  },
-  {
-   "tag": "k2_d64_s4",
-   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --seeds 4 --tag k2"
+   "tag": "czo_d64_s2",
+   "args": "--arms CKB --ds 64 --steps 400 --M 256 --hop 3 --inner 3 --repose 3 --czoracle 1 --seeds 2 --tag czo"
   }
  ],
- "nonce": 1791976415
+ "nonce": 1791976982
 }

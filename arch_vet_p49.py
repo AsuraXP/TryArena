@@ -70,6 +70,7 @@ HOPX = 0.0   # C121: hop-exploration credit. Loop: read-space hop mixture gives 
 # fact-start states carry residue (the learned reset is soft: c <- c(1-b)). Removal: a parallel state track cz runs the same gc but is HARD-reset to
 # zero whenever the learner's own boundary fires (b>.5); every slot also stores K2 = cz before the token. The re-pose track reads against K2, so a key
 # minted from recalled symbols alone can address a fact. The boundary, the track and the shape vector are all the learner's; no token or unit is given.
+CZORACLE = -1   # C124c CONTROL ONLY: token id at which the context-free track resets (the micro harness uses random resets, so no learned boundary exists there)
 GATEFLOOR = 0.0   # C126: soft uniform floor on the hop gate, annealed to 0 by step GATEWARM (set per step by the harness via m.gfloor). Loop: a hop
 # that is right but unweighted gets gradient ∝ w_k ≈ 0 and so never trains its own key (shape vector), while C124 shows the re-posed hop, once
 # found, carries .63 of the gate and breaks the ceiling (.73). The floor keeps the SOFT blend (C121 showed hard choice destroys it) and only
@@ -228,7 +229,7 @@ class CKB(nn.Module):
                 if UTIL:
                     if PUREADDR == 3: slot_cut.scatter_(1, j[:, None], cutpos[:, None])
                     cutpos = torch.where(b.squeeze(-1) > 0.5, torch.full_like(cutpos, min(t + 1, L - 1)), cutpos)
-                pk = qv; c = c * (1 - b); cz = self.gc(e[:, t], cz) * (b.detach() <= 0.5).float(); continue
+                pk = qv; c = c * (1 - b); cz = self.gc(e[:, t], cz) * ((x[:, t] != CZORACLE).float().unsqueeze(-1) if CZORACLE >= 0 else (b.detach() <= 0.5).float()); continue
             # write (previous chunk -> this chunk) at the boundary
             wsim = torch.einsum("bd,bmd->bm", pk, K) / math.sqrt(d); m = torch.softmax((wsim + logocc) / tau, -1)
             p = torch.sigmoid(wsim.max(-1, keepdim=True).values - self.theta); empty = torch.softmax(-occ / tau, -1)
