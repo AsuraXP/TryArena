@@ -6979,3 +6979,29 @@ queries; LIN-ctrl <= .40 at the same sizes; LIN-lin 1-hop >= .80 at
 d32. Falsified if lin <= .45 (the C116–C126 ceiling) or if ctrl
 matches lin (reason wrong). 800 steps; runs on Actions, 16 jobs.
 Local smoke: 1-hop d16 150 steps .34 first-symbol in 13 s.
+
+C127 — RESULT (Actions 38565193105), 800 steps, first-symbol in/ood/len:
+  LIN-lin  2-hop: d16 .297/.122/.161 .297/.062/.195 | d32 .406/.107/.182 .414/.109/.049 | d64 .547/.115/.357 .565/.107/.305
+           re-posed read share at queries: d32 .69/.56, d64 .76/.72 (used in 4/4 — no discovery lottery)
+  LIN-ctrl 2-hop: d16 .255/.266 | d32 .177/.352 | d64 .378/.432 ; re-posed share .12–.49
+  1-hop d32: lin .898/.414/.771   ctrl .922/.758/.810
+  hop-4 stream (not designed for): lin d32 .424, d64 .430 in-range, OOD .07
+Verdict: FALSIFIED in magnitude (needed >= .60 at d32/d64; got .41/.56), CONFIRMED in reason (lin > ctrl at every size,
++.2 at d32, +.15 at d64; the re-posed read is adopted in every seed, unlike CKB's 3/4-at-d64-0/4-at-d32). In-range
+2-hop climbs .30 -> .41 -> .56 with size; TF .185/.16/.245; gap .11 -> .25 -> .31.
+THE NEGATIVE THAT MATTERS: OOD is dead (.06–.12, OOD CE 7–9 = confidently wrong) — already at 1-hop (.41 vs ctrl .76).
+Reason, on paper: the OOD split re-uses value symbols as names. A linear key sum(lam^i P e) is role-blind: the key for the
+name "v3 v7 =" differs from the key written inside another fact's value "... = v3 v7" only by the small EQ term, so the
+read collides with that fact's continuation. In-distribution the name and value symbol sets are disjoint, so the learner
+never had to make the "=" offset dominate. Controller keys (GRU) separate roles nonlinearly, which is why ctrl keeps OOD.
+This is a representation defect, and it says the key must bind SYMBOL to ROLE (offset in the unit), not merely decay.
+
+C128 — PRE-REGISTRATION (REPRESENTATION axis, cycle 2 of 3): role-bound keys. k = sum_i R_i ⊙ P e_{t-i} over the last
+4 tokens with learned role vectors R_i (TPR with recency roles; Smolensky 1990; here roles are offsets, learned, and the
+reader re-executes the same binding on recalled symbols: q = R_2⊙P r0 + R_1⊙P r1 + R_0⊙P s). Loop removed: role-blind
+collision — the learner can make R_0 (the "=" slot) orthogonal to R_1,R_2, so a symbol in name position and the same
+symbol in value position produce separable keys. Instrument: window of 4 projected tokens, no lam; everything else as
+C127. PREDICTION: 1-hop OOD >= .75 at d32 (was .41); 2-hop in-range not below C127 (.41/.56) and 2-hop OOD >= .30 (was
+.11). Falsified if OOD stays < .25 — then offsets are not the roles the task needs and the axis gets its third cycle on a
+different binding (role from the learner's own segmentation). Local smoke (d16, 150 steps, 1-hop): .557/.443/.341 vs
+C127-lin .34 at the same budget — already OOD-positive. Runs: roles 4, lin, d32/d64, hop 3 and hop 1, seeds 1,2.

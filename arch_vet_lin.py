@@ -17,12 +17,13 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.E = nn.Embedding(V, d); self.P = nn.Linear(d, dk, bias=False); self.Ph = nn.Linear(d, dk, bias=False)
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
-        self.shape = nn.Parameter(torch.randn(d) * 0.1)
+        self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
+        if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
         self.g = nn.GRUCell(2 * d, d)
         self.mix = nn.Linear(d, 3)   # r0 (1-hop), r1 (continuation), rq (re-posed)
         self.head = nn.Linear(2 * d, V)
@@ -32,9 +33,12 @@ class LIN(nn.Module):
         if self.keyfn == "lin": return lam * k + self.P(e)
         return self.Ph(h)   # controller-made key (FWM-style control)
 
+    def rolekey(self, win):   # win: list of last `roles` projected tokens, most recent last
+        return sum(self.R[i] * win[-1 - i] for i in range(min(self.roles, len(win))))
+
     def forward(self, x, **kw):
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x)
-        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []
+        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; win = []
         lam = torch.sigmoid(self.lam); sP = self.P(self.shape).unsqueeze(0)
         for t in range(L):
             et = e[:, t]
@@ -42,10 +46,16 @@ class LIN(nn.Module):
             kn = F.normalize(k, dim=-1)
             W = torch.sigmoid(self.dec) * W + kn.unsqueeze(2) * et.unsqueeze(1)
             # advance key and controller
-            k = self.key(k, et, h); h = self.g(torch.cat([et, r], -1), h)
+            if self.roles:
+                win.append(self.P(et)); win = win[-self.roles:]; k = self.rolekey(win)
+            else: k = self.key(k, et, h)
+            h = self.g(torch.cat([et, r], -1), h)
             q0 = F.normalize(k, dim=-1); r0 = torch.einsum("bk,bkd->bd", q0, W)           # 1-hop: what followed this prefix
-            k1 = self.key(k, r0, h); q1 = F.normalize(k1, dim=-1); r1 = torch.einsum("bk,bkd->bd", q1, W)   # continuation (next symbol)
-            if self.keyfn == "lin": qq = lam * lam * self.P(r0) + lam * self.P(r1) + sP   # RE-POSE: writer's key function on recalled symbols
+            if self.roles: k1 = self.rolekey(win + [self.P(r0)])
+            else: k1 = self.key(k, r0, h)
+            q1 = F.normalize(k1, dim=-1); r1 = torch.einsum("bk,bkd->bd", q1, W)   # continuation (next symbol)
+            if self.roles: qq = self.rolekey([self.P(r0), self.P(r1), sP.expand(B, -1)])   # RE-POSE with the same roles
+            elif self.keyfn == "lin": qq = lam * lam * self.P(r0) + lam * self.P(r1) + sP   # RE-POSE: writer's key function on recalled symbols
             else: qq = self.Ph(self.g(torch.cat([r1, r0], -1), h))
             rq = torch.einsum("bk,bkd->bd", F.normalize(qq, dim=-1), W)
             w = torch.softmax(self.mix(h), -1); self._mix.append(w.detach())

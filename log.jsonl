@@ -368,3 +368,4 @@
 {"id":"C126","claim":"gate floor raises K2 discovery to >=3/4","result":"falsified 1/4","run":"38555079339"}
 {"id":"C124s34","first_sym_2hop":{"d64_s3":[0.727,0.617,0.604],"d64_s4":[0.719,0.383,0.609],"d32_s3":0.258,"d32_s4":0.43},"discovery":{"d64":"3/4","d32":"0/4"},"run":"38555079339"}
 {"id":"C124c","claim":"oracle-clean K2 (reset at DOT) raises discovery","result":"falsified 0/4, worse","first_sym":[0.448,0.432,0.357,0.409],"run":"38556182835"}
+{"id":"C127","claim":"re-executable linear key composes; ctrl key does not","result":"falsified magnitude, confirmed reason","fs_2hop_in":{"lin":{"d16":[0.297,0.297],"d32":[0.406,0.414],"d64":[0.547,0.565]},"ctrl":{"d16":[0.255,0.266],"d32":[0.177,0.352],"d64":[0.378,0.432]}},"ood_dead":true,"onehop_d32":{"lin":[0.898,0.414,0.771],"ctrl":[0.922,0.758,0.81]},"run":"38565193105"}

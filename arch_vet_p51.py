@@ -24,7 +24,7 @@ _src = open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "arch_ve
 P = type(sys)("p49"); exec(compile(_src, "arch_vet_p49.py", "exec"), P.__dict__); sys.argv = _argv
 
 import importlib.util as _ilu; _sp = _ilu.spec_from_file_location('arch_vet_lin', _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'arch_vet_lin.py')); LINM = _ilu.module_from_spec(_sp); _sp.loader.exec_module(LINM)
-KEYFN = 'lin'
+KEYFN = 'lin'; ROLES = 0
 V = 70; PAD, DOT, QQ, EQ = 0, 1, 2, 67; HOP = 1; MIXEVAL = False
 TR = list(range(3, 51)); NM, VL = TR[:24], TR[24:]   # train: names from NM, values from VL; ood = roles swapped (embeddings seen, roles novel)
 
@@ -101,7 +101,7 @@ def fwd(m, arm, x, tau):
 
 def run(arm, d, seed, steps, B, K, nq, log):
     torch.manual_seed(seed); rng = random.Random(seed)
-    m = A.TFMicro(V, d) if arm == "TF" else P.GRUCore(V, d) if arm == "GRU" else LINM.LIN(V, d, keyfn=KEYFN) if arm == "LIN" else P.CKB(V, d, P.MSLOTS)
+    m = A.TFMicro(V, d) if arm == "TF" else P.GRUCore(V, d) if arm == "GRU" else LINM.LIN(V, d, keyfn=KEYFN, roles=ROLES) if arm == "LIN" else P.CKB(V, d, P.MSLOTS)
     opt = torch.optim.Adam(m.parameters(), lr=3e-3); t0 = time.time()
     for s in range(steps):
         x, mk = batch(rng, B, K, 'tr', nq); tau = 0.1 ** (s / max(steps - 1, 1)) if arm == "CKB" else 0.1
@@ -156,8 +156,8 @@ def main():
     ap.add_argument("--steps", type=int, default=400); ap.add_argument("--B", type=int, default=16); ap.add_argument("--K", type=int, default=6); ap.add_argument("--nq", type=int, default=4)
     ap.add_argument("--bmode", default="rand"); ap.add_argument("--randp", type=float, default=0.1); ap.add_argument("--M", type=int, default=64)
     ap.add_argument("--lowmem", type=int, default=1); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--threads", type=int, default=1)
-    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--repose", type=int, default=0); ap.add_argument("--keyfn", default="lin"); ap.add_argument("--czoracle", type=int, default=0); ap.add_argument("--gfloor", type=float, default=0.0); ap.add_argument("--gwarm", type=int, default=150); ap.add_argument("--hopx", type=float, default=0.0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
-    a = ap.parse_args(); torch.set_num_threads(a.threads); global HOP, KEYFN; HOP = a.hop; KEYFN = a.keyfn
+    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--repose", type=int, default=0); ap.add_argument("--keyfn", default="lin"); ap.add_argument("--roles", type=int, default=0); ap.add_argument("--czoracle", type=int, default=0); ap.add_argument("--gfloor", type=float, default=0.0); ap.add_argument("--gwarm", type=int, default=150); ap.add_argument("--hopx", type=float, default=0.0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
+    a = ap.parse_args(); torch.set_num_threads(a.threads); global HOP, KEYFN, ROLES; HOP = a.hop; KEYFN = a.keyfn; ROLES = a.roles
     P.BMODE, P.RANDP, P.MSLOTS, P.LOWMEM, P.KNORM, P.DSCALE, P.INNER, P.IMCONS, P.LOOK, P.LOOKH, P.HOPX, P.REPOSE, P.GATEFLOOR, P.GATEWARM, P.CZORACLE = a.bmode, a.randp, a.M, a.lowmem, a.knorm, a.dscale, a.inner, a.imcons, a.look, a.lookh, a.hopx, a.repose, a.gfloor, a.gwarm, (DOT if a.czoracle else -1)
     P.PKB, P.PUREADDR, P.ROLE, P.SURPRISE, P.DENSE, P.RANDNAMES = 1, 3, 4, 1, True, True
     out = open(a.out, "a") if a.out else None

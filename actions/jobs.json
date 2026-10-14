@@ -2,69 +2,37 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "lin_lin_h3_d16_s1",
-   "args": "--arms LIN --ds 16 --steps 800 --hop 3 --keyfn lin --seeds 1 --tag linh3"
+   "tag": "r4_h3_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --seeds 1 --tag r4h3"
   },
   {
-   "tag": "lin_lin_h3_d16_s2",
-   "args": "--arms LIN --ds 16 --steps 800 --hop 3 --keyfn lin --seeds 2 --tag linh3"
+   "tag": "r4_h3_d32_s2",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --seeds 2 --tag r4h3"
   },
   {
-   "tag": "lin_lin_h3_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --keyfn lin --seeds 1 --tag linh3"
+   "tag": "r4_h3_d64_s1",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --seeds 1 --tag r4h3"
   },
   {
-   "tag": "lin_lin_h3_d32_s2",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --keyfn lin --seeds 2 --tag linh3"
+   "tag": "r4_h3_d64_s2",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --seeds 2 --tag r4h3"
   },
   {
-   "tag": "lin_lin_h3_d64_s1",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --keyfn lin --seeds 1 --tag linh3"
+   "tag": "r4_h1_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --roles 4 --seeds 1 --tag r4h1"
   },
   {
-   "tag": "lin_lin_h3_d64_s2",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --keyfn lin --seeds 2 --tag linh3"
+   "tag": "r4_h1_d32_s2",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --roles 4 --seeds 2 --tag r4h1"
   },
   {
-   "tag": "lin_lin_h1_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --keyfn lin --seeds 1 --tag linh1"
+   "tag": "r4_h1_d64_s1",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 1 --roles 4 --seeds 1 --tag r4h1"
   },
   {
-   "tag": "lin_ctrl_h3_d16_s1",
-   "args": "--arms LIN --ds 16 --steps 800 --hop 3 --keyfn ctrl --seeds 1 --tag ctrlh3"
-  },
-  {
-   "tag": "lin_ctrl_h3_d16_s2",
-   "args": "--arms LIN --ds 16 --steps 800 --hop 3 --keyfn ctrl --seeds 2 --tag ctrlh3"
-  },
-  {
-   "tag": "lin_ctrl_h3_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --keyfn ctrl --seeds 1 --tag ctrlh3"
-  },
-  {
-   "tag": "lin_ctrl_h3_d32_s2",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --keyfn ctrl --seeds 2 --tag ctrlh3"
-  },
-  {
-   "tag": "lin_ctrl_h3_d64_s1",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --keyfn ctrl --seeds 1 --tag ctrlh3"
-  },
-  {
-   "tag": "lin_ctrl_h3_d64_s2",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --keyfn ctrl --seeds 2 --tag ctrlh3"
-  },
-  {
-   "tag": "lin_ctrl_h1_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --keyfn ctrl --seeds 1 --tag ctrlh1"
-  },
-  {
-   "tag": "lin_lin_h4_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 4 --keyfn lin --seeds 1 --tag linh4"
-  },
-  {
-   "tag": "lin_lin_h4_d64_s1",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 4 --keyfn lin --seeds 1 --tag linh4"
+   "tag": "r4_h1_d64_s2",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 1 --roles 4 --seeds 2 --tag r4h1"
   }
  ],
- "nonce": 1791981429
+ "nonce": 1791981925
 }
