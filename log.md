@@ -7060,3 +7060,11 @@ a d×d outer-product memory, i.e. representation, not rule. Next instrument: mar
 re-posed read in-range vs OOD, and the same at 2x key width — if margin tracks width the limit is capacity and the
 representation axis gets its third cycle on key geometry (sparse/high-dim keys, Kanerva-style), else the role binding
 itself is wrong for shared pools. Axis ledger: representation 2 cycles (both moved), learning rule 1 cycle (falsified).
+
+C130 — INSTRUMENT (pre-registered reading). Margin of the re-posed read (head logit of the true v0 minus best other)
+at 2-hop queries, in-range vs OOD, at key width kmult 2 (dk = 2d, as all LIN runs so far), 4 and 8; d32, roles 4,
+800 steps, seeds 1,2. Harness check: kmult scales P, R and W's key side only; parameter count rises with dk (reported).
+READING RULE, fixed before the numbers: if the OOD margin and OOD first-symbol rise monotonically with kmult while
+in-range stays, the OOD defect is superposition crosstalk (capacity) and the representation axis gets cycle 3 on key
+geometry; if kmult does not move OOD, the role binding itself fails under shared pools and the next cycle is on the
+binding, not the width. Either way no mechanism is changed in this cycle.
