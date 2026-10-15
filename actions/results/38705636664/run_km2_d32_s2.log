@@ -1,0 +1,11 @@
+  [LIN d32 s2] step 0 loss 20.037 (0s)
+  [LIN d32 s2] step 100 loss 6.583 (16s)
+  [LIN d32 s2] step 200 loss 4.744 (32s)
+  [LIN d32 s2] step 300 loss 3.396 (48s)
+  [LIN d32 s2] step 400 loss 3.601 (64s)
+  [LIN d32 s2] step 500 loss 3.579 (80s)
+  [LIN d32 s2] step 600 loss 3.268 (97s)
+  [LIN d32 s2] step 700 loss 3.215 (114s)
+  [LIN d32 s2] step 799 loss 2.590 (131s)
+[km2 LIN d32 s2] params 25296 in 0.773/0.794 ood 2.946/0.35 len 1.937/0.527 | first-symbol acc in/ood/len 0.669/0.302/0.336
+[P51] [{"arm": "LIN", "d": 32, "seed": 2, "params": 25296, "decode_in": [0.0, 0.0, 0.594], "margin_in": 0.38, "mix_at_q": [0.143, 0.001, 0.856], "in_ce": 0.773, "in_acc": 0.794, "in_a1": 0.669, "decode_ood": [0.734, 0.719, 0.281], "margin_ood": -3.715, "ood_ce": 2.946, "ood_acc": 0.35, "ood_a1": 0.302, "decode_len": [0.0, 0.0, 0.297], "margin_len": -1.359, "len_ce": 1.937, "len_acc": 0.527, "len_a1": 0.336, "tag": "km2"}]
