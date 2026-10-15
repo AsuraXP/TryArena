@@ -17,10 +17,14 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
-        self.E = nn.Embedding(V, d); self.P = nn.Linear(d, dk, bias=False); self.Ph = nn.Linear(d, dk, bias=False)
+        self.sparse = sparse
+        self.E = nn.Embedding(V, d); self.P = nn.Linear(d, dk, bias=False);
+        if sparse:   # C131: Kanerva-style address — FIXED random projection (no parameters) + k-WTA; crosstalk falls with dk at zero parameter cost
+            self.P.weight.requires_grad_(False); nn.init.normal_(self.P.weight, std=1.0 / math.sqrt(d))
+        self.Ph = nn.Linear(d, dk, bias=False) if keyfn == 'ctrl' else None
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
         self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
@@ -34,7 +38,11 @@ class LIN(nn.Module):
         return self.Ph(h)   # controller-made key (FWM-style control)
 
     def rolekey(self, win):   # win: list of last `roles` projected tokens, most recent last
-        return sum(self.R[i] * win[-1 - i] for i in range(min(self.roles, len(win))))
+        k = sum(self.R[i] * win[-1 - i] for i in range(min(self.roles, len(win))))
+        if self.sparse:   # k-WTA on the bound key, straight-through
+            kk = max(1, int(self.sparse * k.shape[-1])); th = k.abs().topk(kk, dim=-1).values[:, -1:]; mask = (k.abs() >= th).float()
+            k = k * mask + (k - k.detach()) * (1 - mask) * 0
+        return k
 
     def forward(self, x, **kw):
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x)

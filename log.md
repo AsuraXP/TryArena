@@ -7068,3 +7068,26 @@ READING RULE, fixed before the numbers: if the OOD margin and OOD first-symbol r
 in-range stays, the OOD defect is superposition crosstalk (capacity) and the representation axis gets cycle 3 on key
 geometry; if kmult does not move OOD, the role binding itself fails under shared pools and the next cycle is on the
 binding, not the width. Either way no mechanism is changed in this cycle.
+
+C130 — RESULT (Actions 38705636664 + local). Re-posed-read margin and 2-hop first-symbol vs key width, d32 roles4
+(params trainable): kmult2 25k: fs .688/.188 .669/.302 .680/.188(local), margin_in .29/.38/-.36, margin_ood -6.6/-3.7/-6.7
+kmult4 30k: fs .810/.406 .781/.266, margin_in 1.3/1.0, margin_ood -1.5/-3.7 | kmult8 39k: fs .812/.227 .818/.474,
+margin_in 1.1/1.2, margin_ood -5.3/-0.6. d64: kmult4 94k .872/.391 (ood margin -1.7), kmult8 128k .906/.521 (-0.9).
+Reading by the fixed rule: in-range margin and accuracy rise with width (capacity is real: .68 -> .81 at d32, .86 ->
+.91 at d64); OOD rises in the MEAN (.23 -> .34 -> .35 at d32; .28 -> .39 -> .52 at d64) but not per seed (kmult8 s1
+.23) — so crosstalk is part of the OOD defect and seed-level binding instability is the other part. Width also buys
+parameters, which the goal's metric charges for.
+
+C131 — PRE-REGISTRATION (REPRESENTATION axis, cycle 3 of 3): Kanerva-style address. Key side = FIXED random projection
+(no trainable parameters; Kanerva 1988 SDM / random-projection addressing) to dk = 16 d, then k-WTA (10%) on the role-
+bound key, straight-through. LOOP: crosstalk between ~50 superposed writes in a dense dk-dim key space; widening the dense
+key buys separation only with parameters. REMOVAL: separation from dimensionality and sparsity instead of learned width —
+sparse high-dimensional random codes are near-orthogonal by construction, and W (state, not parameter) grows, not the
+model. Trainable params 23.4k vs kmult2's 25.3k (P frozen, Ph dropped for lin). Candidates killed: wider dense key
+(C130, costs params), learned sparse codes (parameters again), hashing/Bloom addresses (not differentiable through the
+role binding), product keys (Lample 2019; parameters). Novelty: SDM and random-projection memories are old; a role-bound,
+reader-re-executable sparse address inside a fast-weight learner is not on the map. PREDICTION: at d32 with <= 25k
+trainable params, 2-hop OOD >= .40 in >= 2/3 seeds (dense kmult2: .19/.30/.19) and in-range >= .78 (dense kmult2 .68);
+at d64 OOD >= .50. Falsified if OOD <= .30 or in-range drops below .68 — then sparsity hurts the algebra and the
+representation axis closes for now (3 cycles), and the learning-rule axis takes over. Runs: sparse .1 kmult16, d32 s1-3,
+d64 s1-2; sparse .05 kmult32 d32 s1 (density control).
