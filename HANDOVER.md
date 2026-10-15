@@ -413,3 +413,8 @@ Harness: `--inner S` reports `hopland` (hop-k landing on a_b0/a_b1/a_dot/b_v0 sl
 - Instruments in p51 for LIN: `decode_{in,ood,len}` = head-decode of r0/r1/rq at 2-hop queries vs b0/b1/v0 (r0/r1 in-range decode is a known artifact: head never emits name symbols there).
 - Next: margin instrument for rq (correct minus runner-up logit) in-range vs OOD at kmult 2 and 4 (`LIN(kmult=)` exists in the class; expose a flag). Decide capacity vs binding from that, then representation cycle 3 or back to the rule.
 - Slope table (2-hop in-range, LIN roles4 vs TF): d16 .35/.185, d32 .70/.16, d64 .86/.245. OOD .2–.3 vs TF .13 — not a win yet. Length d64 .63 vs .016.
+
+## State after C130–C131
+- LIN flags: `--kmult` (key width), `--sparse f` (fixed random P + f-WTA), `--hopce` (per-hop targets, [F]). Instruments: `decode_*`, `margin_*` (re-posed read margin), `trainable` param count.
+- Representation axis closed after 3 cycles. 2-hop OOD ceiling ≈ .3 for LIN regardless of width/sparsity; the right answer is systematically runner-up (negative margins).
+- NEXT (learning-rule axis, cycle 2): address self-consistency — at every heard "x y =" the writer's key and the key the reader would re-pose from E(x), E(y) must agree (loss on their distance, stop-grad choice to be argued on paper). Pre-register with the margin instrument: OOD margin must cross 0 before accuracy is read.

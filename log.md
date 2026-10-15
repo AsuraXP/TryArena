@@ -7091,3 +7091,21 @@ trainable params, 2-hop OOD >= .40 in >= 2/3 seeds (dense kmult2: .19/.30/.19) a
 at d64 OOD >= .50. Falsified if OOD <= .30 or in-range drops below .68 — then sparsity hurts the algebra and the
 representation axis closes for now (3 cycles), and the learning-rule axis takes over. Runs: sparse .1 kmult16, d32 s1-3,
 d64 s1-2; sparse .05 kmult32 d32 s1 (density control).
+
+C131 — RESULT (Actions 38707446198 + local s4): FALSIFIED. Sparse fixed random address (dk 16d, 10% WTA, 23.4k
+trainable), 2-hop first-symbol in/ood/len: d32 .701/.247/.409 .669/.312/.398 .747/.323/.440 .706/.299/.427(local);
+d64 .867/.391/.625 .823/.234/.625; density control (dk 32d, 5%) .755/.195/.438. Needed OOD >= .40 in 2/3 and in-range
+>= .78: neither. Against dense kmult2 (same trainable budget): in-range equal (.70 vs .68), OOD mean .30 vs .23, length
+.42 vs .36 — a small, consistent, sub-threshold gain for zero extra parameters; not progress by the pre-registered bar.
+OOD margins (-1.6 to -2.6) are better than dense kmult2 (-3.7 to -6.7) but still negative: the right answer is
+systematically second. Reading: sparsity removes some crosstalk but the ~.3 OOD ceiling for this learner is not
+crosstalk-limited; the role-bound algebra itself degrades under a shared symbol pool. REPRESENTATION AXIS CLOSED for
+now (3 cycles: C127 moved, C128 moved, C131 did not) per remedy §1. LEARNING-RULE axis takes over next cycle, opening
+from the question: what signal makes the learner's bindings role-invariant — i.e. forces the key for "x y =" to be the
+same function of (x, y) whether x, y were ever seen as names or not? One stream fact to use: 1-hop OOD already works
+(.82); 2-hop OOD fails only at the re-posed step. The rule must act on the re-posed key, with a target that exists in
+the stream (candidate: at every heard "x y =", the key the writer forms and the key the reader would re-pose from the
+embeddings of x, y must agree — a self-consistency between heard and re-posed addresses, no oracle, applies to every
+unit including OOD-pool units because the loss is on the sequence being read).
+SLOPE TABLE (2-hop in-range first-symbol, LIN roles4 dense kmult2, vs fair TF): d16 .35/.185, d32 .69/.16, d64 .86/.245.
+OOD column .2–.3 vs .13. Unchanged this cycle.
