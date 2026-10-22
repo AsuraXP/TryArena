@@ -7242,3 +7242,15 @@ name1, =, v0, v1, .) — the stated reason "it stores only the queried transitio
 mean <= .5 with gate_by_offset peaked at offset 3; delta-rule control reported alongside. Falsified if length < .45 or
 the gate goes flat (~1 everywhere) — then selectivity is not learnable from CE+L1 and the loop needs the walked delta
 rule or a representation change. Runs: wgate .01 and .03 d64 s1-2, d32 s1; delta d64 s1-2, d32 s1; 9 jobs.
+
+TEXT TEST (T1) — PRE-REGISTRATION. The LIN learner (C128 config: role-bound re-executable keys, fast-weight memory,
+roles 4, dense kmult 2; unchanged) on the byte-level dialogue corpus of arch_vet_p49.py against the fair micro-
+Transformer on identical batches. Measures: name-CE (bytes of a name recalled later in the dialogue; binding on text)
+in-range, OOD names, far (4x length), dense; background CE (ordinary next-byte prediction = language modelling); raw
+unselected samples at temperature .8 from two prompts. Sizes d32/d64 for LIN; TF d32/d64 plus TF d96 to match LIN's
+parameter count (LIN carries a 2d->256 head and P). 3000 steps, B 8, L 320, seeds 1 (LIN d64: seeds 1,2).
+PREDICTION, written before running: (i) name-CE: LIN below TF at d64 in-range and far (binding is what it was built
+for); (ii) background CE: LIN ABOVE (worse than) TF at both sizes — a fast-weight learner with a tiny controller is
+not expected to model byte statistics as well as attention + MLP; (iii) samples from both will be incoherent at this
+scale, and will be shown anyway. The honest success condition for the project's framing is (i) with (ii) within .3
+nats; if LIN loses on name-CE too, the composition result does not transfer to text and the toy line is a detour.

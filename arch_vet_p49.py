@@ -45,6 +45,9 @@ import torch, torch.nn as nn, torch.nn.functional as F
 sys.argv_p49 = list(sys.argv); sys.argv = ["x"]
 import arch_vet_lm as A
 import arch_vet_p46 as T
+import importlib.util as _ilu, os as _os2
+_sp = _ilu.spec_from_file_location('arch_vet_lin', _os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), 'arch_vet_lin.py')); LINM = _ilu.module_from_spec(_sp); _sp.loader.exec_module(LINM)
+LINROLES = 4   # TEXT TEST: LIN learner (C128 config: role-bound re-executable keys, fast-weight memory) on bytes, unchanged
 sys.argv = sys.argv_p49
 torch.set_num_threads(2)
 GMIN0, BINIT = 0.2, 0.0
@@ -328,9 +331,19 @@ def name_ce(m, batches, arm):
     m.train(); return round(tot / max(n, 1), 4), round(bg / max(nb, 1), 4)
 
 
+@torch.no_grad()
+def sample(m, arm, prompt, n=160, temp=0.8, seed=0):
+    """raw greedy-ish sampling (temperature .8), byte level; shown unselected"""
+    g = torch.Generator().manual_seed(seed); x = torch.tensor([list(prompt.encode())]); m.eval()
+    for _ in range(n):
+        lg = (m(x, tau=0.05) if arm == "CKB" else m(x))[:, -1] / temp
+        nxt = torch.multinomial(torch.softmax(lg, -1), 1, generator=g); x = torch.cat([x, nxt], 1)
+    m.train(); return bytes(x[0].tolist()).decode("utf8", "replace")
+
+
 def train_text(arm, d, seed, steps, B, L, log):
     torch.manual_seed(seed); rng = random.Random(seed)
-    m = A.TFMicro(256, d) if arm == "TF" else GRUCore(256, d) if arm == "GRU" else CKB(256, d, MSLOTS)
+    m = A.TFMicro(256, d) if arm == "TF" else GRUCore(256, d) if arm == "GRU" else LINM.LIN(256, d, roles=LINROLES) if arm == "LIN" else CKB(256, d, MSLOTS)
     opt = torch.optim.Adam(m.parameters(), lr=3e-3); t0 = time.time()
     for s in range(steps):
         x, _ = dense_batch(rng, B, None if RANDNAMES else NAMES_TR, 6, L) if DENSE else text_batch(rng, B, NAMES_TR, rng.randint(1, 3), L)
@@ -357,7 +370,7 @@ def boundary_profile(m, x):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320)
+    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320); ap.add_argument("--sample", type=int, default=1)
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
     global CCRED, HCUT, DSCALE, KNORM; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale; KNORM = a.knorm; global LOWMEM, INNER; LOWMEM = a.lowmem; INNER = a.inner; global LOOK, LOOKH; LOOK = a.look; LOOKH = a.lookh; global IMCONS; IMCONS = a.imcons; torch.set_num_threads(a.threads)
     global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE, PUREADDR, RANDNAMES, TIE; ROLE = a.role; DENSE = bool(a.dense); PUREADDR = a.pure; RANDNAMES = bool(a.randnames); TIE = bool(a.tie); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
@@ -401,6 +414,9 @@ def main():
                             sp = torch.sigmoid(m.ws(m.E(torch.tensor([32, 10, 46, 97, 101, 112])))).squeeze(-1).tolist()
                         r["pass_sp_nl_dot_a_e_p"] = [round(v, 2) for v in sp]; log(f"   pass factors space/nl/./a/e/p {r['pass_sp_nl_dot_a_e_p']}")
                     if a.save: torch.save(m.state_dict(), f"p21_ckpt/{a.save}_{arm}_d{d}_s{seed}.pt")
+                    if a.sample:
+                        for pr in ["a: my name is yuki.\nb: hi", "a: hi, i am dax.\nb: so"]:
+                            log(f"--- SAMPLE [{arm} d{d}] prompt={pr!r}\n" + sample(m, arm, pr, seed=seed) + "\n---")
                     res["runs"].append(r); log(f"[p49 {arm} d{d} s{seed}] params {r['params']} name-CE in {r['in_name_ce']} ood {r['ood_names_name_ce']} far {r['far_ood_name_ce']} DENSE-unseen {r['dense_ood_name_ce']} | bg {r['in_bg_ce']} {r['ood_names_bg_ce']} {r['far_ood_bg_ce']}" + (f" | b sep/word {r['b_at_sep']}/{r['b_in_word']}" if arm == "CKB" else ""))
     with open("log.jsonl", "a") as fh: fh.write(json.dumps(res) + "\n")
     log("[P49] DONE")

@@ -1,38 +1,30 @@
 {
- "script": "arch_vet_p51.py",
+ "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "wg1_d64_s1",
-   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --wgate 0.01 --seeds 1 --tag wg0.01"
+   "tag": "t1_lin_d32",
+   "args": "--arms LIN --ds 32 --steps 3000 --B 8 --L 320 --seeds 1"
   },
   {
-   "tag": "wg1_d64_s2",
-   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --wgate 0.01 --seeds 2 --tag wg0.01"
+   "tag": "t1_lin_d64_s1",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1"
   },
   {
-   "tag": "wg3_d64_s1",
-   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --wgate 0.03 --seeds 1 --tag wg0.03"
+   "tag": "t1_lin_d64_s2",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 2"
   },
   {
-   "tag": "wg3_d64_s2",
-   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --wgate 0.03 --seeds 2 --tag wg0.03"
+   "tag": "t1_tf_d32",
+   "args": "--arms TF --ds 32 --steps 3000 --B 8 --L 320 --seeds 1"
   },
   {
-   "tag": "wg1_d32_s1",
-   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 32 --wgate 0.01 --seeds 1 --tag wg0.01"
+   "tag": "t1_tf_d64",
+   "args": "--arms TF --ds 64 --steps 3000 --B 8 --L 320 --seeds 1"
   },
   {
-   "tag": "delta_d64_s1",
-   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --delta 1 --seeds 1 --tag delta"
-  },
-  {
-   "tag": "delta_d64_s2",
-   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --delta 1 --seeds 2 --tag delta"
-  },
-  {
-   "tag": "delta_d32_s1",
-   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 32 --delta 1 --seeds 1 --tag delta"
+   "tag": "t1_tf_d96",
+   "args": "--arms TF --ds 96 --steps 3000 --B 8 --L 320 --seeds 1"
   }
  ],
- "nonce": 1792650222
+ "nonce": 1792650635
 }
