@@ -17,10 +17,11 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
-        self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay
+        self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
+        if wgate: self.wg = nn.Linear(2 * d, 1)   # C136: the learner decides what to store (write gate from token+controller), L1 pressure wgate
         self.E = nn.Embedding(V, d); self.P = nn.Linear(d, dk, bias=False);
         if sparse:   # C131: Kanerva-style address — FIXED random projection (no parameters) + k-WTA; crosstalk falls with dk at zero parameter cost
             self.P.weight.requires_grad_(False); nn.init.normal_(self.P.weight, std=1.0 / math.sqrt(d))
@@ -46,13 +47,16 @@ class LIN(nn.Module):
 
     def forward(self, x, **kw):
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x)
-        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; self._reads = []; self._hs = []; self._kw = []; self._qq = []; self._pr = []; win = []; l0, l1 = [], []; pr0, pr1 = [], []
+        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; self._reads = []; self._hs = []; self._kw = []; self._qq = []; self._pr = []; win = []; l0, l1 = [], []; pr0, pr1 = [], []; gs = []
         lam = torch.sigmoid(self.lam); sP = self.P(self.shape).unsqueeze(0)
         for t in range(L):
             et = e[:, t]
             # write: previous key -> this token (normalised key so W stays bounded)
             kn = F.normalize(k, dim=-1); self._kw.append(kn.detach())   # heard key used for the write at step t
-            W = (W if self.nodecay else torch.sigmoid(self.dec) * W) + kn.unsqueeze(2) * et.unsqueeze(1)
+            vt = et - torch.einsum("bk,bkd->bd", kn, W) if self.delta else et   # C136b control: delta-rule (error-correcting) write, DeltaNet-style
+            if self.wgate:
+                g = torch.sigmoid(self.wg(torch.cat([et, h], -1))); gs.append(g); vt = vt * g
+            W = (W if self.nodecay else torch.sigmoid(self.dec) * W) + kn.unsqueeze(2) * vt.unsqueeze(1)
             # advance key and controller
             if self.roles:
                 win.append(self.P(et)); win = win[-self.roles:]; k = self.rolekey(win)
@@ -71,7 +75,8 @@ class LIN(nn.Module):
             outs.append(self.head(torch.cat([h, r], -1)))
             if self.kcons: pr0.append(self.P(r0)); pr1.append(self.P(r1))
             if self.hopce: l0.append(self.head(torch.cat([h, r0], -1))); l1.append(self.head2(torch.cat([h, r1], -1)))
-        self.aux = torch.zeros(())
+        self.aux = torch.zeros(()); self.gmean = None
+        if self.wgate: G = torch.stack(gs, 1).squeeze(-1); self.aux = self.aux + self.wgate * G.mean(); self.gmean = G.detach()
         if self.kcons:   # C132 LEARNING RULE: reads must live where heard tokens live IN ADDRESS SPACE — P r0_t ~ P e_{t+1}, P r1_t ~ P e_{t+2}
             PE = self.P(e).detach()   # adjust the read toward the heard address, never the reverse (C117 lesson)
             A0 = torch.stack(pr0, 1)[:, :-1]; A1 = torch.stack(pr1, 1)[:, :-2]; m0 = (x[:, 1:] != 0).float(); m1 = (x[:, 2:] != 0).float()

@@ -7210,3 +7210,35 @@ READING RULE: if accuracy falls with distance at fixed N (in-range buckets) and 
 is forgetting (b); if accuracy is flat in distance in-range but low across all buckets in the length split, it is
 crosstalk (a). Runs (Actions): LIN roles4 shared d32 s1-2, d64 s1-2 with and without decay; plus the owed table on
 this stream: LIN d16 s1-2, d64 s3-4, TF d32/d64 at 7200 steps (3x budget) — 14 jobs.
+
+C135 — RESULT (Actions 39732398196 + local). Distance-bucketed 2-hop accuracy (goal write -> query, tokens):
+in-range d64: 0:.67–1.0 20:1.0 40:.5–.94 60:.72–.94 80:.77–.92 — FLAT in distance; length split: 0–40: .3–1.0,
+60–100: .1–.5 — low at every age, worst in the far tail; counts small per bucket (4–27). No-decay control: in-range
+up slightly (d64 .854/.893 vs .82/.815; d32 .651/.633 vs .615/.586), length NOT consistently better (d64 .284/.490 vs
+.383/.391; d32 .159/.211 vs .188/.198). By the reading rule: the length defect is CROSSTALK (a), not forgetting (b):
+accuracy does not fall with the age of a binding at fixed N; it falls when N grows. Decay is not the cause (banked;
+nodecay kept as a flag, gives +.03–.07 in-range, neutral on length).
+Owed table, shared-pool stream, 2-hop first-symbol in/ood/len (LIN roles4 dense; TF 7200 steps):
+  d16 LIN .180/.174/.094 .195/.172/.089 (collapses — below capacity for this stream)
+  d32 LIN 4 seeds mean .60/.57/.21        TF 7200 .133/.099/.010
+  d64 LIN 4 seeds mean .81/.76/.38        TF 7200 .138/.174/.039
+  Gap in-range: d16 ~0 (both fail) -> d32 .47 -> d64 .67. OOD gap .47 -> .59. Length .20 -> .34 (TF .01/.04).
+  Still provisional: single TF seed; text proxy absent.
+
+C136 — PRE-REGISTRATION (crosstalk loop; question first: what keeps superposed bindings separable as their count
+grows?). Paper: the read returns sum_i (q.k_i) v_i; with one write per TOKEN, N ≈ 6 per fact and 5 of 6 writes are
+never queried (writes inside names, inside values, at DOT) yet contribute crosstalk. Candidates: (1) wider/sparser keys
+— banked, modest (C130/131); (2) error-correcting (delta-rule) write W += k ⊗ (v − Wk) — DeltaNet/Schlag 2021, walked,
+raises capacity by making writes orthogonal to what is already retrievable; run as the WALKED CONTROL (--delta 1), not
+as our mechanism; (3) softmax over stored keys — that is attention, rejected; (4) THE LEARNER DECIDES WHAT TO STORE:
+a write gate g_t = sigmoid(Linear[e_t, h_t]) scaling the value written, with a small L1 pressure (--wgate .01) so
+storing is costly and the controller must learn which transitions matter. No oracle, no boundary: the gate sees the
+token and its own state. Loop removed: N shrinks to the bindings that get queried, so crosstalk falls with no change to
+key geometry; the "never-wrong memory" target in the goal is this same decision. Novelty: write gates exist in NTM/DNC
+(controller emits write weights) and in gated fast weights (Schlag et al. 2021 use a learned beta per step); the delta
+here is the L1 cost making selectivity the objective, and the instrument: gate value BY OFFSET within a unit (name0,
+name1, =, v0, v1, .) — the stated reason "it stores only the queried transition" is testable: gate at offsets 3 (after
+'=') must be high and at 0,1,5 low. PREDICTION: d64 length >= .55 (from .38) and in-range >= .80, OOD >= .70, gate
+mean <= .5 with gate_by_offset peaked at offset 3; delta-rule control reported alongside. Falsified if length < .45 or
+the gate goes flat (~1 everywhere) — then selectivity is not learnable from CE+L1 and the loop needs the walked delta
+rule or a representation change. Runs: wgate .01 and .03 d64 s1-2, d32 s1; delta d64 s1-2, d32 s1; 9 jobs.

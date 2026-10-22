@@ -24,7 +24,7 @@ _src = open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "arch_ve
 P = type(sys)("p49"); exec(compile(_src, "arch_vet_p49.py", "exec"), P.__dict__); sys.argv = _argv
 
 import importlib.util as _ilu; _sp = _ilu.spec_from_file_location('arch_vet_lin', _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'arch_vet_lin.py')); LINM = _ilu.module_from_spec(_sp); _sp.loader.exec_module(LINM)
-KEYFN = 'lin'; ROLES = 0; HOPCE = 0.0; KMULT = 2; SPARSE = 0.0; KCONS = 0.0; NODECAY = 0
+KEYFN = 'lin'; ROLES = 0; HOPCE = 0.0; KMULT = 2; SPARSE = 0.0; KCONS = 0.0; NODECAY = 0; WGATE = 0.0; DELTA = 0
 V = 70; PAD, DOT, QQ, EQ = 0, 1, 2, 67; HOP = 1; MIXEVAL = False; POOL = 'split'
 TR = list(range(3, 51)); NM, VL = TR[:24], TR[24:]   # train: names from NM, values from VL; ood = roles swapped (embeddings seen, roles novel)
 
@@ -111,13 +111,13 @@ def fwd(m, arm, x, tau):
 
 def run(arm, d, seed, steps, B, K, nq, log):
     torch.manual_seed(seed); rng = random.Random(seed)
-    m = A.TFMicro(V, d) if arm == "TF" else P.GRUCore(V, d) if arm == "GRU" else LINM.LIN(V, d, keyfn=KEYFN, roles=ROLES, hopce=HOPCE, kmult=KMULT, sparse=SPARSE, kcons=KCONS, nodecay=NODECAY) if arm == "LIN" else P.CKB(V, d, P.MSLOTS)
+    m = A.TFMicro(V, d) if arm == "TF" else P.GRUCore(V, d) if arm == "GRU" else LINM.LIN(V, d, keyfn=KEYFN, roles=ROLES, hopce=HOPCE, kmult=KMULT, sparse=SPARSE, kcons=KCONS, nodecay=NODECAY, wgate=WGATE, delta=DELTA) if arm == "LIN" else P.CKB(V, d, P.MSLOTS)
     opt = torch.optim.Adam(m.parameters(), lr=3e-3); t0 = time.time()
     for s in range(steps):
         x, mk = batch(rng, B, K, 'tr', nq); tau = 0.1 ** (s / max(steps - 1, 1)) if arm == "CKB" else 0.1
         m.gfloor = P.GATEFLOOR * max(0.0, 1 - s / max(P.GATEWARM, 1)) if arm == 'CKB' else 0.0
         lg = fwd(m, arm, x, tau); loss = P.ce_all(lg, x) + 2.0 * F.cross_entropy(lg[:, :-1][mk[:, 1:] > 0], x[:, 1:][mk[:, 1:] > 0])
-        loss = loss + (P.IMCONS * m.im_loss if arm == 'CKB' and P.IMCONS else 0) + (m.hx_loss if arm == 'CKB' and P.HOPX else 0) + (m.aux if arm == 'LIN' and (HOPCE or KCONS) else 0); opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
+        loss = loss + (P.IMCONS * m.im_loss if arm == 'CKB' and P.IMCONS else 0) + (m.hx_loss if arm == 'CKB' and P.HOPX else 0) + (m.aux if arm == 'LIN' and (HOPCE or KCONS or WGATE) else 0); opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
         if s % 100 == 0 or s == steps - 1: log(f"  [{arm} d{d} s{seed}] step {s} loss {loss.item():.3f} ({time.time()-t0:.0f}s)")
     global MIXEVAL; MIXEVAL = True
     er = random.Random(999); res = {"arm": arm, "d": d, "seed": seed, "params": P.n_params(m), "trainable": sum(p_.numel() for p_ in m.parameters() if p_.requires_grad)}
@@ -149,6 +149,12 @@ def run(arm, d, seed, steps, B, K, nq, log):
                             t += 8
                         else: t += 7
                 res["decode_" + nm] = [round(h_[0] / max(h_[1], 1), 3) for h_ in hit]; res["margin_" + nm] = round(sum(marg) / max(len(marg), 1), 3); res["cos_" + nm] = {k_: round(sum(v) / max(len(v), 1), 3) for k_, v in cs.items()}; res["dist_" + nm] = {str(k_ * 20): f"{v[0] / v[1]:.2f}/{v[1]}" for k_, v in sorted(dist.items())}
+            if arm == "LIN" and nm == "in" and m.gmean is not None:
+                G = m.gmean; nf = x.shape[1]; off = {}
+                for bb in range(x.shape[0]):
+                    s = x[bb].tolist(); nfa = next((i for i, v in enumerate(s) if v == QQ), len(s)) // 6
+                    for t in range(nfa * 6): off.setdefault(t % 6, []).append(G[bb, t].item())
+                res["gate_by_offset"] = [round(sum(v) / len(v), 2) for k_, v in sorted(off.items())]; res["gate_mean"] = round(G.mean().item(), 3)
             if arm == "LIN" and nm == "in":
                 Wm = torch.stack(m._mix, 1); qpos = mk[:, 1:] == 1; res["mix_at_q"] = [round(v, 3) for v in Wm[:, :-1][qpos].mean(0).tolist()]
             if arm == "CKB" and nm == "in":   # C124b diagnostic: does the learner's boundary fire at DOT? (b-rate at DOT vs elsewhere)
@@ -187,8 +193,8 @@ def main():
     ap.add_argument("--steps", type=int, default=400); ap.add_argument("--B", type=int, default=16); ap.add_argument("--K", type=int, default=6); ap.add_argument("--nq", type=int, default=4)
     ap.add_argument("--bmode", default="rand"); ap.add_argument("--randp", type=float, default=0.1); ap.add_argument("--M", type=int, default=64)
     ap.add_argument("--lowmem", type=int, default=1); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--threads", type=int, default=1)
-    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--repose", type=int, default=0); ap.add_argument("--keyfn", default="lin"); ap.add_argument("--roles", type=int, default=0); ap.add_argument("--hopce", type=float, default=0.0); ap.add_argument("--kmult", type=int, default=2); ap.add_argument("--sparse", type=float, default=0.0); ap.add_argument("--kcons", type=float, default=0.0); ap.add_argument("--pool", default="split"); ap.add_argument("--nodecay", type=int, default=0); ap.add_argument("--czoracle", type=int, default=0); ap.add_argument("--gfloor", type=float, default=0.0); ap.add_argument("--gwarm", type=int, default=150); ap.add_argument("--hopx", type=float, default=0.0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
-    a = ap.parse_args(); torch.set_num_threads(a.threads); global HOP, KEYFN, ROLES, HOPCE, KMULT, SPARSE, KCONS, POOL, NODECAY; POOL = a.pool; NODECAY = a.nodecay; HOP = a.hop; KEYFN = a.keyfn; ROLES = a.roles; HOPCE = a.hopce; KMULT = a.kmult; SPARSE = a.sparse; KCONS = a.kcons
+    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--repose", type=int, default=0); ap.add_argument("--keyfn", default="lin"); ap.add_argument("--roles", type=int, default=0); ap.add_argument("--hopce", type=float, default=0.0); ap.add_argument("--kmult", type=int, default=2); ap.add_argument("--sparse", type=float, default=0.0); ap.add_argument("--kcons", type=float, default=0.0); ap.add_argument("--pool", default="split"); ap.add_argument("--nodecay", type=int, default=0); ap.add_argument("--wgate", type=float, default=0.0); ap.add_argument("--delta", type=int, default=0); ap.add_argument("--czoracle", type=int, default=0); ap.add_argument("--gfloor", type=float, default=0.0); ap.add_argument("--gwarm", type=int, default=150); ap.add_argument("--hopx", type=float, default=0.0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
+    a = ap.parse_args(); torch.set_num_threads(a.threads); global HOP, KEYFN, ROLES, HOPCE, KMULT, SPARSE, KCONS, POOL, NODECAY, WGATE, DELTA; POOL = a.pool; NODECAY = a.nodecay; WGATE = a.wgate; DELTA = a.delta; HOP = a.hop; KEYFN = a.keyfn; ROLES = a.roles; HOPCE = a.hopce; KMULT = a.kmult; SPARSE = a.sparse; KCONS = a.kcons
     P.BMODE, P.RANDP, P.MSLOTS, P.LOWMEM, P.KNORM, P.DSCALE, P.INNER, P.IMCONS, P.LOOK, P.LOOKH, P.HOPX, P.REPOSE, P.GATEFLOOR, P.GATEWARM, P.CZORACLE = a.bmode, a.randp, a.M, a.lowmem, a.knorm, a.dscale, a.inner, a.imcons, a.look, a.lookh, a.hopx, a.repose, a.gfloor, a.gwarm, (DOT if a.czoracle else -1)
     P.PKB, P.PUREADDR, P.ROLE, P.SURPRISE, P.DENSE, P.RANDNAMES = 1, 3, 4, 1, True, True
     out = open(a.out, "a") if a.out else None
