@@ -7198,3 +7198,15 @@ longer TF budget is owed before any slope statement is made in public.
 SLOPE TABLE v2 (shared-pool stream, 2-hop first-symbol, LIN roles4 dense vs fair TF, same batches):
   d32: in .60 / ood .54  vs TF .10 / .11       d64: in .83 / ood .76  vs TF .125 / .115
   length column: LIN .21 / .38 vs TF .02 / .03 — ours rises with size, but from a low base; not claimed.
+
+C135 — INSTRUMENT + CONTROL (length loop, shared-pool stream). Paper first: a fast-weight read returns
+sum_i (q.k_i) v_i; two things grow with sequence length — (a) the number of superposed writes N (crosstalk ~ sqrt(N)
+in the read), and (b) the age of the goal write, which the learned decay sigmoid(dec) (init .98) multiplies away
+(.98^150 ≈ .05). The length split roughly doubles both. These are different loops: (a) is representation
+(separability of superposed bindings), (b) is a rule/parametrisation choice (forgetting) that the training lengths
+never penalised. Instrument: at 2-hop queries, accuracy bucketed by distance (tokens) between the goal unit's write
+and the query, for in-range and length splits. Control: --nodecay 1 (W never decays; everything else identical).
+READING RULE: if accuracy falls with distance at fixed N (in-range buckets) and nodecay flattens it, the length defect
+is forgetting (b); if accuracy is flat in distance in-range but low across all buckets in the length split, it is
+crosstalk (a). Runs (Actions): LIN roles4 shared d32 s1-2, d64 s1-2 with and without decay; plus the owed table on
+this stream: LIN d16 s1-2, d64 s3-4, TF d32/d64 at 7200 steps (3x budget) — 14 jobs.

@@ -2,37 +2,61 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "sh_lin_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --pool shared --seeds 1 --tag shlin"
+   "tag": "nd0_d32_s1",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 32 --nodecay 0 --seeds 1 --tag nd0"
   },
   {
-   "tag": "sh_lin_d32_s2",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --pool shared --seeds 2 --tag shlin"
+   "tag": "nd0_d32_s2",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 32 --nodecay 0 --seeds 2 --tag nd0"
   },
   {
-   "tag": "sh_lin_d64_s1",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --pool shared --seeds 1 --tag shlin"
+   "tag": "nd0_d64_s1",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --nodecay 0 --seeds 1 --tag nd0"
   },
   {
-   "tag": "sh_lin_d64_s2",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --pool shared --seeds 2 --tag shlin"
+   "tag": "nd0_d64_s2",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --nodecay 0 --seeds 2 --tag nd0"
   },
   {
-   "tag": "sh_tf_d32_s1",
-   "args": "--arms TF --ds 32 --steps 2400 --hop 3 --pool shared --seeds 1 --tag shtf"
+   "tag": "nd1_d32_s1",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 32 --nodecay 1 --seeds 1 --tag nd1"
   },
   {
-   "tag": "sh_tf_d64_s1",
-   "args": "--arms TF --ds 64 --steps 2400 --hop 3 --pool shared --seeds 1 --tag shtf"
+   "tag": "nd1_d32_s2",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 32 --nodecay 1 --seeds 2 --tag nd1"
   },
   {
-   "tag": "sh_lin_h1_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --roles 4 --pool shared --seeds 1 --tag shlinh1"
+   "tag": "nd1_d64_s1",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --nodecay 1 --seeds 1 --tag nd1"
   },
   {
-   "tag": "sh_lin_d32_s3",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --pool shared --seeds 3 --tag shlin"
+   "tag": "nd1_d64_s2",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --nodecay 1 --seeds 2 --tag nd1"
+  },
+  {
+   "tag": "sh_d16_s1",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 16 --seeds 1 --tag shlin"
+  },
+  {
+   "tag": "sh_d16_s2",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 16 --seeds 2 --tag shlin"
+  },
+  {
+   "tag": "sh_d64_s3",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --seeds 3 --tag shlin"
+  },
+  {
+   "tag": "sh_d64_s4",
+   "args": "--arms LIN --steps 800 --hop 3 --roles 4 --pool shared --ds 64 --seeds 4 --tag shlin"
+  },
+  {
+   "tag": "tf7k_d32_s1",
+   "args": "--arms TF --ds 32 --steps 7200 --hop 3 --pool shared --seeds 1 --tag shtf7k"
+  },
+  {
+   "tag": "tf7k_d64_s1",
+   "args": "--arms TF --ds 64 --steps 7200 --hop 3 --pool shared --seeds 1 --tag shtf7k"
   }
  ],
- "nonce": 1792647640
+ "nonce": 1792649476
 }

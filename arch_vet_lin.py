@@ -17,10 +17,10 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
-        self.sparse = sparse; self.kcons = kcons
+        self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay
         self.E = nn.Embedding(V, d); self.P = nn.Linear(d, dk, bias=False);
         if sparse:   # C131: Kanerva-style address — FIXED random projection (no parameters) + k-WTA; crosstalk falls with dk at zero parameter cost
             self.P.weight.requires_grad_(False); nn.init.normal_(self.P.weight, std=1.0 / math.sqrt(d))
@@ -52,7 +52,7 @@ class LIN(nn.Module):
             et = e[:, t]
             # write: previous key -> this token (normalised key so W stays bounded)
             kn = F.normalize(k, dim=-1); self._kw.append(kn.detach())   # heard key used for the write at step t
-            W = torch.sigmoid(self.dec) * W + kn.unsqueeze(2) * et.unsqueeze(1)
+            W = (W if self.nodecay else torch.sigmoid(self.dec) * W) + kn.unsqueeze(2) * et.unsqueeze(1)
             # advance key and controller
             if self.roles:
                 win.append(self.P(et)); win = win[-self.roles:]; k = self.rolekey(win)
