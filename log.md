@@ -7138,3 +7138,18 @@ reads-as-addresses (C132). What was NOT measured in any of them: the actual cosi
 heard key of the goal unit, in-range vs OOD. Every cycle inferred it; none observed it. Remedy §4 violated in spirit:
 the next cycle is that measurement, with nothing else changed, and a paper answer to "what does the OOD split ask that
 a one-pass learner cannot know" must be written before it. Learning-rule axis: 2 cycles, both falsified.
+
+C133 — INSTRUMENT ONLY (no mechanism change). Paper note first, on what the OOD split asks: training draws names from
+NM (24 symbols) and values from VL (24); OOD draws BOTH from VL. So in OOD the learner meets (i) VL symbols in name
+offsets of heard keys — the 1-hop result (.82) says the role-bound linear key handles this, because P and R are
+symbol-agnostic; (ii) a re-posed key whose R2/R1 slots carry VL symbols that were READ, not heard. The reads come from a
+W in which VL symbols also sit in value slots of every other fact; in training, the symbols read at a 2-hop bridge are
+always NM, which never occur in value slots, so the bridge read was never required to be separable from value-slot
+content. That is the one thing training never showed: a bridge symbol that also lives in value slots. If this is
+right, cos(P r0, P e_b0) will be clearly lower in OOD than in-range while cos(q_reposed, k_goal) tracks it; if r0/r1
+are equally clean in both splits and only q vs k_goal drops, the role binding itself is the problem.
+Measured quantities (at 2-hop queries, trained LIN roles4 dense, 800 steps, d32 s1-3, d64 s1-2, Actions): cos of
+the re-posed key with the heard key of the goal unit (q_goal) and with the best wrong heard key (q_wrong); cos of
+P r0 with P e(b0) and P r1 with P e(b1). Untrained smoke: q_goal .31 vs q_wrong .68 in both splits (baseline).
+READING RULE: in-range q_goal must exceed q_wrong (else the instrument is wrong); OOD defect is "bridge reads dirty" if
+r0_b0/r1_b1 drop by > .15 from in-range to OOD; "binding" if they hold and q_goal drops anyway.

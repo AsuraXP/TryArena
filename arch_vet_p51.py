@@ -119,7 +119,7 @@ def run(arm, d, seed, steps, B, K, nq, log):
             if arm == "CKB" and P.LOOK and nm == "in":
                 W = torch.stack(m._w2, 1); qpos = mk[:, 1:] == 1; res["hop2w_at_q"] = [round(v, 3) for v in W[:, :-1][qpos].mean(0).tolist()]; res["hop2w_all"] = [round(v, 3) for v in W.mean((0, 1)).tolist()]
             if arm == "LIN" and HOP in (2, 3, 4):   # C129 instrument: decode r0/r1/rq at 2-hop queries -> nearest symbol == b0 / b1 / v0 ?
-                RD = torch.stack(m._reads, 1); HS = torch.stack(m._hs, 1); xs = x.tolist(); hit = [[0, 0], [0, 0], [0, 0]]; marg = []
+                RD = torch.stack(m._reads, 1); HS = torch.stack(m._hs, 1); KW = torch.stack(m._kw, 1); QRE = torch.stack(m._qq, 1); PR = torch.stack(m._pr, 1); PEn = F.normalize(m.P(m.E.weight), dim=-1); cs = {k_: [] for k_ in ('q_goal', 'q_wrong', 'r0_b0', 'r1_b1')}; xs = x.tolist(); hit = [[0, 0], [0, 0], [0, 0]]; marg = []
                 for bb in range(x.shape[0]):
                     s = xs[bb]; nf = next((i for i, v in enumerate(s) if v == QQ), len(s)) // 6; facts = {(s[6 * f], s[6 * f + 1]): f for f in range(nf)}; t = nf * 6
                     while t + 7 < len(s):
@@ -128,14 +128,16 @@ def run(arm, d, seed, steps, B, K, nq, log):
                             if a in facts:
                                 fa = facts[a]; b = (s[6 * fa + 3], s[6 * fa + 4])
                                 if b in facts:
-                                    truth = [b[0], b[1], s[6 * facts[b] + 3]]
+                                    truth = [b[0], b[1], s[6 * facts[b] + 3]]; tg = 6 * facts[b] + 3
+                                    sims = KW[bb] @ QRE[bb, tq]; cs['q_goal'].append(sims[tg].item()); sims[tg] = -2; cs['q_wrong'].append(sims[:nf * 6].max().item())
+                                    cs['r0_b0'].append((F.normalize(PR[bb, tq, 0], dim=-1) @ PEn[b[0]]).item()); cs['r1_b1'].append((F.normalize(PR[bb, tq, 1], dim=-1) @ PEn[b[1]]).item())
                                     for i in range(3):
                                         lgq = m.head(torch.cat([HS[bb, tq], RD[bb, tq, i]], -1)); pred = lgq.argmax().item(); hit[i][1] += 1; hit[i][0] += int(pred == truth[i])
                                         if i == 2:
                                             lt = lgq[truth[2]].item(); lo = lgq.clone(); lo[truth[2]] = -1e9; marg.append(lt - lo.max().item())
                             t += 8
                         else: t += 7
-                res["decode_" + nm] = [round(h_[0] / max(h_[1], 1), 3) for h_ in hit]; res["margin_" + nm] = round(sum(marg) / max(len(marg), 1), 3)
+                res["decode_" + nm] = [round(h_[0] / max(h_[1], 1), 3) for h_ in hit]; res["margin_" + nm] = round(sum(marg) / max(len(marg), 1), 3); res["cos_" + nm] = {k_: round(sum(v) / max(len(v), 1), 3) for k_, v in cs.items()}
             if arm == "LIN" and nm == "in":
                 Wm = torch.stack(m._mix, 1); qpos = mk[:, 1:] == 1; res["mix_at_q"] = [round(v, 3) for v in Wm[:, :-1][qpos].mean(0).tolist()]
             if arm == "CKB" and nm == "in":   # C124b diagnostic: does the learner's boundary fire at DOT? (b-rate at DOT vs elsewhere)

@@ -46,12 +46,12 @@ class LIN(nn.Module):
 
     def forward(self, x, **kw):
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x)
-        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; self._reads = []; self._hs = []; win = []; l0, l1 = [], []; pr0, pr1 = [], []
+        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; self._reads = []; self._hs = []; self._kw = []; self._qq = []; self._pr = []; win = []; l0, l1 = [], []; pr0, pr1 = [], []
         lam = torch.sigmoid(self.lam); sP = self.P(self.shape).unsqueeze(0)
         for t in range(L):
             et = e[:, t]
             # write: previous key -> this token (normalised key so W stays bounded)
-            kn = F.normalize(k, dim=-1)
+            kn = F.normalize(k, dim=-1); self._kw.append(kn.detach())   # heard key used for the write at step t
             W = torch.sigmoid(self.dec) * W + kn.unsqueeze(2) * et.unsqueeze(1)
             # advance key and controller
             if self.roles:
@@ -66,7 +66,7 @@ class LIN(nn.Module):
             elif self.keyfn == "lin": qq = lam * lam * self.P(r0) + lam * self.P(r1) + sP   # RE-POSE: writer's key function on recalled symbols
             else: qq = self.Ph(self.g(torch.cat([r1, r0], -1), h))
             rq = torch.einsum("bk,bkd->bd", F.normalize(qq, dim=-1), W)
-            w = torch.softmax(self.mix(h), -1); self._mix.append(w.detach()); self._reads.append(torch.stack([r0, r1, rq], 1).detach()); self._hs.append(h.detach())
+            w = torch.softmax(self.mix(h), -1); self._mix.append(w.detach()); self._reads.append(torch.stack([r0, r1, rq], 1).detach()); self._hs.append(h.detach()); self._qq.append(F.normalize(qq, dim=-1).detach()); self._pr.append(torch.stack([self.P(r0), self.P(r1)], 1).detach())
             r = w[:, 0:1] * r0 + w[:, 1:2] * r1 + w[:, 2:3] * rq
             outs.append(self.head(torch.cat([h, r], -1)))
             if self.kcons: pr0.append(self.P(r0)); pr1.append(self.P(r1))
