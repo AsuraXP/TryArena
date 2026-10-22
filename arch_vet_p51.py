@@ -25,14 +25,23 @@ P = type(sys)("p49"); exec(compile(_src, "arch_vet_p49.py", "exec"), P.__dict__)
 
 import importlib.util as _ilu; _sp = _ilu.spec_from_file_location('arch_vet_lin', _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'arch_vet_lin.py')); LINM = _ilu.module_from_spec(_sp); _sp.loader.exec_module(LINM)
 KEYFN = 'lin'; ROLES = 0; HOPCE = 0.0; KMULT = 2; SPARSE = 0.0; KCONS = 0.0
-V = 70; PAD, DOT, QQ, EQ = 0, 1, 2, 67; HOP = 1; MIXEVAL = False
+V = 70; PAD, DOT, QQ, EQ = 0, 1, 2, 67; HOP = 1; MIXEVAL = False; POOL = 'split'
 TR = list(range(3, 51)); NM, VL = TR[:24], TR[24:]   # train: names from NM, values from VL; ood = roles swapped (embeddings seen, roles novel)
+
+
+def name_pair(rng, ns, syms):
+    """C134 shared pool: names and values from one pool; OOD = name PAIRS held out of training ((s0*7+s1)%4==0)."""
+    if POOL != 'shared': return (rng.choice(ns), rng.choice(ns))
+    while True:
+        p = (rng.choice(TR), rng.choice(TR)); held = (p[0] * 7 + p[1]) % 4 == 0
+        if held == (syms != 'tr'): return p
 
 
 def make_seq2(rng, K, syms, nq):
     """2-hop: K name->name links (a = b) and K name->value facts (b = v); query 'Q Q a =' -> v (never stated)."""
     ns, vs = (NM, VL) if syms == 'tr' else (VL, VL)
-    A = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]; Bn = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]
+    if POOL == 'shared': vs = TR
+    A = [name_pair(rng, ns, syms) for _ in range(K)]; Bn = [name_pair(rng, ns, syms) for _ in range(K)]
     vals = [(rng.choice(vs), rng.choice(vs)) for _ in range(K)]
     facts = [(a, b) for a, b in zip(A, Bn)] + [(b, v) for b, v in zip(Bn, vals)]; rng.shuffle(facts)
     x = []
@@ -69,7 +78,8 @@ def make_seq(rng, K, syms, nq):
     if HOP == 4: return make_seq2(rng, K, syms, nq) if MIXEVAL else make_seq4(rng, K, syms, nq)
     if HOP == 2 or (HOP == 3 and (MIXEVAL or rng.random() < 0.5)): return make_seq2(rng, K, syms, nq)
     ns, vs = (NM, VL) if syms == 'tr' else (VL, VL)   # ood: names made of symbols never seen as names (values unchanged)
-    names = [(rng.choice(ns), rng.choice(ns)) for _ in range(K)]
+    if POOL == 'shared': vs = TR
+    names = [name_pair(rng, ns, syms) for _ in range(K)]
     vals = [(rng.choice(vs), rng.choice(vs)) for _ in range(K)]
     x = []; tgt = []
     for n, v in zip(names, vals): x += [n[0], n[1], EQ, v[0], v[1], DOT]
@@ -176,8 +186,8 @@ def main():
     ap.add_argument("--steps", type=int, default=400); ap.add_argument("--B", type=int, default=16); ap.add_argument("--K", type=int, default=6); ap.add_argument("--nq", type=int, default=4)
     ap.add_argument("--bmode", default="rand"); ap.add_argument("--randp", type=float, default=0.1); ap.add_argument("--M", type=int, default=64)
     ap.add_argument("--lowmem", type=int, default=1); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--threads", type=int, default=1)
-    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--repose", type=int, default=0); ap.add_argument("--keyfn", default="lin"); ap.add_argument("--roles", type=int, default=0); ap.add_argument("--hopce", type=float, default=0.0); ap.add_argument("--kmult", type=int, default=2); ap.add_argument("--sparse", type=float, default=0.0); ap.add_argument("--kcons", type=float, default=0.0); ap.add_argument("--czoracle", type=int, default=0); ap.add_argument("--gfloor", type=float, default=0.0); ap.add_argument("--gwarm", type=int, default=150); ap.add_argument("--hopx", type=float, default=0.0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
-    a = ap.parse_args(); torch.set_num_threads(a.threads); global HOP, KEYFN, ROLES, HOPCE, KMULT, SPARSE, KCONS; HOP = a.hop; KEYFN = a.keyfn; ROLES = a.roles; HOPCE = a.hopce; KMULT = a.kmult; SPARSE = a.sparse; KCONS = a.kcons
+    ap.add_argument("--tag", default="p51"); ap.add_argument("--hop", type=int, default=1); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--repose", type=int, default=0); ap.add_argument("--keyfn", default="lin"); ap.add_argument("--roles", type=int, default=0); ap.add_argument("--hopce", type=float, default=0.0); ap.add_argument("--kmult", type=int, default=2); ap.add_argument("--sparse", type=float, default=0.0); ap.add_argument("--kcons", type=float, default=0.0); ap.add_argument("--pool", default="split"); ap.add_argument("--czoracle", type=int, default=0); ap.add_argument("--gfloor", type=float, default=0.0); ap.add_argument("--gwarm", type=int, default=150); ap.add_argument("--hopx", type=float, default=0.0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--out", default="")
+    a = ap.parse_args(); torch.set_num_threads(a.threads); global HOP, KEYFN, ROLES, HOPCE, KMULT, SPARSE, KCONS, POOL; POOL = a.pool; HOP = a.hop; KEYFN = a.keyfn; ROLES = a.roles; HOPCE = a.hopce; KMULT = a.kmult; SPARSE = a.sparse; KCONS = a.kcons
     P.BMODE, P.RANDP, P.MSLOTS, P.LOWMEM, P.KNORM, P.DSCALE, P.INNER, P.IMCONS, P.LOOK, P.LOOKH, P.HOPX, P.REPOSE, P.GATEFLOOR, P.GATEWARM, P.CZORACLE = a.bmode, a.randp, a.M, a.lowmem, a.knorm, a.dscale, a.inner, a.imcons, a.look, a.lookh, a.hopx, a.repose, a.gfloor, a.gwarm, (DOT if a.czoracle else -1)
     P.PKB, P.PUREADDR, P.ROLE, P.SURPRISE, P.DENSE, P.RANDNAMES = 1, 3, 4, 1, True, True
     out = open(a.out, "a") if a.out else None

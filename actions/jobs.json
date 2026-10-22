@@ -2,25 +2,37 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "cos_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --seeds 1 --tag cos"
+   "tag": "sh_lin_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --pool shared --seeds 1 --tag shlin"
   },
   {
-   "tag": "cos_d32_s2",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --seeds 2 --tag cos"
+   "tag": "sh_lin_d32_s2",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --pool shared --seeds 2 --tag shlin"
   },
   {
-   "tag": "cos_d32_s3",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --seeds 3 --tag cos"
+   "tag": "sh_lin_d64_s1",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --pool shared --seeds 1 --tag shlin"
   },
   {
-   "tag": "cos_d64_s1",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --seeds 1 --tag cos"
+   "tag": "sh_lin_d64_s2",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --pool shared --seeds 2 --tag shlin"
   },
   {
-   "tag": "cos_d64_s2",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --seeds 2 --tag cos"
+   "tag": "sh_tf_d32_s1",
+   "args": "--arms TF --ds 32 --steps 2400 --hop 3 --pool shared --seeds 1 --tag shtf"
+  },
+  {
+   "tag": "sh_tf_d64_s1",
+   "args": "--arms TF --ds 64 --steps 2400 --hop 3 --pool shared --seeds 1 --tag shtf"
+  },
+  {
+   "tag": "sh_lin_h1_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --roles 4 --pool shared --seeds 1 --tag shlinh1"
+  },
+  {
+   "tag": "sh_lin_d32_s3",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --pool shared --seeds 3 --tag shlin"
   }
  ],
- "nonce": 1792647146
+ "nonce": 1792647640
 }

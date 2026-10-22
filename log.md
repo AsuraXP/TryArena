@@ -7153,3 +7153,29 @@ the re-posed key with the heard key of the goal unit (q_goal) and with the best 
 P r0 with P e(b0) and P r1 with P e(b1). Untrained smoke: q_goal .31 vs q_wrong .68 in both splits (baseline).
 READING RULE: in-range q_goal must exceed q_wrong (else the instrument is wrong); OOD defect is "bridge reads dirty" if
 r0_b0/r1_b1 drop by > .15 from in-range to OOD; "binding" if they hold and q_goal drops anyway.
+
+C133 — RESULT (Actions 39728609656 + local s4). cos at 2-hop queries, in-range -> OOD:
+  d32 s1 q_goal .555->.454 q_wrong .462->.491 | r0_b0 .483->.466 r1_b1 .421->.371
+  d32 s2 .546->.509 / .456->.464 | .476->.550 .369->.485      d32 s3 .494->.450 / .459->.480 | .522->.454 .331->.465
+  d32 s4 .496->.389 / .481->.512 | .437->.432 .389->.378
+  d64 s1 .633->.377 / .411->.415 | .611->.432 .555->.339      d64 s2 .637->.449 / .464->.416 | .650->.440 .542->.425
+Instrument sanity: in-range q_goal > q_wrong in all 6 (+.04 to +.22) — thin margins; the in-range .69–.89 accuracy is
+a weak key match rescued by the head's linear decode of the blend. Reading by the fixed rule: at d64 (the size where
+composition works) the bridge reads ARE dirtier in OOD (r0 -.18/-.21, r1 -.22/-.12) and q_goal falls below q_wrong —
+"bridge reads dirty", the paper-note hypothesis: training never shows a bridge symbol that also lives in value slots,
+so separating a read bridge from value-slot content was never demanded. At d32 reads are equally mediocre in both
+splits and the margin is thin everywhere (binding weak at that size regardless). So the 2-hop OOD ceiling of C128–C132
+is, at the size that matters, a STREAM property: the split names-from-NM / values-from-VL lets a learner compose
+without role-invariant bridging, then the OOD split demands a role transfer nothing in training exhibits. Four rule/
+representation cycles could not supply what the data never asked for. This is logged as a design error in the proxy,
+not as a learner result.
+
+C134 — PRE-REGISTRATION: shared-pool stream (--pool shared; TF control on the same stream). Names and values are drawn
+from one 48-symbol pool in training, so bridge symbols routinely occupy value slots and role-invariant bridging is
+demanded by the loss; OOD = name PAIRS held out of training (25% of pairs by a fixed hash; symbols all seen in both
+roles) — still a test of novel bindings, no longer of an unexhibited role transfer. Nothing in the learner changes.
+Harness check: name_pair() enforces held-out status for names only; values free; 1-hop and 2-hop streams both covered;
+eval still 2-hop only under hop 3. PREDICTION: LIN roles4 dense d64 2-hop OOD >= .60 and within .20 of in-range (was
+.25–.30 vs .85–.89); d32 OOD >= .40; TF on the same stream stays <= .30 at d64. Falsified if LIN d64 OOD < .45 — then
+the learner cannot bridge role-invariantly even when the stream demands it, and that is a learner result. Runs: LIN
+d32 s1-2, d64 s1-2, 800 steps; TF d32/d64 s1, 2400 steps; LIN 1-hop shared d32 s1 (proxy); 8 jobs.
