@@ -7127,3 +7127,14 @@ in-range not below .68. Falsified if OOD margin stays < -1 or OOD <= .30 — the
 limit either, and the remaining hypothesis is that role-bound keys over a shared pool are intrinsically ambiguous
 (binding, not learning), which sends the question back to the stream design (is the OOD split asking for something a
 one-pass learner cannot know?). Runs: kcons 1 and 0.3, d32 s1-3; kcons 1 d64 s1-2; second proxy 1-hop d32 kcons 1.
+
+C132 — RESULT (Actions 39727094786 + local s4): FALSIFIED. Address-space consistency, 2-hop first-symbol in/ood/len,
+OOD margin: kcons1 d32 .677/.182/.354 (-5.2) .635/.242/.276 (-1.5) .714/.339/.349 (-0.8) .396/.133/.208 (-9.4, local;
+in-range collapse) | kcons.3 d32 .747/.201/.352 (-4.7) .633/.284/.292 (-1.7) | kcons1 d64 .888/.323/.604 (-2.5)
+.839/.227/.531 (-3.2). 1-hop proxy .932/.669/.901 (OOD down from .82). OOD margin never crosses 0; OOD <= .34; one
+seed's in-range collapsed. As pre-registered: address cleanliness is not the OOD limit either.
+Ledger of the 2-hop OOD defect: not reads-as-predictors (C129), not key width (C130), not key sparsity (C131), not
+reads-as-addresses (C132). What was NOT measured in any of them: the actual cosine between the re-posed key and the
+heard key of the goal unit, in-range vs OOD. Every cycle inferred it; none observed it. Remedy §4 violated in spirit:
+the next cycle is that measurement, with nothing else changed, and a paper answer to "what does the OOD split ask that
+a one-pass learner cannot know" must be written before it. Learning-rule axis: 2 cycles, both falsified.
