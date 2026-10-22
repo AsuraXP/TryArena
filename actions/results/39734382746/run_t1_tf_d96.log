@@ -1,0 +1,31 @@
+  [TF d96 s1] step 0 ce 5.769 (0s)
+  [TF d96 s1] step 250 ce 2.065 (16s)
+  [TF d96 s1] step 500 ce 1.398 (32s)
+  [TF d96 s1] step 750 ce 1.212 (48s)
+  [TF d96 s1] step 1000 ce 1.324 (64s)
+  [TF d96 s1] step 1250 ce 1.202 (79s)
+  [TF d96 s1] step 1500 ce 1.002 (95s)
+  [TF d96 s1] step 1750 ce 1.477 (110s)
+  [TF d96 s1] step 2000 ce 1.216 (126s)
+  [TF d96 s1] step 2250 ce 1.203 (142s)
+  [TF d96 s1] step 2500 ce 1.258 (157s)
+  [TF d96 s1] step 2750 ce 1.220 (173s)
+  [TF d96 s1] step 2999 ce 1.003 (188s)
+--- SAMPLE [TF d96] prompt='a: my name is yuki.\nb: hi'
+a: my name is yuki.
+b: his emen yes is this get you exper out. kind first.
+b: good night iris.
+a: as i said, i am hugo.
+a: we could be little of you more finn.
+b: oscar.
+b: good night m
+---
+--- SAMPLE [TF d96] prompt='a: hi, i am dax.\nb: so'
+a: hi, i am dax.
+b: sorry, i hear some on the can conder?
+a: as i said, i am maya.
+a: i not tact you hanked have. great.
+b: my to she trier. there. what crazy, on off ferromed of my 
+---
+[p49 TF d96 s1] params 273088 name-CE in 0.4422 ood 3.9515 far 3.7317 DENSE-unseen 4.4463 | bg 1.2127 1.3572 2.5553
+[P49] DONE

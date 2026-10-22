@@ -1,0 +1,28 @@
+  [TF d64 s1] step 0 ce 5.621 (0s)
+  [TF d64 s1] step 250 ce 2.218 (11s)
+  [TF d64 s1] step 500 ce 1.642 (23s)
+  [TF d64 s1] step 750 ce 1.432 (34s)
+  [TF d64 s1] step 1000 ce 1.493 (46s)
+  [TF d64 s1] step 1250 ce 1.340 (58s)
+  [TF d64 s1] step 1500 ce 1.126 (69s)
+  [TF d64 s1] step 1750 ce 1.570 (81s)
+  [TF d64 s1] step 2000 ce 1.295 (93s)
+  [TF d64 s1] step 2250 ce 1.290 (104s)
+  [TF d64 s1] step 2500 ce 1.384 (116s)
+  [TF d64 s1] step 2750 ce 1.332 (128s)
+  [TF d64 s1] step 2999 ce 1.120 (140s)
+--- SAMPLE [TF d64] prompt='a: my name is yuki.\nb: hi'
+a: my name is yuki.
+b: his then you can't gont my cleaky.
+b: go a win, he's she? she'll thang!
+a: as i said, i am hugo.
+a: how mina, i am finn.
+a: have the crangleme off on there. i'm g
+---
+--- SAMPLE [TF d64] prompt='a: hi, i am dax.\nb: so'
+a: hi, i am dax.
+b: somethen you cash i'm the can cone our okay. i didn't is?
+a: my famang! i they right. the face me. i want et you few uright have the crangleme off on for a should
+---
+[p49 TF d64 s1] params 132992 name-CE in 0.5454 ood 4.0767 far 4.4658 DENSE-unseen 4.0867 | bg 1.3016 1.4429 3.302
+[P49] DONE

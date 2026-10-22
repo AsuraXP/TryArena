@@ -1,0 +1,29 @@
+  [LIN d32 s1] step 0 ce 5.696 (1s)
+  [LIN d32 s1] step 250 ce 2.072 (194s)
+  [LIN d32 s1] step 500 ce 1.602 (377s)
+  [LIN d32 s1] step 750 ce 1.455 (558s)
+  [LIN d32 s1] step 1000 ce 1.553 (738s)
+  [LIN d32 s1] step 1250 ce 1.416 (918s)
+  [LIN d32 s1] step 1500 ce 1.228 (1099s)
+  [LIN d32 s1] step 1750 ce 1.643 (1280s)
+  [LIN d32 s1] step 2000 ce 1.390 (1461s)
+  [LIN d32 s1] step 2250 ce 1.413 (1642s)
+  [LIN d32 s1] step 2500 ce 1.461 (1823s)
+  [LIN d32 s1] step 2750 ce 1.417 (2003s)
+  [LIN d32 s1] step 2999 ce 1.196 (2183s)
+--- SAMPLE [LIN d32] prompt='a: my name is yuki.\nb: hi'
+a: my name is yuki.
+b: his even the call if get oscar here, nice to meet you.
+a: some here. good no you heonets king thes is a mina.
+b: it's it there.
+a: he'rat's on offion reme of coul
+---
+--- SAMPLE [LIN d32] prompt='a: hi, i am dax.\nb: so'
+a: hi, i am dax.
+b: so femen you is think they canning old okay do a kinds?
+a: i melix.....
+a: to's i moned have. go to word. you don't guing this on this. and on the ferry.
+b: i'm m
+---
+[p49 LIN d32 s1] params 53380 name-CE in 0.6875 ood 3.7196 far 3.6713 DENSE-unseen 4.0158 | bg 1.4138 1.5034 1.7247
+[P49] DONE

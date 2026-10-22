@@ -1,0 +1,27 @@
+  [LIN d64 s1] step 0 ce 6.412 (1s)
+  [LIN d64 s1] step 250 ce 1.843 (225s)
+  [LIN d64 s1] step 500 ce 1.299 (449s)
+  [LIN d64 s1] step 750 ce 1.201 (670s)
+  [LIN d64 s1] step 1000 ce 1.330 (890s)
+  [LIN d64 s1] step 1250 ce 1.212 (1110s)
+  [LIN d64 s1] step 1500 ce 1.020 (1330s)
+  [LIN d64 s1] step 1750 ce 1.465 (1550s)
+  [LIN d64 s1] step 2000 ce 1.232 (1769s)
+  [LIN d64 s1] step 2250 ce 1.222 (1986s)
+  [LIN d64 s1] step 2500 ce 1.303 (2205s)
+  [LIN d64 s1] step 2750 ce 1.280 (2422s)
+  [LIN d64 s1] step 2999 ce 1.052 (2642s)
+--- SAMPLE [LIN d64] prompt='a: my name is yuki.\nb: hi'
+a: my name is yuki.
+b: his emmorresting. i wately then your me know a dire this?
+a: exlite no! i thought to be him wither but to do willite us.
+a: i monithing and on the farround a coul
+---
+--- SAMPLE [LIN d64] prompt='a: hi, i am dax.\nb: so'
+a: hi, i am dax.
+b: something is is this... myst blone old. kift a a righting them lite.
+a: i say's i to be him wither but to do willite us.
+a: i monithing and on the farround a coul
+---
+[p49 LIN d64 s1] params 128772 name-CE in 0.4045 ood 3.8979 far 3.7889 DENSE-unseen 4.3237 | bg 1.268 1.3515 1.5709
+[P49] DONE
