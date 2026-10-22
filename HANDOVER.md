@@ -422,3 +422,8 @@ Harness: `--inner S` reports `hopland` (hop-k landing on a_b0/a_b1/a_dot/b_v0 sl
 ## State after C132
 - `--kcons w` (address-space consistency) [F]; keep, do not retune.
 - 2-hop OOD ≈ .3 ceiling on LIN survives four excluded causes. Next cycle = instrument only: at 2-hop queries record cos(q_reposed, k_heard(goal unit)) and cos(q_reposed, k_heard(best wrong unit)), in-range vs OOD; also cos(P r0, P e_b0), cos(P r1, P e_b1). Requires storing per-step heard keys in LIN (list of k before write) and unit provenance from p51 (facts are 6-token units; use write positions 6*fb+3). Write the paper note on the OOD split first (names from the value pool: what must the learner know that the stream never showed?).
+
+## State after C133–C134
+- Stream flag `--pool shared` (names+values from TR; OOD = held-out name pairs by hash (s0*7+s1)%4==0). USE THIS STREAM from now on for composition; the split pool conflated novel bindings with an unexhibited role transfer (C133 paper + measurement).
+- LIN roles4 dense d64: .83/.76/.37; TF .125/.115/.03. Length is the open defect (crosstalk grows with facts per sequence).
+- Owed: d16 point, 4 seeds per size, longer TF budget control, text proxy. Then the length loop: open from the question (what representation/rule keeps superposed bindings separable as their count grows), not from the file.

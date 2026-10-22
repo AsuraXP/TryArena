@@ -7179,3 +7179,22 @@ eval still 2-hop only under hop 3. PREDICTION: LIN roles4 dense d64 2-hop OOD >=
 .25–.30 vs .85–.89); d32 OOD >= .40; TF on the same stream stays <= .30 at d64. Falsified if LIN d64 OOD < .45 — then
 the learner cannot bridge role-invariantly even when the stream demands it, and that is a learner result. Runs: LIN
 d32 s1-2, d64 s1-2, 800 steps; TF d32/d64 s1, 2400 steps; LIN 1-hop shared d32 s1 (proxy); 8 jobs.
+
+C134 — RESULT (Actions 39729388387 + local s4): CONFIRMED on every pre-registered line.
+Shared-pool stream, 2-hop first-symbol in/ood/len (OOD = held-out name pairs, all symbols seen in both roles):
+  LIN d32 .633/.596/.201 .560/.513/.219 .651/.581/.229 .562/.474/.208(local)   LIN d64 .828/.755/.372 .823/.763/.383
+  TF  d32 .096/.109/.016 (2400 steps)   TF d64 .125/.115/.031        LIN 1-hop d32 .979/.948/.940
+  key cosines now EQUAL across splits (d64 OOD q_goal .62/.68 vs q_wrong .39/.42; r0 .64/.62) — the C133 defect is gone.
+d64 OOD >= .60: yes (.76); within .20 of in-range: yes (.07). d32 OOD >= .40: yes (.51–.60). TF <= .30: yes (.11–.13).
+So the 2-hop OOD ceiling of C128–C132 was the proxy's role split, not the learner: once the stream exhibits symbols in
+both roles, the same learner, unchanged, generalises to novel bindings at .76 while the fair Transformer on the same
+batches sits at .12. The four falsified rule/representation cycles stand as falsified for the old stream and are not
+re-read as wins.
+NEGATIVES held in view: (1) LENGTH fell hard on the shared pool (d32 .20–.23, d64 .37–.38; split-pool had .34/.63) —
+more facts per sequence means more superposed writes sharing symbols, and the fast-weight crosstalk C130 measured now
+shows up as a length defect; this is the next loop and it is a real learner defect. (2) In-range at d32 fell from .69
+to .56–.65 (harder stream). (3) d16 and 4-seed tables not yet run on this stream. (4) TF is a 2400-step control; a
+longer TF budget is owed before any slope statement is made in public.
+SLOPE TABLE v2 (shared-pool stream, 2-hop first-symbol, LIN roles4 dense vs fair TF, same batches):
+  d32: in .60 / ood .54  vs TF .10 / .11       d64: in .83 / ood .76  vs TF .125 / .115
+  length column: LIN .21 / .38 vs TF .02 / .03 — ours rises with size, but from a low base; not claimed.
