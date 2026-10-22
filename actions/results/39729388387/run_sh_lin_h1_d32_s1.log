@@ -1,0 +1,11 @@
+  [LIN d32 s1] step 0 loss 15.613 (0s)
+  [LIN d32 s1] step 100 loss 6.183 (22s)
+  [LIN d32 s1] step 200 loss 3.770 (43s)
+  [LIN d32 s1] step 300 loss 2.610 (64s)
+  [LIN d32 s1] step 400 loss 2.412 (84s)
+  [LIN d32 s1] step 500 loss 2.054 (105s)
+  [LIN d32 s1] step 600 loss 2.330 (125s)
+  [LIN d32 s1] step 700 loss 1.925 (145s)
+  [LIN d32 s1] step 799 loss 2.141 (164s)
+[shlinh1 LIN d32 s1] params 23248/23248 in 0.105/0.974 ood 0.202/0.939 len 0.26/0.936 | first-symbol acc in/ood/len 0.979/0.948/0.94
+[P51] [{"arm": "LIN", "d": 32, "seed": 1, "params": 23248, "trainable": 23248, "mix_at_q": [0.998, 0.001, 0.002], "in_ce": 0.105, "in_acc": 0.974, "in_a1": 0.979, "ood_ce": 0.202, "ood_acc": 0.939, "ood_a1": 0.948, "len_ce": 0.26, "len_acc": 0.936, "len_a1": 0.94, "tag": "shlinh1"}]

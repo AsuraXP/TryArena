@@ -1,0 +1,11 @@
+  [LIN d32 s3] step 0 loss 15.819 (0s)
+  [LIN d32 s3] step 100 loss 8.247 (34s)
+  [LIN d32 s3] step 200 loss 7.060 (67s)
+  [LIN d32 s3] step 300 loss 5.800 (100s)
+  [LIN d32 s3] step 400 loss 5.036 (134s)
+  [LIN d32 s3] step 500 loss 4.246 (166s)
+  [LIN d32 s3] step 600 loss 3.676 (198s)
+  [LIN d32 s3] step 700 loss 4.284 (230s)
+  [LIN d32 s3] step 799 loss 3.339 (262s)
+[shlin LIN d32 s3] params 23248/23248 in 1.379/0.682 ood 1.541/0.628 len 2.795/0.34 | first-symbol acc in/ood/len 0.651/0.581/0.229
+[P51] [{"arm": "LIN", "d": 32, "seed": 3, "params": 23248, "trainable": 23248, "decode_in": [0.828, 0.656, 0.625], "margin_in": 0.552, "cos_in": {"q_goal": 0.605, "q_wrong": 0.432, "r0_b0": 0.606, "r1_b1": 0.429}, "mix_at_q": [0.195, 0.001, 0.804], "in_ce": 1.379, "in_acc": 0.682, "in_a1": 0.651, "decode_ood": [0.797, 0.688, 0.547], "margin_ood": -0.485, "cos_ood": {"q_goal": 0.57, "q_wrong": 0.413, "r0_b0": 0.57, "r1_b1": 0.412}, "ood_ce": 1.541, "ood_acc": 0.628, "ood_a1": 0.581, "decode_len": [0.703, 0.406, 0.188], "margin_len": -2.4, "cos_len": {"q_goal": 0.403, "q_wrong": 0.416, "r0_b0": 0.421, "r1_b1": 0.209}, "len_ce": 2.795, "len_acc": 0.34, "len_a1": 0.229, "tag": "shlin"}]
