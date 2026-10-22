@@ -7109,3 +7109,21 @@ embeddings of x, y must agree — a self-consistency between heard and re-posed 
 unit including OOD-pool units because the loss is on the sequence being read).
 SLOPE TABLE (2-hop in-range first-symbol, LIN roles4 dense kmult2, vs fair TF): d16 .35/.185, d32 .69/.16, d64 .86/.245.
 OOD column .2–.3 vs .13. Unchanged this cycle.
+
+C132 — PRE-REGISTRATION (LEARNING-RULE axis, cycle 2): ADDRESS-SPACE CONSISTENCY (--kcons w).
+Question first: what signal forces a recalled symbol to be usable as an address exactly as a heard one is? Paper: the
+re-pose algebra q = R2⊙P r0 + R1⊙P r1 + R0⊙P s assumes P r0 ≈ P e(b0) and P r1 ≈ P e(b1). Nothing in the objective
+enforces that in ADDRESS space: C129 enforced it in PREDICTION space (through a head that can untangle blends, so the
+blend was never cleaned) and was falsified; C131 showed the right answer is systematically runner-up (negative margin),
+i.e. the re-posed address is near but not at the heard one. LOOP: reads are blends; the re-pose treats them as symbols;
+in-distribution the head compensates downstream, in OOD the blend is noisier and the algebra compounds it. REMOVAL
+(rule): at EVERY position t, 1 - cos(P r0_t, P e_{t+1}) + 1 - cos(P r1_t, P e_{t+2}) with the heard side detached
+(adjust the read toward the heard address, never the reverse — C117). Targets exist everywhere in the stream; no oracle,
+no boundary, no label. Distinct from C129 (space the loss lives in), from cleanup/snapping (inference-time, walked), from
+contrastive read losses (negatives not needed: the target is the heard token itself). Instrument check (read from code):
+P is trainable (dense kmult2); loss masks PAD; applies on facts and queries alike; hop 3 mixed training; eval 2-hop.
+PREDICTION: OOD margin of the re-posed read crosses 0 at d32 (was -3.7 to -6.7) and 2-hop OOD >= .40 in >= 2/3 seeds;
+in-range not below .68. Falsified if OOD margin stays < -1 or OOD <= .30 — then address cleanliness is not the OOD
+limit either, and the remaining hypothesis is that role-bound keys over a shared pool are intrinsically ambiguous
+(binding, not learning), which sends the question back to the stream design (is the OOD split asking for something a
+one-pass learner cannot know?). Runs: kcons 1 and 0.3, d32 s1-3; kcons 1 d64 s1-2; second proxy 1-hop d32 kcons 1.

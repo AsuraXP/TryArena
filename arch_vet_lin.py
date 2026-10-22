@@ -17,10 +17,10 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
-        self.sparse = sparse
+        self.sparse = sparse; self.kcons = kcons
         self.E = nn.Embedding(V, d); self.P = nn.Linear(d, dk, bias=False);
         if sparse:   # C131: Kanerva-style address — FIXED random projection (no parameters) + k-WTA; crosstalk falls with dk at zero parameter cost
             self.P.weight.requires_grad_(False); nn.init.normal_(self.P.weight, std=1.0 / math.sqrt(d))
@@ -46,7 +46,7 @@ class LIN(nn.Module):
 
     def forward(self, x, **kw):
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x)
-        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; self._reads = []; self._hs = []; win = []; l0, l1 = [], []
+        h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; self._reads = []; self._hs = []; win = []; l0, l1 = [], []; pr0, pr1 = [], []
         lam = torch.sigmoid(self.lam); sP = self.P(self.shape).unsqueeze(0)
         for t in range(L):
             et = e[:, t]
@@ -69,8 +69,14 @@ class LIN(nn.Module):
             w = torch.softmax(self.mix(h), -1); self._mix.append(w.detach()); self._reads.append(torch.stack([r0, r1, rq], 1).detach()); self._hs.append(h.detach())
             r = w[:, 0:1] * r0 + w[:, 1:2] * r1 + w[:, 2:3] * rq
             outs.append(self.head(torch.cat([h, r], -1)))
+            if self.kcons: pr0.append(self.P(r0)); pr1.append(self.P(r1))
             if self.hopce: l0.append(self.head(torch.cat([h, r0], -1))); l1.append(self.head2(torch.cat([h, r1], -1)))
         self.aux = torch.zeros(())
+        if self.kcons:   # C132 LEARNING RULE: reads must live where heard tokens live IN ADDRESS SPACE — P r0_t ~ P e_{t+1}, P r1_t ~ P e_{t+2}
+            PE = self.P(e).detach()   # adjust the read toward the heard address, never the reverse (C117 lesson)
+            A0 = torch.stack(pr0, 1)[:, :-1]; A1 = torch.stack(pr1, 1)[:, :-2]; m0 = (x[:, 1:] != 0).float(); m1 = (x[:, 2:] != 0).float()
+            c0 = 1 - F.cosine_similarity(A0, PE[:, 1:], dim=-1); c1 = 1 - F.cosine_similarity(A1, PE[:, 2:], dim=-1)
+            self.aux = self.aux + self.kcons * ((c0 * m0).sum() / m0.sum() + (c1 * m1).sum() / m1.sum())
         if self.hopce:   # C129 LEARNING RULE: each hop read must be a standalone predictor of a real stream target (t+1 for r0, t+2 for r1); no oracle
             L0 = torch.stack(l0, 1); L1 = torch.stack(l1, 1)
             self.aux = self.hopce * (F.cross_entropy(L0[:, :-1].reshape(-1, L0.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)

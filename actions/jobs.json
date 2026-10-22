@@ -2,29 +2,37 @@
  "script": "arch_vet_p51.py",
  "jobs": [
   {
-   "tag": "sp_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --kmult 16 --sparse 0.1 --seeds 1 --tag sp"
+   "tag": "kc1_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --kcons 1 --seeds 1 --tag kc1"
   },
   {
-   "tag": "sp_d32_s2",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --kmult 16 --sparse 0.1 --seeds 2 --tag sp"
+   "tag": "kc1_d32_s2",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --kcons 1 --seeds 2 --tag kc1"
   },
   {
-   "tag": "sp_d32_s3",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --kmult 16 --sparse 0.1 --seeds 3 --tag sp"
+   "tag": "kc1_d32_s3",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --kcons 1 --seeds 3 --tag kc1"
   },
   {
-   "tag": "sp_d64_s1",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --kmult 16 --sparse 0.1 --seeds 1 --tag sp"
+   "tag": "kc03_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --kcons 0.3 --seeds 1 --tag kc03"
   },
   {
-   "tag": "sp_d64_s2",
-   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --kmult 16 --sparse 0.1 --seeds 2 --tag sp"
+   "tag": "kc03_d32_s2",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --kcons 0.3 --seeds 2 --tag kc03"
   },
   {
-   "tag": "sp05_d32_s1",
-   "args": "--arms LIN --ds 32 --steps 800 --hop 3 --roles 4 --kmult 32 --sparse 0.05 --seeds 1 --tag sp05"
+   "tag": "kc1_d64_s1",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --kcons 1 --seeds 1 --tag kc1"
+  },
+  {
+   "tag": "kc1_d64_s2",
+   "args": "--arms LIN --ds 64 --steps 800 --hop 3 --roles 4 --kcons 1 --seeds 2 --tag kc1"
+  },
+  {
+   "tag": "kc1_h1_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 800 --hop 1 --roles 4 --kcons 1 --seeds 1 --tag kc1h1"
   }
  ],
- "nonce": 1792053674
+ "nonce": 1792646195
 }
