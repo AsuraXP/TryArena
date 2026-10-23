@@ -341,6 +341,35 @@ def sample(m, arm, prompt, n=160, temp=0.8, seed=0):
     m.train(); return bytes(x[0].tolist()).decode("utf8", "replace")
 
 
+
+def lm_run(arm, d, seed, steps, B, L, log, corpus_path, eval_every=250, sample_n=400):
+    """TEXT TEST T2: plain byte-level LM on a raw corpus (no synthetic dialogues). Held-out = last 5% of bytes.
+    Reports CE at L, 4L, 16L context, a learning curve (CE every eval_every steps), and raw samples."""
+    raw = open(corpus_path, "rb").read().lower(); cut = int(len(raw) * 0.95); tr, te = raw[:cut], raw[cut:]
+    torch.manual_seed(seed); rng = random.Random(seed)
+    m = A.TFMicro(256, d, max_len=16 * L + 8) if arm == "TF" else LINM.LIN(256, d, roles=LINROLES)
+    opt = torch.optim.Adam(m.parameters(), lr=3e-3); t0 = time.time(); curve = []
+    def chunk(src, n, Lc):
+        xs = [src[o:o + Lc] for o in [rng.randrange(0, len(src) - Lc - 1) for _ in range(n)]]
+        return torch.tensor([list(c) for c in xs])
+    @torch.no_grad()
+    def ev(Lc, n=4, reps=4):
+        m.eval(); er = random.Random(999); tot = cnt = 0.0
+        for _ in range(reps):
+            xs = [te[o:o + Lc] for o in [er.randrange(0, len(te) - Lc - 1) for _ in range(n)]]; x = torch.tensor([list(c) for c in xs])
+            lg = m(x); tot += F.cross_entropy(lg[:, :-1].reshape(-1, 256), x[:, 1:].reshape(-1), reduction="sum").item(); cnt += x[:, 1:].numel()
+        m.train(); return round(tot / cnt, 4)
+    for s in range(steps):
+        x = chunk(tr, B, L); lg = m(x); loss = F.cross_entropy(lg[:, :-1].reshape(-1, 256), x[:, 1:].reshape(-1))
+        opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
+        if s % eval_every == 0 or s == steps - 1:
+            c = ev(L); curve.append((s, (s + 1) * B * L, c)); log(f"  [{arm} d{d} s{seed}] step {s} bytes_seen {(s + 1) * B * L} train {loss.item():.3f} heldout {c} ({time.time() - t0:.0f}s)")
+    r = {"arm": arm, "d": d, "seed": seed, "params": n_params(m), "ce_L": ev(L), "ce_4L": ev(4 * L, n=2), "ce_16L": ev(16 * L, n=1, reps=2), "curve": curve}
+    log(f"[T2 {arm} d{d} s{seed}] params {r['params']} heldout CE at L/4L/16L {r['ce_L']} {r['ce_4L']} {r['ce_16L']}")
+    for pr in ["a: hi, how are you today?\nb:", "b: what do you do for work?\na:"]:
+        log(f"--- SAMPLE [{arm} d{d}] prompt={pr!r}\n" + sample(m, arm, pr, n=sample_n, seed=seed) + "\n---")
+    return r
+
 def train_text(arm, d, seed, steps, B, L, log):
     torch.manual_seed(seed); rng = random.Random(seed)
     m = A.TFMicro(256, d) if arm == "TF" else GRUCore(256, d) if arm == "GRU" else LINM.LIN(256, d, roles=LINROLES) if arm == "LIN" else CKB(256, d, MSLOTS)
@@ -370,12 +399,17 @@ def boundary_profile(m, x):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320); ap.add_argument("--sample", type=int, default=1)
+    ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320); ap.add_argument("--sample", type=int, default=1); ap.add_argument("--corpus", default="corpus/chat_dialogues_big.txt")
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
     global CCRED, HCUT, DSCALE, KNORM; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale; KNORM = a.knorm; global LOWMEM, INNER; LOWMEM = a.lowmem; INNER = a.inner; global LOOK, LOOKH; LOOK = a.look; LOOKH = a.lookh; global IMCONS; IMCONS = a.imcons; torch.set_num_threads(a.threads)
     global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE, PUREADDR, RANDNAMES, TIE; ROLE = a.role; DENSE = bool(a.dense); PUREADDR = a.pure; RANDNAMES = bool(a.randnames); TIE = bool(a.tie); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
     res = {"tag": "ARCH-VET-LM-P49", "ccred": a.ccred, "dscale": a.dscale, "knorm": a.knorm, "lowmem": a.lowmem, "inner": a.inner, "hcut": a.hcut, "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
-    if a.task == "synthetic":
+    if a.task == "lm":
+        for arm in a.arms.split(","):
+            for d in map(int, a.ds.split(",")):
+                for seed in map(int, a.seeds.split(",")):
+                    res["runs"].append(lm_run(arm, d, seed, a.steps, a.B, a.L, log, a.corpus))
+    elif a.task == "synthetic":
         er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
         er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]
         for d in map(int, a.ds.split(",")):

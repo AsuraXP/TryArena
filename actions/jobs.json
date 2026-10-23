@@ -2,29 +2,85 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "t1_lin_d32",
-   "args": "--arms LIN --ds 32 --steps 3000 --B 8 --L 320 --seeds 1"
+   "tag": "t2_LIN_d128",
+   "args": "--task lm --arms LIN --ds 128 --steps 6000 --B 8 --L 512 --seeds 1"
   },
   {
-   "tag": "t1_lin_d64_s1",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1"
+   "tag": "t2_LIN_d256",
+   "args": "--task lm --arms LIN --ds 256 --steps 6000 --B 8 --L 512 --seeds 1"
   },
   {
-   "tag": "t1_lin_d64_s2",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 2"
+   "tag": "t2_TF_d128",
+   "args": "--task lm --arms TF --ds 128 --steps 6000 --B 8 --L 512 --seeds 1"
   },
   {
-   "tag": "t1_tf_d32",
-   "args": "--arms TF --ds 32 --steps 3000 --B 8 --L 320 --seeds 1"
+   "tag": "t2_TF_d256",
+   "args": "--task lm --arms TF --ds 256 --steps 6000 --B 8 --L 512 --seeds 1"
   },
   {
-   "tag": "t1_tf_d64",
-   "args": "--arms TF --ds 64 --steps 3000 --B 8 --L 320 --seeds 1"
+   "tag": "t3_LIN_d16_s1",
+   "args": "--arms LIN --ds 16 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0"
   },
   {
-   "tag": "t1_tf_d96",
-   "args": "--arms TF --ds 96 --steps 3000 --B 8 --L 320 --seeds 1"
+   "tag": "t3_LIN_d16_s2",
+   "args": "--arms LIN --ds 16 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0"
+  },
+  {
+   "tag": "t3_LIN_d32_s1",
+   "args": "--arms LIN --ds 32 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0"
+  },
+  {
+   "tag": "t3_LIN_d32_s2",
+   "args": "--arms LIN --ds 32 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0"
+  },
+  {
+   "tag": "t3_LIN_d64_s1",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0"
+  },
+  {
+   "tag": "t3_LIN_d64_s2",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0"
+  },
+  {
+   "tag": "t3_LIN_d96_s1",
+   "args": "--arms LIN --ds 96 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0"
+  },
+  {
+   "tag": "t3_LIN_d96_s2",
+   "args": "--arms LIN --ds 96 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0"
+  },
+  {
+   "tag": "t3_TF_d16_s1",
+   "args": "--arms TF --ds 16 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0"
+  },
+  {
+   "tag": "t3_TF_d16_s2",
+   "args": "--arms TF --ds 16 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0"
+  },
+  {
+   "tag": "t3_TF_d32_s1",
+   "args": "--arms TF --ds 32 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0"
+  },
+  {
+   "tag": "t3_TF_d32_s2",
+   "args": "--arms TF --ds 32 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0"
+  },
+  {
+   "tag": "t3_TF_d64_s1",
+   "args": "--arms TF --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0"
+  },
+  {
+   "tag": "t3_TF_d64_s2",
+   "args": "--arms TF --ds 64 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0"
+  },
+  {
+   "tag": "t3_TF_d96_s1",
+   "args": "--arms TF --ds 96 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0"
+  },
+  {
+   "tag": "t3_TF_d96_s2",
+   "args": "--arms TF --ds 96 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0"
   }
  ],
- "nonce": 1792650635
+ "nonce": 1792726490
 }

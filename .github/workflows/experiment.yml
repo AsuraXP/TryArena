@@ -38,7 +38,7 @@ jobs:
       - run: pip install -q torch numpy --index-url https://download.pytorch.org/whl/cpu
       - name: run
         run: |
-          python -u ${{ needs.plan.outputs.script }} ${{ matrix.job.args }} --threads 4 > "run_${{ matrix.job.tag }}.log" 2>&1 || true
+          timeout 315m python -u ${{ needs.plan.outputs.script }} ${{ matrix.job.args }} --threads 4 > "run_${{ matrix.job.tag }}.log" 2>&1 || true
           tail -n 30 "run_${{ matrix.job.tag }}.log"
       - uses: actions/upload-artifact@v4
         with:

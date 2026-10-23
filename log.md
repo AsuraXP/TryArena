@@ -7254,3 +7254,23 @@ for); (ii) background CE: LIN ABOVE (worse than) TF at both sizes — a fast-wei
 not expected to model byte statistics as well as attention + MLP; (iii) samples from both will be incoherent at this
 scale, and will be shown anyway. The honest success condition for the project's framing is (i) with (ii) within .3
 nats; if LIN loses on name-CE too, the composition result does not transfer to text and the toy line is a detour.
+
+TEXT TEST T1 — RESULT (Actions 39734382746), byte dialogue corpus, 3000 steps, B8 L320, nats/byte:
+  bg CE in/ood/4xlen:  TF d32 42k 1.388/1.527/3.265 | LIN d32 53k 1.414/1.503/1.725
+                       TF d64 133k 1.302/1.443/3.302 | LIN d64 129k 1.268/1.352/1.571 ; 1.263/1.372/1.562
+                       TF d96 273k 1.213/1.357/2.555
+  name-CE in/ood/far:  TF d64 .545/4.08/4.47 | LIN d64 .405/3.90/3.79 ; .411/3.70/3.86 | TF d96 .442/3.95/3.73
+Pre-registered (ii) "LIN worse at background CE" FALSIFIED in our favour at d64 (matched params): LIN better on every
+column; at 4x length TF collapses (1.30 -> 3.30) and LIN degrades gently (1.27 -> 1.57); TF with 2x params (273k) still
+loses to LIN-129k at length. d32 in-range LIN slightly behind (+.026) — gap reverses with size (two points). Caveats:
+one corpus, one TF seed per size, 3000 steps, micro scale. Samples from both incoherent (shown in logs).
+
+T2/T3 — PRE-REGISTRATION (launched together, 20 runners). Standing correction adopted: the "nothing is coherent at this
+size" ceiling is an observation about Transformers under next-byte CE, not a law; it is not to be assumed for ours.
+T2 (readability + data-efficiency): plain byte LM on the full 4.8 MB chat corpus (held-out last 5%), L 512, B 8, 6000
+steps = 24.6 MB seen (~5 passes), LIN and TF at d128 and d256; held-out CE at L, 4L, 16L; learning curve every 250
+steps (CE vs bytes seen = per-example efficiency); 400-byte raw samples from two prompts, unselected. PREDICTION: LIN
+<= TF on held-out CE at both sizes; at 16L TF > 2.5 while LIN < 1.6; LIN's curve reaches TF's final CE with fewer
+bytes. Readability is reported, not predicted. T3 (scaling law on the T1 task): d16/32/64/96, LIN and TF, seeds 1,2,
+3000 steps — the slope. PREDICTION: LIN-minus-TF background CE decreases monotonically with d (negative slope), length
+gap widens.
