@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -29,6 +29,7 @@ class LIN(nn.Module):
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
         self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
+        self.rnorm = rnorm   # M3b: scale-free reads (unit-norm * sqrt(d)) so a growing store (nodecay) does not change the read's magnitude
         self.mres = mres   # M3: multi-resolution addresses — separate stores keyed by the last 1, 2 and `roles` bytes (sparse k-WTA per store), so a
         # partial context match (induction copy: same byte, different neighbours) still hits; block weights learned (softmax alpha)
         if mres: self.widths = [w for w in (1, 2, roles) if w <= roles]; self.alpha = nn.Parameter(torch.zeros(len(self.widths)))
@@ -164,6 +165,7 @@ class LIN(nn.Module):
 
     def _finish(self, x, e, PE, R0, R1, RQ, PR0, PR1, KN, QQ):
         B, L = x.shape; d = self.d
+        if self.rnorm: R0, R1, RQ = (F.normalize(R, dim=-1) * math.sqrt(d) ** 0.5 for R in (R0, R1, RQ))
         reads = torch.stack([R0, R1, RQ], 2)                                          # (B,L,3,d)
         if self.pgru:
             prev = F.pad(reads.reshape(B, L, 3 * d), (0, 0, 1, 0))[:, :L]
