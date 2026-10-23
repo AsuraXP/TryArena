@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0, gkey=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -29,6 +29,12 @@ class LIN(nn.Module):
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
         self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
+        self.gkey = gkey   # M6 REPRESENTATION: the address is a gated bound sum of the stream, k_t = g(e_t) k_{t-1} + P e_t, with a LEARNED per-byte
+        # forget gate g(e_t) = sigmoid(u.e_t + b).  If the learner sets g ~ 0 on separators the key becomes "the word so far", identical at every
+        # mention of a name regardless of what surrounds it -> exact word-aligned copy from a Hebbian store; nothing is hard-coded (no boundary
+        # oracle; the byte value is in the stream).  Prior art: data-dependent decay in linear recurrences (GLA, Yang et al. 2023,
+        # arXiv:2312.06635; Mamba, Gu & Dao 2023) for the hidden STATE; here it forms the ADDRESS of a fast-weight store (C127 lineage).
+        if gkey: self.gu = nn.Linear(d, 1); nn.init.constant_(self.gu.bias, 2.0)
         self.sgate = sgate   # M4 LEARNING RULE: write by SURPRISE — pass 1 reads an ungated store and predicts; the realised next-byte nll of byte t
         # (model-level, detached) gates the write of byte t in pass 2: v_t = sigmoid(s*(nll_t - tau)) e_t.  The store then holds what the
         # learner could not predict (names, facts), not every byte -> capacity is spent on the unpredictable, forgetting is not needed.
@@ -129,6 +135,26 @@ class LIN(nn.Module):
             kk = max(1, int(self.sparse * k.shape[-1])); th = k.abs().topk(kk, dim=-1).values[..., -1:]; k = k * (k.abs() >= th).float()
         return k
 
+    def _gscan(self, X, lam, C=64):   # K_t = sum_{s<=t} prod_{u=s+1..t} lam_u X_s, chunked, log-space (stable for any lam in (0,1])
+        B, L, dk = X.shape; out = []; carry = torch.zeros(B, dk); Ll = torch.log(lam.clamp(min=1e-6)).squeeze(-1)   # (B,L)
+        for s0 in range(0, L, C):
+            x = X[:, s0:s0 + C]; ll = Ll[:, s0:s0 + C]; n = x.shape[1]; cs = ll.cumsum(1)   # cs_t = sum_{u<=t} log lam_u (within chunk)
+            D = torch.exp(cs.unsqueeze(2) - cs.unsqueeze(1) + ll.unsqueeze(1) * 0)           # D[t,s] = exp(cs_t - cs_s) = prod_{u=s+1..t} lam_u
+            D = D * torch.tril(torch.ones(n, n))                                            # s <= t
+            k = torch.einsum("bts,bsk->btk", D, x) + torch.exp(cs).unsqueeze(-1) * carry.unsqueeze(1)   # carry decays by prod_{u<=t} lam_u
+            out.append(k); carry = k[:, -1]
+        return torch.cat(out, 1)
+
+    def _forward_gkey(self, x, gate):
+        B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.ones(()) if self.nodecay else torch.sigmoid(self.dec)
+        v = e * gate if gate is not None else e
+        PE = self.P(e); lam = torch.sigmoid(self.gu(e)); self.lam_seq = lam.detach()
+        K = self._kwta(self._gscan(PE, lam)); KN = F.normalize(F.pad(K, (0, 0, 1, 0))[:, :L], dim=-1)
+        R0 = self._readall(F.normalize(K, dim=-1), KN, v, dec); PR0 = self.P(R0); g0 = torch.sigmoid(self.gu(R0))
+        K1 = self._kwta(g0 * K + PR0); R1 = self._readall(F.normalize(K1, dim=-1), KN, v, dec); PR1 = self.P(R1); g1 = torch.sigmoid(self.gu(R1))
+        sP = self.P(self.shape); QQ = self._kwta(g1 * (g0 * sP + PR0) + PR1); RQ = self._readall(F.normalize(QQ, dim=-1), KN, v, dec)
+        return self._finish(x, e, PE, R0, R1, RQ, PR0, PR1, KN, QQ)
+
     def _kwta(self, k):
         if not self.sparse: return k
         kk = max(1, int(self.sparse * k.shape[-1])); th = k.abs().topk(kk, dim=-1).values[..., -1:]; return k * (k.abs() >= th).float()
@@ -144,6 +170,7 @@ class LIN(nn.Module):
         return out
 
     def _fwd(self, x, gate):
+        if self.gkey: return self._forward_gkey(x, gate)
         if self.mres: return self._forward_mres(x, gate)
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.ones(()) if self.nodecay else torch.sigmoid(self.dec)
         v = e * gate if gate is not None else e
@@ -210,5 +237,5 @@ class LIN(nn.Module):
         return self.head(torch.cat([H, Rm], -1))
 
     def forward(self, x, **kw):
-        if self.pgru or self.sgate or self.mres or (self.roles and not self.wgate and not self.delta and not getattr(self, "slow", False)): return self.forward_fast(x, **kw)
+        if self.pgru or self.sgate or self.mres or self.gkey or (self.roles and not self.wgate and not self.delta and not getattr(self, "slow", False)): return self.forward_fast(x, **kw)
         return self.forward_loop(x, **kw)

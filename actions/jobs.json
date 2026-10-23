@@ -2,21 +2,25 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "m5_tf",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --arms TF"
+   "tag": "m6_gkey_nodecay",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"gkey\":1,\"nodecay\":1}'"
   },
   {
-   "tag": "m5_lin_base",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --arms LIN"
+   "tag": "m6_gkey_nodecay_dk2048",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"gkey\":1,\"nodecay\":1,\"sparse\":0.01,\"kmult\":32}'"
   },
   {
-   "tag": "m5_lin_mres_nodecay",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1}'"
+   "tag": "m6_gkey_decay",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"gkey\":1}'"
   },
   {
-   "tag": "m5_lin_sgate_mres_nodecay",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sgate\":1}'"
+   "tag": "m6_gkey_sgate_nodecay",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"gkey\":1,\"nodecay\":1,\"sgate\":1}'"
+  },
+  {
+   "tag": "m6_gkey_nodecay_copypressure",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --linflags '{\"gkey\":1,\"nodecay\":1}'"
   }
  ],
- "nonce": 1792742116
+ "nonce": 1792743893
 }

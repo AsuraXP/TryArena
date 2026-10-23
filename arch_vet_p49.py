@@ -318,6 +318,12 @@ def ce_all(logits, x): return F.cross_entropy(logits[:, :-1].reshape(-1, logits.
 
 
 @torch.no_grad()
+def gkey_probe(m):   # instrument: learned per-byte forget gate at separators vs inside words (no oracle; report only)
+    m.eval(); x, _ = text_batch(random.Random(5), 8, NAMES_TR, 2, 320); m(x); lam = m.lam_seq.squeeze(-1); m.train()
+    sp = (x == 32) | (x == 10); pu = (x == 44) | (x == 46) | (x == 58) | (x == 63) | (x == 33); le = (x != 0) & ~sp & ~pu
+    return f" gate@space {lam[sp].mean().item():.3f} @punct {lam[pu].mean().item():.3f} @letter {lam[le].mean().item():.3f}"
+
+@torch.no_grad()
 def name_ce(m, batches, arm):
     m.eval(); tot = n = 0.0; bg = nb = 0.0
     for x, spans in batches:
@@ -454,7 +460,7 @@ def main():
                     if a.sample:
                         for pr in ["a: my name is yuki.\nb: hi", "a: hi, i am dax.\nb: so"]:
                             log(f"--- SAMPLE [{arm} d{d}] prompt={pr!r}\n" + sample(m, arm, pr, seed=seed) + "\n---")
-                    res["runs"].append(r); log(f"[p49 {arm} d{d} s{seed}] params {r['params']}" + (f" dec {torch.sigmoid(m.dec).item():.3f}" if arm == "LIN" else "") + f" name-CE in {r['in_name_ce']} ood {r['ood_names_name_ce']} far {r['far_ood_name_ce']} DENSE-unseen {r['dense_ood_name_ce']} | bg {r['in_bg_ce']} {r['ood_names_bg_ce']} {r['far_ood_bg_ce']}" + (f" | b sep/word {r['b_at_sep']}/{r['b_in_word']}" if arm == "CKB" else ""))
+                    res["runs"].append(r); log(f"[p49 {arm} d{d} s{seed}] params {r['params']}" + (f" dec {torch.sigmoid(m.dec).item():.3f}" if arm == "LIN" else "") + (gkey_probe(m) if arm == "LIN" and getattr(m, "gkey", 0) else "") + f" name-CE in {r['in_name_ce']} ood {r['ood_names_name_ce']} far {r['far_ood_name_ce']} DENSE-unseen {r['dense_ood_name_ce']} | bg {r['in_bg_ce']} {r['ood_names_bg_ce']} {r['far_ood_bg_ce']}" + (f" | b sep/word {r['b_at_sep']}/{r['b_in_word']}" if arm == "CKB" else ""))
     with open("log.jsonl", "a") as fh: fh.write(json.dumps(res) + "\n")
     log("[P49] DONE")
 

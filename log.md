@@ -7406,3 +7406,28 @@ Arms: TF, LIN base, LIN mres nodecay, LIN sgate mres nodecay (d64, 3000 steps). 
 DENSE-unseen column drops below 1.5 for at least one LIN arm (it is ~3.5–4.2 now) and OOD-name on the dialogue eval
 drops below 2.5 for mres arms; TF DENSE-unseen also improves (induction heads) but stays worse at far. If NO arm learns
 to copy even with copy pressure, the read path is the wall and that is the next (and last store-side) axis.
+
+T2 — LIN d256 RESULT (39904333544): LIN d256 1.05M params held-out CE L/4L/16L: lr3e-3 1.313/1.335/1.322; lr1e-3
+1.328/1.354/1.344. TF d256 1.7M: 1.441 (3e-3) / 1.479 (1e-3); TF d128 462k 1.373/1.378. So: LIN improves d128 -> d256
+by -.08 (1.398 -> 1.313); TF gets WORSE d128 -> d256 (+.07) at both learning rates on the same 6000 batches. At d256
+LIN beats the matched TF by .13 and the best TF of any size by .06, and holds it at 8192 bytes (1.32 vs 5.4). The
+in-range gap now has the right sign AND widens with size (d128 -.02 against us, d256 +.13 for us). Caveat stated: the
+2-layer TFMicro at d256 is undertrained in 6000 steps (micro-TF needs warmup/more steps at width); the comparison is
+same-batches-same-steps-same-optimizer, which is the pre-registered protocol, not a claim that TF cannot do better with
+more compute. Samples at d256 pending read.
+M3 — RESULT (complete): mres nodecay s1 .24/2.96/3.47 | 1.311/1.409/1.720; s2 .25/2.92/3.79 | 1.313/1.392/1.678;
+mres decay (dec .864) .42/3.65/3.68 | 1.282/1.412/1.599; mres nodecay rnorm .39/3.95/3.96 | 1.295/1.388/1.603 (rnorm
+destroys the gain: magnitude carries the match strength — banked). OOD-name 2.9 replicated; far 3.5–3.8 unchanged.
+M5 — PARTIAL: copy-pressure training (dense random names): TF DENSE-unseen 3.62 (bg 2.13/2.09/2.92); LIN base 3.67
+(dec .875; bg 2.00/1.94/1.88). NEITHER learns to copy in 3000 steps even when copying is the only way. Prediction
+"DU < 1.5 for some LIN arm" open (mres arms pending) but the base result says the mechanism is not there to be found.
+M6 — PRE-REGISTRATION (REPRESENTATION: what the key is made of, second try). gkey: address = gated bound sum of the
+stream k_t = g(e_t) k_{t-1} + P e_t with a learned per-byte forget gate (sigmoid(u.e+b), init .88). If the learner sets
+g ~ 0 at separators the address becomes "the word so far", identical at every mention of a name whatever surrounds it
+-> exact word-aligned copy; no boundary oracle (instrument reports gate at space/punct/letter). Prior art: data-
+dependent decay for the hidden state (GLA arXiv:2312.06635, Mamba); here it builds the ADDRESS of a Hebbian store.
+Local d32 200 steps: gate already splits (space .98, punct .34, letter .60). Jobs (d64, 3000): gkey nodecay dk128;
+gkey nodecay dk2048 sparse; gkey decay; gkey+sgate nodecay; gkey nodecay under copy pressure. PREDICT: gate at
+space/punct < .3 and at letters > .7 after training; OOD-name < 2.5 and far-name < 2.5 for gkey nodecay (first time);
+copy-pressure DU < 2.0; gkey with learned decay keeps dec > .95 (the learner now has a reason to keep memory). If
+gkey nodecay still gives OOD-name > 2.9, the read path is the wall.
