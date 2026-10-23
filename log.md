@@ -7291,3 +7291,7 @@ T2 (partial): TF d128 462k heldout 1.373 at L, 3.52 at 4L, 4.72 at 16L; TF d256 
 d128 in-range: lr 3e-3 is too high for it — a tuning caveat in TF's favour to fix, not hide). TF d128 samples are
 word-level English, not coherent dialogue ("my laptop settle for you. that months camera?"). LIN d128/d256 pending
 (per-token python loop; slow).
+T3 d96 (complete): LIN 227k 1.192/1.314/1.490 vs TF 273k 1.213/1.376/2.576 — LIN ahead in-range (-.021) with 17% fewer
+params, OOD -.06, length -1.09. Full in-range series LIN-TF: -.056/+.021/-.026/-.021 (d16/32/64/96): 3 of 4 in LIN's
+favour, not monotone; length gap TF-minus-LIN: 2.30/1.64/1.60/1.09 — TF closes at length with size, but LIN's own
+L->4L cost stays ~+.30 at every size (1.96-1.68, 1.72-1.41, 1.57-1.26, 1.49-1.19) while TF's is +2.5/+2.0/+1.9/+1.4.
