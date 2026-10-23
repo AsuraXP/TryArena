@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -29,6 +29,9 @@ class LIN(nn.Module):
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
         self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
+        self.mres = mres   # M3: multi-resolution addresses — separate stores keyed by the last 1, 2 and `roles` bytes (sparse k-WTA per store), so a
+        # partial context match (induction copy: same byte, different neighbours) still hits; block weights learned (softmax alpha)
+        if mres: self.widths = [w for w in (1, 2, roles) if w <= roles]; self.alpha = nn.Parameter(torch.zeros(len(self.widths)))
         self.clean = clean   # M2: power-iteration cleanup of each read on the fast weights themselves: q <- norm(W^T (W q)) repeated `clean` times
         self.pgru = pgru   # speed form: controller GRU reads the three raw reads of t-1 (no feedback from the mix) -> fused nn.GRU, no python loop
         self.g = nn.GRU(4 * d, d, batch_first=True) if pgru else nn.GRUCell(2 * d, d)
@@ -118,7 +121,12 @@ class LIN(nn.Module):
             kk = max(1, int(self.sparse * k.shape[-1])); th = k.abs().topk(kk, dim=-1).values[..., -1:]; k = k * (k.abs() >= th).float()
         return k
 
+    def _kwta(self, k):
+        if not self.sparse: return k
+        kk = max(1, int(self.sparse * k.shape[-1])); th = k.abs().topk(kk, dim=-1).values[..., -1:]; return k * (k.abs() >= th).float()
+
     def forward_fast(self, x, **kw):
+        if self.mres: return self._forward_mres(x)
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.ones(()) if self.nodecay else torch.sigmoid(self.dec)
         PE = self.P(e); K = self._rolekey_seq(PE)                                   # key after seeing token t
         Kprev = F.pad(K, (0, 0, 1, 0))[:, :L]; KN = F.normalize(Kprev, dim=-1)       # write key at t = key of prefix up to t-1 (zero at t=0)
@@ -130,14 +138,32 @@ class LIN(nn.Module):
         Q0 = F.normalize(K, dim=-1); R0 = RD(Q0)
         PR0 = self.P(R0)                                  # k1 = rolekey(win + [P r0]): P r0 at offset 0, tokens shift by one
         K1 = self.R[0] * PR0 + sum(self.R[i] * (F.pad(PE, (0, 0, i - 1, 0))[:, :L] if i > 1 else PE) for i in range(1, self.roles))
-        if self.sparse:
-            kk = max(1, int(self.sparse * dk)); th = K1.abs().topk(kk, dim=-1).values[..., -1:]; K1 = K1 * (K1.abs() >= th).float()
+        K1 = self._kwta(K1)
         R1 = RD(F.normalize(K1, dim=-1)); PR1 = self.P(R1)
         sP = self.P(self.shape)
         QQ = self.R[0] * sP + self.R[1] * PR1 + self.R[2] * PR0 if self.roles >= 3 else self.R[0] * sP + self.R[1] * PR1
-        if self.sparse:
-            kk = max(1, int(self.sparse * dk)); th = QQ.abs().topk(kk, dim=-1).values[..., -1:]; QQ = QQ * (QQ.abs() >= th).float()
+        QQ = self._kwta(QQ)
         RQ = RD(F.normalize(QQ, dim=-1))
+        return self._finish(x, e, PE, R0, R1, RQ, PR0, PR1, KN, QQ)
+
+    def _forward_mres(self, x):
+        B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.ones(()) if self.nodecay else torch.sigmoid(self.dec)
+        PE = self.P(e); a = torch.softmax(self.alpha, 0); sP = self.P(self.shape)
+        def keyw(parts, w):   # parts: list of (B,L,dk) most-recent-first; key of width w
+            return self._kwta(sum(self.R[i] * parts[i] for i in range(min(w, len(parts)))))
+        shifted = [F.pad(PE, (0, 0, i, 0))[:, :L] if i else PE for i in range(self.roles)]
+        R0s, R1s, RQs, KNs, QQs = [], [], [], [], []
+        for bi, w in enumerate(self.widths):
+            K = keyw(shifted, w); KN = F.normalize(F.pad(K, (0, 0, 1, 0))[:, :L], dim=-1)
+            R0 = self._readall(F.normalize(K, dim=-1), KN, e, dec); PR0 = self.P(R0)
+            K1 = keyw([PR0] + shifted[:-1], w); R1 = self._readall(F.normalize(K1, dim=-1), KN, e, dec); PR1 = self.P(R1)
+            QQ = keyw([sP.expand(B, L, -1), PR1, PR0], w); RQ = self._readall(F.normalize(QQ, dim=-1), KN, e, dec)
+            R0s.append(a[bi] * R0); R1s.append(a[bi] * R1); RQs.append(a[bi] * RQ); KNs.append(KN); QQs.append(QQ)
+        R0 = sum(R0s); R1 = sum(R1s); RQ = sum(RQs)
+        return self._finish(x, e, PE, R0, R1, RQ, self.P(R0), self.P(R1), KNs[-1], QQs[-1])
+
+    def _finish(self, x, e, PE, R0, R1, RQ, PR0, PR1, KN, QQ):
+        B, L = x.shape; d = self.d
         reads = torch.stack([R0, R1, RQ], 2)                                          # (B,L,3,d)
         if self.pgru:
             prev = F.pad(reads.reshape(B, L, 3 * d), (0, 0, 1, 0))[:, :L]
