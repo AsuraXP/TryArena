@@ -1,0 +1,60 @@
+  [LIN d128 s1] step 0 bytes_seen 4096 train 8.362 heldout 5.1314 (4s)
+  [LIN d128 s1] step 250 bytes_seen 1028096 train 1.816 heldout 1.7495 (528s)
+  [LIN d128 s1] step 500 bytes_seen 2052096 train 1.597 heldout 1.6187 (1030s)
+  [LIN d128 s1] step 750 bytes_seen 3076096 train 1.564 heldout 1.5593 (1557s)
+  [LIN d128 s1] step 1000 bytes_seen 4100096 train 1.513 heldout 1.5302 (2065s)
+  [LIN d128 s1] step 1250 bytes_seen 5124096 train 1.505 heldout 1.5044 (2574s)
+  [LIN d128 s1] step 1500 bytes_seen 6148096 train 1.503 heldout 1.4843 (3088s)
+  [LIN d128 s1] step 1750 bytes_seen 7172096 train 1.477 heldout 1.4738 (3592s)
+  [LIN d128 s1] step 2000 bytes_seen 8196096 train 1.498 heldout 1.4604 (4094s)
+  [LIN d128 s1] step 2250 bytes_seen 9220096 train 1.449 heldout 1.4519 (4598s)
+  [LIN d128 s1] step 2500 bytes_seen 10244096 train 1.396 heldout 1.445 (5100s)
+  [LIN d128 s1] step 2750 bytes_seen 11268096 train 1.417 heldout 1.4394 (5603s)
+  [LIN d128 s1] step 3000 bytes_seen 12292096 train 1.444 heldout 1.4428 (6106s)
+  [LIN d128 s1] step 3250 bytes_seen 13316096 train 1.387 heldout 1.4262 (6607s)
+  [LIN d128 s1] step 3500 bytes_seen 14340096 train 1.391 heldout 1.4206 (7109s)
+  [LIN d128 s1] step 3750 bytes_seen 15364096 train 1.395 heldout 1.421 (7611s)
+  [LIN d128 s1] step 4000 bytes_seen 16388096 train 1.400 heldout 1.4158 (8118s)
+  [LIN d128 s1] step 4250 bytes_seen 17412096 train 1.416 heldout 1.418 (8617s)
+  [LIN d128 s1] step 4500 bytes_seen 18436096 train 1.464 heldout 1.4104 (9121s)
+  [LIN d128 s1] step 4750 bytes_seen 19460096 train 1.464 heldout 1.4133 (9621s)
+  [LIN d128 s1] step 5000 bytes_seen 20484096 train 1.432 heldout 1.4068 (10120s)
+  [LIN d128 s1] step 5250 bytes_seen 21508096 train 1.457 heldout 1.416 (10621s)
+  [LIN d128 s1] step 5500 bytes_seen 22532096 train 1.423 heldout 1.4049 (11128s)
+  [LIN d128 s1] step 5750 bytes_seen 23556096 train 1.414 heldout 1.4042 (11625s)
+  [LIN d128 s1] step 5999 bytes_seen 24576000 train 1.441 heldout 1.4102 (12125s)
+[T2 LIN d128 s1] params 347140 heldout CE at L/4L/16L 1.4102 1.4327 1.4375
+--- SAMPLE [LIN d128] prompt='a: hi, how are you today?\nb:'
+a: hi, how are you today?
+b:43.
+
+i hear you if they do inty.
+
+let kind of sounds?
+come on.
+
+it's all tonight.
+i don't want to see me to see this thing into this. and i see if you really head miles to the sabely's telling by the case stater.
+
+you have to get the work sant me. they don't know. tody god. did you go here? so. is it likes.
+
+hi daddy of soin!
+you didn't have the coming saying worry in the one here.
+when are you ne
+---
+--- SAMPLE [LIN d128] prompt='b: what do you do for work?\na:'
+b: what do you do for work?
+a: tell you to still get you blowed the king at soin side. i'm not ang!
+
+and you have to kill you.
+i was got the few us.
+
+you move him. and i see if you really head miles to the sabely's telling by the case stater.
+
+you have to get the work sant me. they don't know. tody god. did you go here? so. is it likes.
+
+hi daddy of soin!
+you didn't have the coming saying worry in the one here.
+when are you ne
+---
+[P49] DONE
