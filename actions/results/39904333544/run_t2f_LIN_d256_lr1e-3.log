@@ -1,0 +1,69 @@
+  [LIN d256 s1] step 0 bytes_seen 4096 train 7.909 heldout 5.2433 (3s)
+  [LIN d256 s1] step 250 bytes_seen 1028096 train 1.799 heldout 1.7447 (368s)
+  [LIN d256 s1] step 500 bytes_seen 2052096 train 1.579 heldout 1.5986 (694s)
+  [LIN d256 s1] step 750 bytes_seen 3076096 train 1.515 heldout 1.5188 (1030s)
+  [LIN d256 s1] step 1000 bytes_seen 4100096 train 1.448 heldout 1.4811 (1377s)
+  [LIN d256 s1] step 1250 bytes_seen 5124096 train 1.429 heldout 1.4491 (1738s)
+  [LIN d256 s1] step 1500 bytes_seen 6148096 train 1.433 heldout 1.4259 (2116s)
+  [LIN d256 s1] step 1750 bytes_seen 7172096 train 1.416 heldout 1.4088 (2468s)
+  [LIN d256 s1] step 2000 bytes_seen 8196096 train 1.408 heldout 1.3928 (2813s)
+  [LIN d256 s1] step 2250 bytes_seen 9220096 train 1.377 heldout 1.3801 (3171s)
+  [LIN d256 s1] step 2500 bytes_seen 10244096 train 1.325 heldout 1.3725 (3514s)
+  [LIN d256 s1] step 2750 bytes_seen 11268096 train 1.349 heldout 1.3614 (3867s)
+  [LIN d256 s1] step 3000 bytes_seen 12292096 train 1.363 heldout 1.3534 (4236s)
+  [LIN d256 s1] step 3250 bytes_seen 13316096 train 1.280 heldout 1.3402 (4606s)
+  [LIN d256 s1] step 3500 bytes_seen 14340096 train 1.310 heldout 1.3391 (4992s)
+  [LIN d256 s1] step 3750 bytes_seen 15364096 train 1.295 heldout 1.3353 (5388s)
+  [LIN d256 s1] step 4000 bytes_seen 16388096 train 1.303 heldout 1.3307 (5784s)
+  [LIN d256 s1] step 4250 bytes_seen 17412096 train 1.304 heldout 1.326 (6177s)
+  [LIN d256 s1] step 4500 bytes_seen 18436096 train 1.350 heldout 1.3196 (6572s)
+  [LIN d256 s1] step 4750 bytes_seen 19460096 train 1.356 heldout 1.3166 (6982s)
+  [LIN d256 s1] step 5000 bytes_seen 20484096 train 1.339 heldout 1.3174 (7402s)
+  [LIN d256 s1] step 5250 bytes_seen 21508096 train 1.352 heldout 1.312 (7845s)
+  [LIN d256 s1] step 5500 bytes_seen 22532096 train 1.324 heldout 1.3103 (8222s)
+  [LIN d256 s1] step 5750 bytes_seen 23556096 train 1.309 heldout 1.3059 (8580s)
+  [LIN d256 s1] step 5999 bytes_seen 24576000 train 1.325 heldout 1.3129 (8931s)
+[T2 LIN d256 s1] params 1054212 heldout CE at L/4L/16L 1.3129 1.3351 1.3215
+--- SAMPLE [LIN d256] prompt='a: hi, how are you today?\nb:'
+a: hi, how are you today?
+b: femen in the computer who else.
+
+let up the admit side. i must hang and to's a money has with the money to see them the crazy.
+you didn't show if you're a couple of the places?
+
+well until the way with years on the passing something with soon missing inspance.
+really, i was dognanda best.
+
+so.
+oh, well, somebilly from the man.
+
+hello, ben...!
+we will.
+
+wow. what? why don't you see when a fuckin' 
+---
+--- SAMPLE [LIN d256] prompt='b: what do you do for work?\na:'
+b: what do you do for work?
+a: get it.
+
+six this gun, do you know what the hell did you hell than manate hard to say?
+i'm gonna see my trunk.
+
+there are all the crazy, on the farramman i'm gonna know i did.
+you got to scork the word is good.
+
+the phone parents, right.
+soon missed.
+
+...and i'm at secretal.
+the krately raise.
+
+seems these mother grand!
+i don't have a best man.
+
+what kind of doug this way?
+don't you know.
+
+what's
+---
+[P49] DONE
