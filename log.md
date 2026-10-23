@@ -7451,3 +7451,19 @@ labels, no oracle: it tells the learner that bytes it could have known from cont
 could have known from weights. Applied to BOTH arms (fair). Jobs: LIN sgate mres rw2 (s1,s2), rw5, LIN base rw2, TF
 rw2. PREDICT: LIN sgate mres rw2 OOD-name < 2.3 and far < 2.5 (from 2.59/3.17); bg in-range within +.03; TF rw2
 OOD-name improves less than .3 (it lacks the mechanism); rw5 better OOD than rw2 but bg cost > .05.
+
+M6b — RESULT (NaN fixed): gkey nodecay: gate@space .14 / @punct .49 / @letter .87 — the learner chooses word-aligned
+reset on its own (prediction confirmed, no oracle) — but OOD-name 3.52 / far 3.85 / DU 3.87 (no gain); +sgate 3.99;
+under copy pressure gate@space .000 and DU 3.01 vs mres 1.82. A single word-aligned address is WORSE than three
+fixed-width stores for copying: banked negative (gkey off). Reason recorded: a word-so-far key only matches at the
+same byte offset inside the same word; mres 1/2-byte keys match any continuation.
+O1 — PARTIAL (repeat-weighted objective): TF rw2 .37/4.72/5.29 DU 6.44 | bg 1.293/1.442/3.302 (memorises names
+harder, copies less: prediction "TF improves < .3" confirmed in the wrong direction). LIN base rw2 .34/3.81/3.85 |
+1.286/1.380/1.590 (no change). LIN sgate mres rw5 .23/2.64/2.96 DU 2.96 | 1.300/1.430/1.669 — OOD-name unchanged
+(2.59 -> 2.64: prediction "< 2.3" FALSIFIED), far -.2, DU -.8, bg cost +.04 at 4L. Re-weighting the same loss does not
+create the copy; it only shifts emphasis. rw2 s1/s2 pending. State of the never-wrong-memory line: best dialogue OOD
+2.59 (from 3.86), copy under pressure 1.68 (TF 3.62) — the mechanism exists; what is still missing is for it to be
+learned from sparse natural signal. Next axis, per standing plan: make the memory a *consumer-driven* structure — the
+loss must create a need (NOVELTY §D) — i.e. a self-supervised in-context target that is dense on every byte, not a
+re-weighting: predict byte t from the STORE ALONE (read-only head, no controller) as an auxiliary stream target
+(hopce lineage, C129), so the store is trained on every byte to be a predictor of context, which is exactly copying.
