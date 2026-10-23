@@ -65,3 +65,9 @@ Pick from [ ]. Combining two [F] cells is not novelty unless the combination rem
 - Per-token cost flat 256→16k when state is bounded and structured.
 - Fair micro-TF loses on identical batches, in-range and OOD, and its ceiling is optimizer-invariant: the defect is in the design, not the training.
 - Predicates become identifiable *only when a consumer needs them* — the loss must create a need for the structure.
+
+## Ledger additions (text line)
+- M2 large sparse address STATE (fixed random projection + k-WTA, dk 2048–4096): Kanerva SDM / C131 lineage; not new, used as a capacity control. Result: capacity was not the wall.
+- M3 mres — three sparse stores keyed by last 1/2/4 bytes with learned read weights: multi-resolution n-gram memories exist (cache LMs, Memorizing/kNN-LMs are retrieval, not fast-weight); claimed delta = role-bound TPR keys at several widths in one O(1) fast-weight state so partial-context (induction) matches hit. Pending result.
+- M4 sgate — write gated by the whole model's realised next-byte nll (two-pass, detached): nearest = Titans (arXiv:2501.00663, gradient-of-memory-loss surprise, momentum, decay). Delta = stream-level error, no inner objective, Hebbian sparse store. Pending result.
+- Negatives banked: W^T W power-iteration cleanup (fails without sparse values); nn.GRU controller without mix feedback.

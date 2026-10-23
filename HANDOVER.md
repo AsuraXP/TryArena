@@ -427,3 +427,18 @@ Harness: `--inner S` reports `hopland` (hop-k landing on a_b0/a_b1/a_dot/b_v0 sl
 - Stream flag `--pool shared` (names+values from TR; OOD = held-out name pairs by hash (s0*7+s1)%4==0). USE THIS STREAM from now on for composition; the split pool conflated novel bindings with an unexhibited role transfer (C133 paper + measurement).
 - LIN roles4 dense d64: .83/.76/.37; TF .125/.115/.03. Length is the open defect (crosstalk grows with facts per sequence).
 - Owed: d16 point, 4 seeds per size, longer TF budget control, text proxy. Then the length loop: open from the question (what representation/rule keeps superposed bindings separable as their count grows), not from the file.
+
+## State after TEXT LINE T1–T3, M1–M4 (this session; toy cycles C135/C136 closed, text is the line)
+- Fair byte-level comparison LIN vs TFMicro on real chat text (arch_vet_p49.py, `--arms LIN|TF`): in-range CE TIED at
+  every size d16–d96 (LIN-TF: -.056/+.021/-.026/-.021), OOD-name CE LIN better at every size, 4x-length LIN flat vs TF
+  collapse. Full-corpus LM d128 (`--task lm`): TF 1.376 vs LIN 1.398 held-out at L; at 16L (8192 bytes) LIN 1.42 vs TF
+  4.7–5.7; equal data efficiency; samples equal in kind (word-level English, no dialogue). Not "above weight" in-range.
+- Honest diagnosis: the certified LIN's fast-weight store LEARNS decay .75–.80 = a 3-byte buffer; it has no long memory
+  on text. Its length robustness is absence of positional machinery. OOD-name recall (induction copy) fails (3.1–3.9).
+- Walls excluded one by one (d64, 3000 steps, pre-registered): decay (M1), capacity — 2048/4096-wide sparse address
+  state (M2); pending: key construction = multi-resolution 1/2/4-byte stores (M3), write-by-surprise learning rule (M4).
+- Engineering: LIN exact parallel forward (chunked decayed linear attention + carried W; 3x faster); `--linflags` JSON
+  passes LIN constructor flags; `actions/fetch.json` push triggers fetch.yml to pull partial artifacts of a running run;
+  experiment.yml wraps python in `timeout 315m` so partial logs survive the 6h cap.
+- Banked negatives: power-iteration cleanup on fast weights (hurts); fused-GRU controller without mix feedback (worse).
+- Owed: LIN d256 LM (running), NOVELTY entry per mechanism (M3 mres, M4 sgate), scaling law at d128 on the name task.
