@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -29,6 +29,7 @@ class LIN(nn.Module):
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
         self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
+        self.clean = clean   # M2: power-iteration cleanup of each read on the fast weights themselves: q <- norm(W^T (W q)) repeated `clean` times
         self.pgru = pgru   # speed form: controller GRU reads the three raw reads of t-1 (no feedback from the mix) -> fused nn.GRU, no python loop
         self.g = nn.GRU(4 * d, d, batch_first=True) if pgru else nn.GRUCell(2 * d, d)
         self.mix = nn.Linear(d, 3)   # r0 (1-hop), r1 (continuation), rq (re-posed)
@@ -63,14 +64,18 @@ class LIN(nn.Module):
                 win.append(self.P(et)); win = win[-self.roles:]; k = self.rolekey(win)
             else: k = self.key(k, et, h)
             h = self.g(torch.cat([et, r], -1), h)
-            q0 = F.normalize(k, dim=-1); r0 = torch.einsum("bk,bkd->bd", q0, W)           # 1-hop: what followed this prefix
+            def rd(q):
+                r = torch.einsum("bk,bkd->bd", q, W)
+                for _ in range(self.clean): q = F.normalize(torch.einsum("bd,bkd->bk", r, W), dim=-1); r = torch.einsum("bk,bkd->bd", q, W)
+                return r
+            q0 = F.normalize(k, dim=-1); r0 = rd(q0)           # 1-hop: what followed this prefix
             if self.roles: k1 = self.rolekey(win + [self.P(r0)])
             else: k1 = self.key(k, r0, h)
-            q1 = F.normalize(k1, dim=-1); r1 = torch.einsum("bk,bkd->bd", q1, W)   # continuation (next symbol)
+            q1 = F.normalize(k1, dim=-1); r1 = rd(q1)   # continuation (next symbol)
             if self.roles: qq = self.rolekey([self.P(r0), self.P(r1), sP.expand(B, -1)])   # RE-POSE with the same roles
             elif self.keyfn == "lin": qq = lam * lam * self.P(r0) + lam * self.P(r1) + sP   # RE-POSE: writer's key function on recalled symbols
             else: qq = self.Ph(self.g(torch.cat([r1, r0], -1), h))
-            rq = torch.einsum("bk,bkd->bd", F.normalize(qq, dim=-1), W)
+            rq = rd(F.normalize(qq, dim=-1))
             w = torch.softmax(self.mix(h), -1); self._mix.append(w.detach()); self._reads.append(torch.stack([r0, r1, rq], 1).detach()); self._hs.append(h.detach()); self._qq.append(F.normalize(qq, dim=-1).detach()); self._pr.append(torch.stack([self.P(r0), self.P(r1)], 1).detach())
             r = w[:, 0:1] * r0 + w[:, 1:2] * r1 + w[:, 2:3] * rq
             outs.append(self.head(torch.cat([h, r], -1)))
@@ -117,17 +122,22 @@ class LIN(nn.Module):
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.ones(()) if self.nodecay else torch.sigmoid(self.dec)
         PE = self.P(e); K = self._rolekey_seq(PE)                                   # key after seeing token t
         Kprev = F.pad(K, (0, 0, 1, 0))[:, :L]; KN = F.normalize(Kprev, dim=-1)       # write key at t = key of prefix up to t-1 (zero at t=0)
-        Q0 = F.normalize(K, dim=-1); R0 = self._readall(Q0, KN, e, dec)
+        def RD(Q):   # read with optional cleanup: the match weights become ~(q.k_s)^(2n+1) instead of (q.k_s) — exact recall without softmax
+            r = self._readall(Q, KN, e, dec)
+            for _ in range(self.clean):
+                Q = F.normalize(self._readall(r, e, KN, dec), dim=-1); r = self._readall(Q, KN, e, dec)
+            return r
+        Q0 = F.normalize(K, dim=-1); R0 = RD(Q0)
         PR0 = self.P(R0)                                  # k1 = rolekey(win + [P r0]): P r0 at offset 0, tokens shift by one
         K1 = self.R[0] * PR0 + sum(self.R[i] * (F.pad(PE, (0, 0, i - 1, 0))[:, :L] if i > 1 else PE) for i in range(1, self.roles))
         if self.sparse:
             kk = max(1, int(self.sparse * dk)); th = K1.abs().topk(kk, dim=-1).values[..., -1:]; K1 = K1 * (K1.abs() >= th).float()
-        R1 = self._readall(F.normalize(K1, dim=-1), KN, e, dec); PR1 = self.P(R1)
+        R1 = RD(F.normalize(K1, dim=-1)); PR1 = self.P(R1)
         sP = self.P(self.shape)
         QQ = self.R[0] * sP + self.R[1] * PR1 + self.R[2] * PR0 if self.roles >= 3 else self.R[0] * sP + self.R[1] * PR1
         if self.sparse:
             kk = max(1, int(self.sparse * dk)); th = QQ.abs().topk(kk, dim=-1).values[..., -1:]; QQ = QQ * (QQ.abs() >= th).float()
-        RQ = self._readall(F.normalize(QQ, dim=-1), KN, e, dec)
+        RQ = RD(F.normalize(QQ, dim=-1))
         reads = torch.stack([R0, R1, RQ], 2)                                          # (B,L,3,d)
         if self.pgru:
             prev = F.pad(reads.reshape(B, L, 3 * d), (0, 0, 1, 0))[:, :L]

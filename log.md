@@ -7318,3 +7318,28 @@ name .39/3.86/3.86, bg 1.263/1.363/1.565): PREDICT nodecay alone HURTS bg (cross
 sparse .1 x kmult 4 + nodecay IMPROVES OOD-name CE below 3.0 and far-name below 3.0 with bg within +.05; sparse .05 x
 kmult 8 + nodecay better still. If neither sparse arm moves OOD-name, the address scheme (last-4-byte roles) is the wall,
 not the decay, and the next axis is what the key is made of.
+
+M1 — RESULT (39905018938; d64, 3000 steps; name in/ood/far | bg in/ood/4L; baseline T3 LIN d64 .39/3.86/3.86 | 1.263/1.363/1.565):
+  base s3 (dec learned .757!)      .43/3.78/3.87 | 1.272/1.361/1.569
+  kmult4 (dec .873)                .39/3.89/3.73 | 1.275/1.371/1.579
+  nodecay                          .33/3.38/3.96 | 1.293/1.392/1.763
+  sparse.1 kmult4 (dec .786)       .40/3.58/3.71 | 1.273/1.392/1.589
+  sparse.1 kmult4 nodecay          .34/3.41/4.00 | 1.292/1.394/1.774
+  sparse.05 kmult8 nodecay         .28/3.19/3.49 | 1.296/1.434/1.746
+Predictions: "nodecay alone hurts bg, no OOD fix" CONFIRMED (+.03/+.2 at 4L; OOD 3.38). "sparse+nodecay brings OOD and
+far below 3.0" FALSIFIED (best 3.19/3.49). Direction right, size wrong. At d64 the learner picks decay .757 — a
+3-byte buffer; the "memory" of the certified LIN is a local n-gram cache. The length robustness in T1/T3 is positional-
+machinery-free recurrence, NOT long memory. Said plainly: we do not yet have a memory on text.
+M2 — DIAGNOSIS + PRE-REGISTRATION. Numerical capacity check of the outer-product store (random keys, noisy query,
+recall cosine): 320 items dense dk128 .38; sparse dk512@.02 .79; dk2048@.01 .94; dk4096@.005 .96; 1280 items dk4096 .88.
+The wall is CAPACITY, not decay: one byte written per step into a dk x d matrix saturates at ~dk/log items, and a
+320-byte context has 320 writes. Linear-attention-class recall deficit is known (Arora et al. 2024, "Zoology", arXiv:
+2312.04927; "Based" fixes it with Taylor maps + sliding window) — our answer is different: a LARGE SPARSE ADDRESS SPACE
+AS STATE, not parameters (fixed random projection + k-WTA, Kanerva SDM) so capacity grows with state at zero parameter
+cost and O(1)/token. Tried also M2-cleanup (power iteration q <- W^T W q, flag clean=n): HURTS in every setting (.76 ->
+.49) — linear iteration converges to the dominant singular direction, not the match; needs sparse VALUES to work. Banked
+negative; flag left at 0. PRE-REG M2 (d64, 3000 steps, L320): dk2048@.01 nodecay (130k trainable params, P fixed),
+dk4096@.005 nodecay, dk2048@.01 with learned decay, dk2048 seed 2. PREDICT: dk2048 nodecay OOD-name < 2.5 and far-name
+< 2.5 (memory now holds the whole 320-byte context); dk4096 better than dk2048; bg within +.05 of base. If OOD-name
+stays > 3.0 with 2048-wide sparse addresses, capacity was not the wall either and the key construction (last-4-byte
+roles) is — next axis is then what the key is made of.
