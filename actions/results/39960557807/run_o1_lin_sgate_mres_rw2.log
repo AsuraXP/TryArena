@@ -1,0 +1,15 @@
+  [LIN d64 s1] step 0 ce 8.513 wgate 1.000 (4s)
+  [LIN d64 s1] step 250 ce 2.810 wgate 0.671 (825s)
+  [LIN d64 s1] step 500 ce 1.982 wgate 0.833 (1638s)
+  [LIN d64 s1] step 750 ce 1.798 wgate 0.857 (2451s)
+  [LIN d64 s1] step 1000 ce 1.997 wgate 0.776 (3262s)
+  [LIN d64 s1] step 1250 ce 1.820 wgate 0.797 (4084s)
+  [LIN d64 s1] step 1500 ce 1.524 wgate 0.863 (4921s)
+  [LIN d64 s1] step 1750 ce 2.191 wgate 0.720 (5744s)
+  [LIN d64 s1] step 2000 ce 1.807 wgate 0.778 (6563s)
+  [LIN d64 s1] step 2250 ce 1.874 wgate 0.792 (7379s)
+  [LIN d64 s1] step 2500 ce 1.966 wgate 0.808 (8195s)
+  [LIN d64 s1] step 2750 ce 1.932 wgate 0.804 (9007s)
+  [LIN d64 s1] step 2999 ce 1.585 wgate 0.879 (9828s)
+[p49 LIN d64 s1] params 261257 dec 0.982 name-CE in 0.2288 ood 2.6447 far 2.6542 DENSE-unseen 3.1929 | bg 1.2937 1.4068 1.6575
+[P49] DONE
