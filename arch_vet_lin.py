@@ -114,7 +114,7 @@ class LIN(nn.Module):
         return k
 
     def forward_fast(self, x, **kw):
-        B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.sigmoid(self.dec)
+        B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.ones(()) if self.nodecay else torch.sigmoid(self.dec)
         PE = self.P(e); K = self._rolekey_seq(PE)                                   # key after seeing token t
         Kprev = F.pad(K, (0, 0, 1, 0))[:, :L]; KN = F.normalize(Kprev, dim=-1)       # write key at t = key of prefix up to t-1 (zero at t=0)
         Q0 = F.normalize(K, dim=-1); R0 = self._readall(Q0, KN, e, dec)

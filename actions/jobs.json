@@ -2,29 +2,29 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "t2f_LIN_d128_s1",
-   "args": "--task lm --arms LIN --ds 128 --steps 6000 --B 8 --L 512 --seeds 1"
+   "tag": "m1_nodecay",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"nodecay\":1}'"
   },
   {
-   "tag": "t2f_LIN_d256_s1",
-   "args": "--task lm --arms LIN --ds 256 --steps 6000 --B 8 --L 512 --seeds 1"
+   "tag": "m1_sparse10_k4",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.1,\"kmult\":4}'"
   },
   {
-   "tag": "t2f_LIN_d128_s2",
-   "args": "--task lm --arms LIN --ds 128 --steps 6000 --B 8 --L 512 --seeds 2"
+   "tag": "m1_sparse10_k4_nodecay",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.1,\"kmult\":4,\"nodecay\":1}'"
   },
   {
-   "tag": "t2f_TF_d128_s2",
-   "args": "--task lm --arms TF --ds 128 --steps 6000 --B 8 --L 512 --seeds 2"
+   "tag": "m1_sparse05_k8_nodecay",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.05,\"kmult\":8,\"nodecay\":1}'"
   },
   {
-   "tag": "t2f_TF_d256_lr1e-3",
-   "args": "--task lm --arms TF --ds 256 --steps 6000 --B 8 --L 512 --seeds 1 --lr 1e-3"
+   "tag": "m1_k4",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"kmult\":4}'"
   },
   {
-   "tag": "t2f_LIN_d256_lr1e-3",
-   "args": "--task lm --arms LIN --ds 256 --steps 6000 --B 8 --L 512 --seeds 1 --lr 1e-3"
+   "tag": "m1_base_s3",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 3 --sample 0"
   }
  ],
- "nonce": 1792732250
+ "nonce": 1792732685
 }

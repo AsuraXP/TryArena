@@ -7304,3 +7304,17 @@ into nn.GRU, no mix feedback): 2x faster again but WORSE at 600 steps (bg 1.746 
 adopted (flag kept, default 0). TorchScript loop: slower than eager. The T2 LIN jobs in 39895774639 run the old loop and
 will hit the 315-min cap with only a partial curve; relaunched as t2f_* with the fast form (+ seed 2 at d128, + lr 1e-3
 at d256 for BOTH arms since TF d256 at 3e-3 came out worse than d128).
+
+M1 — INSTRUMENT (question-first): why is OOD-name recall bad for LIN (3.7 nats) when it has an explicit memory?
+Local LIN d32 600 steps: LEARNED decay sigmoid(dec) = 0.949 (init .982) -> half-life ~13 bytes. The fast-weight memory
+is being used as a short buffer; a name stated 100+ bytes earlier is gone. Per-byte OOD name CE 3.0/3.9/2.6/2.0 — no
+copying at all; in-distribution names (1.6/2.1/1.6/2.1) come from weights. The length robustness LIN shows is therefore
+NOT long memory — it is the absence of position-dependent machinery. Reason the learner chooses to forget: with dense
+4-gram role keys every byte context is superposed in one dk x d matrix; without decay the read is crosstalk, so decay
+buys cleanliness at the cost of reach. That is forgetting designed IN. Structural fix candidates already in the learner
+(not new variants): nodecay (W only grows), sparse k-WTA addresses with larger dk (C131 Kanerva-style: crosstalk falls
+with dk at zero parameter cost), both. PRE-REGISTRATION M1 (d64, 3000 steps, L320, seed 1; baseline = T3 LIN d64:
+name .39/3.86/3.86, bg 1.263/1.363/1.565): PREDICT nodecay alone HURTS bg (crosstalk) and does not fix OOD;
+sparse .1 x kmult 4 + nodecay IMPROVES OOD-name CE below 3.0 and far-name below 3.0 with bg within +.05; sparse .05 x
+kmult 8 + nodecay better still. If neither sparse arm moves OOD-name, the address scheme (last-4-byte roles) is the wall,
+not the decay, and the next axis is what the key is made of.
