@@ -1,0 +1,15 @@
+  [LIN d16 s2] step 0 ce 6.922 (0s)
+  [LIN d16 s2] step 250 ce 2.447 (142s)
+  [LIN d16 s2] step 500 ce 2.119 (282s)
+  [LIN d16 s2] step 750 ce 1.977 (414s)
+  [LIN d16 s2] step 1000 ce 2.004 (548s)
+  [LIN d16 s2] step 1250 ce 2.048 (675s)
+  [LIN d16 s2] step 1500 ce 1.840 (800s)
+  [LIN d16 s2] step 1750 ce 1.741 (922s)
+  [LIN d16 s2] step 2000 ce 1.863 (1047s)
+  [LIN d16 s2] step 2250 ce 1.575 (1172s)
+  [LIN d16 s2] step 2500 ce 1.487 (1299s)
+  [LIN d16 s2] step 2750 ce 1.785 (1430s)
+  [LIN d16 s2] step 2999 ce 1.669 (1554s)
+[p49 LIN d16 s2] params 24132 name-CE in 1.7077 ood 3.3108 far 3.3299 DENSE-unseen 4.2691 | bg 1.6693 1.7105 1.9582
+[P49] DONE
