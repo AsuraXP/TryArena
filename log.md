@@ -7274,3 +7274,20 @@ steps (CE vs bytes seen = per-example efficiency); 400-byte raw samples from two
 bytes. Readability is reported, not predicted. T3 (scaling law on the T1 task): d16/32/64/96, LIN and TF, seeds 1,2,
 3000 steps — the slope. PREDICTION: LIN-minus-TF background CE decreases monotonically with d (negative slope), length
 gap widens.
+
+T3 — RESULT (Actions 39895774639, partial: LIN d96 still running). Background CE in/ood/4xlen, 2 seeds averaged:
+  d16  LIN 24k  1.676/1.707/1.964   TF 15k  1.732/1.876/4.268
+  d32  LIN 53k  1.414/1.487/1.720   TF 42k  1.393/1.567/3.357
+  d64  LIN 129k 1.263/1.363/1.565   TF 133k 1.289/1.436/3.160
+  d96  LIN  (pending)               TF 273k 1.213/1.370/2.576
+  name-CE in: LIN 1.73 / .68 / .39   TF 2.52 / .67 / .47 (d96 TF .39)
+PREDICTION "LIN-minus-TF in-range CE decreases monotonically with d" FALSIFIED: -.056, +.021, -.026 — not monotone;
+in-range the two are tied within ±.03 at every size. What IS consistent across all sizes and seeds: OOD-names CE LIN
+better by .08–.17, and 4x-length CE LIN better by 1.6–2.3 nats with the TF gap NOT closing at 2x params (d96 TF 2.58
+vs LIN-d64 1.57). Length degradation of LIN itself: +.29/+.31/+.30 nats from L to 4L at d16/32/64 — constant, not
+growing. Honest summary: equal language model in-range, better out of distribution, structurally better at length; no
+in-range slope to claim.
+T2 (partial): TF d128 462k heldout 1.373 at L, 3.52 at 4L, 4.72 at 16L; TF d256 1.7M 1.441 / 2.77 / 3.64 (worse than
+d128 in-range: lr 3e-3 is too high for it — a tuning caveat in TF's favour to fix, not hide). TF d128 samples are
+word-level English, not coherent dialogue ("my laptop settle for you. that months camera?"). LIN d128/d256 pending
+(per-token python loop; slow).
