@@ -1,0 +1,15 @@
+  [LIN d64 s1] step 0 ce 6.662 (0s)
+  [LIN d64 s1] step 250 ce 1.899 (73s)
+  [LIN d64 s1] step 500 ce 1.346 (145s)
+  [LIN d64 s1] step 750 ce 1.251 (217s)
+  [LIN d64 s1] step 1000 ce 1.379 (289s)
+  [LIN d64 s1] step 1250 ce 1.245 (360s)
+  [LIN d64 s1] step 1500 ce 1.063 (431s)
+  [LIN d64 s1] step 1750 ce 1.514 (502s)
+  [LIN d64 s1] step 2000 ce 1.279 (572s)
+  [LIN d64 s1] step 2250 ce 1.284 (643s)
+  [LIN d64 s1] step 2500 ce 1.322 (714s)
+  [LIN d64 s1] step 2750 ce 1.298 (782s)
+  [LIN d64 s1] step 2999 ce 1.057 (851s)
+[p49 LIN d64 s1] params 137604 dec 0.982 name-CE in 0.3408 ood 3.4062 far 3.9963 DENSE-unseen 3.5192 | bg 1.2917 1.3937 1.774
+[P49] DONE
