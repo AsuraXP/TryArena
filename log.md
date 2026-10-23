@@ -7295,3 +7295,12 @@ T3 d96 (complete): LIN 227k 1.192/1.314/1.490 vs TF 273k 1.213/1.376/2.576 — L
 params, OOD -.06, length -1.09. Full in-range series LIN-TF: -.056/+.021/-.026/-.021 (d16/32/64/96): 3 of 4 in LIN's
 favour, not monotone; length gap TF-minus-LIN: 2.30/1.64/1.60/1.09 — TF closes at length with size, but LIN's own
 L->4L cost stays ~+.30 at every size (1.96-1.68, 1.72-1.41, 1.57-1.26, 1.49-1.19) while TF's is +2.5/+2.0/+1.9/+1.4.
+
+ENGINEERING (no model change): LIN forward rewritten in exact parallel form — W_t = sum dec^(t-s) kn_s(x)e_s, so every read
+q·W_t is a decayed causal linear attention computed for all t at once in 512-chunks with a carried W state; only the
+controller GRU (which feeds back the mixed read) stays a per-step loop. Matches the loop to 1e-6 (roles 2/3/4, sparse,
+kcons, hopce). d128 L512 B8: 4.97 -> 1.6 s/step; 8192-token eval 3 s. Tried a fused-GRU form (pgru=1: raw reads of t-1
+into nn.GRU, no mix feedback): 2x faster again but WORSE at 600 steps (bg 1.746 vs 1.674) — the feedback matters; not
+adopted (flag kept, default 0). TorchScript loop: slower than eager. The T2 LIN jobs in 39895774639 run the old loop and
+will hit the 315-min cap with only a partial curve; relaunched as t2f_* with the fast form (+ seed 2 at d128, + lr 1e-3
+at d256 for BOTH arms since TF d256 at 3e-3 came out worse than d128).

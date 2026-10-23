@@ -48,6 +48,7 @@ import arch_vet_p46 as T
 import importlib.util as _ilu, os as _os2
 _sp = _ilu.spec_from_file_location('arch_vet_lin', _os2.path.join(_os2.path.dirname(_os2.path.abspath(__file__)), 'arch_vet_lin.py')); LINM = _ilu.module_from_spec(_sp); _sp.loader.exec_module(LINM)
 LINROLES = 4   # TEXT TEST: LIN learner (C128 config: role-bound re-executable keys, fast-weight memory) on bytes, unchanged
+PGRU = 0   # 1 = fused-GRU controller form (reads of t-1 fed raw, no mix feedback); speed form, must be shown equal before use
 sys.argv = sys.argv_p49
 torch.set_num_threads(2)
 GMIN0, BINIT = 0.2, 0.0
@@ -342,13 +343,13 @@ def sample(m, arm, prompt, n=160, temp=0.8, seed=0):
 
 
 
-def lm_run(arm, d, seed, steps, B, L, log, corpus_path, eval_every=250, sample_n=400):
+def lm_run(arm, d, seed, steps, B, L, log, corpus_path, eval_every=250, sample_n=400, lr=3e-3):
     """TEXT TEST T2: plain byte-level LM on a raw corpus (no synthetic dialogues). Held-out = last 5% of bytes.
     Reports CE at L, 4L, 16L context, a learning curve (CE every eval_every steps), and raw samples."""
     raw = open(corpus_path, "rb").read().lower(); cut = int(len(raw) * 0.95); tr, te = raw[:cut], raw[cut:]
     torch.manual_seed(seed); rng = random.Random(seed)
-    m = A.TFMicro(256, d, max_len=16 * L + 8) if arm == "TF" else LINM.LIN(256, d, roles=LINROLES)
-    opt = torch.optim.Adam(m.parameters(), lr=3e-3); t0 = time.time(); curve = []
+    m = A.TFMicro(256, d, max_len=16 * L + 8) if arm == "TF" else LINM.LIN(256, d, roles=LINROLES, pgru=PGRU)
+    opt = torch.optim.Adam(m.parameters(), lr=lr); t0 = time.time(); curve = []
     def chunk(src, n, Lc):
         xs = [src[o:o + Lc] for o in [rng.randrange(0, len(src) - Lc - 1) for _ in range(n)]]
         return torch.tensor([list(c) for c in xs])
@@ -372,7 +373,7 @@ def lm_run(arm, d, seed, steps, B, L, log, corpus_path, eval_every=250, sample_n
 
 def train_text(arm, d, seed, steps, B, L, log):
     torch.manual_seed(seed); rng = random.Random(seed)
-    m = A.TFMicro(256, d) if arm == "TF" else GRUCore(256, d) if arm == "GRU" else LINM.LIN(256, d, roles=LINROLES) if arm == "LIN" else CKB(256, d, MSLOTS)
+    m = A.TFMicro(256, d) if arm == "TF" else GRUCore(256, d) if arm == "GRU" else LINM.LIN(256, d, roles=LINROLES, pgru=PGRU) if arm == "LIN" else CKB(256, d, MSLOTS)
     opt = torch.optim.Adam(m.parameters(), lr=3e-3); t0 = time.time()
     for s in range(steps):
         x, _ = dense_batch(rng, B, None if RANDNAMES else NAMES_TR, 6, L) if DENSE else text_batch(rng, B, NAMES_TR, rng.randint(1, 3), L)
@@ -397,10 +398,11 @@ def boundary_profile(m, x):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--arms", default="CKB")
+    ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--pgru", type=int, default=0); ap.add_argument("--lr", type=float, default=3e-3); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
     ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320); ap.add_argument("--sample", type=int, default=1); ap.add_argument("--corpus", default="corpus/chat_dialogues_big.txt")
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
+    global PGRU; PGRU = a.pgru
     global CCRED, HCUT, DSCALE, KNORM; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale; KNORM = a.knorm; global LOWMEM, INNER; LOWMEM = a.lowmem; INNER = a.inner; global LOOK, LOOKH; LOOK = a.look; LOOKH = a.lookh; global IMCONS; IMCONS = a.imcons; torch.set_num_threads(a.threads)
     global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE, PUREADDR, RANDNAMES, TIE; ROLE = a.role; DENSE = bool(a.dense); PUREADDR = a.pure; RANDNAMES = bool(a.randnames); TIE = bool(a.tie); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
     res = {"tag": "ARCH-VET-LM-P49", "ccred": a.ccred, "dscale": a.dscale, "knorm": a.knorm, "lowmem": a.lowmem, "inner": a.inner, "hcut": a.hcut, "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}
@@ -408,7 +410,7 @@ def main():
         for arm in a.arms.split(","):
             for d in map(int, a.ds.split(",")):
                 for seed in map(int, a.seeds.split(",")):
-                    res["runs"].append(lm_run(arm, d, seed, a.steps, a.B, a.L, log, a.corpus))
+                    res["runs"].append(lm_run(arm, d, seed, a.steps, a.B, a.L, log, a.corpus, lr=a.lr))
     elif a.task == "synthetic":
         er = random.Random(999); ev_in = [T.make_batch(er, 16, (2, 4), 2, 4, False) for _ in range(12)]
         er = random.Random(998); ev_len = [T.make_batch(er, 16, (2, 4), 2, 30, False) for _ in range(12)]

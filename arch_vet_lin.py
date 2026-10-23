@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -29,7 +29,8 @@ class LIN(nn.Module):
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
         self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
-        self.g = nn.GRUCell(2 * d, d)
+        self.pgru = pgru   # speed form: controller GRU reads the three raw reads of t-1 (no feedback from the mix) -> fused nn.GRU, no python loop
+        self.g = nn.GRU(4 * d, d, batch_first=True) if pgru else nn.GRUCell(2 * d, d)
         self.mix = nn.Linear(d, 3)   # r0 (1-hop), r1 (continuation), rq (re-posed)
         self.head = nn.Linear(2 * d, V); self.hopce = hopce; self.head2 = nn.Linear(2 * d, V)   # C129: t+2 head for the continuation read
 
@@ -45,7 +46,7 @@ class LIN(nn.Module):
             k = k * mask + (k - k.detach()) * (1 - mask) * 0
         return k
 
-    def forward(self, x, **kw):
+    def forward_loop(self, x, **kw):
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x)
         h = torch.zeros(B, d); k = torch.zeros(B, dk); W = torch.zeros(B, dk, d); r = torch.zeros(B, d); outs = []; self._mix = []; self._reads = []; self._hs = []; self._kw = []; self._qq = []; self._pr = []; win = []; l0, l1 = [], []; pr0, pr1 = [], []; gs = []
         lam = torch.sigmoid(self.lam); sP = self.P(self.shape).unsqueeze(0)
@@ -87,3 +88,70 @@ class LIN(nn.Module):
             self.aux = self.hopce * (F.cross_entropy(L0[:, :-1].reshape(-1, L0.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)
                                      + F.cross_entropy(L1[:, :-2].reshape(-1, L1.shape[-1]), x[:, 2:].reshape(-1), ignore_index=0))
         return torch.stack(outs, 1)
+
+    # ---- exact parallel form (added after T3): W_t = sum_{s<=t} dec^{t-s} kn_s (x) v_s, so q W_t = sum_s dec^{t-s} (q.kn_s) v_s.
+    # Reads are computed for all t at once in chunks (decayed causal linear attention with a carried W state); only the small
+    # controller GRU stays sequential.  Same function as the loop (checked to 1e-4); used when roles>0 and no wgate/delta.
+    def _readall(self, Q, KN, Vv, dec, C=512):
+        B, L, dk = KN.shape; d = Vv.shape[-1]; out = []; Wst = torch.zeros(B, dk, d); i = torch.arange(C)
+        for s0 in range(0, L, C):
+            q = Q[:, s0:s0 + C]; k = KN[:, s0:s0 + C]; v = Vv[:, s0:s0 + C]; n = q.shape[1]
+            dist = (i[:n, None] - i[None, :n]).float(); mask = torch.where(dist >= 0, dec ** dist.clamp(min=0), torch.zeros(()))
+            S = torch.einsum("bik,bjk->bij", q, k) * mask
+            rr = torch.einsum("bij,bjd->bid", S, v) + torch.einsum("bik,bkd->bid", q, Wst) * (dec ** (i[:n] + 1).float())[None, :, None]
+            out.append(rr)
+            wdec = dec ** (n - 1 - i[:n]).float()
+            Wst = (dec ** n) * Wst + torch.einsum("bjk,bjd->bkd", k * wdec[None, :, None], v)
+        return torch.cat(out, 1)
+
+    def _rolekey_seq(self, PE, extra=None):   # PE: (B,L,dk) projected tokens; key_t = sum_i R[i] * PE[t-i]
+        k = 0
+        for i in range(self.roles):
+            sh = F.pad(PE, (0, 0, i, 0))[:, :PE.shape[1]] if i else PE
+            k = k + self.R[i] * sh
+        if self.sparse:
+            kk = max(1, int(self.sparse * k.shape[-1])); th = k.abs().topk(kk, dim=-1).values[..., -1:]; k = k * (k.abs() >= th).float()
+        return k
+
+    def forward_fast(self, x, **kw):
+        B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.sigmoid(self.dec)
+        PE = self.P(e); K = self._rolekey_seq(PE)                                   # key after seeing token t
+        Kprev = F.pad(K, (0, 0, 1, 0))[:, :L]; KN = F.normalize(Kprev, dim=-1)       # write key at t = key of prefix up to t-1 (zero at t=0)
+        Q0 = F.normalize(K, dim=-1); R0 = self._readall(Q0, KN, e, dec)
+        PR0 = self.P(R0)                                  # k1 = rolekey(win + [P r0]): P r0 at offset 0, tokens shift by one
+        K1 = self.R[0] * PR0 + sum(self.R[i] * (F.pad(PE, (0, 0, i - 1, 0))[:, :L] if i > 1 else PE) for i in range(1, self.roles))
+        if self.sparse:
+            kk = max(1, int(self.sparse * dk)); th = K1.abs().topk(kk, dim=-1).values[..., -1:]; K1 = K1 * (K1.abs() >= th).float()
+        R1 = self._readall(F.normalize(K1, dim=-1), KN, e, dec); PR1 = self.P(R1)
+        sP = self.P(self.shape)
+        QQ = self.R[0] * sP + self.R[1] * PR1 + self.R[2] * PR0 if self.roles >= 3 else self.R[0] * sP + self.R[1] * PR1
+        if self.sparse:
+            kk = max(1, int(self.sparse * dk)); th = QQ.abs().topk(kk, dim=-1).values[..., -1:]; QQ = QQ * (QQ.abs() >= th).float()
+        RQ = self._readall(F.normalize(QQ, dim=-1), KN, e, dec)
+        reads = torch.stack([R0, R1, RQ], 2)                                          # (B,L,3,d)
+        if self.pgru:
+            prev = F.pad(reads.reshape(B, L, 3 * d), (0, 0, 1, 0))[:, :L]
+            H, _ = self.g(torch.cat([e, prev], -1)); Wm = torch.softmax(self.mix(H), -1)
+        else:
+            h = torch.zeros(B, d); r = torch.zeros(B, d); hs = []; ws = []
+            for t in range(L):                                                            # controller only: tiny per-step ops
+                h = self.g(torch.cat([e[:, t], r], -1), h); w = torch.softmax(self.mix(h), -1)
+                r = (w.unsqueeze(-1) * reads[:, t]).sum(1); hs.append(h); ws.append(w)
+            H = torch.stack(hs, 1); Wm = torch.stack(ws, 1)
+        Rm = (Wm.unsqueeze(-1) * reads).sum(2)
+        self._mix = list(Wm.detach().unbind(1)); self._reads = list(reads.detach().unbind(1)); self._hs = list(H.detach().unbind(1))
+        self._kw = list(KN.detach().unbind(1)); self._qq = list(F.normalize(QQ, dim=-1).detach().unbind(1)); self._pr = list(torch.stack([PR0, PR1], 2).detach().unbind(1))
+        self.aux = torch.zeros(()); self.gmean = None
+        if self.kcons:
+            PEd = PE.detach(); A0 = PR0[:, :-1]; A1 = PR1[:, :-2]; m0 = (x[:, 1:] != 0).float(); m1 = (x[:, 2:] != 0).float()
+            c0 = 1 - F.cosine_similarity(A0, PEd[:, 1:], dim=-1); c1 = 1 - F.cosine_similarity(A1, PEd[:, 2:], dim=-1)
+            self.aux = self.aux + self.kcons * ((c0 * m0).sum() / m0.sum() + (c1 * m1).sum() / m1.sum())
+        if self.hopce:
+            L0 = self.head(torch.cat([H, R0], -1)); L1 = self.head2(torch.cat([H, R1], -1))
+            self.aux = self.hopce * (F.cross_entropy(L0[:, :-1].reshape(-1, L0.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)
+                                     + F.cross_entropy(L1[:, :-2].reshape(-1, L1.shape[-1]), x[:, 2:].reshape(-1), ignore_index=0))
+        return self.head(torch.cat([H, Rm], -1))
+
+    def forward(self, x, **kw):
+        if self.pgru or (self.roles and not self.wgate and not self.delta and not getattr(self, "slow", False)): return self.forward_fast(x, **kw)
+        return self.forward_loop(x, **kw)
