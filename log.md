@@ -7362,3 +7362,17 @@ worse (store saturation + unnormalised reads). Jobs: mres nodecay, mres nodecay 
 base (1.565); mres with learned decay again picks dec < .85 and gains nothing on OOD. If OOD-name is still > 2.8 with
 1-byte-keyed sparse stores that cannot forget, the wall is the learning signal (one OOD-style copy event per 320-byte
 sample) and the next axis is the objective, not the store.
+
+T2 — RESULT (39904333544, fast form; full 4.8 MB chat corpus, held-out last 5%, L512 B8 6000 steps = 24.6 MB seen; CE L/4L/16L):
+  LIN d128 347k  s1 1.413/1.442/1.434   s2 1.384/1.412/1.419      (16L = 8192 bytes: FLAT)
+  TF  d128 462k  s1 1.373/3.517/4.719   s2 1.378/3.276/5.737
+  TF  d256 1.7M  lr3e-3 1.441/2.773/3.643 ; lr1e-3 1.479/3.657/5.442   (TF d256 undertrained at 6000 steps either lr)
+  LIN d256 pending (2 jobs)
+Prediction "LIN <= TF in-range at d128" FALSIFIED: TF ahead by .02 (1.376 vs 1.398 mean) with 33% more params.
+Prediction "16L: TF > 2.5, LIN < 1.6" CONFIRMED (4.7–5.7 vs 1.42–1.43). Data curve: LIN s2 1.42 at 12.3 MB, TF 1.43 at
+12.3 MB — equal per-example efficiency, not better (prediction falsified). Readability (unselected 400-byte samples,
+temp .8): BOTH produce word-level English with local phrase structure and no dialogue coherence; indistinguishable in
+kind ("what the christ, everyone knows and a nice." vs "i don't know. from and we want to pick there. i'm fine.").
+Plain reading: at d128 on real text our core is an equal language model to the fair TF in-range, equal in data
+efficiency, and the only structural win is length (8192-byte input at the 512-byte CE). Not "way above weight" yet.
+The in-range lever is still the objective/learning rule (planned axis), not the store.
