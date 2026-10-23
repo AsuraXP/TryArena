@@ -2,25 +2,37 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "m6_gkey_nodecay",
+   "tag": "m6b_gkey_nodecay",
    "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"gkey\":1,\"nodecay\":1}'"
   },
   {
-   "tag": "m6_gkey_nodecay_dk2048",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"gkey\":1,\"nodecay\":1,\"sparse\":0.01,\"kmult\":32}'"
-  },
-  {
-   "tag": "m6_gkey_decay",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"gkey\":1}'"
-  },
-  {
-   "tag": "m6_gkey_sgate_nodecay",
+   "tag": "m6b_gkey_sgate_nodecay",
    "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"gkey\":1,\"nodecay\":1,\"sgate\":1}'"
   },
   {
-   "tag": "m6_gkey_nodecay_copypressure",
+   "tag": "m6b_gkey_nodecay_copypressure",
    "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --linflags '{\"gkey\":1,\"nodecay\":1}'"
+  },
+  {
+   "tag": "o1_lin_sgate_mres_rw2",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --rw 2 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sgate\":1}'"
+  },
+  {
+   "tag": "o1_lin_sgate_mres_rw5",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --rw 5 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sgate\":1}'"
+  },
+  {
+   "tag": "o1_lin_base_rw2",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --rw 2"
+  },
+  {
+   "tag": "o1_tf_rw2",
+   "args": "--arms TF --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --rw 2"
+  },
+  {
+   "tag": "o1_lin_sgate_mres_rw2_s2",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0 --rw 2 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sgate\":1}'"
   }
  ],
- "nonce": 1792743893
+ "nonce": 1792761702
 }

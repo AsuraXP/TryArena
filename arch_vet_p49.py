@@ -314,7 +314,23 @@ def text_batch(rng, B, names, nfill, L):
     return torch.tensor(xs), spans
 
 
-def ce_all(logits, x): return F.cross_entropy(logits[:, :-1].reshape(-1, logits.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)
+def repeat_weight(x, n=3):   # OBJECTIVE axis (no oracle, stream-only): 1 where the n-gram ending at t-1 occurred earlier in the same sequence
+    B, L = x.shape; w = torch.zeros(B, L - 1)
+    for b in range(B):
+        seen = set(); xs = x[b].tolist()
+        for t in range(1, L):
+            g = tuple(xs[max(0, t - n):t]); w[b, t - 1] = 1.0 if (len(g) == n and g in seen) else 0.0; seen.add(g)
+    return w
+
+def ce_rw(logits, x, alpha):   # CE with repeat-weighting: predictable-by-context bytes get weight 1+alpha; normalised to mean weight 1 over real bytes
+    nll = F.cross_entropy(logits[:, :-1].reshape(-1, logits.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0, reduction="none").view(x.shape[0], -1)
+    m = (x[:, 1:] != 0).float(); w = (1 + alpha * repeat_weight(x)) * m; w = w / w.sum() * m.sum()
+    return (nll * w).sum() / m.sum()
+
+RW = 0.0
+def ce_all(logits, x):
+    if RW: return ce_rw(logits, x, RW)
+    return F.cross_entropy(logits[:, :-1].reshape(-1, logits.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)
 
 
 @torch.no_grad()
@@ -405,11 +421,11 @@ def boundary_profile(m, x):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--pgru", type=int, default=0); ap.add_argument("--linflags", default="{}"); ap.add_argument("--lr", type=float, default=3e-3); ap.add_argument("--arms", default="CKB")
+    ap = argparse.ArgumentParser(); ap.add_argument("--task", default="text"); ap.add_argument("--pgru", type=int, default=0); ap.add_argument("--rw", type=float, default=0.0); ap.add_argument("--linflags", default="{}"); ap.add_argument("--lr", type=float, default=3e-3); ap.add_argument("--arms", default="CKB")
     ap.add_argument("--ds", default="32"); ap.add_argument("--seeds", default="1"); ap.add_argument("--steps", type=int, default=2000)
     ap.add_argument("--B", type=int, default=8); ap.add_argument("--bmode", default="soft"); ap.add_argument("--ccred", type=int, default=0); ap.add_argument("--dscale", type=int, default=0); ap.add_argument("--knorm", type=int, default=0); ap.add_argument("--lowmem", type=int, default=0); ap.add_argument("--inner", type=int, default=0); ap.add_argument("--look", type=int, default=0); ap.add_argument("--lookh", type=int, default=3); ap.add_argument("--imcons", type=float, default=0.0); ap.add_argument("--threads", type=int, default=1); ap.add_argument("--hcut", type=float, default=0.0); ap.add_argument("--surprise", type=int, default=0); ap.add_argument("--pkb", type=int, default=0); ap.add_argument("--wkb", type=int, default=0); ap.add_argument("--cgw", type=int, default=0); ap.add_argument("--dense", type=int, default=0); ap.add_argument("--role", type=int, default=0); ap.add_argument("--pure", type=int, default=0); ap.add_argument("--randnames", type=int, default=0); ap.add_argument("--tie", type=int, default=0); ap.add_argument("--save", default=""); ap.add_argument("--M", type=int, default=8); ap.add_argument("--L", type=int, default=320); ap.add_argument("--sample", type=int, default=1); ap.add_argument("--corpus", default="corpus/chat_dialogues_big.txt")
     a = ap.parse_args(); log = lambda *x: print(*x, flush=True)
-    global PGRU, LINKW; PGRU = a.pgru; LINKW = json.loads(a.linflags); import re as _re
+    global PGRU, LINKW, RW; PGRU = a.pgru; RW = a.rw; LINKW = json.loads(a.linflags); import re as _re
     global CCRED, HCUT, DSCALE, KNORM; CCRED = a.ccred; HCUT = a.hcut; DSCALE = a.dscale; KNORM = a.knorm; global LOWMEM, INNER; LOWMEM = a.lowmem; INNER = a.inner; global LOOK, LOOKH; LOOK = a.look; LOOKH = a.lookh; global IMCONS; IMCONS = a.imcons; torch.set_num_threads(a.threads)
     global BMODE, SURPRISE, PKB, MSLOTS, WKB, CGW, DENSE, ROLE, PUREADDR, RANDNAMES, TIE; ROLE = a.role; DENSE = bool(a.dense); PUREADDR = a.pure; RANDNAMES = bool(a.randnames); TIE = bool(a.tie); MSLOTS = a.M; WKB = a.wkb; CGW = bool(a.cgw); BMODE = a.bmode; SURPRISE = bool(a.surprise); PKB = bool(a.pkb)
     res = {"tag": "ARCH-VET-LM-P49", "ccred": a.ccred, "dscale": a.dscale, "knorm": a.knorm, "lowmem": a.lowmem, "inner": a.inner, "hcut": a.hcut, "bmode": a.bmode, "surprise": a.surprise, "pkb": a.pkb, "wkb": a.wkb, "cgw": a.cgw, "dense": a.dense, "role": a.role, "pure": a.pure, "randnames": a.randnames, "tie": a.tie, "M": a.M, "task": a.task, "protocol": __doc__[:1500], "runs": []}

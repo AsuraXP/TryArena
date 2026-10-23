@@ -7431,3 +7431,23 @@ gkey nodecay dk2048 sparse; gkey decay; gkey+sgate nodecay; gkey nodecay under c
 space/punct < .3 and at letters > .7 after training; OOD-name < 2.5 and far-name < 2.5 for gkey nodecay (first time);
 copy-pressure DU < 2.0; gkey with learned decay keeps dec > .95 (the learner now has a reason to keep memory). If
 gkey nodecay still gives OOD-name > 2.9, the read path is the wall.
+
+M4 — RESULT (complete): sgate dk2048 nodecay (gate .78) .35/2.92/2.84 | 1.288/1.403/1.633; sgate mres nodecay (gate .77)
+.25/2.59/3.17 | 1.286/1.392/1.625 — best OOD-name so far (2.59; base 3.86); rnorm again kills it. Gate did not go
+sparse (.77, predicted .1–.3): under plain CE the learner prefers writing most bytes.
+M5 — RESULT (copy pressure, dense random names; DENSE-unseen is the copy column): TF 3.62 | LIN base 3.67 | LIN mres
+nodecay 1.82 | LIN sgate mres nodecay 1.68 (gate .67). THE COPY MECHANISM EXISTS AND LEARNS: with multi-resolution
+sparse stores and no decay, our learner learns in-context copying of never-seen names (3.7 -> 1.7 nats/byte) under the
+same 3000 steps where the Transformer does not move (3.62). Prediction "DU < 1.5" missed by .2; "TF improves too"
+FALSIFIED (it did not). What it needed was SIGNAL DENSITY: the dialogue task gives one copy event per sample, so the
+store-side fixes alone move OOD-name 3.9 -> 2.6; the mechanism is not the bottleneck, the objective is.
+M6 — RESULT: gkey with learned decay: gate@space .25, @punct .45, @letter .74 — the learner DID choose word-aligned
+reset (prediction confirmed) but gained nothing (.45/3.64/3.80, dec .89). All four gkey NODECAY arms NaN: bug in the
+log-space scan (exp of the upper triangle overflowed to inf before masking, inf*0 = NaN). Fixed (mask before exp);
+relaunched as m6b (nodecay, +sgate, +copy pressure).
+O1 — PRE-REGISTRATION (OBJECTIVE axis, first run). Repeat-weighted CE (--rw alpha): bytes whose preceding 3-gram
+already occurred earlier in the SAME sequence get loss weight 1+alpha (renormalised to mean 1). Stream-only, no
+labels, no oracle: it tells the learner that bytes it could have known from context matter more than spelling it
+could have known from weights. Applied to BOTH arms (fair). Jobs: LIN sgate mres rw2 (s1,s2), rw5, LIN base rw2, TF
+rw2. PREDICT: LIN sgate mres rw2 OOD-name < 2.3 and far < 2.5 (from 2.59/3.17); bg in-range within +.03; TF rw2
+OOD-name improves less than .3 (it lacks the mechanism); rw5 better OOD than rw2 but bg cost > .05.

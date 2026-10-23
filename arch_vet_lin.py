@@ -139,8 +139,8 @@ class LIN(nn.Module):
         B, L, dk = X.shape; out = []; carry = torch.zeros(B, dk); Ll = torch.log(lam.clamp(min=1e-6)).squeeze(-1)   # (B,L)
         for s0 in range(0, L, C):
             x = X[:, s0:s0 + C]; ll = Ll[:, s0:s0 + C]; n = x.shape[1]; cs = ll.cumsum(1)   # cs_t = sum_{u<=t} log lam_u (within chunk)
-            D = torch.exp(cs.unsqueeze(2) - cs.unsqueeze(1) + ll.unsqueeze(1) * 0)           # D[t,s] = exp(cs_t - cs_s) = prod_{u=s+1..t} lam_u
-            D = D * torch.tril(torch.ones(n, n))                                            # s <= t
+            diff = cs.unsqueeze(2) - cs.unsqueeze(1)                                           # [t,s] = cs_t - cs_s = log prod_{u=s+1..t} lam_u
+            D = torch.exp(diff.masked_fill(~torch.tril(torch.ones(n, n, dtype=torch.bool)), float("-inf")))   # s <= t only (mask BEFORE exp: no inf*0 = NaN)
             k = torch.einsum("bts,bsk->btk", D, x) + torch.exp(cs).unsqueeze(-1) * carry.unsqueeze(1)   # carry decays by prod_{u<=t} lam_u
             out.append(k); carry = k[:, -1]
         return torch.cat(out, 1)
