@@ -1,0 +1,15 @@
+  [TF d64 s1] step 0 ce 5.676 (0s)
+  [TF d64 s1] step 250 ce 2.525 (12s)
+  [TF d64 s1] step 500 ce 2.138 (24s)
+  [TF d64 s1] step 750 ce 1.980 (35s)
+  [TF d64 s1] step 1000 ce 1.770 (47s)
+  [TF d64 s1] step 1250 ce 1.782 (59s)
+  [TF d64 s1] step 1500 ce 1.747 (70s)
+  [TF d64 s1] step 1750 ce 1.742 (82s)
+  [TF d64 s1] step 2000 ce 1.713 (93s)
+  [TF d64 s1] step 2250 ce 1.679 (105s)
+  [TF d64 s1] step 2500 ce 1.691 (117s)
+  [TF d64 s1] step 2750 ce 1.636 (129s)
+  [TF d64 s1] step 2999 ce 1.654 (142s)
+[p49 TF d64 s1] params 132992 name-CE in 2.9931 ood 3.1575 far 3.7298 DENSE-unseen 3.622 | bg 2.128 2.0896 2.9227
+[P49] DONE
