@@ -2,21 +2,21 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "m2_dk2048_nodecay",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1}'"
+   "tag": "m3_mres_nodecay",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1}'"
   },
   {
-   "tag": "m2_dk4096_nodecay",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.005,\"kmult\":64,\"nodecay\":1}'"
+   "tag": "m3_mres_nodecay_rnorm",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"rnorm\":1}'"
   },
   {
-   "tag": "m2_dk2048_decay",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32}'"
+   "tag": "m3_mres_decay",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"mres\":1}'"
   },
   {
-   "tag": "m2_dk2048_nodecay_s2",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1}'"
+   "tag": "m3_mres_nodecay_s2",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1}'"
   }
  ],
- "nonce": 1792734582
+ "nonce": 1792738056
 }

@@ -7343,3 +7343,22 @@ dk4096@.005 nodecay, dk2048@.01 with learned decay, dk2048 seed 2. PREDICT: dk20
 < 2.5 (memory now holds the whole 320-byte context); dk4096 better than dk2048; bg within +.05 of base. If OOD-name
 stays > 3.0 with 2048-wide sparse addresses, capacity was not the wall either and the key construction (last-4-byte
 roles) is — next axis is then what the key is made of.
+
+M2 — RESULT (39907922530; d64, 3000 steps; trainable params 130k, P fixed; name in/ood/far | bg in/ood/4L):
+  dk2048@.01 nodecay  s1 .29/3.31/3.46 | 1.281/1.389/1.722     s2 .26/3.06/3.42 | 1.293/1.392/1.680
+  dk2048@.01 decay    (dec learned .799) .44/3.89/3.83 | 1.287/1.388/1.585
+  dk4096@.005 nodecay pending
+PREDICTION "OOD-name < 2.5 with a 2048-wide sparse store" FALSIFIED (3.06–3.31; baseline 3.86). Capacity alone is not
+the wall. Given the choice, the learner again picks decay .80 (3-byte buffer) — long storage is not worth it to it
+under this key scheme. Per pre-registration the next axis is WHAT THE KEY IS MADE OF: with a 4-byte role-bound key
+plus k-WTA, a partial context match (same byte, different neighbours — the induction copy "j -> u" that OOD names need)
+changes most of the active address bits, so nothing is retrieved. nodecay also costs ~+.15 at 4L: the read's magnitude
+grows with the store and the controller cannot normalise it (M3b flag rnorm: unit-norm reads).
+M3 — PRE-REGISTRATION: multi-resolution stores (mres): three sparse stores keyed by the last 1, 2 and 4 bytes, read
+weights softmax(alpha) learned; same trainable params + 3 scalars. Local d32 600 steps (vs base 2.01/3.20/3.22 |
+1.674/1.718/1.956): mres nodecay 1.96/2.75/3.87 | 1.841/1.855/2.508 — OOD-name moves (-.45) at 600 steps but bg is far
+worse (store saturation + unnormalised reads). Jobs: mres nodecay, mres nodecay rnorm, mres decay, mres nodecay s2
+(d64, 3000 steps). PREDICT: mres nodecay OOD-name < 2.8 (best so far 3.06); rnorm recovers bg at 4L to within +.05 of
+base (1.565); mres with learned decay again picks dec < .85 and gains nothing on OOD. If OOD-name is still > 2.8 with
+1-byte-keyed sparse stores that cannot forget, the wall is the learning signal (one OOD-style copy event per 320-byte
+sample) and the next axis is the objective, not the store.
