@@ -1,0 +1,59 @@
+  [TF d128 s2] step 0 bytes_seen 4096 train 5.660 heldout 4.2678 (0s)
+  [TF d128 s2] step 250 bytes_seen 1028096 train 2.168 heldout 2.1647 (43s)
+  [TF d128 s2] step 500 bytes_seen 2052096 train 1.891 heldout 1.828 (86s)
+  [TF d128 s2] step 750 bytes_seen 3076096 train 1.705 heldout 1.6819 (128s)
+  [TF d128 s2] step 1000 bytes_seen 4100096 train 1.578 heldout 1.61 (170s)
+  [TF d128 s2] step 1250 bytes_seen 5124096 train 1.504 heldout 1.5601 (211s)
+  [TF d128 s2] step 1500 bytes_seen 6148096 train 1.573 heldout 1.5263 (251s)
+  [TF d128 s2] step 1750 bytes_seen 7172096 train 1.534 heldout 1.5012 (293s)
+  [TF d128 s2] step 2000 bytes_seen 8196096 train 1.500 heldout 1.483 (335s)
+  [TF d128 s2] step 2250 bytes_seen 9220096 train 1.434 heldout 1.4634 (378s)
+  [TF d128 s2] step 2500 bytes_seen 10244096 train 1.520 heldout 1.4609 (420s)
+  [TF d128 s2] step 2750 bytes_seen 11268096 train 1.491 heldout 1.4481 (462s)
+  [TF d128 s2] step 3000 bytes_seen 12292096 train 1.528 heldout 1.4324 (502s)
+  [TF d128 s2] step 3250 bytes_seen 13316096 train 1.426 heldout 1.4331 (543s)
+  [TF d128 s2] step 3500 bytes_seen 14340096 train 1.397 heldout 1.4188 (583s)
+  [TF d128 s2] step 3750 bytes_seen 15364096 train 1.363 heldout 1.4146 (624s)
+  [TF d128 s2] step 4000 bytes_seen 16388096 train 1.415 heldout 1.4044 (665s)
+  [TF d128 s2] step 4250 bytes_seen 17412096 train 1.430 heldout 1.4064 (705s)
+  [TF d128 s2] step 4500 bytes_seen 18436096 train 1.361 heldout 1.3936 (746s)
+  [TF d128 s2] step 4750 bytes_seen 19460096 train 1.366 heldout 1.3923 (786s)
+  [TF d128 s2] step 5000 bytes_seen 20484096 train 1.407 heldout 1.396 (826s)
+  [TF d128 s2] step 5250 bytes_seen 21508096 train 1.443 heldout 1.388 (866s)
+  [TF d128 s2] step 5500 bytes_seen 22532096 train 1.368 heldout 1.3895 (907s)
+  [TF d128 s2] step 5750 bytes_seen 23556096 train 1.393 heldout 1.3777 (947s)
+  [TF d128 s2] step 5999 bytes_seen 24576000 train 1.317 heldout 1.3782 (987s)
+[T2 TF d128 s2] params 462336 heldout CE at L/4L/16L 1.3782 3.2755 5.7373
+--- SAMPLE [TF d128] prompt='a: hi, how are you today?\nb:'
+a: hi, how are you today?
+b: the said are stop the legs.
+
+what can the same of what havings?
+i don't know. from and we want to pick there. i'm fine.
+
+ted out there best a san ever get us to buck sit federe the game here sister because it to be other sayin' the other one home, he was playing it was gonna get up an all disappy.
+you know when we can try help late. time over and go in the word bird.
+
+lenny please?
+yeah.
+
+oh, are
+---
+--- SAMPLE [TF d128] prompt='b: what do you do for work?\na:'
+b: what do you do for work?
+a:30.
+
+while is story, call me on pack of a ride.
+
+give me thinks you out of the free, assa never fired the suggle, we contined out there?
+not all. i just make the bus?
+
+it fed a car?
+which leads and once raditic of the seconds is the other one home?
+
+i was problems, bucks! they're just staying better me.
+mr. skrong, sandy, i told about it for that i asked to work back you beries for it.
+
+that woooo
+---
+[P49] DONE

@@ -1,0 +1,67 @@
+  [TF d256 s1] step 0 bytes_seen 4096 train 5.754 heldout 4.3921 (1s)
+  [TF d256 s1] step 250 bytes_seen 1028096 train 2.461 heldout 2.4396 (124s)
+  [TF d256 s1] step 500 bytes_seen 2052096 train 1.870 heldout 1.8953 (245s)
+  [TF d256 s1] step 750 bytes_seen 3076096 train 1.751 heldout 1.7583 (367s)
+  [TF d256 s1] step 1000 bytes_seen 4100096 train 1.691 heldout 1.6991 (490s)
+  [TF d256 s1] step 1250 bytes_seen 5124096 train 1.656 heldout 1.6539 (611s)
+  [TF d256 s1] step 1500 bytes_seen 6148096 train 1.655 heldout 1.634 (734s)
+  [TF d256 s1] step 1750 bytes_seen 7172096 train 1.620 heldout 1.6174 (857s)
+  [TF d256 s1] step 2000 bytes_seen 8196096 train 1.619 heldout 1.5995 (978s)
+  [TF d256 s1] step 2250 bytes_seen 9220096 train 1.590 heldout 1.5786 (1100s)
+  [TF d256 s1] step 2500 bytes_seen 10244096 train 1.527 heldout 1.5641 (1227s)
+  [TF d256 s1] step 2750 bytes_seen 11268096 train 1.528 heldout 1.5631 (1350s)
+  [TF d256 s1] step 3000 bytes_seen 12292096 train 1.546 heldout 1.5445 (1477s)
+  [TF d256 s1] step 3250 bytes_seen 13316096 train 1.483 heldout 1.531 (1602s)
+  [TF d256 s1] step 3500 bytes_seen 14340096 train 1.504 heldout 1.5239 (1724s)
+  [TF d256 s1] step 3750 bytes_seen 15364096 train 1.492 heldout 1.5241 (1848s)
+  [TF d256 s1] step 4000 bytes_seen 16388096 train 1.479 heldout 1.5118 (1969s)
+  [TF d256 s1] step 4250 bytes_seen 17412096 train 1.512 heldout 1.4978 (2089s)
+  [TF d256 s1] step 4500 bytes_seen 18436096 train 1.536 heldout 1.4975 (2211s)
+  [TF d256 s1] step 4750 bytes_seen 19460096 train 1.532 heldout 1.4963 (2330s)
+  [TF d256 s1] step 5000 bytes_seen 20484096 train 1.505 heldout 1.4833 (2453s)
+  [TF d256 s1] step 5250 bytes_seen 21508096 train 1.518 heldout 1.4927 (2574s)
+  [TF d256 s1] step 5500 bytes_seen 22532096 train 1.489 heldout 1.4759 (2698s)
+  [TF d256 s1] step 5750 bytes_seen 23556096 train 1.481 heldout 1.4709 (2821s)
+  [TF d256 s1] step 5999 bytes_seen 24576000 train 1.473 heldout 1.4793 (2943s)
+[T2 TF d256 s1] params 1710848 heldout CE at L/4L/16L 1.4793 3.6572 5.4422
+--- SAMPLE [TF d256] prompt='a: hi, how are you today?\nb:'
+a: hi, how are you today?
+b: femon the cast it... my cleanne old. kid it a right?
+
+jason lot any piano care to stay for these.
+
+my good night turned chance black and of the far three in here are you did you don't this of by the drink?
+
+that's outhrist something anything least.
+joins.
+
+which other i was my money and call of secreen noof other gran of it!
+
+oh, if you want.
+we worse saying with the both off.
+
+hey, some.
+
+what's
+---
+--- SAMPLE [TF d256] prompt='b: what do you do for work?\na:'
+b: what do you do for work?
+a: there you call if guess time.
+
+good. kid's it right?
+
+jason have no pian o'clock.
+
+the fast.
+he harm me to see this is plugging first off you... you must homent?
+make less of shouldn't with you. wanna don't the one.
+
+hey, bone, they webcase here. fifty...
+
+weight today... the going to says some secreen noof other gran of it!
+
+oh, if you want here?
+i lose who worry. i wouldn't you to some.
+no, no.
+---
+[P49] DONE

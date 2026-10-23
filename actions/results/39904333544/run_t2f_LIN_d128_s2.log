@@ -1,0 +1,60 @@
+  [LIN d128 s2] step 0 bytes_seen 4096 train 6.278 heldout 4.854 (1s)
+  [LIN d128 s2] step 250 bytes_seen 1028096 train 1.767 heldout 1.7405 (107s)
+  [LIN d128 s2] step 500 bytes_seen 2052096 train 1.658 heldout 1.6074 (210s)
+  [LIN d128 s2] step 750 bytes_seen 3076096 train 1.557 heldout 1.5495 (307s)
+  [LIN d128 s2] step 1000 bytes_seen 4100096 train 1.483 heldout 1.5077 (402s)
+  [LIN d128 s2] step 1250 bytes_seen 5124096 train 1.461 heldout 1.4906 (498s)
+  [LIN d128 s2] step 1500 bytes_seen 6148096 train 1.501 heldout 1.4698 (596s)
+  [LIN d128 s2] step 1750 bytes_seen 7172096 train 1.499 heldout 1.46 (692s)
+  [LIN d128 s2] step 2000 bytes_seen 8196096 train 1.470 heldout 1.4448 (790s)
+  [LIN d128 s2] step 2250 bytes_seen 9220096 train 1.411 heldout 1.4379 (887s)
+  [LIN d128 s2] step 2500 bytes_seen 10244096 train 1.480 heldout 1.4284 (982s)
+  [LIN d128 s2] step 2750 bytes_seen 11268096 train 1.469 heldout 1.4225 (1080s)
+  [LIN d128 s2] step 3000 bytes_seen 12292096 train 1.531 heldout 1.4194 (1177s)
+  [LIN d128 s2] step 3250 bytes_seen 13316096 train 1.405 heldout 1.4131 (1272s)
+  [LIN d128 s2] step 3500 bytes_seen 14340096 train 1.402 heldout 1.4088 (1367s)
+  [LIN d128 s2] step 3750 bytes_seen 15364096 train 1.370 heldout 1.4039 (1461s)
+  [LIN d128 s2] step 4000 bytes_seen 16388096 train 1.403 heldout 1.3995 (1556s)
+  [LIN d128 s2] step 4250 bytes_seen 17412096 train 1.426 heldout 1.3981 (1653s)
+  [LIN d128 s2] step 4500 bytes_seen 18436096 train 1.361 heldout 1.3894 (1751s)
+  [LIN d128 s2] step 4750 bytes_seen 19460096 train 1.368 heldout 1.3885 (1851s)
+  [LIN d128 s2] step 5000 bytes_seen 20484096 train 1.414 heldout 1.3854 (1950s)
+  [LIN d128 s2] step 5250 bytes_seen 21508096 train 1.458 heldout 1.3848 (2045s)
+  [LIN d128 s2] step 5500 bytes_seen 22532096 train 1.352 heldout 1.3829 (2139s)
+  [LIN d128 s2] step 5750 bytes_seen 23556096 train 1.396 heldout 1.3846 (2242s)
+  [LIN d128 s2] step 5999 bytes_seen 24576000 train 1.329 heldout 1.3838 (2343s)
+[T2 LIN d128 s2] params 347140 heldout CE at L/4L/16L 1.3838 1.4118 1.4186
+--- SAMPLE [LIN d128] prompt='a: hi, how are you today?\nb:'
+a: hi, how are you today?
+b:kate, are you stopped it is upstards of a ride?
+
+...what the christ, everyone knows and a nice.
+it's the house is not something here, miss really, everything. i said you mean a creat time her sick.
+
+you reditic turn other say it the other kind of all before him?
+yes.
+
+it's that you know i'm a because they can contracting a holdilates times...
+want you to take you a hower before i know.
+
+that would
+---
+--- SAMPLE [LIN d128] prompt='b: what do you do for work?\na:'
+b: what do you do for work?
+a:
+
+the airl. i'm outta flightued.
+maybe the sick...
+
+what the christ, everyone knows are at the night.
+the suggies well.
+
+you think the the classed everything. i said you mean a creat time her sick.
+oh, i haven't prefer out and been how i do. not back.
+
+i all you like, it's that you know i'm a because they can contracting a holdilates times...
+want you to take you a hower before i know.
+
+that would
+---
+[P49] DONE
