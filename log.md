@@ -7376,3 +7376,17 @@ kind ("what the christ, everyone knows and a nice." vs "i don't know. from and w
 Plain reading: at d128 on real text our core is an equal language model to the fair TF in-range, equal in data
 efficiency, and the only structural win is length (8192-byte input at the 512-byte CE). Not "way above weight" yet.
 The in-range lever is still the objective/learning rule (planned axis), not the store.
+
+M4 — PRE-REGISTRATION (LEARNING-RULE axis; launched in parallel with M3). WRITE BY SURPRISE: pass 1 reads an ungated
+store and predicts; the realised next-byte nll of byte t (the model's own, detached) gates the write of byte t in pass 2,
+v_t = sigmoid(s (nll_t - tau)) e_t, tau and s learned (init 2, 2); loss = CE(pass 2) + .5 CE(pass 1). The store then
+holds what the learner could not predict — names, numbers, facts — instead of every byte of every word; a 320-byte
+context writes ~30 items, within the capacity of even a dense store, so decay is unnecessary and forgetting is not
+built in. Prior art searched: Titans (Behrouz et al. 2024, arXiv:2501.00663) — surprise = gradient of the memory's own
+associative loss, momentum + adaptive decay (delta-rule family); our delta: gate = whole-model realised stream
+prediction error, no inner loss/gradient, two-pass, Hebbian sparse store, O(1)/token, exact parallel form. Cost 2x.
+Jobs (d64, 3000 steps, L320): sgate dk2048 nodecay; sgate mres nodecay; sgate mres nodecay rnorm; sgate DENSE dk128
+nodecay (does selective writing alone beat capacity?). PREDICT: mean gate 0.1–0.3; sgate+mres OOD-name < 2.5 and far
+< 2.5 (first time); bg within +.05 of base at L and 4L (store no longer saturates, so nodecay stops costing); dense
+sgate beats dense nodecay (M1: .33/3.38/3.96 | 1.293/1.392/1.763) on all six numbers. If OOD-name is still > 3 with
+surprise-writing AND 1-byte keys, the wall is the read path (linear superposition read), and the next axis is the read.

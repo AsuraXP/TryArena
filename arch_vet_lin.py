@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -29,6 +29,13 @@ class LIN(nn.Module):
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
         self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
+        self.sgate = sgate   # M4 LEARNING RULE: write by SURPRISE — pass 1 reads an ungated store and predicts; the realised next-byte nll of byte t
+        # (model-level, detached) gates the write of byte t in pass 2: v_t = sigmoid(s*(nll_t - tau)) e_t.  The store then holds what the
+        # learner could not predict (names, facts), not every byte -> capacity is spent on the unpredictable, forgetting is not needed.
+        # Prior art: Titans (Behrouz et al. 2024, arXiv:2501.00663) gates/updates a neural memory by the gradient of the MEMORY's own
+        # associative loss (delta-rule family) with momentum + decay.  Delta here: the gate is the whole model's realised prediction error
+        # on the stream (no inner loss, no gradient), two-pass, onto a Hebbian sparse-address store; O(1)/token, exact parallel form.
+        if sgate: self.stau = nn.Parameter(torch.tensor(2.0)); self.ssc = nn.Parameter(torch.tensor(2.0))
         self.rnorm = rnorm   # M3b: scale-free reads (unit-norm * sqrt(d)) so a growing store (nodecay) does not change the read's magnitude
         self.mres = mres   # M3: multi-resolution addresses — separate stores keyed by the last 1, 2 and `roles` bytes (sparse k-WTA per store), so a
         # partial context match (induction copy: same byte, different neighbours) still hits; block weights learned (softmax alpha)
@@ -127,14 +134,25 @@ class LIN(nn.Module):
         kk = max(1, int(self.sparse * k.shape[-1])); th = k.abs().topk(kk, dim=-1).values[..., -1:]; return k * (k.abs() >= th).float()
 
     def forward_fast(self, x, **kw):
-        if self.mres: return self._forward_mres(x)
+        if not self.sgate: return self._fwd(x, None)
+        lg1 = self._fwd(x, None); self.logits1 = lg1
+        nll = F.cross_entropy(lg1[:, :-1].reshape(-1, lg1.shape[-1]), x[:, 1:].reshape(-1), reduction="none").view(x.shape[0], -1).detach()
+        g = torch.sigmoid(self.ssc * (F.pad(nll, (1, 0), value=5.0) - self.stau)).unsqueeze(-1)   # (B,L,1); byte 0 always written
+        self.gmean = g.detach().mean(); self.gate = g.detach()
+        out = self._fwd(x, g)
+        self.aux = self.aux + 0.5 * F.cross_entropy(lg1[:, :-1].reshape(-1, lg1.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)   # pass 1 must stay a predictor (it defines surprise)
+        return out
+
+    def _fwd(self, x, gate):
+        if self.mres: return self._forward_mres(x, gate)
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.ones(()) if self.nodecay else torch.sigmoid(self.dec)
+        v = e * gate if gate is not None else e
         PE = self.P(e); K = self._rolekey_seq(PE)                                   # key after seeing token t
         Kprev = F.pad(K, (0, 0, 1, 0))[:, :L]; KN = F.normalize(Kprev, dim=-1)       # write key at t = key of prefix up to t-1 (zero at t=0)
         def RD(Q):   # read with optional cleanup: the match weights become ~(q.k_s)^(2n+1) instead of (q.k_s) — exact recall without softmax
-            r = self._readall(Q, KN, e, dec)
+            r = self._readall(Q, KN, v, dec)
             for _ in range(self.clean):
-                Q = F.normalize(self._readall(r, e, KN, dec), dim=-1); r = self._readall(Q, KN, e, dec)
+                Q = F.normalize(self._readall(r, v, KN, dec), dim=-1); r = self._readall(Q, KN, v, dec)
             return r
         Q0 = F.normalize(K, dim=-1); R0 = RD(Q0)
         PR0 = self.P(R0)                                  # k1 = rolekey(win + [P r0]): P r0 at offset 0, tokens shift by one
@@ -147,8 +165,9 @@ class LIN(nn.Module):
         RQ = RD(F.normalize(QQ, dim=-1))
         return self._finish(x, e, PE, R0, R1, RQ, PR0, PR1, KN, QQ)
 
-    def _forward_mres(self, x):
+    def _forward_mres(self, x, gate=None):
         B, L = x.shape; d, dk = self.d, self.dk; e = self.E(x); dec = torch.ones(()) if self.nodecay else torch.sigmoid(self.dec)
+        v = e * gate if gate is not None else e
         PE = self.P(e); a = torch.softmax(self.alpha, 0); sP = self.P(self.shape)
         def keyw(parts, w):   # parts: list of (B,L,dk) most-recent-first; key of width w
             return self._kwta(sum(self.R[i] * parts[i] for i in range(min(w, len(parts)))))
@@ -156,9 +175,9 @@ class LIN(nn.Module):
         R0s, R1s, RQs, KNs, QQs = [], [], [], [], []
         for bi, w in enumerate(self.widths):
             K = keyw(shifted, w); KN = F.normalize(F.pad(K, (0, 0, 1, 0))[:, :L], dim=-1)
-            R0 = self._readall(F.normalize(K, dim=-1), KN, e, dec); PR0 = self.P(R0)
-            K1 = keyw([PR0] + shifted[:-1], w); R1 = self._readall(F.normalize(K1, dim=-1), KN, e, dec); PR1 = self.P(R1)
-            QQ = keyw([sP.expand(B, L, -1), PR1, PR0], w); RQ = self._readall(F.normalize(QQ, dim=-1), KN, e, dec)
+            R0 = self._readall(F.normalize(K, dim=-1), KN, v, dec); PR0 = self.P(R0)
+            K1 = keyw([PR0] + shifted[:-1], w); R1 = self._readall(F.normalize(K1, dim=-1), KN, v, dec); PR1 = self.P(R1)
+            QQ = keyw([sP.expand(B, L, -1), PR1, PR0], w); RQ = self._readall(F.normalize(QQ, dim=-1), KN, v, dec)
             R0s.append(a[bi] * R0); R1s.append(a[bi] * R1); RQs.append(a[bi] * RQ); KNs.append(KN); QQs.append(QQ)
         R0 = sum(R0s); R1 = sum(R1s); RQ = sum(RQs)
         return self._finish(x, e, PE, R0, R1, RQ, self.P(R0), self.P(R1), KNs[-1], QQs[-1])
@@ -179,7 +198,7 @@ class LIN(nn.Module):
         Rm = (Wm.unsqueeze(-1) * reads).sum(2)
         self._mix = list(Wm.detach().unbind(1)); self._reads = list(reads.detach().unbind(1)); self._hs = list(H.detach().unbind(1))
         self._kw = list(KN.detach().unbind(1)); self._qq = list(F.normalize(QQ, dim=-1).detach().unbind(1)); self._pr = list(torch.stack([PR0, PR1], 2).detach().unbind(1))
-        self.aux = torch.zeros(()); self.gmean = None
+        self.aux = torch.zeros(()); self.gmean = None if not self.sgate else getattr(self, 'gmean', None)
         if self.kcons:
             PEd = PE.detach(); A0 = PR0[:, :-1]; A1 = PR1[:, :-2]; m0 = (x[:, 1:] != 0).float(); m1 = (x[:, 2:] != 0).float()
             c0 = 1 - F.cosine_similarity(A0, PEd[:, 1:], dim=-1); c1 = 1 - F.cosine_similarity(A1, PEd[:, 2:], dim=-1)
@@ -191,5 +210,5 @@ class LIN(nn.Module):
         return self.head(torch.cat([H, Rm], -1))
 
     def forward(self, x, **kw):
-        if self.pgru or (self.roles and not self.wgate and not self.delta and not getattr(self, "slow", False)): return self.forward_fast(x, **kw)
+        if self.pgru or self.sgate or self.mres or (self.roles and not self.wgate and not self.delta and not getattr(self, "slow", False)): return self.forward_fast(x, **kw)
         return self.forward_loop(x, **kw)

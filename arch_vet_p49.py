@@ -362,7 +362,7 @@ def lm_run(arm, d, seed, steps, B, L, log, corpus_path, eval_every=250, sample_n
             lg = m(x); tot += F.cross_entropy(lg[:, :-1].reshape(-1, 256), x[:, 1:].reshape(-1), reduction="sum").item(); cnt += x[:, 1:].numel()
         m.train(); return round(tot / cnt, 4)
     for s in range(steps):
-        x = chunk(tr, B, L); lg = m(x); loss = F.cross_entropy(lg[:, :-1].reshape(-1, 256), x[:, 1:].reshape(-1))
+        x = chunk(tr, B, L); lg = m(x); loss = F.cross_entropy(lg[:, :-1].reshape(-1, 256), x[:, 1:].reshape(-1)) + (m.aux if arm == "LIN" else 0)
         opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
         if s % eval_every == 0 or s == steps - 1:
             c = ev(L); curve.append((s, (s + 1) * B * L, c)); log(f"  [{arm} d{d} s{seed}] step {s} bytes_seen {(s + 1) * B * L} train {loss.item():.3f} heldout {c} ({time.time() - t0:.0f}s)")
@@ -382,11 +382,11 @@ def train_text(arm, d, seed, steps, B, L, log):
             tau = 0.1 ** (s / max(steps - 1, 1)); gmin = GMIN0 * (1 - s / max(steps - 1, 1)); lg, bs, _ = m(x, tau=tau, gmin=gmin, states=True)
         else:
             lg = m(x); bs = None
-        loss = ce_all(lg, x)
+        loss = ce_all(lg, x) + (m.aux if arm == "LIN" else 0)
         if BMODE == "util" and arm == "CKB": loss = loss + UTILW * m.aux_loss
         opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
         if s % 250 == 0 or s == steps - 1:
-            log(f"  [{arm} d{d} s{seed}] step {s} ce {loss.item():.3f}" + (f" b {bs[x != 0].mean().item():.3f}" if bs is not None else "") + (f" R {m.aux_R:.3f}" if BMODE == "util" and arm == "CKB" else "") + f" ({time.time()-t0:.0f}s)")
+            log(f"  [{arm} d{d} s{seed}] step {s} ce {loss.item():.3f}" + (f" wgate {m.gmean.item():.3f}" if arm == "LIN" and getattr(m, "gmean", None) is not None else "") + (f" b {bs[x != 0].mean().item():.3f}" if bs is not None else "") + (f" R {m.aux_R:.3f}" if BMODE == "util" and arm == "CKB" else "") + f" ({time.time()-t0:.0f}s)")
     return m
 
 
