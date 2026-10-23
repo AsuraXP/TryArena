@@ -2,21 +2,21 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "m4_sgate_dk2048_nodecay",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"sgate\":1}'"
+   "tag": "m5_tf",
+   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --arms TF"
   },
   {
-   "tag": "m4_sgate_mres_nodecay",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sgate\":1}'"
+   "tag": "m5_lin_base",
+   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --arms LIN"
   },
   {
-   "tag": "m4_sgate_mres_nodecay_rnorm",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sgate\":1,\"rnorm\":1}'"
+   "tag": "m5_lin_mres_nodecay",
+   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1}'"
   },
   {
-   "tag": "m4_sgate_dense_nodecay",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"nodecay\":1,\"sgate\":1}'"
+   "tag": "m5_lin_sgate_mres_nodecay",
+   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sgate\":1}'"
   }
  ],
- "nonce": 1792738445
+ "nonce": 1792742116
 }

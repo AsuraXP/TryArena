@@ -7390,3 +7390,19 @@ nodecay (does selective writing alone beat capacity?). PREDICT: mean gate 0.1–
 < 2.5 (first time); bg within +.05 of base at L and 4L (store no longer saturates, so nodecay stops costing); dense
 sgate beats dense nodecay (M1: .33/3.38/3.96 | 1.293/1.392/1.763) on all six numbers. If OOD-name is still > 3 with
 surprise-writing AND 1-byte keys, the wall is the read path (linear superposition read), and the next axis is the read.
+
+M2 dk4096@.005 nodecay: .27/3.14/3.26 | 1.279/1.392/1.659 — more capacity, same OOD wall (3.14).
+M3 — PARTIAL (39913679746): mres nodecay .24/2.96/3.47 | 1.311/1.409/1.720. First OOD-name under 3.0, but "< 2.8"
+FALSIFIED; far 3.47; bg +.05/+.05/+.16 vs base. (rnorm, decay, s2 pending.)
+M4 — PARTIAL (39914348404): sgate DENSE nodecay (gate mean .29): .35/3.72/3.78 | 1.285/1.408/1.645 vs dense nodecay
+.33/3.38/3.96 | 1.293/1.392/1.763 — better at 4L (-.12) and far-name (-.18), WORSE OOD-name (+.34). "Beats on all six"
+FALSIFIED. (sgate dk2048, sgate mres, sgate mres rnorm pending.)
+Reading across M1–M4: decay, capacity, key width and write selectivity each move OOD-name by tenths; none breaks 2.9.
+TF is also at ~4. Before touching the read path, test the LEARNING-SIGNAL hypothesis directly (instrument-first): the
+dialogue task has ONE copy event (3 copyable bytes) per 320-byte sample (~1% of the loss).
+M5 — PRE-REGISTRATION: train on the DENSE stream with RANDOM names (--dense 1 --randnames 1: 3 fresh random names
+recur on nearly every line, so memorising names in weights is impossible and copying is the only way), same eval.
+Arms: TF, LIN base, LIN mres nodecay, LIN sgate mres nodecay (d64, 3000 steps). PREDICT: under copy pressure the
+DENSE-unseen column drops below 1.5 for at least one LIN arm (it is ~3.5–4.2 now) and OOD-name on the dialogue eval
+drops below 2.5 for mres arms; TF DENSE-unseen also improves (induction heads) but stays worse at far. If NO arm learns
+to copy even with copy pressure, the read path is the wall and that is the next (and last store-side) axis.
