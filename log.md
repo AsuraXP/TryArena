@@ -7480,3 +7480,20 @@ and far < 2.5 (from 2.9/3.5 for mres alone); base so1 keeps dec > .95 (the store
 copy-pressure DU < 1.3 (from 1.82); main bg within +.03. If OOD-name does not drop below 2.5 with a dense store-only
 target, the objective axis on this store is exhausted and the remaining explanation is the linear read.
 (Note: sandbox was re-provisioned mid-edit; a first attempt at this commit applied nothing and conflicted — resolved.)
+
+O2 — RESULT (40073613432; sgate mres so1 still running): mres so1 s1 .38/3.00/3.71 DU 3.33 | 1.327/1.438/1.817;
+s2 .37/2.50/3.26 DU 3.01 | 1.349/1.415/1.862; mres so.3 .32/3.53/4.92 | 1.325/1.445/1.863; base so1 dec .791
+.40/3.88/4.17 | 1.286/1.394/1.590; mres so1 copy-pressure DU 1.65 (from 1.82).
+ALL FOUR PREDICTIONS FALSIFIED: OOD not < 2.2 (2.5–3.0, seed spread .5), far worse not better, base still learns decay
+.79 even with its own store target, copy-pressure 1.65 not < 1.3; and the main CE pays +.06 in-range, +.3 at 4L.
+A dense store-only target makes the store a worse predictor of the main stream, not a better copier.
+Per the pre-registered decision rule, the objective axis on this store is exhausted. Store-side ledger on text, d64,
+3000 steps, dialogue OOD-name (TF 4.08; base LIN 3.86): decay 3.38, capacity 3.06–3.31, mres 2.92–2.96, sgate+mres
+2.59, +rw 2.64–2.91, +store-head 2.50–3.00. Copy under pressure: mres 1.82, sgate+mres 1.68, +store-head 1.65; TF 3.62.
+Remaining explanation, declared: the LINEAR SUPERPOSITION READ. A one-byte key "j" returns the sum of everything that
+ever followed "j" in context; the match weights are cosines, never a winner. Sharpening attempts so far: k-WTA on keys
+(helps capacity, not selection), power iteration (fails). Not yet tried and in scope as a representation/learning-rule
+change without softmax-over-positions: (a) k-WTA on the READ'S MATCH SCORES is impossible in O(1) state — that IS
+attention; (b) value-side sparse codes so W^T W cleanup works (the one thing the cleanup negative pointed at);
+(c) multiplicative (holographic) binding of key and value so a read UNBINDS instead of summing. These are the next
+cycle's candidates; each is a new mechanism and needs its search + pre-registration before launch.
