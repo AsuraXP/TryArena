@@ -7529,3 +7529,15 @@ decay. PREDICT: OOD-name < 1.5 and far < 1.8 (from 2.96/3.47; the 2-byte store a
 < 1.0 (from 1.82); bg within +.03 of mres; mres tied with learned decay keeps dec > .95 for the first time (the
 readout now rewards remembering). If OOD-name > 2.5 with the tied readout, the gate is not learning to trust the
 store and the next step is the gate's training signal.
+
+P2 — PARTIAL (40104147803): mres tied s1 .19/2.51/3.88 DU 3.61 | 1.288/1.399/1.663; s2 .21/2.15/3.54 DU 3.72 |
+1.287/1.365/1.642; base tied (dense, dec .867) .47/3.55/3.52 | 1.275/1.367/1.566. Probe OOD: store w2 .58/.62,
+output .33/.33 (from .21). Best OOD-name so far (2.15), and bg IMPROVED over mres (-.02/-.04/-.06) — the tied readout
+helps the language model too. But "< 1.5" FALSIFIED: the gate opens only a third of the time the store is right, and
+far (1280-byte context) did not move at all. Reason stated: the gate sees only the controller state, which carries no
+evidence of whether this store's read is sharp or noise.
+P3 — PRE-REGISTRATION: gate evidence (gconf): the copy gate additionally sees, per store, the read's max cosine to any
+byte (sharpness) and log-norm (strength), detached. Also probe at far (4L) to see whether the store or the gate fails
+at length. Jobs: mres tied gconf (s1, s2), copy pressure, dk4096. PREDICT: output-exact at OOD > .5 (from .33), OOD-name
+< 1.8, far < 2.5 if the far probe shows the store still > .5 (otherwise far is a capacity/crosstalk issue and dk4096
+should show it); copy-pressure DU < 1.0.
