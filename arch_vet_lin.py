@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0, gkey=0, sohead=0.0, tied=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0, gkey=0, sohead=0.0, tied=0, gconf=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -35,7 +35,10 @@ class LIN(nn.Module):
         # (CopyNet Gu et al. 2016 arXiv:1603.06393; pointer-generator See et al. 2017 arXiv:1704.04368) mix a copy distribution over
         # POSITIONS with a vocab distribution; tied input/output embeddings (Press & Wolf 2017).  Delta: the copy distribution comes from an
         # O(1) Hebbian store read decoded through the embedding table — no positions, no attention; the gate is the only new parameter.
-        if tied: self.tg = nn.Linear(d, 3 if mres else 1); self.ttau = nn.Parameter(torch.tensor(5.0))
+        self.gconf = gconf   # P3: the copy gate also sees each store's own EVIDENCE — max cosine of the read to any byte and the read's norm — so it can
+        # learn WHEN a store is reliable (sharp, strong read) rather than guess from the controller state alone.
+        nb = 3 if mres else 1
+        if tied: self.tg = nn.Linear(d + (2 * nb if gconf else 0), nb); self.ttau = nn.Parameter(torch.tensor(5.0))
         self.sohead = sohead   # O2 OBJECTIVE: store-only auxiliary target — predict byte t+1 from the 1-hop READ ALONE (no controller state), weight
         # `sohead`.  Dense on every byte, stream-only, no oracle: it makes the store a consumer-driven structure (the loss creates the need,
         # NOVELTY §D) so copying from context is trained on every byte of ordinary text rather than once per sample.  hopce (C129) lineage,
@@ -253,7 +256,11 @@ class LIN(nn.Module):
         if self.tied:
             blk = self._blk_live if self.mres else R0.unsqueeze(2)                         # (B,L,nb,d) raw store reads (with gradient)
             cop = torch.einsum("blnd,vd->blnv", F.normalize(blk, dim=-1), F.normalize(self.E.weight, dim=-1))   # cosine to every byte
-            g = torch.sigmoid(self.tg(H)).unsqueeze(-1)[:, :, :blk.shape[2]]                 # per-position gate per store
+            if self.gconf:
+                ev = torch.cat([cop.max(-1).values, torch.log1p(blk.norm(dim=-1))], -1).detach()   # (B,L,2nb) evidence: sharpness and strength per store
+                g = torch.sigmoid(self.tg(torch.cat([H, ev], -1))).unsqueeze(-1)[:, :, :blk.shape[2]]
+            else:
+                g = torch.sigmoid(self.tg(H)).unsqueeze(-1)[:, :, :blk.shape[2]]                 # per-position gate per store
             out = out + self.ttau * (g * cop).sum(2)
         return out
 
