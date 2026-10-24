@@ -7554,3 +7554,21 @@ mres pmix (s1, s2), copy pressure, learned decay. PREDICT: copy-pressure DU < 1.
 dialogue OOD-name < 1.8; far unchanged unless the far probe (P3) shows the store holds; learned-decay arm dec > .95
 for the first time — if it still forgets, "the learner prefers forgetting under next-byte CE" is a law of this
 objective and the decay will be fixed at 1 by design (declared), not learned.
+
+P3 — RESULT (s2; s1/copy-pressure logs pending collect): gate evidence did nothing (OOD 2.59, out .26). FAR PROBE:
+the 2-byte store itself is only 23–37% exact at 1280-byte context (vs 60–77% at 320) — far is a STORE problem
+(crosstalk grows with context; dk4096 arm pending), not a gate problem.
+P4 — RESULT: probability-mixture readout under copy pressure: DU 1.04 (from 1.78; "< 1.0" missed by .04), i.e. with
+dense signal the mixture copies nearly perfectly. On natural dialogue: OOD 3.01 / 2.49, output-exact .16/.17 — the
+gate stays CLOSED; worse than the additive form (2.15–2.51). Learned decay arm: dec .838 (5th time). DECLARED: under
+next-byte CE this learner always chooses to forget when allowed; decay is henceforth fixed at 1 by design (nodecay),
+stated as a design decision, not a learned property.
+Stated wall now: GATE LEARNING under sparse natural signal. With dense signal the store+readout copies (1.04 n/b);
+with one copy event per sample the learned gate never opens, and the vocab head serves training names from weights.
+P5 — PRE-REGISTRATION: margin arbitration (tied=3), no learned gate: each store adds its winning byte with strength
+tau_b * (top cosine - second cosine). The decision to copy is made by the read's own evidence, parameter-free apart
+from 3 scalars; a blurry read contributes nothing, a sharp read wins. Jobs: mres margin (s1, s2), copy pressure,
+dk4096. PREDICT (the natural-signal test is the one that counts): dialogue OOD-name < 1.8 without copy pressure,
+output-exact > .5; copy pressure DU < 1.0; bg within +.03 of mres (noise reads have small margins). If OOD stays
+> 2.4, the copy decision cannot be made from read evidence alone at this store quality and the far/crosstalk problem
+(store quality) is the binding one.

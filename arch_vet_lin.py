@@ -38,6 +38,7 @@ class LIN(nn.Module):
         self.gconf = gconf   # P3: the copy gate also sees each store's own EVIDENCE — max cosine of the read to any byte and the read's norm — so it can
         # learn WHEN a store is reliable (sharp, strong read) rather than guess from the controller state alone.
         nb = 3 if mres else 1
+        if tied == 3: self.tmarg = nn.Parameter(torch.full((3 if mres else 1,), 20.0))
         if tied: self.tg = nn.Linear(d + (2 * nb if gconf else 0), nb); self.ttau = nn.Parameter(torch.tensor(5.0 if tied == 1 else 20.0))
         self.sohead = sohead   # O2 OBJECTIVE: store-only auxiliary target — predict byte t+1 from the 1-hop READ ALONE (no controller state), weight
         # `sohead`.  Dense on every byte, stream-only, no oracle: it makes the store a consumer-driven structure (the loss creates the need,
@@ -261,6 +262,13 @@ class LIN(nn.Module):
                 g = torch.sigmoid(self.tg(torch.cat([H, ev], -1))).unsqueeze(-1)[:, :, :blk.shape[2]]
             else:
                 g = torch.sigmoid(self.tg(H)).unsqueeze(-1)[:, :, :blk.shape[2]]                 # per-position gate per store
+            if self.tied == 3:   # P5: MARGIN ARBITRATION, no learned gate — each store adds its winning byte with strength tau_b * (top cos - second cos).
+                # A blurry read (small margin) contributes ~nothing; a sharp read wins outright.  The decision to copy is made by the read's own
+                # evidence, not by a gate that must be learned from sparse natural signal.  Params: 3 scalars.
+                top2 = cop.topk(2, dim=-1); margin = (top2.values[..., 0] - top2.values[..., 1]).clamp(min=0)          # (B,L,nb)
+                boost = torch.zeros_like(cop).scatter(-1, top2.indices[..., :1], (self.tmarg * margin).unsqueeze(-1))  # one-hot on the winner
+                self.copyw = margin.detach()
+                return out + boost.sum(2)
             if self.tied == 2:   # P4: PROBABILITY mixture (pointer-generator form): p = (1 - sum g_b) p_vocab + sum_b g_b softmax(tau cos_b); gates share a softmax with a "vocab" slot
                 gl = self.tg(torch.cat([H, ev], -1)) if self.gconf else self.tg(H); gl = gl[..., :blk.shape[2]]
                 mixw = torch.softmax(torch.cat([torch.zeros_like(gl[..., :1]), gl], -1), -1)                     # (B,L,1+nb): slot 0 = vocab head
