@@ -7497,3 +7497,17 @@ change without softmax-over-positions: (a) k-WTA on the READ'S MATCH SCORES is i
 attention; (b) value-side sparse codes so W^T W cleanup works (the one thing the cleanup negative pointed at);
 (c) multiplicative (holographic) binding of key and value so a read UNBINDS instead of summing. These are the next
 cycle's candidates; each is a new mechanism and needs its search + pre-registration before launch.
+O2 last arm: sgate mres so1 .34/3.82/3.83 DU 4.16 | 1.299/1.441/1.692 — worse; the two-pass gate and the store head
+fight (pass-1 surprise is computed from a store trained for a different target). O2 closed, all negative.
+
+READ-PATH CHECK (numerical, before building): with sparse keys AND a distinct key per item, the plain linear read
+already decodes the exact byte 100% at 320 and 1280 items (dk 1024–2048), dense or sparse values; bidirectional
+cleanup (Sommer & Palm 1999; FwPKM arXiv:2601.00671 iterative reading) adds nothing in that regime. So "the linear
+read is the wall" is NOT supported as stated: when the 2-byte key is unique in context the read is exact. The
+ambiguity is in 1-byte keys (inherent) — and mres has 2- and 4-byte stores for that. Therefore the open question is
+not the read but whether the trained network USES a correct read: instrument before any new mechanism.
+P1 — INSTRUMENT (eval-only probe, no training signal): at name bytes after the first, decode each store's RAW 1-hop
+read by nearest byte embedding and compare with the true next byte; also the model's output accuracy, the mix weights
+and alpha. Jobs: mres nodecay, sgate mres, mres under copy pressure (d64, 3000). Decision rule pre-registered: if a
+store's raw read is right >> model output is right -> the wall is the READOUT/controller path (learning), fix there;
+if raw reads are wrong (< .3) with the 2-byte store -> the wall is the ADDRESS (what gets written where), fix there.

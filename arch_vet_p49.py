@@ -340,6 +340,19 @@ def gkey_probe(m):   # instrument: learned per-byte forget gate at separators vs
     return f" gate@space {lam[sp].mean().item():.3f} @punct {lam[pu].mean().item():.3f} @letter {lam[le].mean().item():.3f}"
 
 @torch.no_grad()
+def store_probe(m, names, log, tag):   # INSTRUMENT (no oracle in training; eval-only): at name bytes after the first, does each store's raw read decode to the right byte?
+    m.eval(); rng = random.Random(11); E = F.normalize(m.E.weight, dim=-1); nb = len(m.widths); hit = [0] * nb; outhit = 0; n = 0; mixs = torch.zeros(3); top = torch.zeros(nb)
+    for _ in range(6):
+        x, spans = text_batch(rng, 8, names, 2, 320); lg = m(x); blk = m._blk; W = torch.stack(m._mix, 1)
+        dec = torch.einsum("blnd,vd->blnv", F.normalize(blk, dim=-1), E).argmax(-1)   # nearest byte embedding per store read
+        for i, (s0, s1) in enumerate(spans):
+            for t in range(s0, s1 - 1):   # read at t should give byte t+1
+                tgt = x[i, t + 1].item(); n += 1; outhit += int(lg[i, t].argmax().item() == tgt); mixs += W[i, t]
+                for b in range(nb): hit[b] += int(dec[i, t, b].item() == tgt)
+    m.train()
+    log(f"  [PROBE {tag}] n={n} store-read exact byte: " + " ".join(f"w{w}:{h / n:.2f}" for w, h in zip(m.widths, hit)) + f" | model output exact {outhit / n:.2f} | mix r0/r1/rq {[(v / n).round(decimals=2).item() for v in mixs]} | alpha {[round(v, 2) for v in m._alpha.tolist()]}")
+
+@torch.no_grad()
 def name_ce(m, batches, arm):
     m.eval(); tot = n = 0.0; bg = nb = 0.0
     for x, spans in batches:
@@ -464,6 +477,7 @@ def main():
             for d in map(int, a.ds.split(",")):
                 for seed in map(int, a.seeds.split(",")):
                     m = train_text(arm, d, seed, a.steps, a.B, a.L, log)
+                    if arm == "LIN" and getattr(m, "mres", 0): store_probe(m, NAMES_TR, log, f"in d{d}"); store_probe(m, NAMES_OOD, log, f"ood d{d}")
                     r = {"arm": arm, "d": d, "seed": seed, "params": n_params(m)}
                     for nm, ev in [("in", ev_in), ("ood_names", ev_ood), ("far_ood", ev_far), ("dense_ood", ev_dense)]:
                         r[nm + "_name_ce"], r[nm + "_bg_ce"] = name_ce(m, ev, arm)

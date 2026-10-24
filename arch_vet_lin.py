@@ -204,14 +204,15 @@ class LIN(nn.Module):
         def keyw(parts, w):   # parts: list of (B,L,dk) most-recent-first; key of width w
             return self._kwta(sum(self.R[i] * parts[i] for i in range(min(w, len(parts)))))
         shifted = [F.pad(PE, (0, 0, i, 0))[:, :L] if i else PE for i in range(self.roles)]
-        R0s, R1s, RQs, KNs, QQs = [], [], [], [], []
+        R0s, R1s, RQs, KNs, QQs, blk = [], [], [], [], [], []
         for bi, w in enumerate(self.widths):
             K = keyw(shifted, w); KN = F.normalize(F.pad(K, (0, 0, 1, 0))[:, :L], dim=-1)
             R0 = self._readall(F.normalize(K, dim=-1), KN, v, dec); PR0 = self.P(R0)
             K1 = keyw([PR0] + shifted[:-1], w); R1 = self._readall(F.normalize(K1, dim=-1), KN, v, dec); PR1 = self.P(R1)
             QQ = keyw([sP.expand(B, L, -1), PR1, PR0], w); RQ = self._readall(F.normalize(QQ, dim=-1), KN, v, dec)
             R0s.append(a[bi] * R0); R1s.append(a[bi] * R1); RQs.append(a[bi] * RQ); KNs.append(KN); QQs.append(QQ)
-        R0 = sum(R0s); R1 = sum(R1s); RQ = sum(RQs)
+            blk.append(R0.detach())
+        R0 = sum(R0s); R1 = sum(R1s); RQ = sum(RQs); self._blk = torch.stack(blk, 2); self._alpha = a.detach()   # (B,L,nb,d) per-store 1-hop reads (probe)
         return self._finish(x, e, PE, R0, R1, RQ, self.P(R0), self.P(R1), KNs[-1], QQs[-1])
 
     def _finish(self, x, e, PE, R0, R1, RQ, PR0, PR1, KN, QQ):

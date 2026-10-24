@@ -2,29 +2,17 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "o2_mres_so1",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sohead\":1.0}'"
+   "tag": "p1_mres_probe",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1}'"
   },
   {
-   "tag": "o2_mres_so03",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sohead\":0.3}'"
+   "tag": "p1_sgate_mres_probe",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sgate\":1}'"
   },
   {
-   "tag": "o2_sgate_mres_so1",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sgate\":1,\"sohead\":1.0}'"
-  },
-  {
-   "tag": "o2_mres_so1_s2",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sohead\":1.0}'"
-  },
-  {
-   "tag": "o2_base_so1",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sohead\":1.0}'"
-  },
-  {
-   "tag": "o2_mres_so1_copypressure",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"sohead\":1.0}'"
+   "tag": "p1_mres_probe_copypressure",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1}'"
   }
  ],
- "nonce": 1792826294
+ "nonce": 1792848429
 }
