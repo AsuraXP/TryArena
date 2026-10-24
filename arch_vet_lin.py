@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0, gkey=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0, gkey=0, sohead=0.0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -29,6 +29,11 @@ class LIN(nn.Module):
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
         self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
+        self.sohead = sohead   # O2 OBJECTIVE: store-only auxiliary target — predict byte t+1 from the 1-hop READ ALONE (no controller state), weight
+        # `sohead`.  Dense on every byte, stream-only, no oracle: it makes the store a consumer-driven structure (the loss creates the need,
+        # NOVELTY §D) so copying from context is trained on every byte of ordinary text rather than once per sample.  hopce (C129) lineage,
+        # but the controller is excluded so the gradient cannot route around the store.
+        if sohead: self.heads = nn.Linear(d, V)
         self.gkey = gkey   # M6 REPRESENTATION: the address is a gated bound sum of the stream, k_t = g(e_t) k_{t-1} + P e_t, with a LEARNED per-byte
         # forget gate g(e_t) = sigmoid(u.e_t + b).  If the learner sets g ~ 0 on separators the key becomes "the word so far", identical at every
         # mention of a name regardless of what surrounds it -> exact word-aligned copy from a Hebbian store; nothing is hard-coded (no boundary
@@ -230,6 +235,8 @@ class LIN(nn.Module):
             PEd = PE.detach(); A0 = PR0[:, :-1]; A1 = PR1[:, :-2]; m0 = (x[:, 1:] != 0).float(); m1 = (x[:, 2:] != 0).float()
             c0 = 1 - F.cosine_similarity(A0, PEd[:, 1:], dim=-1); c1 = 1 - F.cosine_similarity(A1, PEd[:, 2:], dim=-1)
             self.aux = self.aux + self.kcons * ((c0 * m0).sum() / m0.sum() + (c1 * m1).sum() / m1.sum())
+        if self.sohead:
+            Ls = self.heads(R0); self.aux = self.aux + self.sohead * F.cross_entropy(Ls[:, :-1].reshape(-1, Ls.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)
         if self.hopce:
             L0 = self.head(torch.cat([H, R0], -1)); L1 = self.head2(torch.cat([H, R1], -1))
             self.aux = self.hopce * (F.cross_entropy(L0[:, :-1].reshape(-1, L0.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)

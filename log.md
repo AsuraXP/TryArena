@@ -7467,3 +7467,16 @@ learned from sparse natural signal. Next axis, per standing plan: make the memor
 loss must create a need (NOVELTY §D) — i.e. a self-supervised in-context target that is dense on every byte, not a
 re-weighting: predict byte t from the STORE ALONE (read-only head, no controller) as an auxiliary stream target
 (hopce lineage, C129), so the store is trained on every byte to be a predictor of context, which is exactly copying.
+
+O1 — RESULT (complete): LIN sgate mres rw2 s1 .23/2.64/2.65 DU 3.19 | 1.294/1.407/1.658; s2 .24/2.91/2.92 DU 2.88 |
+1.296/1.423/1.681; rw5 .23/2.64/2.96. Versus rw0 (.25/2.59/3.17): OOD unchanged, far -.3 to -.5, bg +.01/+.03 at
+4L. Prediction "OOD < 2.3" FALSIFIED. Re-weighting the loss is not the lever; banked (flag stays, default 0).
+
+O2 — PRE-REGISTRATION (OBJECTIVE axis, second run): store-only head. Auxiliary CE predicting byte t+1 from the 1-hop
+read ALONE (separate linear head on R0; controller excluded so gradient cannot route around the store), weight 1.0 or
+0.3, added to the main CE. Dense on every byte, stream-only, no oracle. Jobs (d64, 3000): mres so1 (s1, s2), mres so.3,
+sgate mres so1, base (dense dk128, learned decay) so1, mres so1 under copy pressure. PREDICT: mres so1 OOD-name < 2.2
+and far < 2.5 (from 2.9/3.5 for mres alone); base so1 keeps dec > .95 (the store now has its own reason to remember);
+copy-pressure DU < 1.3 (from 1.82); main bg within +.03. If OOD-name does not drop below 2.5 with a dense store-only
+target, the objective axis on this store is exhausted and the remaining explanation is the linear read.
+(Note: sandbox was re-provisioned mid-edit; a first attempt at this commit applied nothing and conflicted — resolved.)
