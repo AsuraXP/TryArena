@@ -38,7 +38,7 @@ class LIN(nn.Module):
         self.gconf = gconf   # P3: the copy gate also sees each store's own EVIDENCE — max cosine of the read to any byte and the read's norm — so it can
         # learn WHEN a store is reliable (sharp, strong read) rather than guess from the controller state alone.
         nb = 3 if mres else 1
-        if tied: self.tg = nn.Linear(d + (2 * nb if gconf else 0), nb); self.ttau = nn.Parameter(torch.tensor(5.0))
+        if tied: self.tg = nn.Linear(d + (2 * nb if gconf else 0), nb); self.ttau = nn.Parameter(torch.tensor(5.0 if tied == 1 else 20.0))
         self.sohead = sohead   # O2 OBJECTIVE: store-only auxiliary target — predict byte t+1 from the 1-hop READ ALONE (no controller state), weight
         # `sohead`.  Dense on every byte, stream-only, no oracle: it makes the store a consumer-driven structure (the loss creates the need,
         # NOVELTY §D) so copying from context is trained on every byte of ordinary text rather than once per sample.  hopce (C129) lineage,
@@ -261,6 +261,13 @@ class LIN(nn.Module):
                 g = torch.sigmoid(self.tg(torch.cat([H, ev], -1))).unsqueeze(-1)[:, :, :blk.shape[2]]
             else:
                 g = torch.sigmoid(self.tg(H)).unsqueeze(-1)[:, :, :blk.shape[2]]                 # per-position gate per store
+            if self.tied == 2:   # P4: PROBABILITY mixture (pointer-generator form): p = (1 - sum g_b) p_vocab + sum_b g_b softmax(tau cos_b); gates share a softmax with a "vocab" slot
+                gl = self.tg(torch.cat([H, ev], -1)) if self.gconf else self.tg(H); gl = gl[..., :blk.shape[2]]
+                mixw = torch.softmax(torch.cat([torch.zeros_like(gl[..., :1]), gl], -1), -1)                     # (B,L,1+nb): slot 0 = vocab head
+                lp_v = F.log_softmax(out, -1); lp_c = F.log_softmax(self.ttau * cop, -1)                           # (B,L,V), (B,L,nb,V)
+                allp = torch.cat([lp_v.unsqueeze(2), lp_c], 2) + torch.log(mixw + 1e-9).unsqueeze(-1)
+                self.copyw = mixw.detach()
+                return torch.logsumexp(allp, 2)                                                                    # log-probabilities (valid logits)
             out = out + self.ttau * (g * cop).sum(2)
         return out
 

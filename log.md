@@ -7541,3 +7541,16 @@ byte (sharpness) and log-norm (strength), detached. Also probe at far (4L) to se
 at length. Jobs: mres tied gconf (s1, s2), copy pressure, dk4096. PREDICT: output-exact at OOD > .5 (from .33), OOD-name
 < 1.8, far < 2.5 if the far probe shows the store still > .5 (otherwise far is a capacity/crosstalk issue and dk4096
 should show it); copy-pressure DU < 1.0.
+
+P2 — rest: mres tied with learned decay: dec .918, store 6%, OOD 3.71 — given the choice the learner STILL forgets,
+even with a readout that could use the store (prediction "dec > .95" FALSIFIED again; four times now). Copy pressure
+with tied readout: store w2 .77, output .11, DU 1.78 — no gain over mres alone (1.82). So the additive tied readout
+(logits += g*tau*cos) is too weak: a correct-but-blurry read (cos margin ~.05) adds ~.25 logits and cannot override the
+vocab head; the gate therefore never gets a reason to open.
+P4 — PRE-REGISTRATION: probability mixture readout (tied=2): p = w0 p_vocab + sum_b w_b softmax(tau cos_b), gates
+softmax-normalised with a vocab slot, tau init 20, gate sees evidence (gconf). Pointer-generator form (See et al.
+2017), copy distribution from the O(1) store. A sharp copy distribution now wins outright when its gate opens. Jobs:
+mres pmix (s1, s2), copy pressure, learned decay. PREDICT: copy-pressure DU < 1.0 and output-exact > .6 (store is .77);
+dialogue OOD-name < 1.8; far unchanged unless the far probe (P3) shows the store holds; learned-decay arm dec > .95
+for the first time — if it still forgets, "the learner prefers forgetting under next-byte CE" is a law of this
+objective and the decay will be fixed at 1 by design (declared), not learned.

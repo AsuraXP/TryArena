@@ -2,21 +2,21 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "p3_mres_tied_gconf",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"tied\":1,\"gconf\":1}'"
+   "tag": "p4_mres_pmix",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"tied\":2,\"gconf\":1}'"
   },
   {
-   "tag": "p3_mres_tied_gconf_s2",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"tied\":1,\"gconf\":1}'"
+   "tag": "p4_mres_pmix_s2",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"tied\":2,\"gconf\":1}'"
   },
   {
-   "tag": "p3_mres_tied_gconf_copypressure",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"tied\":1,\"gconf\":1}'"
+   "tag": "p4_mres_pmix_copypressure",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"tied\":2,\"gconf\":1}'"
   },
   {
-   "tag": "p3_mres_tied_gconf_dk4096",
-   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.005,\"kmult\":64,\"nodecay\":1,\"mres\":1,\"tied\":1,\"gconf\":1}'"
+   "tag": "p4_mres_pmix_decay",
+   "args": "--arms LIN --ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --linflags '{\"sparse\":0.01,\"kmult\":32,\"mres\":1,\"tied\":2,\"gconf\":1}'"
   }
  ],
- "nonce": 1792858675
+ "nonce": 1792860632
 }
