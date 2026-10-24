@@ -7572,3 +7572,23 @@ dk4096. PREDICT (the natural-signal test is the one that counts): dialogue OOD-n
 output-exact > .5; copy pressure DU < 1.0; bg within +.03 of mres (noise reads have small margins). If OOD stays
 > 2.4, the copy decision cannot be made from read evidence alone at this store quality and the far/crosstalk problem
 (store quality) is the binding one.
+
+P3 — rest: gconf s1 .19/2.20/3.24 (out .30); dk4096: OOD 2.16 but far 4.08 and far-store .20 — a larger address space
+does NOT fix length. P5 — RESULT: margin arbitration DESTROYS the store (store exact .07 OOD, .00 far; OOD 4.26,
+copy-pressure DU 2.05): a large one-hot boost from early random reads drives the learner to shrink margins to zero.
+Banked negative (tied=3 off).
+STORE DIAGNOSIS (numerical, real corpus 2-grams; exact recall of a unique 2-gram's continuation, dk2048@.01):
+  context 320 / 1280 / 5120 bytes:  sum-key + Hebb (the certified store)  .46 / .27 / .20   <- matches the probes
+                                    conjunctive key + Hebb                .85 / .38 / .12
+                                    sum-key + delta rule                   .62 / .48 / .39
+                                    conjunctive key + delta rule           .95 / .83 / .64
+Two defects, both structural: (1) additive role keys make "ju" share active bits with every "j?" and "?u", so frequent
+2-grams bleed into rare ones; (2) Hebbian writes let a 2-gram written 300 times carry 300x mass. Fix (1) = conjunctive
+binding of the byte codes (HD-computing n-gram encoding: permute-and-multiply signs; Kanerva/Rahimi 2016); fix (2) =
+delta-rule (error-correcting) writes, exact chunked WY form (DeltaNet, Yang et al. 2024 arXiv:2406.06484), verified
+against the sequential rule to 2e-6. Both keep O(1)/token state; P stays fixed (zero parameter cost).
+P6 — PRE-REGISTRATION: ckey+delta (probe), ckey+delta+tied (s1, s2), ckey only, delta only, ckey+delta+tied under copy
+pressure (d64, 3000, nodecay by design). PREDICT: store probe w2 > .85 at 320 and > .6 at 1280 (from .6/.25);
+dialogue OOD-name < 1.8 and far < 2.2 with tied readout (from 2.2–2.5 / 3.2–3.9); copy-pressure DU < 1.0; each of
+ckey-only and delta-only improves the store but less than both. The remaining risk, stated: the gate (out .3 when
+store .6) — if the store reaches .85 and output stays < .5, the gate is the last wall and gets its own cycle.
