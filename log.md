@@ -7511,3 +7511,21 @@ read by nearest byte embedding and compare with the true next byte; also the mod
 and alpha. Jobs: mres nodecay, sgate mres, mres under copy pressure (d64, 3000). Decision rule pre-registered: if a
 store's raw read is right >> model output is right -> the wall is the READOUT/controller path (learning), fix there;
 if raw reads are wrong (< .3) with the 2-byte store -> the wall is the ADDRESS (what gets written where), fix there.
+
+P1 — RESULT (40098193733), the instrument that decides: mres nodecay d64 — at unseen-name bytes the RAW read of the
+2-byte store decodes the correct next byte 74% of the time (1-byte 33%, 4-byte 51%); the MODEL OUTPUT is right 21%.
+In-distribution: store 73%, output 96% (from weights). Under copy pressure: store 70%, output 15%, mix .93 on the
+re-posed read. alpha puts .60 on the 4-byte store and .09 on the 2-byte one. THE INFORMATION IS RETRIEVED; THE WALL
+IS THE READOUT: a linear head over [h, mixed read] trained by CE learns to spell names from weights and never learns
+to decode the store's embedding-mixture, because for training names the weights are the cheaper route. Decision
+rule -> fix the readout, not the store.
+P2 — PRE-REGISTRATION (READOUT): tied copy readout. Each store's raw 1-hop read is decoded directly through the byte
+embedding table (logits += g_b(h) * tau * cos(R0_b, E)); the controller only gates each store per position. Prior art:
+CopyNet / pointer-generator (copy distribution over positions mixed with vocab), tied embeddings; delta: the copy
+distribution comes from an O(1) Hebbian store read, no positions, no attention; new params = one gate (d x 3) + tau.
+Local d32 300 steps sanity: OOD-name 2.62 already (mres alone at 600 steps was 2.75). Jobs (d64, 3000): mres tied
+(s1, s2), sgate mres tied, mres tied copy pressure, base tied (dense dk128, learned decay), mres tied with learned
+decay. PREDICT: OOD-name < 1.5 and far < 1.8 (from 2.96/3.47; the 2-byte store alone is 74% exact); copy pressure DU
+< 1.0 (from 1.82); bg within +.03 of mres; mres tied with learned decay keeps dec > .95 for the first time (the
+readout now rewards remembering). If OOD-name > 2.5 with the tied readout, the gate is not learning to trust the
+store and the next step is the gate's training signal.

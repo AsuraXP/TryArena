@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0, gkey=0, sohead=0.0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0, gkey=0, sohead=0.0, tied=0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -29,6 +29,13 @@ class LIN(nn.Module):
         self.lam = nn.Parameter(torch.full((dk,), 1.0)); self.dec = nn.Parameter(torch.tensor(4.0))   # W decay sigmoid(4)=.98   # sigmoid -> ~.73 start
         self.shape = nn.Parameter(torch.randn(d) * 0.1); self.roles = roles
         if roles: self.R = nn.Parameter(torch.randn(roles, dk) * 0.5 + 1.0)   # C128: learned role per offset (TPR with recency roles)
+        self.tied = tied   # P2 READOUT (from the P1 probe: the 2-byte store's raw read already holds the right byte 74% for unseen names while the
+        # model output is right 21% — the wall was the readout).  Each store's 1-hop read is decoded DIRECTLY by the tied byte embeddings
+        # (logits += g_b(h) * tau * cos(R0_b, E)); the controller only gates each store per position.  Prior art: copy/pointer mechanisms
+        # (CopyNet Gu et al. 2016 arXiv:1603.06393; pointer-generator See et al. 2017 arXiv:1704.04368) mix a copy distribution over
+        # POSITIONS with a vocab distribution; tied input/output embeddings (Press & Wolf 2017).  Delta: the copy distribution comes from an
+        # O(1) Hebbian store read decoded through the embedding table — no positions, no attention; the gate is the only new parameter.
+        if tied: self.tg = nn.Linear(d, 3 if mres else 1); self.ttau = nn.Parameter(torch.tensor(5.0))
         self.sohead = sohead   # O2 OBJECTIVE: store-only auxiliary target — predict byte t+1 from the 1-hop READ ALONE (no controller state), weight
         # `sohead`.  Dense on every byte, stream-only, no oracle: it makes the store a consumer-driven structure (the loss creates the need,
         # NOVELTY §D) so copying from context is trained on every byte of ordinary text rather than once per sample.  hopce (C129) lineage,
@@ -211,8 +218,8 @@ class LIN(nn.Module):
             K1 = keyw([PR0] + shifted[:-1], w); R1 = self._readall(F.normalize(K1, dim=-1), KN, v, dec); PR1 = self.P(R1)
             QQ = keyw([sP.expand(B, L, -1), PR1, PR0], w); RQ = self._readall(F.normalize(QQ, dim=-1), KN, v, dec)
             R0s.append(a[bi] * R0); R1s.append(a[bi] * R1); RQs.append(a[bi] * RQ); KNs.append(KN); QQs.append(QQ)
-            blk.append(R0.detach())
-        R0 = sum(R0s); R1 = sum(R1s); RQ = sum(RQs); self._blk = torch.stack(blk, 2); self._alpha = a.detach()   # (B,L,nb,d) per-store 1-hop reads (probe)
+            blk.append(R0)
+        R0 = sum(R0s); R1 = sum(R1s); RQ = sum(RQs); self._blk_live = torch.stack(blk, 2); self._blk = self._blk_live.detach(); self._alpha = a.detach()   # (B,L,nb,d) per-store 1-hop reads (probe)
         return self._finish(x, e, PE, R0, R1, RQ, self.P(R0), self.P(R1), KNs[-1], QQs[-1])
 
     def _finish(self, x, e, PE, R0, R1, RQ, PR0, PR1, KN, QQ):
@@ -242,7 +249,13 @@ class LIN(nn.Module):
             L0 = self.head(torch.cat([H, R0], -1)); L1 = self.head2(torch.cat([H, R1], -1))
             self.aux = self.hopce * (F.cross_entropy(L0[:, :-1].reshape(-1, L0.shape[-1]), x[:, 1:].reshape(-1), ignore_index=0)
                                      + F.cross_entropy(L1[:, :-2].reshape(-1, L1.shape[-1]), x[:, 2:].reshape(-1), ignore_index=0))
-        return self.head(torch.cat([H, Rm], -1))
+        out = self.head(torch.cat([H, Rm], -1))
+        if self.tied:
+            blk = self._blk_live if self.mres else R0.unsqueeze(2)                         # (B,L,nb,d) raw store reads (with gradient)
+            cop = torch.einsum("blnd,vd->blnv", F.normalize(blk, dim=-1), F.normalize(self.E.weight, dim=-1))   # cosine to every byte
+            g = torch.sigmoid(self.tg(H)).unsqueeze(-1)[:, :, :blk.shape[2]]                 # per-position gate per store
+            out = out + self.ttau * (g * cop).sum(2)
+        return out
 
     def forward(self, x, **kw):
         if self.pgru or self.sgate or self.mres or self.gkey or (self.roles and not self.wgate and not self.delta and not getattr(self, "slow", False)): return self.forward_fast(x, **kw)
