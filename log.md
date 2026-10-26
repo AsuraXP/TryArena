@@ -7631,3 +7631,9 @@ the previous certified LIN at 3.50 — same stream, same steps, same params, no 
 first "memory on text" result that is actually memory. What made it: (1) conjunctive 2-byte addresses (store .81),
 (2) a probability-mixture tied readout so a sharp read can win, (3) a training stream without a memorisation shortcut.
 Remaining: far (1280 bytes) store .54 -> 2.05 nats; seed 1; and the in-range +.04.
+P7 — complete: ckey+pmix randnames s1 .995/0.85/2.49 (store .79/.58, out .70/.54) | bg 1.384/1.371/1.715 — replicates
+s2 (0.67/2.05). ckey+pmix on FIXED names: .27/1.88/2.57 (out .44) — best fixed-name result, confirming the gate needs
+the stream without the shortcut to open fully. Two seeds: unseen-name recall 0.67 / 0.85 vs TF 3.16, base LIN 3.50.
+S1 — PRE-REGISTRATION (scaling of the memory result): ckey+pmix vs TF, random-name dialogue stream, d32 / d96 / d128
+(d64 done), 3000 steps. PREDICT: LIN OOD-name < 1.2 at every size and roughly flat in d (the mechanism is not
+capacity-bound); TF OOD-name > 2.8 at every size; the gap does not close with TF size.

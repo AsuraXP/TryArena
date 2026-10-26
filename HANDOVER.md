@@ -442,3 +442,14 @@ Harness: `--inner S` reports `hopland` (hop-k landing on a_b0/a_b1/a_dot/b_v0 sl
   experiment.yml wraps python in `timeout 315m` so partial logs survive the 6h cap.
 - Banked negatives: power-iteration cleanup on fast weights (hurts); fused-GRU controller without mix feedback (worse).
 - Owed: LIN d256 LM (running), NOVELTY entry per mechanism (M3 mres, M4 sgate), scaling law at d128 on the name task.
+
+## State after P1–P7 (memory on text: first real result)
+- Instrument first: `store_probe` (p49) decodes each store's raw read by nearest byte embedding at name positions. It showed the
+  store retrieved 74% while output was 21% — readout was the wall, not the store (P1).
+- Working configuration (arch_vet_lin.py flags via `--linflags`): `{"sparse":0.01,"kmult":32,"nodecay":1,"mres":1,"ckey":1,"tied":2,"gconf":1}`
+  = three sparse stores keyed by last 1/2/4 bytes with CONJUNCTIVE (HD n-gram) addresses, no decay (by design), probability-mixture
+  tied copy readout with gate evidence. Train with `--randnames 1` (random names in the dialogue stream; one copy event per sample).
+- Result d64: unseen-name recall 0.67 / 0.85 nats/byte (2 seeds) vs TF 3.16, old LIN 3.50; store .80, output .75; far (1280 B) 2.05–2.49.
+- Banked negatives this stretch: power-iteration cleanup, rnorm, gkey (word-aligned address), repeat-weighted CE, store-only head,
+  margin arbitration (destroys store), delta rule in the trained model (store worse at 320, better 4L bg), learned decay (always forgets).
+- Open: far-context store quality (.54 at 1280), in-range +.04 bg cost, scaling S1 (running), carry the store into `--task lm` at d128/d256.

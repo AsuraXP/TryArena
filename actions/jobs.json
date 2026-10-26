@@ -2,33 +2,29 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "p7_tf_randnames",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms TF"
+   "tag": "s1_tf_d32",
+   "args": "--ds 32 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms TF"
   },
   {
-   "tag": "p7_lin_base_randnames",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN"
+   "tag": "s1_lin_d32",
+   "args": "--ds 32 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
   },
   {
-   "tag": "p7_ckey_pmix_randnames",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
+   "tag": "s1_tf_d96",
+   "args": "--ds 96 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms TF"
   },
   {
-   "tag": "p7_ckey_tied_randnames",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":1}'"
+   "tag": "s1_lin_d96",
+   "args": "--ds 96 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
   },
   {
-   "tag": "p7_ckey_pmix",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
+   "tag": "s1_tf_d128",
+   "args": "--ds 128 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms TF"
   },
   {
-   "tag": "p7_ckey_pmix_copypressure",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --dense 1 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
-  },
-  {
-   "tag": "p7_ckey_pmix_randnames_s2",
-   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 2 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
+   "tag": "s1_lin_d128",
+   "args": "--ds 128 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
   }
  ],
- "nonce": 1792985562
+ "nonce": 1792992130
 }
