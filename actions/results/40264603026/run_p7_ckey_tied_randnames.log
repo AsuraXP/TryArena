@@ -1,0 +1,18 @@
+  [LIN d64 s1] step 0 ce 5.089 (1s)
+  [LIN d64 s1] step 250 ce 1.904 (370s)
+  [LIN d64 s1] step 500 ce 1.578 (721s)
+  [LIN d64 s1] step 750 ce 1.529 (1067s)
+  [LIN d64 s1] step 1000 ce 1.482 (1412s)
+  [LIN d64 s1] step 1250 ce 1.330 (1750s)
+  [LIN d64 s1] step 1500 ce 1.356 (2095s)
+  [LIN d64 s1] step 1750 ce 1.456 (2445s)
+  [LIN d64 s1] step 2000 ce 1.445 (2787s)
+  [LIN d64 s1] step 2250 ce 1.334 (3141s)
+  [LIN d64 s1] step 2500 ce 1.250 (3498s)
+  [LIN d64 s1] step 2750 ce 1.313 (3856s)
+  [LIN d64 s1] step 2999 ce 1.269 (4204s)
+  [PROBE in d64] n=158 store-read exact byte: w1:0.29 w2:0.81 w4:0.48 | model output exact 0.78 | mix r0/r1/rq [0.8899999856948853, 0.019999999552965164, 0.09000000357627869] | alpha [0.31, 0.25, 0.44]
+  [PROBE ood d64] n=126 store-read exact byte: w1:0.30 w2:0.83 w4:0.33 | model output exact 0.66 | mix r0/r1/rq [0.8500000238418579, 0.019999999552965164, 0.12999999523162842] | alpha [0.31, 0.25, 0.44]
+  [PROBE far d64] n=123 store-read exact byte: w1:0.14 w2:0.52 w4:0.39 | model output exact 0.41 | mix r0/r1/rq [0.6600000262260437, 0.03999999910593033, 0.3100000023841858] | alpha [0.31, 0.25, 0.44]
+[p49 LIN d64 s1] params 261451 dec 0.982 name-CE in 0.8557 ood 1.1347 far 2.9333 DENSE-unseen 3.5077 | bg 1.3664 1.3494 1.6836
+[P49] DONE
