@@ -7674,3 +7674,8 @@ error-correcting writes subtract neighbours. Far improved anyway to 1.85 via the
 store = the gate now trusts a half-right store appropriately), and beta .5 gives the best 4L background (1.589).
 beta=1 hurts recall again (1.60), confirmed. Far-context store quality is still open; the honest statement is that
 the store is exact for ~80% of unseen-name bytes at 320 B and ~53% at 1280 B.
+F1 — sgate arm: ckey+pmix+surprise-gated writes (gate mean .59): ood 0.55 / far 1.70; store .89 at 320 (w1 .53!),
+.62 at 1280; out .80/.51 | bg 1.361/1.357/1.676. Prediction "sgate helps 4L bg, not far recall" FALSIFIED in our
+favour: writing only the unpredictable bytes is what cleans the store — fewer writes, less mass from frequent n-grams —
+and it lifts every memory number (best ood, best far, best store at both lengths). Cost: 2 passes. Current best
+configuration for memory on text: sparse .01, kmult 32, nodecay, mres, ckey, tied 2, gconf, sgate; random-name stream.
