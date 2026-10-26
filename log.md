@@ -7637,3 +7637,18 @@ the stream without the shortcut to open fully. Two seeds: unseen-name recall 0.6
 S1 — PRE-REGISTRATION (scaling of the memory result): ckey+pmix vs TF, random-name dialogue stream, d32 / d96 / d128
 (d64 done), 3000 steps. PREDICT: LIN OOD-name < 1.2 at every size and roughly flat in d (the mechanism is not
 capacity-bound); TF OOD-name > 2.8 at every size; the gap does not close with TF size.
+
+S1 — RESULT (40273845712; random-name dialogue stream, 3000 steps; unseen-name recall ood / far, store w2, out; bg in/ood/4L):
+  d32   LIN 0.75 / 2.27 (store .76, out .66) bg 1.521/1.517/1.876 | TF 3.69 / 3.80  bg 1.511/1.514/3.189
+  d64   LIN 0.67, 0.85 / 2.05, 2.49           bg 1.37/1.36/1.68    | TF 3.16 / 3.42  bg 1.411/1.402/2.874
+  d96   LIN 0.65 / 2.22 (store .77, out .74) bg 1.305/1.310/1.637 | TF 3.43 / 3.43  bg 1.319/1.325/2.539
+  d128  LIN 0.64 / 2.16 (store .80, out .72) bg 1.272/1.266/1.565 | TF 3.17 / 3.66  bg 1.295/1.298/2.463
+PREDICTIONS CONFIRMED: LIN < 1.2 at every size and flat in d (0.75 -> 0.64: mechanism, not capacity); TF > 2.8 at every
+size; gap does not close with TF size (TF 462k params: 3.17). Background CE: LIN ahead of TF in-range at d96 and d128
+on this stream (-.014, -.023) and far ahead at 4L everywhere. Param caveat: the printed LIN "params" include the FIXED
+random projection P (not trained, e.g. 393k of 858k at d128) and the role/address tables; trainable counts are within
+~10% of TF at d64 and below TF at d128 — to be tabulated exactly in the next hygiene pass.
+L1 — PRE-REGISTRATION: carry the store into the plain full-corpus LM (--task lm, 4.8 MB, held-out 5%, L512, 6000
+steps): LIN store d128 (dk 2048; s1, s2) and d256 (dk 2048). Reference: LIN plain d128 1.398 / TF d128 1.376 / LIN
+plain d256 1.313 / TF d256 1.441. PREDICT: store LIN d128 held-out <= 1.36 (beats TF; the store pays on repeated rare
+words in context), d256 <= 1.29; 16L within +.03 of L (flat); samples shown unselected, readability reported not predicted.

@@ -2,29 +2,17 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "s1_tf_d32",
-   "args": "--ds 32 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms TF"
+   "tag": "l1_lin_store_d128",
+   "args": "--task lm --arms LIN --ds 128 --steps 6000 --B 8 --L 512 --seeds 1 --linflags '{\"sparse\":0.01,\"kmult\":16,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
   },
   {
-   "tag": "s1_lin_d32",
-   "args": "--ds 32 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
+   "tag": "l1_lin_store_d256",
+   "args": "--task lm --arms LIN --ds 256 --steps 6000 --B 8 --L 512 --seeds 1 --linflags '{\"sparse\":0.01,\"kmult\":8,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
   },
   {
-   "tag": "s1_tf_d96",
-   "args": "--ds 96 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms TF"
-  },
-  {
-   "tag": "s1_lin_d96",
-   "args": "--ds 96 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
-  },
-  {
-   "tag": "s1_tf_d128",
-   "args": "--ds 128 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms TF"
-  },
-  {
-   "tag": "s1_lin_d128",
-   "args": "--ds 128 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
+   "tag": "l1_lin_store_d128_s2",
+   "args": "--task lm --arms LIN --ds 128 --steps 6000 --B 8 --L 512 --seeds 2 --linflags '{\"sparse\":0.01,\"kmult\":16,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
   }
  ],
- "nonce": 1792992130
+ "nonce": 1793007845
 }
