@@ -17,7 +17,7 @@ import math, torch, torch.nn as nn, torch.nn.functional as F
 
 
 class LIN(nn.Module):
-    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0, gkey=0, sohead=0.0, tied=0, gconf=0, ckey=0):
+    def __init__(self, V, d, keyfn="lin", hops=2, kmult=2, roles=0, hopce=0.0, sparse=0.0, kcons=0.0, nodecay=0, wgate=0.0, delta=0, pgru=0, clean=0, mres=0, rnorm=0, sgate=0, gkey=0, sohead=0.0, tied=0, gconf=0, ckey=0, dbeta=1.0):
         super().__init__()
         dk = d * kmult; self.d, self.dk, self.keyfn, self.hops = d, dk, keyfn, hops
         self.sparse = sparse; self.kcons = kcons; self.nodecay = nodecay; self.wgate = wgate; self.delta = delta
@@ -35,6 +35,8 @@ class LIN(nn.Module):
         # (CopyNet Gu et al. 2016 arXiv:1603.06393; pointer-generator See et al. 2017 arXiv:1704.04368) mix a copy distribution over
         # POSITIONS with a vocab distribution; tied input/output embeddings (Press & Wolf 2017).  Delta: the copy distribution comes from an
         # O(1) Hebbian store read decoded through the embedding table — no positions, no attention; the gate is the only new parameter.
+        self.dbeta = dbeta   # F1: partial delta rule, u_t = v_t - beta * W^T k_t (beta=1 full DeltaNet; <1 keeps part of the Hebbian sum); learned per store
+        if delta and dbeta < 1.0: self.dbl = nn.Parameter(torch.full((3,), math.log(dbeta / (1 - dbeta))))
         self.ckey = ckey   # P6 ADDRESS: conjunctive n-gram keys — hyperdimensional n-gram binding (permute-and-multiply signs, Kanerva/Rahimi
         # "HD computing n-gram encoding" 2016) so the 2-byte key "ju" shares no active bits with "j?" or "?u"; with --delta writes
         # (error-correcting, DeltaNet-style, Yang et al. 2024 arXiv:2406.06484, exact chunked WY form) repeated frequent n-grams stop
@@ -176,13 +178,13 @@ class LIN(nn.Module):
         sP = self.P(self.shape); QQ = self._kwta(g1 * (g0 * sP + PR0) + PR1); RQ = self._readall(F.normalize(QQ, dim=-1), KN, v, dec)
         return self._finish(x, e, PE, R0, R1, RQ, PR0, PR1, KN, QQ)
 
-    def _delta_state(self, K, V, C=64):   # exact delta-rule store (WY form): returns per-chunk (W_before_chunk, pseudo-values U)
+    def _delta_state(self, K, V, C=64, beta=1.0):   # exact (partial) delta-rule store (WY form): returns per-chunk (W_before_chunk, pseudo-values U)
         B, L, dk = K.shape; d = V.shape[-1]; W = torch.zeros(B, dk, d); st = []
         for s0 in range(0, L, C):
             k = K[:, s0:s0 + C]; v = V[:, s0:s0 + C]; n = k.shape[1]
-            A = torch.tril(torch.einsum("bik,bjk->bij", k, k), -1)
+            A = beta * torch.tril(torch.einsum("bik,bjk->bij", k, k), -1)
             T = torch.linalg.solve_triangular(torch.eye(n) + A, torch.eye(n).expand(B, n, n), upper=False)
-            U = torch.einsum("bij,bjd->bid", T, v - torch.einsum("bik,bkd->bid", k, W)); st.append((W, U))
+            U = torch.einsum("bij,bjd->bid", T, v - beta * torch.einsum("bik,bkd->bid", k, W)); st.append((W, U))
             W = W + torch.einsum("bjk,bjd->bkd", k, U)
         return st
 
@@ -248,7 +250,7 @@ class LIN(nn.Module):
         shifted = [F.pad(PE, (0, 0, i, 0))[:, :L] if i else PE for i in range(self.roles)]
         R0s, R1s, RQs, KNs, QQs, blk = [], [], [], [], [], []
         for bi, w in enumerate(self.widths):
-            K = keyw(shifted, w); KN = F.normalize(F.pad(K, (0, 0, 1, 0))[:, :L], dim=-1); st = self._delta_state(KN, v) if self.delta else None
+            K = keyw(shifted, w); KN = F.normalize(F.pad(K, (0, 0, 1, 0))[:, :L], dim=-1); st = self._delta_state(KN, v, beta=(torch.sigmoid(self.dbl[bi]) if self.dbeta < 1.0 else 1.0)) if self.delta else None
             R0 = RDS(KN, K, st); PR0 = self.P(R0)
             K1 = keyw([PR0] + shifted[:-1], w); R1 = RDS(KN, K1, st); PR1 = self.P(R1)
             QQ = keyw([sP.expand(B, L, -1), PR1, PR0], w); RQ = RDS(KN, QQ, st)

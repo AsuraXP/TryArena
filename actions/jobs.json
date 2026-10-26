@@ -2,17 +2,21 @@
  "script": "arch_vet_p49.py",
  "jobs": [
   {
-   "tag": "l1_lin_store_d128",
-   "args": "--task lm --arms LIN --ds 128 --steps 6000 --B 8 --L 512 --seeds 1 --linflags '{\"sparse\":0.01,\"kmult\":16,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
+   "tag": "f1_delta_b05",
+   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1,\"delta\":1,\"dbeta\":0.5}'"
   },
   {
-   "tag": "l1_lin_store_d256",
-   "args": "--task lm --arms LIN --ds 256 --steps 6000 --B 8 --L 512 --seeds 1 --linflags '{\"sparse\":0.01,\"kmult\":8,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
+   "tag": "f1_delta_b02",
+   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1,\"delta\":1,\"dbeta\":0.2}'"
   },
   {
-   "tag": "l1_lin_store_d128_s2",
-   "args": "--task lm --arms LIN --ds 128 --steps 6000 --B 8 --L 512 --seeds 2 --linflags '{\"sparse\":0.01,\"kmult\":16,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1}'"
+   "tag": "f1_delta_b1",
+   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1,\"delta\":1}'"
+  },
+  {
+   "tag": "f1_sgate",
+   "args": "--ds 64 --steps 3000 --B 8 --L 320 --seeds 1 --sample 0 --randnames 1 --arms LIN --linflags '{\"sparse\":0.01,\"kmult\":32,\"nodecay\":1,\"mres\":1,\"ckey\":1,\"tied\":2,\"gconf\":1,\"sgate\":1}'"
   }
  ],
- "nonce": 1793007845
+ "nonce": 1793008407
 }

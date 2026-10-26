@@ -7652,3 +7652,12 @@ L1 — PRE-REGISTRATION: carry the store into the plain full-corpus LM (--task l
 steps): LIN store d128 (dk 2048; s1, s2) and d256 (dk 2048). Reference: LIN plain d128 1.398 / TF d128 1.376 / LIN
 plain d256 1.313 / TF d256 1.441. PREDICT: store LIN d128 held-out <= 1.36 (beats TF; the store pays on repeated rare
 words in context), d256 <= 1.29; 16L within +.03 of L (flat); samples shown unselected, readability reported not predicted.
+
+F1 — FAR CONTEXT (store .54 exact at 1280 B). Numerical (real 2-grams, conjunctive keys): Hebb .87/.37/.14, novelty-
+gated write .92/.61/.19, delta .95/.81/.67 at 320/1280/5120. Delta is the right rule numerically but in the trained
+model (P6) it lowered the store at 320 (.69 vs .81). Hypothesis: full overwrite (beta=1) also erases the Hebbian
+averaging the learned values rely on. PRE-REGISTRATION: partial delta rule u = v - beta W^T k (exact WY form extended
+with beta; verified to 1e-6), beta learned per store from init .5 / .2, vs beta=1, vs surprise-gated writes (sgate),
+all on the random-name stream with ckey+pmix (reference P7: ood 0.67/0.85, far 2.05/2.49, store far .54/.58).
+PREDICT: beta init .5 gives far-store > .65 and far < 1.8 with ood unchanged (< 0.9); beta=1 again hurts at 320;
+sgate improves 4L bg but not far recall.
