@@ -7592,3 +7592,24 @@ pressure (d64, 3000, nodecay by design). PREDICT: store probe w2 > .85 at 320 an
 dialogue OOD-name < 1.8 and far < 2.2 with tied readout (from 2.2–2.5 / 3.2–3.9); copy-pressure DU < 1.0; each of
 ckey-only and delta-only improves the store but less than both. The remaining risk, stated: the gate (out .3 when
 store .6) — if the store reaches .85 and output stays < .5, the gate is the last wall and gets its own cycle.
+
+P6 — RESULT (40126559204; store probe w2 at OOD-320 / far-1280, output-exact, then name in/ood/far | bg):
+  ckey only          store .81 / .54  out .24   .22/2.46/3.40 | 1.303/1.390/1.698
+  delta only         store .53 / .33  out .17   .34/3.74/3.84 | 1.277/1.391/1.612
+  ckey+delta         store .69 / .50  out .14   .48/4.05/4.33 | 1.287/1.377/1.593
+  ckey+delta+tied s1 store .69 / .50  out .23   .39/2.82/3.08 | 1.270/1.396/1.591
+  ckey+delta+tied s2 store .69 / .49  out .21   .34/2.96/3.51 | 1.268/1.377/1.587
+  ckey+delta+tied copy pressure: DU 2.20 (worse than mres+tied 1.78 and pmix 1.04)
+Conjunctive keys raise the store from .60/.25 to .81/.54 (prediction > .85 / > .6 narrowly MISSED). The delta rule, in
+the trained model, makes the store WORSE at 320 (.69) — unlike the numerical pre-check (.95): with learned values the
+error-correcting write subtracts what the (imperfect) read already returns, and the learner does not compensate; it
+does bring the best 4L background CE of any mres arm (1.59, base LIN 1.565). OOD-name < 1.8, far < 2.2, copy < 1.0: ALL
+MISSED. Output-exact stays .14–.24 while the store is .7–.8: the READOUT GATE is now unambiguously the last wall.
+Why the gate never learns on the dialogue task (stated): training names are 20 fixed names, so the vocab head learns
+them from weights (out .96 in-distribution) and the gate is never rewarded for opening; the eval then asks for copying
+of names the weights never saw. Real text has thousands of names — the training stream is the unrealistic part.
+P7 — PRE-REGISTRATION: same dialogue task with RANDOM names at training (--randnames 1, non-dense: still ONE copy
+event per sample = natural signal density, but no memorisation shortcut), eval unchanged. Fair: TF and base LIN get
+the same stream. Arms: TF, LIN base, ckey+pmix(+gconf) (s1, s2), ckey+tied1, plus ckey+pmix on fixed names and under
+copy pressure (delta dropped). PREDICT: ckey+pmix randnames OOD-name < 1.5 and output-exact > .6 (the gate now has a
+reason, the store is .81); TF randnames OOD-name stays > 3.5 (no mechanism); LIN base randnames > 3; far < 2.5.

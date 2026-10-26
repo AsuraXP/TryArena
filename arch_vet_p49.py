@@ -267,7 +267,7 @@ REMEN = ["b: nice to meet you {n}.", "b: {n}, are you ok?", "b: so {n}, what do 
 
 
 def dialogue(rng, names, nfill):
-    n = rng.choice(names); lines = [rng.choice(INTRO).format(n=n)]
+    n = rand_name(rng) if names is None else rng.choice(names); lines = [rng.choice(INTRO).format(n=n)]
     for _ in range(nfill): lines.append(rng.choice("ab") + ": " + rng.choice(LINES))
     rm = rng.choice(REMEN); pre, _ = rm.split("{n}"); lines.append(rm.format(n=n))
     txt = "\n".join(lines) + "\n"; start = len("\n".join(lines[:-1])) + 1 + len(pre)
@@ -412,7 +412,7 @@ def train_text(arm, d, seed, steps, B, L, log):
     m = A.TFMicro(256, d) if arm == "TF" else GRUCore(256, d) if arm == "GRU" else LINM.LIN(256, d, roles=LINROLES, pgru=PGRU, **LINKW) if arm == "LIN" else CKB(256, d, MSLOTS)
     opt = torch.optim.Adam(m.parameters(), lr=3e-3); t0 = time.time()
     for s in range(steps):
-        x, _ = dense_batch(rng, B, None if RANDNAMES else NAMES_TR, 6, L) if DENSE else text_batch(rng, B, NAMES_TR, rng.randint(1, 3), L)
+        x, _ = dense_batch(rng, B, None if RANDNAMES else NAMES_TR, 6, L) if DENSE else text_batch(rng, B, None if RANDNAMES else NAMES_TR, rng.randint(1, 3), L)
         if arm == "CKB":
             tau = 0.1 ** (s / max(steps - 1, 1)); gmin = GMIN0 * (1 - s / max(steps - 1, 1)); lg, bs, _ = m(x, tau=tau, gmin=gmin, states=True)
         else:
