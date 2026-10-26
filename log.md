@@ -7613,3 +7613,21 @@ event per sample = natural signal density, but no memorisation shortcut), eval u
 the same stream. Arms: TF, LIN base, ckey+pmix(+gconf) (s1, s2), ckey+tied1, plus ckey+pmix on fixed names and under
 copy pressure (delta dropped). PREDICT: ckey+pmix randnames OOD-name < 1.5 and output-exact > .6 (the gate now has a
 reason, the store is .81); TF randnames OOD-name stays > 3.5 (no mechanism); LIN base randnames > 3; far < 2.5.
+
+P7 — RESULT (40264603026; random-name dialogue training, ONE copy event per 320-byte sample, eval unchanged; s1 of
+ckey+pmix and ckey+pmix-fixed-names still running):
+  TF d64 133k                     name in 2.90 / ood 3.16 / far 3.42 | bg 1.411/1.402/2.874
+  LIN base d64 129k (dec .757)    3.00 / 3.50 / 3.59                  | bg 1.333/1.333/1.561
+  LIN ckey+tied1   (store .83/.52, out .66/.41)   .86 / 1.13 / 2.93    | bg 1.366/1.349/1.684
+  LIN ckey+pmix s2 (store .80/.54, out .75/.50)   .76 / 0.67 / 2.05    | bg 1.371/1.361/1.676
+  ckey+pmix copy pressure: DU 1.16 (store .80, out .19 on the dialogue probe — different distribution)
+PREDICTIONS: ckey+pmix OOD-name < 1.5 CONFIRMED (0.67); output-exact > .6 CONFIRMED (.75 — the gate OPENED once the
+training stream stopped rewarding memorisation; it tracks the store .80); base LIN > 3 CONFIRMED (3.50); far < 2.5
+CONFIRMED (2.05); "TF stays > 3.5" FALSIFIED (3.16 — TF gained .9 from random names too, but still spells unseen names
+at 3.2 nats/byte = no copy mechanism). Cost: +.04 in-range bg vs base LIN; LIN still far below TF at 4L (1.68 vs 2.87).
+Plain reading: on real dialogue bytes, with names never seen in training, our learner now recalls a name stated once
+earlier in the conversation at 0.67 nats/byte (≈ 3 of 4 bytes exactly right) where the fair Transformer is at 3.16 and
+the previous certified LIN at 3.50 — same stream, same steps, same params, no copy pressure, no oracle. This is the
+first "memory on text" result that is actually memory. What made it: (1) conjunctive 2-byte addresses (store .81),
+(2) a probability-mixture tied readout so a sharp read can win, (3) a training stream without a memorisation shortcut.
+Remaining: far (1280 bytes) store .54 -> 2.05 nats; seed 1; and the in-range +.04.
