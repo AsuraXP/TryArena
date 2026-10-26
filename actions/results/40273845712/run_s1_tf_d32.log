@@ -1,0 +1,15 @@
+  [TF d32 s1] step 0 ce 5.794 (0s)
+  [TF d32 s1] step 250 ce 2.259 (6s)
+  [TF d32 s1] step 500 ce 2.057 (13s)
+  [TF d32 s1] step 750 ce 1.952 (19s)
+  [TF d32 s1] step 1000 ce 1.869 (26s)
+  [TF d32 s1] step 1250 ce 1.666 (32s)
+  [TF d32 s1] step 1500 ce 1.614 (39s)
+  [TF d32 s1] step 1750 ce 1.731 (45s)
+  [TF d32 s1] step 2000 ce 1.715 (52s)
+  [TF d32 s1] step 2250 ce 1.552 (58s)
+  [TF d32 s1] step 2500 ce 1.490 (64s)
+  [TF d32 s1] step 2750 ce 1.562 (71s)
+  [TF d32 s1] step 2999 ce 1.514 (77s)
+[p49 TF d32 s1] params 42048 name-CE in 3.0348 ood 3.6922 far 3.8006 DENSE-unseen 3.7246 | bg 1.5109 1.5138 3.1888
+[P49] DONE

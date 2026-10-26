@@ -1,0 +1,15 @@
+  [TF d96 s1] step 0 ce 5.777 (0s)
+  [TF d96 s1] step 250 ce 2.092 (11s)
+  [TF d96 s1] step 500 ce 1.701 (21s)
+  [TF d96 s1] step 750 ce 1.571 (32s)
+  [TF d96 s1] step 1000 ce 1.536 (42s)
+  [TF d96 s1] step 1250 ce 1.378 (53s)
+  [TF d96 s1] step 1500 ce 1.341 (64s)
+  [TF d96 s1] step 1750 ce 1.478 (74s)
+  [TF d96 s1] step 2000 ce 1.431 (85s)
+  [TF d96 s1] step 2250 ce 1.323 (95s)
+  [TF d96 s1] step 2500 ce 1.264 (106s)
+  [TF d96 s1] step 2750 ce 1.313 (117s)
+  [TF d96 s1] step 2999 ce 1.276 (128s)
+[p49 TF d96 s1] params 273088 name-CE in 3.0369 ood 3.4287 far 3.4264 DENSE-unseen 4.3609 | bg 1.3191 1.3248 2.5393
+[P49] DONE
