@@ -7661,3 +7661,16 @@ with beta; verified to 1e-6), beta learned per store from init .5 / .2, vs beta=
 all on the random-name stream with ckey+pmix (reference P7: ood 0.67/0.85, far 2.05/2.49, store far .54/.58).
 PREDICT: beta init .5 gives far-store > .65 and far < 1.8 with ood unchanged (< 0.9); beta=1 again hurts at 320;
 sgate improves 4L bg but not far recall.
+
+F1 — RESULT (40303072723; random-name stream, ckey+pmix; ood / far, store far, out far | bg):
+  beta .2 (learned init)  0.82 / 1.85  store .53  out .55 | 1.379/1.364/1.631
+  beta .5                 0.91 / 2.26  store .52  out .55 | 1.350/1.344/1.589
+  beta 1 (full delta)     1.60 / 2.41  store .49  out .46 | 1.369/1.367/1.598
+  (sgate pending)
+"beta .5 -> far-store > .65" FALSIFIED: the far STORE does not move (.49–.53 for every beta; .54 without delta). The
+delta rule's numerical gain (.37 -> .81 at 1280) does not transfer to the trained model — the difference between the
+test and the model is the values: fixed random codes vs learned byte embeddings that cluster (vowels near vowels), so
+error-correcting writes subtract neighbours. Far improved anyway to 1.85 via the OUTPUT path (out .55 with a .53
+store = the gate now trusts a half-right store appropriately), and beta .5 gives the best 4L background (1.589).
+beta=1 hurts recall again (1.60), confirmed. Far-context store quality is still open; the honest statement is that
+the store is exact for ~80% of unseen-name bytes at 320 B and ~53% at 1280 B.
