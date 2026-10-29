@@ -313,5 +313,9 @@ class LIN(nn.Module):
         return out
 
     def forward(self, x, **kw):
+        with torch.device(x.device):   # device-agnostic: factory tensors (zeros/eye/tril) follow the input (CPU on Actions; GPU if ever run elsewhere)
+            return self._forward(x, **kw)
+
+    def _forward(self, x, **kw):
         if self.pgru or self.sgate or self.mres or self.gkey or (self.roles and not self.wgate and not self.delta and not getattr(self, "slow", False)): return self.forward_fast(x, **kw)
         return self.forward_loop(x, **kw)

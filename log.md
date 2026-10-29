@@ -7679,3 +7679,14 @@ F1 — sgate arm: ckey+pmix+surprise-gated writes (gate mean .59): ood 0.55 / fa
 favour: writing only the unpredictable bytes is what cleans the store — fewer writes, less mass from frequent n-grams —
 and it lifts every memory number (best ood, best far, best store at both lengths). Cost: 2 passes. Current best
 configuration for memory on text: sparse .01, kmult 32, nodecay, mres, ckey, tied 2, gconf, sgate; random-name stream.
+
+## L1 — RESULT (run 40301845817; hit the 315-min cap, partial curves)
+Store config inside the full-corpus LM, matched at equal bytes_seen against the plain-LIN/TF runs:
+- d128 store s1/s2 at 15.4 MB: **1.454 / 1.447** vs plain LIN d128 1.421/1.404, TF d128 1.404 → store costs **+.03–.05** in-range. Pre-reg "≤1.36" FALSIFIED (would need the full 24 MB, but the gap at equal bytes is already the wrong sign).
+- d256 store at 18.4 MB: **1.333** vs plain LIN d256 1.320/1.332 (two runs) → parity, not gain. Pre-reg "≤1.29" FALSIFIED.
+- Store runs are 3–7× slower per step than plain (18k s vs 2.4–6.6k s to the same step). Verdict: the memory store buys recall (S1/F1), not next-byte CE on plain prose; keep store flags OFF for the fluency line, ON for the memory line. Banked.
+
+## Direction change (user): COHERENCE / DATA-EFFICIENCY LINE on ~100 MB
+Corpus: build_corpus.py → 100 MB cleaned public-domain English prose (nschaetti/SFGram-dataset, GitHub-hosted, sparse clone; nothing stored in repo). L1-style 6000-step CPU runs see ~24 MB; one pass over 100 MB at d128 ≈ 12 h → checkpoint/resume across chained Actions jobs is next.
+One-off exception, user-directed: a single 30-min GPU run of OUR core only (kaggle_lin_30min.py; d256 + d512, plain config, same batches), to see the 100 MB data-efficiency curve at a size we cannot reach on CPU. No Transformer arm there; the fair TF control stays on Actions. Pre-registration is in the script header (d256 1.45–1.55, d512 ≥ .05 lower, 16L within +.03, samples ≥ 80 % dictionary words).
+arch_vet_lin.py: forward now wraps `torch.device(x.device)` so factory tensors follow the input (no behaviour change on CPU).
