@@ -117,8 +117,11 @@ def main():
         """process (B,T) ids in segments; calls fn(logp_seg, seg_ids, s0) per segment and returns the list of its results.
         Full-vocab log-probs are never kept for more than one segment (memory)."""
         Bn, T = ids.shape; res = []
-        if arm == "full":
-            _, lp = base_fwd(ids); return [fn(lp, ids, 0)]
+        if arm == "full":   # one base forward over the whole context; log-probs materialised 1024 positions at a time (152k vocab x 8k tokens would not fit)
+            with torch.no_grad(): logits = base(input_ids=ids).logits
+            for c0 in range(0, T, 1024):
+                lp = F.log_softmax(logits[:, c0:c0 + 1024].float(), -1); res.append(fn(lp, ids[:, c0:c0 + 1024], c0)); del lp
+            del logits; return res
         state = mem.init_state(Bn, dev)
         for s0 in range(0, T, SEG):
             seg = ids[:, s0:s0 + SEG]; h, lp = base_fwd(seg)
