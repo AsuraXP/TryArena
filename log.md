@@ -7804,3 +7804,24 @@ phrasings); recall = teacher-forced argmax over answer tokens, not free generati
 (4) Qwen2.5-3B; (5) abstention: questions about facts never stated.
 Walls crossed in this line, each by an instrument: dead gate (unnormalised feature) → store blur on frozen states (key diag: 64 % → learned key 100 %)
 → 76 % writes (surprise can't select facts; learned write gate) → flat readout (scale 1 → 20).
+
+## RUN 8 PRE-REGISTRATION — generalisation beyond the training templates (2026-11-03)
+Run 7 earned P1–P5 only on the 4 templates the key/write-gate were trained on. The binding caveat is: does the module work on phrasings
+and statement forms it has never seen, when it has to generate the answer itself, and does it keep quiet about facts it was never told?
+Changes (kaggle_mem_test.py, commit after this entry; CPU smoke on a random tiny Llama + local BPE, BASE=smoke, all paths executed):
+  * variant `para` (EVAL ONLY): 3 new question forms + 3 new answer prefixes per kind, 3 new statement forms per kind with the answer
+    often MID-sentence ("so my dog, Kari, came by today"), 5 prefaces, 4 acknowledgements. Training sees none of it.
+  * `gen`: free-running greedy generation from the answer-prefix position (window/mem: re-run the partial segment from a state snapshot;
+    full: HF generate). Hit = decoded text == fact. No teacher forcing.
+  * `abstain`: 3 questions per conversation about a never-stated slot of a stated kind ("my cousin's name" when only dog/boss given).
+    fabricated = generated answer equals one of the stated facts of that kind. Compared mem vs full vs window.
+  * SEED env for the training stream (run 8 = seed 1, same as run 7; seed 2 is a later run).
+Predictions (written before launch):
+  P6 para argmax recall of mem ≥ 70 % of base-variant recall at 2k and 8k. Falsifier: para mem < 40 % at 8k (templates memorised).
+  P7 gen recall of mem within 10 points of argmax recall (first token was ~100 % in run 7; later tokens are conditioned on own output).
+  P8 mem fabricates on unstated questions ≤ full + 5 points. Falsifier: > full + 15 points (store is a kind-lookup, not a fact-lookup).
+  Honest expectation: P6 is the one most likely to fail — the write gate was trained with the answer always sentence-final after
+  "By the way, … is"; mid-sentence answers after "Oh, so my dog," are a real distribution shift for an 8-token-window gate. If it
+  fails, the fix is training on varied statement forms (which is legitimate: the templates are synthetic supervision, not test data),
+  and the test then needs a THIRD held-out set — noted now so it cannot be moved later.
+Launch: same two-GPU cell as run 7 (Qwen2.5-1.5B on GPU1, SmolLM2-135M on GPU0), LENS 2048,8192, STEPS 400, NGEN 12.
