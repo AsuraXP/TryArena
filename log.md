@@ -7833,3 +7833,41 @@ Value: same seed, same code as run 7 → GPU non-determinism only. Qwen2.5-1.5B 
 37.7 / 42.6 vs 46.0 / 53.8. SmolLM2-135M mem 87.4 / 91.3 vs 82.1 / 82.1. Confusion 0.0 all; ppl +0.04 % / +0.29 %; full/window identical.
 Conclusion: run-to-run band is ±5–9 points. P1–P5 still met on both runs (Qwen 8k ≥ 60 both times). Quote the band from now on:
 Qwen 8k mem 76–85 %, 135M 82–91 %. Run 8 (para / gen / abstain) is relaunched with the fixed cell.
+
+## RUN 8 RESULT — GENERALISATION FAILED (P6 falsified), plus an unregistered harm (2026-11-03)
+Code 884b791/04ebe06, same training as run 7 (4 base templates), seed 1. 135M 3029 s; Qwen crashed in the 8k GEN block (bug, below).
+Argmax recall, variant base → para (held-out phrasings, answer often mid-sentence):
+  Qwen-1.5B  mem 93.7 → 3.3 (2k), 86.1 → 1.5 (8k); copy arm 66.6 → 0.3, 80.0 → 1.4 (first_tok 88/97 → 2/2).  full 94.4 → 74.6, n/a → 57.5.
+  SmolLM2    mem 84.8 → 1.0 (2k), 82.7 → 0.6 (8k); copy 44.4 → 0.3, 62.5 → 0.2.  full 76.8 → 19.5, 45.2 → 11.7.
+  P6 (≥ 70 % relative) FALSIFIED by the falsifier margin and then some: the store retrieves nothing on unseen phrasings. Run 7 = template memorisation.
+Free generation (NGEN 12, 72 answers, 36 unstated probes per cell):
+  base variant: Qwen full 100 / window 13.9 / mem 79.2 (argmax 93.7 → P7 miss by 14.5); 135M full 76.4 / window 5.6 / mem 63.9 (−21).
+    Failure mode is the END of the answer: "Ashtoromim", "Enaror", "Enar/omulo" — the gate stays open past the fact. Not a retrieval error.
+  para variant: Qwen full 69.4 / window 12.5 / mem 1.4;  135M full 26.4 / window 1.4 / mem 1.4.
+    HARM NOT PRE-REGISTERED: with memory the base generates worse than without it on unseen questions ("the 1 the 1st", ", 1 the 1st floor").
+    The confidence gate opens on an out-of-distribution question and injects junk. Prose-perplexity no-harm (+0.04 %) did not cover this.
+  abstention (P8): base variant Qwen mem 33.3 % fabricated vs full 55.6 % (window 52.8); 135M mem 22.2 vs full 83.3 (window 72.2). Met.
+    para: mem 2.8 / 0.0 % — meaningless, it outputs nothing usable. Also note full-context Qwen hands back the WRONG person's name on 56–78 %
+    of never-stated questions: the comparison arm confabulates heavily; that is the thing we are trying to remove.
+  Confusion: mem 0.0–1.4 % everywhere vs full 11–32 % under free generation. Still the cleanest number in the table.
+Crash: Qwen 8k GEN window arm — question answer started exactly on a segment boundary → empty segment → reshape error. Eval-code bug; fixed
+  (prefix segment is (a-1)//SEG). 8k GEN for Qwen missing (full arm 8k gen: 80.6 recall, 13.9 confusion, 77.8 fabricated, 955 s).
+Verdict: P6 fail, P7 fail (by margin), P8 pass on trained templates only, new harm found. The module as trained is a template matcher.
+
+## RUN 9 PRE-REGISTRATION — train on varied phrasings, test on the frozen held-out set
+Commit 91b9f79 (+ this entry). Changes:
+  * TRAINV=multi (default): training samples from TRAIN_Q (7 question forms + prefixes per kind) and TRAIN_S (7 statement forms per kind, answer
+    in any position), 7 prefaces, 5 acknowledgements. The PARA_* held-out set is untouched and disjoint from the training pool by construction
+    (checked by eye: no string shared). The base templates are a subset of the training pool, so variant base remains a trained-on reference.
+  * stop token: the token after each answer gets answer weight in the LM loss (teaches the gate to close; targets the "Ashtoromim" failure).
+  * variants paraq (held-out QUESTIONS, trained statements) and paras (held-out STATEMENTS, trained questions) on mem/copy arms, to locate
+    any remaining failure on the read side vs the write side.
+  * gen boundary crash fixed.
+Predictions:
+  P6' para mem argmax recall ≥ 60 % at 2k and 8k on Qwen (≥ 50 % on 135M). Falsifier: < 30 % → 7 forms per kind do not teach the
+      phrasing-invariance; the key needs a different input (e.g. the base's own question representation), not more templates.
+  P7' gen recall of mem within 10 points of argmax on base AND para variants.
+  P9  no-harm on unseen questions: para gen recall of mem ≥ window (memory never makes the base worse). Falsifier: mem < window − 5.
+  P8  as before (fabricated ≤ full + 5) — now measured on para too, where it is meaningful.
+  If paraq ≫ paras: the write gate is the wall (mid-sentence facts not stored). If paras ≫ paraq: the question key is the wall.
+Cost: argmax eval 2 extra variants on 2 arms (+~5 min Qwen); gen unchanged. Expect ~55 min Qwen.
