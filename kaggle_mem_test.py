@@ -50,7 +50,7 @@ SEG = int(os.environ.get("SEG", 512)); FULLMAX = int(os.environ.get("FULLMAX", 8
 STEPS = int(os.environ.get("STEPS", 600)); B = int(os.environ.get("B", 4)); TRAIN_LEN = int(os.environ.get("TRAIN_LEN", 2048))
 NF_TRAIN = int(os.environ.get("NF", 16)); NEVAL = int(os.environ.get("NEVAL", 40)); LENS = [int(x) for x in os.environ.get("LENS", "2048,8192,16384").split(",")]
 GFLOOR = float(os.environ.get("GFLOOR", 0.05)); AUXW = float(os.environ.get("AUXW", 1.0)); MODULE = os.environ.get("MODULE", "learned"); CONW = float(os.environ.get("CONW", 1.0)); WGW = float(os.environ.get("WGW", 1.0))
-SEED = int(os.environ.get("SEED", 1)); NGEN = int(os.environ.get("NGEN", 12)); DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
+SEED = int(os.environ.get("SEED", 1)); TRAINV = os.environ.get("TRAINV", "multi"); NGEN = int(os.environ.get("NGEN", 12)); DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
 WORK = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.path.abspath("work"); os.makedirs(WORK, exist_ok=True)
 TAG = re.sub(r"[^A-Za-z0-9]+", "_", BASE)
 logf = open(f"{WORK}/mem_{TAG}.log", "w")   # fresh log per run (append mode mixed runs)
@@ -66,7 +66,33 @@ FACTS = [  # (statement template, question, answer prefix) ; {A} = the random an
     ("the {thing} config lives at {A}", "where does the {thing} config live?", "The {thing} config lives at"),
     ("the {thing} meeting is on {A}", "when is the {thing} meeting?", "The {thing} meeting is on"),
 ]
-# held-out phrasings (EVAL ONLY, variant "para").  {A} may sit mid-sentence in statements.
+# TRAINING pools (variant "multi", run 9+): varied forms the module trains on.  The PARA_* lists below stay frozen and held out.
+TRAIN_Q = [
+    [("what is my {rel}'s name?", "Your {rel}'s name is"), ("what's my {rel} called?", "Your {rel} is called"), ("tell me my {rel}'s name.", "Your {rel}'s name is"),
+     ("my {rel}'s name was what again?", "It was"), ("could you repeat my {rel}'s name?", "Of course, your {rel}'s name is"), ("name of my {rel}?", "Your {rel} is named"),
+     ("what did I say my {rel} is called?", "You said your {rel} is called")],
+    [("what is the order number for the {thing}?", "The order number for the {thing} is"), ("what's the {thing} order number?", "The {thing} order number is"),
+     ("order number for the {thing}, please.", "It is"), ("what order number did the {thing} get?", "The {thing} got order number"), ("remind me of the {thing} order number.", "The {thing} order number is"),
+     ("do you have the order number for the {thing}?", "Yes, it is"), ("which number is the {thing} order?", "The {thing} order is number")],
+    [("where does the {thing} config live?", "The {thing} config lives at"), ("where is the {thing} config?", "The {thing} config is at"), ("what's the path of the {thing} config?", "The path is"),
+     ("location of the {thing} config?", "It is at"), ("where did I put the {thing} config?", "You put it at"), ("do you know where the {thing} config file is?", "Yes, it is at"),
+     ("remind me where the {thing} config lives.", "The {thing} config lives at")],
+    [("when is the {thing} meeting?", "The {thing} meeting is on"), ("what day is the {thing} meeting?", "The {thing} meeting is on"), ("when do we meet about the {thing}?", "You meet on"),
+     ("the {thing} meeting is when?", "It is on"), ("do you remember when the {thing} meeting is?", "Yes, it is on"), ("date of the {thing} meeting?", "The {thing} meeting is on"),
+     ("when did I schedule the {thing} meeting?", "You scheduled it for")],
+]
+TRAIN_S = [
+    ["my {rel}'s name is {A}", "my {rel} is called {A}", "I have a {rel} named {A}", "{A} is my {rel}'s name", "my {rel}, {A}, says hello", "just so you know, {A} is my {rel}", "I call my {rel} {A}"],
+    ["the order number for the {thing} is {A}", "the {thing} order number is {A}", "{A} is the order number for the {thing}", "I ordered the {thing}, order number {A}",
+     "the {thing} order came back as {A}", "for the {thing}, order {A}", "order number {A} is for the {thing}"],
+    ["the {thing} config lives at {A}", "the {thing} config is at {A}", "{A} holds the {thing} config", "I put the {thing} config in {A}", "the {thing} config file is {A}",
+     "look in {A} for the {thing} config", "the path for the {thing} config is {A}"],
+    ["the {thing} meeting is on {A}", "we meet about the {thing} on {A}", "{A} is when the {thing} meeting happens", "I scheduled the {thing} meeting for {A}",
+     "the {thing} meeting, {A}, is confirmed", "put the {thing} meeting down for {A}", "the {thing} meeting date is {A}"],
+]
+TRAIN_PREF = ["By the way,", "Oh and", "Note:", "For the record,", "One thing:", "Remember this:", "FYI,"]
+TRAIN_ACK = ["Noted.", "Okay.", "Sure, I'll keep that in mind.", "Got it, thanks.", "Alright."]
+# held-out phrasings (EVAL ONLY, variant "para").  FROZEN 2026-11-03 before run 8; never trained on, never edited.  {A} may sit mid-sentence in statements.
 PARA_Q = [  # per kind: list of (question, answer prefix)
     [("remind me, what's my {rel} called?", "Your {rel} is called"), ("do you remember my {rel}'s name?", "Yes, your {rel}'s name is"), ("who is my {rel} again?", "Your {rel} is")],
     [("can you tell me the order number for the {thing}?", "Sure, the {thing} order number is"), ("which order number did I give you for the {thing}?", "You gave me"), ("I need the {thing} order number again.", "It is")],
@@ -88,11 +114,12 @@ def make_fact(r, i, variant="base"):
     """fact tuple: (kind, slot, A, statement_pre, question, answer_prefix, statement_post, preface, ack).  Statement = pre + " " + A + post."""
     kind = i % 4; t = FACTS[kind]; slot = {"rel": RELS[r.randrange(len(RELS))], "thing": THINGS[r.randrange(len(THINGS))]}
     A = [rname(r), str(r.randint(10000, 999999)), f"/srv/{rname(r).lower()}/{rname(r).lower()}.yml", f"{MONTHS[r.randrange(12)]} {r.randint(1,28)}"][kind]
-    if variant == "para":
-        st = r.choice(PARA_S[kind]).format(A="\x00", **slot); q, ap = r.choice(PARA_Q[kind]); pre, post = st.split("\x00")
-        return kind, slot, A, pre.rstrip(), q.format(**slot), ap.format(**slot), post, r.choice(PREFACES), r.choice(ACKS)
-    st = t[0].format(A="\x00", **slot); pre, post = st.split("\x00")
-    return kind, slot, A, pre.rstrip(), t[1].format(**slot), t[2].format(**slot), post, "By the way,", "Noted."
+    sv = "para" if variant in ("para", "paras") else ("multi" if variant == "multi" else "base")
+    qv = "para" if variant in ("para", "paraq") else ("multi" if variant == "multi" else "base")
+    st = {"para": lambda: r.choice(PARA_S[kind]), "multi": lambda: r.choice(TRAIN_S[kind]), "base": lambda: t[0]}[sv]().format(A="\x00", **slot); pre, post = st.split("\x00")
+    q, ap = {"para": lambda: r.choice(PARA_Q[kind]), "multi": lambda: r.choice(TRAIN_Q[kind]), "base": lambda: (t[1], t[2])}[qv]()
+    pref, ack = {"para": (r.choice(PREFACES), r.choice(ACKS)), "multi": (r.choice(TRAIN_PREF), r.choice(TRAIN_ACK)), "base": ("By the way,", "Noted.")}[sv]
+    return kind, slot, A, pre.rstrip(), q.format(**slot), ap.format(**slot), post, pref, ack
 
 def load_filler():
     p = f"{WORK}/prose_fill.txt"
@@ -193,11 +220,11 @@ def main():
         wm = torch.zeros(len(convs), T)
         for i, (c, spans, _, ss) in enumerate(convs):
             ids[i, :len(c)] = torch.tensor(c); mask[i, :len(c)] = 1.0
-            for a, b, _ in spans: mask[i, a:b] = 6.0            # answer tokens weighted up
+            for a, b, _ in spans: mask[i, a:min(b + 1, len(c))] = 6.0   # answer tokens + the token after (the stop; run 8: "Ashtoromim")
             for a, b, _ in ss: wm[i, a:b] = 1.0                 # write targets: statement answer tokens
         return ids.to(dev), mask.to(dev), wm.to(dev)
     for s in range(STEPS):
-        convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8) for _ in range(B)]; ids, w, wm = pad_batch(convs); tot = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8, variant=TRAINV) for _ in range(B)]; ids, w, wm = pad_batch(convs); tot = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         # (question pre-answer position, statement pre-answer position) pairs per conversation, for the contrastive key loss
         pairs = [];  # (conv i, qpos, spos)
         for i, (c, spans, facts, ss) in enumerate(convs):
@@ -245,8 +272,8 @@ def main():
                     conf += any(f[2].strip() == ptxt for j, f in enumerate(facts) if j != qi and f[0] == kind)
         return {"recall": round(100 * hit / max(1, tot), 1), "first_tok": round(100 * first_ok / max(1, tot), 1), "tok_acc": round(100 * tk_ok / max(1, tk_n), 1), "confusion": round(100 * conf / max(1, tot), 1), "n_answers": tot}
     for T in LENS:
-        for variant in ["base", "para"]:
-            for arm in ["full", "window", "mem", "copy"]:   # copy = diagnostic: gate forced to 1 (pure retrieval; shows whether the store holds the facts)
+        for variant in ["base", "para", "paraq", "paras"]:   # paraq/paras split the held-out failure: question side vs statement side
+            for arm in (["full", "window", "mem", "copy"] if variant in ("base", "para") else ["mem", "copy"]):   # copy = diagnostic: gate forced to 1 (pure retrieval; shows whether the store holds the facts)
                 t1 = time.time(); res = evaluate(T, arm, variant=variant); log(f"[RESULT {TAG}] len {T} variant {variant} arm {arm}: {res} ({time.time()-t1:.0f}s)")
 
     # ---------------- free-running generation + abstention (no teacher forcing)
@@ -275,19 +302,19 @@ def main():
             nstated = len(facts) - nunstated if nunstated else len(facts)
             try:
                 # state snapshot at the start of the segment that holds the first question (all questions sit in the tail)
-                a0 = min(a for a, b, q in spans); s0 = (a0 // SEG) * SEG; st = None
+                a0 = min(a for a, b, q in spans); s0 = ((a0 - 1) // SEG) * SEG; st = None
                 if arm != "full":
                     st = mem.init_state(1, dev)
                     for ss0 in range(0, s0, SEG):
                         seg = ids[:, ss0:ss0 + SEG]; h, lp = base_fwd(seg)
                         if arm == "mem": lp, st = mem(h, lp, seg, st)
                 for a, b, qi in spans:
-                    if (a // SEG) * SEG != s0:   # a later question spilled into the next segment: advance the snapshot
-                        for ss0 in range(s0, (a // SEG) * SEG, SEG):
+                    if ((a - 1) // SEG) * SEG != s0:   # a later question spilled into the next segment: advance the snapshot (prefix segment never empty)
+                        for ss0 in range(s0, ((a - 1) // SEG) * SEG, SEG):
                             if arm != "full":
                                 seg = ids[:, ss0:ss0 + SEG]; h, lp = base_fwd(seg)
                                 if arm == "mem": lp, st = mem(h, lp, seg, st)
-                        s0 = (a // SEG) * SEG
+                        s0 = ((a - 1) // SEG) * SEG
                     f = facts[qi] if qi >= 0 else facts[nstated + (-1 - qi)]
                     gen = generate(ids[:, :a], arm, st, s0, maxnew=(b - a) + 3); txt = clean(tok.decode(gen)); kind = f[0]
                     if qi >= 0:
