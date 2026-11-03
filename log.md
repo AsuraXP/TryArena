@@ -7916,3 +7916,13 @@ Predictions: P10 para argmax recall of mem ≥ 45 % at 2k (Qwen) — the key top
   Falsifier: < 25 %.  Base-variant (trained phrasings, new conversations) ≥ 80 % at 2k — falsifier < 60 % (then WIN=1 broke multi-token copy).
   P9 holds: para gen mem ≥ window.  Confusion ≤ 2 %.  135M: para ≥ 30 %.
   If P10 passes, the next lever is known and cheap (more pairs); if the base-variant falsifier fires, revert WIN to 2-4 keeping the late/EMA streams.
+
+## RUN 10 — VOID (bug), 2026-11-03. Not a result about the meaning key.
+Signature: key infoNCE 4.3–5.4 for 600 steps (= ln(batch), chance), write gate BCE ≈ 1.0 with write frac 0.3–0.6, gate at its 0.05 floor,
+mem == window to the decimal on every cell, copy arm 0.0 %. Same input scored 66 % NN top-1 in the diagnostic the same day.
+Cause: LearnedKeyMemory._windows carried `full[:, -(win-1):]` across segments; for win=1 that is `full[:, -0:]` = the WHOLE segment, so
+every segment after the first built its keys/write-gate features from the PREVIOUS segment's tokens. Fixed: `full[:, L:]`.
+test_memory_module.py added (segment-carry equality for win 1/2/8 × ema on/off; forward/backward with nh=2). Confirmed: the old code
+fails the test, the fixed code passes. Run 10 predictions stand unchanged for the re-run (run 10b).
+Cost of the bug: 55 min GPU + 1 h wall. Lesson (ledger): any new path through the state carry gets a two-segment-equals-one-pass test
+before a GPU run — that test takes 2 s.

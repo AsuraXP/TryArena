@@ -152,7 +152,7 @@ class LearnedKeyMemory(nn.Module):
             state["ema"] = e.detach(); fs.insert(1, self.emn(torch.stack(es, 1)))
         f = torch.cat(fs, -1); D = f.shape[-1]
         prev = state["hist"] if state["hist"] is not None else torch.zeros(B, self.win - 1, D, device=f.device)
-        full = torch.cat([prev, f], 1); state["hist"] = full[:, -(self.win - 1):].detach()
+        full = torch.cat([prev, f], 1); state["hist"] = full[:, L:].detach()   # last win-1 tokens. NOT full[:, -(win-1):]: for win=1 that is full[:, -0:] == everything → run 10 keyed every segment on the PREVIOUS segment (void run)
         return torch.cat([full[:, i:i + L] for i in range(self.win)], -1)        # window ends at t: tokens t-win+1 .. t
 
     def forward(self, h, base_logp, x, state, targets=None, gfloor=0.0, force_g=None):
