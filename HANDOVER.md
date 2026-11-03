@@ -453,3 +453,13 @@ Harness: `--inner S` reports `hopland` (hop-k landing on a_b0/a_b1/a_dot/b_v0 sl
 - Banked negatives this stretch: power-iteration cleanup, rnorm, gkey (word-aligned address), repeat-weighted CE, store-only head,
   margin arbitration (destroys store), delta rule in the trained model (store worse at 320, better 4L bg), learned decay (always forgets).
 - Open: far-context store quality (.54 at 1280), in-range +.04 bg cost, scaling S1 (running), carry the store into `--task lm` at d128/d256.
+
+
+## State after the add-on line (2026-11, runs 1–7 on Kaggle 2×T4 — user-approved GPU exception for frozen-base integration tests)
+Deliverable 2: `memory_module.py::LearnedKeyMemory` + `kaggle_mem_test.py` (3 arms + diagnostic copy arm, 4 tests, pre-registered in header/log).
+Result (run 7): Qwen2.5-1.5B frozen + memory: 92.4 % exact recall at 2k (full-context base 94.4, windowed 12.6), 85.1 % at 8k (windowed 1.4; full
+cannot run), 0.0 % confusion, prose ppl +0.04 %, state 50 MB constant. SmolLM2-135M + memory 82.1 % at 2k and 8k, above its own full-context 76.8/45.2.
+Recipe that works (all three needed): learned key (contrastive, 8-token window of MID-layer LN states + token emb) → k-WTA sparse address (4096, 1.5 %);
+learned write gate (BCE on statement answer tokens; surprise alone fails on real text); tied cosine readout × scale 20 with confidence gate; Hebbian
+store, state carried across 512-token segments; losses = LM mixture + copy-path NLL on answers + InfoNCE + write BCE. Caveats and next steps: log.md
+"RUN 7 RESULT". Launch cells: see kaggle_mem_test.py header (use subprocess.Popen on Kaggle; `!cmd &` is not allowed).

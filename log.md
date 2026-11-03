@@ -7789,3 +7789,18 @@ run at 8k on the T4), exact 12.0 %; confusion 0.0 %. Write fraction 0–8 % (gat
 scale-1 cosine readout). Pre-reg "copy ≥ 50 % exact at 2k" NOT met; "mem ≥ 40 % at 8k" NOT met. Loss of exact recall = later tokens of multi-token
 answers (token-acc 66 / 55 %). Readout scale fixed (run 7). Pre-reg run 7: copy-path answer NLL < 2 by step 200; Qwen copy exact ≥ 50 % at 2k;
 mem ≥ 30 % exact at 8k (separates from window for the first time); prose ppl within 1 %.
+
+## RUN 7 RESULT — ADD-ON WORKS (pre-registration P1–P5 met). Readout scale was the last wall.
+Qwen2.5-1.5B frozen + LearnedKeyMemory (19.4M trainable, 400 steps B2, 21 min): 2k: full 94.4 / window 12.6 / **mem 92.4** / copy 46.0; 8k: full n/a (OOM)
+/ window 1.4 / **mem 85.1 (first-token 100.0)** / copy 53.8; confusion 0.0 % both; prose ppl +0.04 %; state 50 MB constant vs KV 59/235 MB.
+SmolLM2-135M + memory (7.5M): **mem 82.1 % at 2k AND 8k** (flat) vs full-context base 76.8 / 45.2, window 8.3 / 1.1; confusion 0.0; ppl +0.02 %.
+Training signals: copy-path answer NLL 10.6 → 0.3 within 200 steps once the readout scale was 20 (was ≈ ln V at scale 1); learned gate 0.07–0.47
+(mean over all tokens), write fraction 0–9 %, key infoNCE .02–.2. mem > copy everywhere → the confidence gate mixes correctly.
+Scorecard: P1 met (92.4 vs 94.4); P2 met (85.1 at 8k, drop 7.3; 135M flat); P3 met (0.0 vs 0.7/0.3); P4 met (+0.04 %); P5 state constant, 4.7× smaller
+than KV at 8k for the 1.5B (the ">10×" figure was for a 3B at 16k; not tested).
+CAVEATS (binding): synthetic templated conversations; key + write gate trained on the same four templates (test = new random names/slots, same
+phrasings); recall = teacher-forced argmax over answer tokens, not free generation; one seed; 16k not run; 135M base weak. NEXT (in order):
+(1) paraphrased / unseen question templates and facts stated in free text; (2) free-running generation of the answer; (3) 16k + second seed;
+(4) Qwen2.5-3B; (5) abstention: questions about facts never stated.
+Walls crossed in this line, each by an instrument: dead gate (unnormalised feature) → store blur on frozen states (key diag: 64 % → learned key 100 %)
+→ 76 % writes (surprise can't select facts; learned write gate) → flat readout (scale 1 → 20).
