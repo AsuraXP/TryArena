@@ -91,7 +91,7 @@ class TokenMemory(nn.Module):
         copy_logits = (vhat @ self.E.t()) / vhat.norm(dim=-1, keepdim=True).clamp(min=1e-3) * torch.exp(self.ltau)   # cosine-ish tied readout
         feats = torch.cat([h] + [mm[..., None] for mm in matches] + [(mm > 0.1).float()[..., None] for mm in matches], -1)
         g = torch.sigmoid(self.gate(feats))                                               # (B,L,1) confidence of the copy path
-        logp = torch.logsumexp(torch.stack([torch.log1p(-g + 1e-6) + base_logp, torch.log(g + 1e-6) + F.log_softmax(copy_logits, -1)]), 0)
+        logp = torch.logaddexp(torch.log1p(-g + 1e-6) + base_logp, torch.log(g + 1e-6) + F.log_softmax(copy_logits, -1))   # (B,L,V), no stack copy
         state["n"] = state["n"] + beta.sum(1).detach()
         self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item()}
         return logp, state

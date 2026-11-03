@@ -112,18 +112,18 @@ def main():
     def base_fwd(ids):   # ids (B,L) -> hidden (B,L,d) float32, logp (B,L,V) float32
         out = base(input_ids=ids, output_hidden_states=True); return out.hidden_states[-1].float(), F.log_softmax(out.logits.float(), -1)
 
-    def run_stream(ids, arm, train=False):
-        """process (B,T) ids in segments; returns log-probs (B,T,V) for arms window/mem (full: whole context)."""
-        Bn, T = ids.shape
+    def run_stream(ids, arm, fn):
+        """process (B,T) ids in segments; calls fn(logp_seg, seg_ids, s0) per segment and returns the list of its results.
+        Full-vocab log-probs are never kept for more than one segment (memory)."""
+        Bn, T = ids.shape; res = []
         if arm == "full":
-            _, lp = base_fwd(ids); return lp
-        state = mem.init_state(Bn, dev); outs = []
+            _, lp = base_fwd(ids); return [fn(lp, ids, 0)]
+        state = mem.init_state(Bn, dev)
         for s0 in range(0, T, SEG):
             seg = ids[:, s0:s0 + SEG]; h, lp = base_fwd(seg)
-            if arm == "mem":
-                lp, state = mem(h, lp, seg, state)
-            outs.append(lp)
-        return torch.cat(outs, 1)
+            if arm == "mem": lp, state = mem(h, lp, seg, state)
+            res.append(fn(lp, seg, s0)); del lp
+        return res
 
     # ---------------- train the module (base frozen) on TRAIN_LEN conversations, segments of SEG carried
     r = random.Random(1); t0 = time.time(); mem.train()
@@ -134,11 +134,12 @@ def main():
             for a, b, _ in spans: mask[i, a:b] = 6.0            # answer tokens weighted up
         return ids.to(dev), mask.to(dev)
     for s in range(STEPS):
-        convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8) for _ in range(B)]; ids, w = pad_batch(convs)
-        lp = run_stream(ids, "mem", train=True)
-        nll = -lp[:, :-1].gather(-1, ids[:, 1:, None]).squeeze(-1); loss = (nll * w[:, 1:]).sum() / w[:, 1:].sum()
-        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(mem.parameters(), 1.0); opt.step()
-        if s % 25 == 0: log(f"  [train] step {s} loss {loss.item():.3f} gate {mem.last['g']:.3f} write {mem.last['beta']:.3f} theta {mem.theta.item():.2f} ({time.time()-t0:.0f}s)")
+        convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8) for _ in range(B)]; ids, w = pad_batch(convs); tot = [0.0, 0.0]
+        def step_fn(lp, seg, s0):   # per-segment loss + backward (state is detached between segments: truncated BPTT at SEG)
+            ws = w[:, s0:s0 + seg.shape[1]]; nll = -lp[:, :-1].gather(-1, seg[:, 1:, None]).squeeze(-1); l = (nll * ws[:, 1:]).sum() / (ids.shape[0] * ids.shape[1])
+            l.backward(); l = l * ids.shape[0] * ids.shape[1]; tot[0] += l.item(); tot[1] += ws[:, 1:].sum().item(); return None
+        opt.zero_grad(); run_stream(ids, "mem", step_fn); torch.nn.utils.clip_grad_norm_(mem.parameters(), 1.0); opt.step()
+        if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} write {mem.last['beta']:.3f} theta {mem.theta.item():.2f} ({time.time()-t0:.0f}s)")
     mem.eval(); torch.save(mem.state_dict(), f"{WORK}/mem_{TAG}.pt")
 
     # ---------------- evaluation
@@ -149,9 +150,8 @@ def main():
             nf = int(os.environ.get("NFEVAL", 0)) or max(8, min(40, T // 400)); c, spans, facts = conversation(er, tok, nf, T, sents)
             ids = torch.tensor([c], device=dev)
             if arm == "full" and ids.shape[1] > FULLMAX: return None
-            try: lp = run_stream(ids, arm)
+            try: pred = torch.cat(run_stream(ids, arm, lambda lp, seg, s0: lp[0].argmax(-1)), 0)
             except torch.cuda.OutOfMemoryError: torch.cuda.empty_cache(); return None
-            pred = lp[0].argmax(-1)
             for a, b, qi in spans:
                 tot += 1; eq = (pred[a - 1:b - 1] == ids[0, a:b]); ok = bool(eq.all()); hit += ok; tk_ok += int(eq.sum()); tk_n += eq.numel(); first_ok += int(eq[0])
                 if not ok:   # confusion: predicted answer equals another stated fact of the same kind
@@ -167,7 +167,7 @@ def main():
         pr = random.Random(seed); tot = cnt = 0.0; txt = " ".join(sents)
         for _ in range(n):
             o = pr.randrange(0, len(txt) - 12000); ids = torch.tensor([tok(txt[o:o + 12000], add_special_tokens=False)["input_ids"][:T]], device=dev)
-            lp = run_stream(ids, arm); tot += -lp[0, :-1].gather(-1, ids[0, 1:, None]).sum().item(); cnt += ids.shape[1] - 1
+            tot += sum(run_stream(ids, arm, lambda lp, seg, s0: -lp[0, :-1].gather(-1, seg[0, 1:, None]).sum().item())); cnt += ids.shape[1] - 1
         return round(math.exp(tot / cnt), 3)
     pw, pm = prose_ppl("window"), prose_ppl("mem"); log(f"[NOHARM {TAG}] prose ppl window {pw} mem {pm} (delta {100*(pm/pw-1):+.2f} %)")
     # ---------------- cost
