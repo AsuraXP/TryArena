@@ -7699,3 +7699,14 @@ arch_vet_lin.py: forward now wraps `torch.device(x.device)` so factory tensors f
 - Readability proxy: in-corpus-vocab word fraction d256 **0.935**, d512 0.851 (pre-reg ≥ .80 met). Samples: real words, local phrase syntax, quoted dialogue structure, no sentence-level meaning. Not coherent.
 - Harness artifact found: identical phrases recur across prompts AND across d256/d512 ("rose of partical corner on the eyes", "plaster father perfect"); none occur in the corpus → cause is the shared sampling generator seed (same uniform draws per position), not model collapse. Fix: seed per prompt. Noted, not rerun (one-off is closed).
 - Takeaway for the line: per-byte, a 1M model on prose is still on a steep learning curve at 26 MB (−.02 per 1.6 MB late in the run); coherence needs the full 100 MB (×4) and likely multiple passes. Length wall on prose moves to the top of the instrument list. GPU use ends here per plan; everything further runs on Actions with checkpoint/resume.
+
+## ADD-ON LINE — PRE-REGISTRATION (memory_module.py + kaggle_mem_test.py)
+Direction approved by user: our core as an add-on to a frozen pretrained small model (SmolLM2-135M sanity → Llama-3.2-3B).
+Arms: full-context base / windowed base (SEG 512) / windowed base + TokenMemory (state carried, O(1)). Tests: exact recall of
+stated facts by length 2k/8k/16k, cross-fact confusion, prose no-harm, state cost. Predictions P1–P5 are in the script header
+(verbatim): mem ≥ window+40 pts and within 10 of full at 2k; mem ≥ 60 % and flat 8k→16k; mem confusion < full at 8k; prose
+ppl within 1 %; module state constant and >10× smaller than the 3B's KV at 16k.
+Local smoke (random tiny base, embedding-dominated hidden): plumbing verified; store unit test (plant pair, recall after 190
+tokens and across segments) passes for mres 1/2; bug found+fixed before launch: read key used a separate projection from the
+write key (no content match until trained) → keys now shared. Smoke recall mem 20 % exact / 55 % token vs 0 for base arms
+(random base; two fact kinds collide on " is" → ceiling ~50 % there). No prediction from the smoke; the real base decides.

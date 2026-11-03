@@ -48,3 +48,11 @@ Retreating to a nearby provable exact thing. Calling copy/lookup "understanding"
 Never stop, never ask: decide, run, log, next. Compact log-style reports; plain talk when the user talks. Negatives and falsified predictions first. Every cycle: log.md block + log.jsonl line + commit + push to `arena/01a07767-tryarena` (never force-push; recovery = fetch + mixed reset + restore; torch reinstall from PyPI). Seed hygiene stands; no Transformer re-tests on old axes except the fair control; never rerun banked negatives as-is. Read HANDOVER.md first, then NOVELTY.md (walls with loops stated; the mechanisms that work: slot-binding core, random-truncation invariance, positive slopes, length-free). Build from those toward the core, not away from it — on the two open axes, not inside the read path.
 
 If a turn ends and the slope question was not attacked, the turn was wasted. Attack it.
+
+## Addendum 2026-11 — the core as an ADD-ON to a pretrained small model (user-approved direction)
+The deliverable now has two forms. (1) The learned core itself (unchanged goal above). (2) The same mechanisms re-cut as a
+frozen-base add-on (memory_module.py: novelty-gated write, sparse O(1) fast-weight store, tied copy readout with confidence
+gate), tested on a real pretrained small model. Claim to earn, exactly: "given what it was told, the model does not distort
+or forget it, at constant memory over conversation length" — measured as exact recall / cross-fact confusion / prose no-harm /
+state size, against the SAME base with full context and with a bounded window. Not claimed: knowledge, reasoning, fluency,
+"best small model". GPU use (Kaggle) is permitted for this integration test only because its cost is the frozen base forward.
