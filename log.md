@@ -7772,3 +7772,12 @@ neither was carried into the learned-key module. Fix (run 5): sparse k-WTA addre
 6 nats (p<.25 %), scale .5 → expected write fraction ~5 %, noise ~.15 of signal. New per-step readout: write fraction (β>.5). Pre-reg for run 5: write
 fraction < 0.15; copy-path answer NLL < 3 by step 300; copy arm ≥ 50 % at 2k; mem ≥ 40 % at 8k. Falsifier: write fraction low but copy NLL still > 6 →
 readout (tied cosine over V) is the remaining wall.
+
+## RUN 5 (stopped at step 50): write fraction 0.47–0.63 at theta 6 → SURPRISE CANNOT SELECT FACTS here
+Random novel sentences as filler are as surprising to a 135M/1.5B as random names (5–7 nats/token); digits are ~2.3 nats so order numbers would
+never be written at any threshold. The novelty gate worked at byte level (F1) only because dialogue filler was templated. Banked: surprise-only write
+gating is not a general fact selector. Fix (run 6): LEARNED write gate (MLP on the key window + surprise as one input), trained with an explicit
+target = statement answer tokens (BCE, pos_weight 20), because truncated BPTT across 512-token segments gives writes no retrieval gradient. Stated
+plainly: like the key, the write gate is trained from synthetic supervision; nothing is given at test time. Also: contrastive pairs now cover every
+answer-token offset (multi-token answers addressable). Pre-reg run 6: write fraction 0.01–0.05; write-gate BCE < 0.01; copy-path answer NLL < 3 by
+step 300; copy arm ≥ 50 % at 2k; mem ≥ 40 % at 8k. Falsifier: writes selective + keys matched but copy NLL > 6 → the Hebbian read/tied readout is the wall.

@@ -127,6 +127,9 @@ class LearnedKeyMemory(nn.Module):
         self.vp = nn.Linear(d, d, bias=False); nn.init.eye_(self.vp.weight)
         self.theta = nn.Parameter(torch.tensor(theta0)); self.ssc = nn.Parameter(torch.tensor(0.5))
         self.addr = nn.Linear(dkey, dk, bias=False); nn.init.orthogonal_(self.addr.weight)     # learned key -> sparse address (k-WTA)
+        # LEARNED write gate (run 5 finding: surprise cannot select facts — random prose filler is as surprising as names, digits are cheap).
+        # Trained with an explicit target (statement answer tokens) because truncated BPTT across segments gives writes no retrieval gradient.
+        self.wgate = nn.Sequential(nn.Linear(2 * d * win + 1, 128), nn.GELU(), nn.Linear(128, 1)); nn.init.constant_(self.wgate[-1].bias, -3.0)
         self.gate = nn.Sequential(nn.LayerNorm(d + 2), nn.Linear(d + 2, 64), nn.GELU(), nn.Linear(64, 1)); nn.init.constant_(self.gate[-1].bias, -2.0)
         self.ltau = nn.Parameter(torch.tensor(math.log(tau))); self.last = {}; self.aux_nll = None; self.keys = None
 
@@ -145,8 +148,9 @@ class LearnedKeyMemory(nn.Module):
         B, L, d = h.shape; dev = h.device; ex = self.E[x]
         with torch.no_grad():
             lp_prev = base_logp[:, :-1].gather(-1, x[:, 1:, None]).squeeze(-1); surpr = torch.cat([torch.full((B, 1), 2.0, device=dev), -lp_prev], 1)
-        beta = torch.sigmoid((surpr - self.theta) / F.softplus(self.ssc))
         wf = self._windows(h, ex, state); self.win_feats = wf.detach()                             # exposed: the driver re-keys pair positions for the contrastive loss
+        self.wlogit = self.wgate(torch.cat([wf, ((surpr - self.theta) / F.softplus(self.ssc))[..., None]], -1)).squeeze(-1)   # (B,L); surprise is one input
+        beta = torch.sigmoid(self.wlogit)
         Kd = F.normalize(self.key(wf), dim=-1); self.keys = Kd                                     # (B,L,dkey) unit dense keys (contrastive target)
         z = self.addr(Kd); top = z.topk(self.k, -1); Kf = torch.zeros_like(z).scatter(-1, top.indices, F.relu(top.values) + 1e-6)
         Kf = Kf / (Kf.norm(dim=-1, keepdim=True) + 1e-6)                                            # (B,L,dk) sparse unit address

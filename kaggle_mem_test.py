@@ -32,7 +32,7 @@ BASE = os.environ.get("BASE", "HuggingFaceTB/SmolLM2-135M")
 SEG = int(os.environ.get("SEG", 512)); FULLMAX = int(os.environ.get("FULLMAX", 8192))
 STEPS = int(os.environ.get("STEPS", 600)); B = int(os.environ.get("B", 4)); TRAIN_LEN = int(os.environ.get("TRAIN_LEN", 2048))
 NF_TRAIN = int(os.environ.get("NF", 16)); NEVAL = int(os.environ.get("NEVAL", 40)); LENS = [int(x) for x in os.environ.get("LENS", "2048,8192,16384").split(",")]
-GFLOOR = float(os.environ.get("GFLOOR", 0.05)); AUXW = float(os.environ.get("AUXW", 1.0)); MODULE = os.environ.get("MODULE", "learned"); CONW = float(os.environ.get("CONW", 1.0))
+GFLOOR = float(os.environ.get("GFLOOR", 0.05)); AUXW = float(os.environ.get("AUXW", 1.0)); MODULE = os.environ.get("MODULE", "learned"); CONW = float(os.environ.get("CONW", 1.0)); WGW = float(os.environ.get("WGW", 1.0))
 DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
 WORK = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.path.abspath("work"); os.makedirs(WORK, exist_ok=True)
 TAG = re.sub(r"[^A-Za-z0-9]+", "_", BASE)
@@ -136,21 +136,28 @@ def main():
     r = random.Random(1); t0 = time.time(); mem.train()
     def pad_batch(convs):
         T = max(len(c[0]) for c in convs); ids = torch.full((len(convs), T), tok.pad_token_id or 0, dtype=torch.long); mask = torch.zeros(len(convs), T)
+        wm = torch.zeros(len(convs), T)
         for i, (c, spans, _, ss) in enumerate(convs):
             ids[i, :len(c)] = torch.tensor(c); mask[i, :len(c)] = 1.0
             for a, b, _ in spans: mask[i, a:b] = 6.0            # answer tokens weighted up
-        return ids.to(dev), mask.to(dev)
+            for a, b, _ in ss: wm[i, a:b] = 1.0                 # write targets: statement answer tokens
+        return ids.to(dev), mask.to(dev), wm.to(dev)
     for s in range(STEPS):
-        convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8) for _ in range(B)]; ids, w = pad_batch(convs); tot = [0.0, 0.0, 0.0, 0.0, 0.0]
+        convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8) for _ in range(B)]; ids, w, wm = pad_batch(convs); tot = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         # (question pre-answer position, statement pre-answer position) pairs per conversation, for the contrastive key loss
         pairs = [];  # (conv i, qpos, spos)
         for i, (c, spans, facts, ss) in enumerate(convs):
-            sp = {fi: a - 1 for a, b, fi in ss}
-            pairs += [(i, a - 1, sp[fi]) for a, b, fi in spans if fi in sp and a > 0]
+            sp = {fi: (a, b) for a, b, fi in ss}
+            for a, b, fi in spans:   # every answer token j: question pos a-1+j <-> statement pos sa-1+j (same token offset)
+                if fi in sp and a > 0:
+                    sa, sb = sp[fi]; pairs += [(i, a - 1 + j, sa - 1 + j) for j in range(min(b - a, sb - sa))]
         qf, sf = {}, {}
         def step_fn(lp, seg, s0):   # per-segment loss + backward (state is detached between segments: truncated BPTT at SEG)
             ws = w[:, s0:s0 + seg.shape[1]]; nll = -lp[:, :-1].gather(-1, seg[:, 1:, None]).squeeze(-1)
             ans = (ws[:, 1:] > 1).float(); l = ((nll * ws[:, 1:]).sum() + AUXW * (mem.aux_nll * ans).sum()) / (ids.shape[0] * ids.shape[1])   # aux: copy path on answer tokens only
+            if MODULE == "learned":   # learned write gate: BCE against statement-answer targets (positives rare -> pos_weight)
+                wt = wm[:, s0:s0 + seg.shape[1]]; wl = F.binary_cross_entropy_with_logits(mem.wlogit, wt, pos_weight=torch.tensor(20.0, device=dev), reduction="sum") / (ids.shape[0] * ids.shape[1])
+                l = l + WGW * wl; tot[5] += wl.item() * ids.shape[0] * ids.shape[1]
             tot[2] += (mem.aux_nll * ans).sum().item(); tot[3] += ans.sum().item(); tot[4] += (nll * ans).sum().item()   # diagnostics: copy-path / mixed NLL on answer tokens
             if MODULE == "learned":   # stash detached window features at pair positions that fall in this segment
                 for j, (i, qp, spp) in enumerate(pairs):
@@ -164,7 +171,7 @@ def main():
                 kq = F.normalize(mem.key(torch.stack([qf[j] for j in js])), dim=-1); ks = F.normalize(mem.key(torch.stack([sf[j] for j in js])), dim=-1)
                 con = F.cross_entropy(kq @ ks.t() / 0.07, torch.arange(len(js), device=dev)); (CONW * con).backward()
         torch.nn.utils.clip_grad_norm_(mem.parameters(), 1.0); opt.step()
-        if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} (learned {mem.last['graw']:.4f}) write {mem.last['beta']:.3f} (frac>.5 {mem.last.get('wfrac', float('nan')):.3f}) theta {mem.theta.item():.2f} | answer-token NLL: copy-path {tot[2]/max(1,tot[3]):.3f} mixed {tot[4]/max(1,tot[3]):.3f} | key infoNCE {con.item():.3f} ({time.time()-t0:.0f}s)")
+        if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} (learned {mem.last['graw']:.4f}) write {mem.last['beta']:.3f} (frac>.5 {mem.last.get('wfrac', float('nan')):.3f}) theta {mem.theta.item():.2f} | answer-token NLL: copy-path {tot[2]/max(1,tot[3]):.3f} mixed {tot[4]/max(1,tot[3]):.3f} | key infoNCE {con.item():.3f} | write-gate BCE {tot[5]/max(1,tot[1]):.4f} ({time.time()-t0:.0f}s)")
     mem.eval(); torch.save(mem.state_dict(), f"{WORK}/mem_{TAG}.pt")
 
     # ---------------- evaluation
