@@ -7900,3 +7900,19 @@ Next (same instrument, ~12 min): data curve — train on 1/4, 1/2, all of a 3× 
 configs B/C/D. Pre-registered: if para all-facts rises monotonically with data and C reaches ≥ 65 % at full → run 10 with KEYL=0.5,0.75
 EMA=0.9 and the larger training stream (the key is data-limited, which training solves). If flat (±5) across fractions → the states do
 not carry the invariance at this granularity; pivot to addressing on the base's own answer token.
+
+## KEY DIAG 2b — DATA CURVE (2026-11-03): the key is data-limited and the meaning input generalises
+NTR 360 convs → 4957 pairs; dropout .3, wd .01; held-out para 412 pairs. all-facts top-1 at 1239 / 2478 / 4957 train pairs:
+  Qwen  B 45.4 / 57.5 / 59.0 | C late1+ema1 56.6 / 59.2 / 66.3 (same-kind 66.7 / 68.9 / 72.6) | D 48.3 / 57.8 / 61.2
+  135M  B 32.3 / 38.3 / 39.6 | C 33.3 / 44.2 / 48.3 | D 29.9 / 39.8 / 40.0
+Monotone in data for every config; C (3072-d, no surface window) is best and cheapest; ≈ +7 points per doubling; train set still 100 %.
+Pre-registered go line (rising, C ≥ 65 % at full) met: 66.3. Decision: run 10 = meaning key.
+## RUN 10 PRE-REGISTRATION — meaning key in the full add-on
+Module config (flags exist: 1d21b66 + WIN env): KEYL=0.75 (late layer only), EMA=0.9, WIN=1 → key/write-gate input = [LN(h_late), LN(EMA_late), LN(E[x])]
+  at the current token (3d) — config C plus the current token embedding (needed to address the 2nd/3rd token of a multi-token answer).
+Data: TRAINV=multi, TRAIN_LEN=1024 (facts twice as dense), STEPS=600, B=2 → ≈ 19k (question, statement) pairs vs ≈ 13k in run 9 at the same wall time.
+Eval: trimmed (no full-arm gen at 8k, NEVAL 24, NGEN 6).
+Predictions: P10 para argmax recall of mem ≥ 45 % at 2k (Qwen) — the key top-1 of 66 % is an upper bound, gate and value add losses.
+  Falsifier: < 25 %.  Base-variant (trained phrasings, new conversations) ≥ 80 % at 2k — falsifier < 60 % (then WIN=1 broke multi-token copy).
+  P9 holds: para gen mem ≥ window.  Confusion ≤ 2 %.  135M: para ≥ 30 %.
+  If P10 passes, the next lever is known and cheap (more pairs); if the base-variant falsifier fires, revert WIN to 2-4 keeping the late/EMA streams.
