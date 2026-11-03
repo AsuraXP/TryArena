@@ -89,7 +89,7 @@ def learned_key(train_n=int(os.environ.get("KTRAIN", 160)), test_n=30, win=8, st
     from transformers import AutoTokenizer, AutoModelForCausalLM
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu"); dt = torch.float16 if dev.type == "cuda" else torch.float32
     tok = AutoTokenizer.from_pretrained(BASE); base = AutoModelForCausalLM.from_pretrained(BASE, torch_dtype=dt).to(dev).eval()
-    E = base.get_input_embeddings().weight.float(); sents = K.load_filler(); nl = base.config.num_hidden_layers; L = nl // 2
+    E = base.get_input_embeddings().weight.float().detach(); sents = K.load_filler(); nl = base.config.num_hidden_layers; L = nl // 2
     def extract(seed, n):
         r = random.Random(seed); S, Q, KD, CID = [], [], [], []
         for i in range(n):
@@ -108,7 +108,7 @@ def learned_key(train_n=int(os.environ.get("KTRAIN", 160)), test_n=30, win=8, st
                 cs.append(window(tok_before(st + len("By the way, ") + len(f[3]) - len(f[2]) - 1))); cq.append(window(tok_before(qa + len(f[5])))); ck.append(f[0])
             if not ok: continue
             S += cs; Q += cq; KD += ck; CID += [i] * len(cs)
-        return torch.stack(S), torch.stack(Q), torch.tensor(KD), torch.tensor(CID)
+        return torch.stack(S).detach(), torch.stack(Q).detach(), torch.tensor(KD), torch.tensor(CID)   # detach: E carries autograd history
     S, Q, KD, CID = extract(100, train_n); St, Qt, KDt, CIDt = extract(900, test_n)
     din = S.shape[1]; key = nn.Sequential(nn.Linear(din, 512), nn.GELU(), nn.Linear(512, 256)).to(dev); opt = torch.optim.Adam(key.parameters(), lr=1e-3)
     print(f"[LEARNED-KEY {BASE}] layer {L} window {win} train pairs {len(S)} test pairs {len(St)} input dim {din}")
