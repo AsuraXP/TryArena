@@ -50,7 +50,7 @@ SEG = int(os.environ.get("SEG", 512)); FULLMAX = int(os.environ.get("FULLMAX", 8
 STEPS = int(os.environ.get("STEPS", 600)); B = int(os.environ.get("B", 4)); TRAIN_LEN = int(os.environ.get("TRAIN_LEN", 2048))
 NF_TRAIN = int(os.environ.get("NF", 16)); NEVAL = int(os.environ.get("NEVAL", 24)); LENS = [int(x) for x in os.environ.get("LENS", "2048,8192,16384").split(",")]
 GFLOOR = float(os.environ.get("GFLOOR", 0.05)); AUXW = float(os.environ.get("AUXW", 1.0)); MODULE = os.environ.get("MODULE", "learned"); CONW = float(os.environ.get("CONW", 1.0)); WGW = float(os.environ.get("WGW", 1.0))
-SEED = int(os.environ.get("SEED", 1)); TRAINV = os.environ.get("TRAINV", "multi"); NGEN = int(os.environ.get("NGEN", 8)); DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
+SEED = int(os.environ.get("SEED", 1)); TRAINV = os.environ.get("TRAINV", "multi"); NGEN = int(os.environ.get("NGEN", 8)); KEYL = [float(x) for x in os.environ.get("KEYL", "0.5").split(",")]; EMA = float(os.environ.get("EMA", 0.0)); DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
 WORK = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.path.abspath("work"); os.makedirs(WORK, exist_ok=True)
 TAG = re.sub(r"[^A-Za-z0-9]+", "_", BASE)
 logf = open(f"{WORK}/mem_{TAG}.log", "w")   # fresh log per run (append mode mixed runs)
@@ -187,15 +187,15 @@ def main():
         tok = AutoTokenizer.from_pretrained(BASE, token=os.environ.get("HF_TOKEN")); base = AutoModelForCausalLM.from_pretrained(BASE, torch_dtype=dt, token=os.environ.get("HF_TOKEN")).to(dev).eval()
     for p in base.parameters(): p.requires_grad_(False)
     E = base.get_input_embeddings().weight; d = E.shape[1]; V = E.shape[0]
-    nl = base.config.num_hidden_layers; HL = nl // 2 if MODULE == "learned" else nl   # learned key reads the MID layer (key diagnostic: L15 of 30 best)
-    mem = (LearnedKeyMemory(d, E) if MODULE == "learned" else TokenMemory(d, E, dk=DK, sparse=SPARSE, mres=MRES)).to(dev); opt = torch.optim.Adam(mem.parameters(), lr=1e-3)
-    nb = sum(p.numel() for p in base.parameters()); log(f"[SETUP] base {BASE} params {nb/1e6:.0f}M d {d} V {V} | module {MODULE} params {mem.n_params()} hidden layer {HL}/{nl} | SEG {SEG} FULLMAX {FULLMAX} | device {dev}")
+    nl = base.config.num_hidden_layers; HLS = [max(1, min(nl, round(f * nl))) for f in KEYL] if MODULE == "learned" else [nl]; HL = HLS[0]   # KEYL fractions of depth; first = mid (run 7 recipe)
+    mem = (LearnedKeyMemory(d, E, nh=len(HLS), ema=EMA) if MODULE == "learned" else TokenMemory(d, E, dk=DK, sparse=SPARSE, mres=MRES)).to(dev); opt = torch.optim.Adam(mem.parameters(), lr=1e-3)
+    nb = sum(p.numel() for p in base.parameters()); log(f"[SETUP] base {BASE} params {nb/1e6:.0f}M d {d} V {V} | module {MODULE} params {mem.n_params()} hidden layers {HLS}/{nl} ema {EMA} | SEG {SEG} FULLMAX {FULLMAX} | device {dev}")
     if BASE != "smoke": sents = load_filler()
     log(f"[SETUP] filler sentences {len(sents)}")
 
     @torch.no_grad()
     def base_fwd(ids):   # ids (B,L) -> hidden (B,L,d) float32, logp (B,L,V) float32
-        out = base(input_ids=ids, output_hidden_states=True); return out.hidden_states[HL].float(), F.log_softmax(out.logits.float(), -1)
+        out = base(input_ids=ids, output_hidden_states=True); return torch.cat([out.hidden_states[l].float() for l in HLS], -1), F.log_softmax(out.logits.float(), -1)
 
     def run_stream(ids, arm, fn):
         """process (B,T) ids in segments; calls fn(logp_seg, seg_ids, s0) per segment and returns the list of its results.

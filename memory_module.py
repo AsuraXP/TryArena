@@ -116,20 +116,24 @@ class LearnedKeyMemory(nn.Module):
       read   : vhat_t = key_t W ;  copy logits = E vhat (tied readout, real tokens only) ; gate g from (LN h, log1p match, |vhat|)
     Training signals (all in the main run): LM loss on the mixture, copy-path NLL on answer tokens, and InfoNCE between the key at the
     question's pre-answer position and the key at the same fact's statement pre-answer position (in-batch negatives)."""
-    def __init__(self, d, E, dkey=256, win=8, hid=512, chunk=128, tau=1.0, dk=4096, sparse=0.015, theta0=6.0):
+    def __init__(self, d, E, dkey=256, win=8, hid=512, chunk=128, tau=1.0, dk=4096, sparse=0.015, theta0=6.0, nh=1, ema=0.0):
+        """nh: number of base hidden-state streams concatenated in h (B,L,nh*d), e.g. mid + late layer ("meaning key", run 10: run 8/9
+        showed an 8-token window of one mid layer keys on surface wording).  ema>0: adds a causal EMA (decay ema) of the LAST stream as a
+        further feature stream -- a sentence-scale summary that does not depend on the exact last 8 tokens (state key "ema")."""
         """Run-4 lesson (arithmetic, logged): dense 256-d keys + writing 76 % of tokens = ~1500 writes/conversation, noise ~2.4x signal.
         So: (1) store address = k-WTA sparse code (dk, top `sparse`) of the learned key -> unrelated addresses overlap ~0;
         (2) write only unpredictable tokens: theta0 = 6 nats (p < .25 %); random names/numbers are 8+, prose mostly below."""
         super().__init__(); self.d, self.dkey, self.win, self.chunk, self.dk, self.k = d, dkey, win, chunk, dk, max(1, int(sparse * dk))
         self.register_buffer("E", E.detach().float(), persistent=False)
-        self.hn = nn.LayerNorm(d); self.en = nn.LayerNorm(d)
-        self.key = nn.Sequential(nn.Linear(2 * d * win, hid), nn.GELU(), nn.Linear(hid, dkey))
+        self.nh, self.ema = nh, ema; ns = nh + (1 if ema > 0 else 0) + 1   # feature streams per token: hidden streams (+ EMA) + token embedding
+        self.hn = nn.LayerNorm(d); self.en = nn.LayerNorm(d); self.emn = nn.LayerNorm(d)
+        self.key = nn.Sequential(nn.Linear(ns * d * win, hid), nn.GELU(), nn.Linear(hid, dkey))
         self.vp = nn.Linear(d, d, bias=False); nn.init.eye_(self.vp.weight)
         self.theta = nn.Parameter(torch.tensor(theta0)); self.ssc = nn.Parameter(torch.tensor(0.5))
         self.addr = nn.Linear(dkey, dk, bias=False); nn.init.orthogonal_(self.addr.weight)     # learned key -> sparse address (k-WTA)
         # LEARNED write gate (run 5 finding: surprise cannot select facts — random prose filler is as surprising as names, digits are cheap).
         # Trained with an explicit target (statement answer tokens) because truncated BPTT across segments gives writes no retrieval gradient.
-        self.wgate = nn.Sequential(nn.Linear(2 * d * win + 1, 128), nn.GELU(), nn.Linear(128, 1)); nn.init.constant_(self.wgate[-1].bias, -3.0)
+        self.wgate = nn.Sequential(nn.Linear(ns * d * win + 1, 128), nn.GELU(), nn.Linear(128, 1)); nn.init.constant_(self.wgate[-1].bias, -3.0)
         self.gate = nn.Sequential(nn.LayerNorm(d + 2), nn.Linear(d + 2, 64), nn.GELU(), nn.Linear(64, 1)); nn.init.constant_(self.gate[-1].bias, -2.0)
         self.tscale = nn.Parameter(torch.tensor(20.0))   # readout sharpness: cosine in [-1,1] × 20. Run 6: with scale 1 the copy distribution is
                                                           # near-uniform over V (NLL ≈ ln V) even when retrieval is right; gate can never open.
@@ -137,17 +141,22 @@ class LearnedKeyMemory(nn.Module):
 
     def n_params(self): return sum(p.numel() for p in self.parameters() if p.requires_grad)
     def init_state(self, B, device):
-        return {"W": torch.zeros(B, self.dk, self.d, device=device), "hist": None}
+        return {"W": torch.zeros(B, self.dk, self.d, device=device), "hist": None, "ema": None}
 
     def _windows(self, h, ex, state):
-        """(B,L,2d) per-token features -> (B,L,win*2d) causal windows, carrying the last win-1 tokens across segments."""
-        f = torch.cat([self.hn(h), self.en(ex)], -1); B, L, D = f.shape
+        """(B,L,nh*d) hidden streams + (B,L,d) token emb -> (B,L,win*ns*d) causal windows, carrying the last win-1 tokens across segments."""
+        B, L, _ = h.shape; hs = self.hn(h.view(B, L, self.nh, self.d)).flatten(2); fs = [hs, self.en(ex)]
+        if self.ema > 0:   # causal EMA of the last hidden stream (sentence-scale context), carried across segments
+            last = h[..., -self.d:]; e = state["ema"] if state["ema"] is not None else torch.zeros(B, self.d, device=h.device); es = []
+            for t in range(L): e = self.ema * e + (1 - self.ema) * last[:, t]; es.append(e)
+            state["ema"] = e.detach(); fs.insert(1, self.emn(torch.stack(es, 1)))
+        f = torch.cat(fs, -1); D = f.shape[-1]
         prev = state["hist"] if state["hist"] is not None else torch.zeros(B, self.win - 1, D, device=f.device)
         full = torch.cat([prev, f], 1); state["hist"] = full[:, -(self.win - 1):].detach()
         return torch.cat([full[:, i:i + L] for i in range(self.win)], -1)        # window ends at t: tokens t-win+1 .. t
 
     def forward(self, h, base_logp, x, state, targets=None, gfloor=0.0, force_g=None):
-        B, L, d = h.shape; dev = h.device; ex = self.E[x]
+        B, L, _ = h.shape; d = self.d; dev = h.device; ex = self.E[x]
         with torch.no_grad():
             lp_prev = base_logp[:, :-1].gather(-1, x[:, 1:, None]).squeeze(-1); surpr = torch.cat([torch.full((B, 1), 2.0, device=dev), -lp_prev], 1)
         wf = self._windows(h, ex, state); self.win_feats = wf.detach()                             # exposed: the driver re-keys pair positions for the contrastive loss
@@ -165,7 +174,7 @@ class LearnedKeyMemory(nn.Module):
         state["W"] = W.detach(); vhat = torch.cat(outs, 1); match = torch.cat(ms, 1)
         En = self.E / self.E.norm(dim=-1, keepdim=True).clamp(min=1e-6)                             # true cosine: normalise both sides
         copy_logits = (vhat @ En.t()) / vhat.norm(dim=-1, keepdim=True).clamp(min=1e-3) * self.tscale.clamp(min=1.0)
-        feats = torch.cat([self.hn(h), torch.log1p(match.clamp(min=0))[..., None], torch.log1p(vhat.norm(dim=-1))[..., None]], -1)
+        feats = torch.cat([self.hn(h[..., :d]), torch.log1p(match.clamp(min=0))[..., None], torch.log1p(vhat.norm(dim=-1))[..., None]], -1)
         g = torch.sigmoid(self.gate(feats)) * (1 - gfloor) + gfloor
         if force_g is not None: g = torch.full_like(g, force_g)
         copy_lp = F.log_softmax(copy_logits, -1)
