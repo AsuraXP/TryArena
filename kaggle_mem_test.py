@@ -152,7 +152,7 @@ def main():
     def evaluate(T, arm, n=NEVAL, seed=777):
         er = random.Random(seed); hit = tot = conf = 0; tk_ok = tk_n = first_ok = 0
         for i in range(n):
-            nf = int(os.environ.get("NFEVAL", 0)) or max(8, min(40, T // 400)); c, spans, facts = conversation(er, tok, nf, T, sents)
+            nf = int(os.environ.get("NFEVAL", 0)) or max(8, min(40, T // 400)); c, spans, facts = conversation(er, tok, nf, int(T * 0.96), sents)   # 4 % slack under the cap
             ids = torch.tensor([c], device=dev)
             if arm == "full" and ids.shape[1] > FULLMAX: return None
             try: pred = torch.cat(run_stream(ids, arm, lambda lp, seg, s0: lp[0].argmax(-1)), 0)

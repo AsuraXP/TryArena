@@ -37,7 +37,9 @@ class TokenMemory(nn.Module):
         for p in self.kp: nn.init.orthogonal_(p.weight)                                   # write key == read key (same code; content addressing)
         self.vp = nn.Linear(d, d, bias=False); nn.init.eye_(self.vp.weight)                 # value = (near-)identity of the embedding
         self.theta = nn.Parameter(torch.tensor(2.0)); self.ssc = nn.Parameter(torch.tensor(1.0))   # novelty gate: surprise threshold / scale
-        self.gate = nn.Sequential(nn.Linear(d + 2 * mres, 64), nn.GELU(), nn.Linear(64, 1)); nn.init.constant_(self.gate[-1].bias, -3.0)
+        self.gate = nn.Sequential(nn.LayerNorm(d + 3 * mres), nn.Linear(d + 3 * mres, 64), nn.GELU(), nn.Linear(64, 1)); nn.init.constant_(self.gate[-1].bias, -2.0)
+        # gate inputs are normalised (LayerNorm; match mass enters as log1p): the 135M run showed a raw match mass in the hundreds
+        # saturating the gate at 0 from step 0 -> memory never consulted (null run, logged).
         self.ltau = nn.Parameter(torch.tensor(math.log(tau))); self.ema_a = 0.75
         self.aux = torch.zeros(()); self.last = {}
 
@@ -89,7 +91,8 @@ class TokenMemory(nn.Module):
             state["W"][r] = W.detach(); outs.append(torch.cat(o, 1)); matches.append(torch.cat(m, 1))
         vhat = sum(outs) / self.mres                                                     # (B,L,d)
         copy_logits = (vhat @ self.E.t()) / vhat.norm(dim=-1, keepdim=True).clamp(min=1e-3) * torch.exp(self.ltau)   # cosine-ish tied readout
-        feats = torch.cat([h] + [mm[..., None] for mm in matches] + [(mm > 0.1).float()[..., None] for mm in matches], -1)
+        feats = torch.cat([h] + [torch.log1p(mm.clamp(min=0))[..., None] for mm in matches] + [(mm > 0.1).float()[..., None] for mm in matches]
+                          + [F.cosine_similarity(o, vhat, dim=-1)[..., None] for o in outs], -1)   # agreement between key resolutions
         g = torch.sigmoid(self.gate(feats)) * (1 - gfloor) + gfloor                        # (B,L,1) confidence of the copy path (gfloor>0 only in training: keeps gradient alive)
         copy_lp = F.log_softmax(copy_logits, -1)
         logp = torch.logaddexp(torch.log1p(-g + 1e-6) + base_logp, torch.log(g + 1e-6) + copy_lp)   # (B,L,V), no stack copy

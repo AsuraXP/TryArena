@@ -7710,3 +7710,11 @@ Local smoke (random tiny base, embedding-dominated hidden): plumbing verified; s
 tokens and across segments) passes for mres 1/2; bug found+fixed before launch: read key used a separate projection from the
 write key (no content match until trained) → keys now shared. Smoke recall mem 20 % exact / 55 % token vs 0 for base arms
 (random base; two fact kinds collide on " is" → ceiling ~50 % there). No prediction from the smoke; the real base decides.
+
+## ADD-ON LINE — RUN 1 (SmolLM2-135M, 2×T4, 600 steps): NULL for the module; harness validated
+mem arm == window arm at every length (recall 9.9 / 0.9 / 0.1 % at 2k/8k/16k) — gate 0.000 from step 0, memory never consulted.
+Cause found in code: gate features included the raw store match-mass (grows to hundreds) → gate saturated at 0 at init. Fix: LayerNorm on
+gate inputs, match mass as log1p, resolution-agreement feature; plus (earlier) auxiliary copy-path loss on answer tokens and a 5 % training-only
+gate floor. Baselines (useful): full-context 135M recall 75.5 % at 2k (pre-reg said ≥90 %: falsified — a 135M misses a quarter of in-view facts),
+confusion 0.3 %; windowed base 9.9 % → 0.9 % → 0.1 %. Full arm at 8k skipped (conversation 2 % over cap; calibration slack added).
+Cost: module 19 MB constant vs base KV 47/189/377 MB. P1–P5 untested for the module in this run; they stand for run 2.
