@@ -131,7 +131,9 @@ class LearnedKeyMemory(nn.Module):
         # Trained with an explicit target (statement answer tokens) because truncated BPTT across segments gives writes no retrieval gradient.
         self.wgate = nn.Sequential(nn.Linear(2 * d * win + 1, 128), nn.GELU(), nn.Linear(128, 1)); nn.init.constant_(self.wgate[-1].bias, -3.0)
         self.gate = nn.Sequential(nn.LayerNorm(d + 2), nn.Linear(d + 2, 64), nn.GELU(), nn.Linear(64, 1)); nn.init.constant_(self.gate[-1].bias, -2.0)
-        self.ltau = nn.Parameter(torch.tensor(math.log(tau))); self.last = {}; self.aux_nll = None; self.keys = None
+        self.tscale = nn.Parameter(torch.tensor(20.0))   # readout sharpness: cosine in [-1,1] × 20. Run 6: with scale 1 the copy distribution is
+                                                          # near-uniform over V (NLL ≈ ln V) even when retrieval is right; gate can never open.
+        self.last = {}; self.aux_nll = None; self.keys = None
 
     def n_params(self): return sum(p.numel() for p in self.parameters() if p.requires_grad)
     def init_state(self, B, device):
@@ -161,7 +163,8 @@ class LearnedKeyMemory(nn.Module):
             S = torch.tril(torch.einsum("bik,bjk->bij", q, kw)); outs.append(torch.einsum("bij,bjd->bid", S, vv) + torch.einsum("bik,bkd->bid", q, W))
             ms.append(S.abs().sum(-1) + torch.einsum("bik,bk->bi", q.abs(), W.abs().sum(-1))); W = W + torch.einsum("bjk,bjd->bkd", kw, vv)
         state["W"] = W.detach(); vhat = torch.cat(outs, 1); match = torch.cat(ms, 1)
-        copy_logits = (vhat @ self.E.t()) / vhat.norm(dim=-1, keepdim=True).clamp(min=1e-3) * torch.exp(self.ltau)
+        En = self.E / self.E.norm(dim=-1, keepdim=True).clamp(min=1e-6)                             # true cosine: normalise both sides
+        copy_logits = (vhat @ En.t()) / vhat.norm(dim=-1, keepdim=True).clamp(min=1e-3) * self.tscale.clamp(min=1.0)
         feats = torch.cat([self.hn(h), torch.log1p(match.clamp(min=0))[..., None], torch.log1p(vhat.norm(dim=-1))[..., None]], -1)
         g = torch.sigmoid(self.gate(feats)) * (1 - gfloor) + gfloor
         if force_g is not None: g = torch.full_like(g, force_g)
