@@ -32,6 +32,7 @@ BASE = os.environ.get("BASE", "HuggingFaceTB/SmolLM2-135M")
 SEG = int(os.environ.get("SEG", 512)); FULLMAX = int(os.environ.get("FULLMAX", 8192))
 STEPS = int(os.environ.get("STEPS", 600)); B = int(os.environ.get("B", 4)); TRAIN_LEN = int(os.environ.get("TRAIN_LEN", 2048))
 NF_TRAIN = int(os.environ.get("NF", 16)); NEVAL = int(os.environ.get("NEVAL", 40)); LENS = [int(x) for x in os.environ.get("LENS", "2048,8192,16384").split(",")]
+GFLOOR = float(os.environ.get("GFLOOR", 0.05)); AUXW = float(os.environ.get("AUXW", 1.0))
 DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
 WORK = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.path.abspath("work"); os.makedirs(WORK, exist_ok=True)
 TAG = re.sub(r"[^A-Za-z0-9]+", "_", BASE)
@@ -121,7 +122,7 @@ def main():
         state = mem.init_state(Bn, dev)
         for s0 in range(0, T, SEG):
             seg = ids[:, s0:s0 + SEG]; h, lp = base_fwd(seg)
-            if arm == "mem": lp, state = mem(h, lp, seg, state)
+            if arm == "mem": lp, state = mem(h, lp, seg, state, targets=seg[:, 1:] if mem.training else None, gfloor=GFLOOR if mem.training else 0.0)
             res.append(fn(lp, seg, s0)); del lp
         return res
 
@@ -136,7 +137,8 @@ def main():
     for s in range(STEPS):
         convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8) for _ in range(B)]; ids, w = pad_batch(convs); tot = [0.0, 0.0]
         def step_fn(lp, seg, s0):   # per-segment loss + backward (state is detached between segments: truncated BPTT at SEG)
-            ws = w[:, s0:s0 + seg.shape[1]]; nll = -lp[:, :-1].gather(-1, seg[:, 1:, None]).squeeze(-1); l = (nll * ws[:, 1:]).sum() / (ids.shape[0] * ids.shape[1])
+            ws = w[:, s0:s0 + seg.shape[1]]; nll = -lp[:, :-1].gather(-1, seg[:, 1:, None]).squeeze(-1)
+            ans = (ws[:, 1:] > 1).float(); l = ((nll * ws[:, 1:]).sum() + AUXW * (mem.aux_nll * ans).sum()) / (ids.shape[0] * ids.shape[1])   # aux: copy path on answer tokens only
             l.backward(); l = l * ids.shape[0] * ids.shape[1]; tot[0] += l.item(); tot[1] += ws[:, 1:].sum().item(); return None
         opt.zero_grad(); run_stream(ids, "mem", step_fn); torch.nn.utils.clip_grad_norm_(mem.parameters(), 1.0); opt.step()
         if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} write {mem.last['beta']:.3f} theta {mem.theta.item():.2f} ({time.time()-t0:.0f}s)")

@@ -61,7 +61,7 @@ class TokenMemory(nn.Module):
             hs.append(torch.stack(outs, 1)); state["ema"] = e.detach()
         return hs
 
-    def forward(self, h, base_logp, x, state):
+    def forward(self, h, base_logp, x, state, targets=None, gfloor=0.0):
         """h: (B,L,d) base hidden states for tokens x (B,L); base_logp: (B,L,V) base log-probs for the NEXT token;
         x: token ids (B,L).  Returns mixed log-probs (B,L,V) and the updated state.  Causal: the prediction at t uses writes
         up to (key_{t-1} -> value_t) i.e. only tokens <= t."""
@@ -90,8 +90,11 @@ class TokenMemory(nn.Module):
         vhat = sum(outs) / self.mres                                                     # (B,L,d)
         copy_logits = (vhat @ self.E.t()) / vhat.norm(dim=-1, keepdim=True).clamp(min=1e-3) * torch.exp(self.ltau)   # cosine-ish tied readout
         feats = torch.cat([h] + [mm[..., None] for mm in matches] + [(mm > 0.1).float()[..., None] for mm in matches], -1)
-        g = torch.sigmoid(self.gate(feats))                                               # (B,L,1) confidence of the copy path
-        logp = torch.logaddexp(torch.log1p(-g + 1e-6) + base_logp, torch.log(g + 1e-6) + F.log_softmax(copy_logits, -1))   # (B,L,V), no stack copy
+        g = torch.sigmoid(self.gate(feats)) * (1 - gfloor) + gfloor                        # (B,L,1) confidence of the copy path (gfloor>0 only in training: keeps gradient alive)
+        copy_lp = F.log_softmax(copy_logits, -1)
+        logp = torch.logaddexp(torch.log1p(-g + 1e-6) + base_logp, torch.log(g + 1e-6) + copy_lp)   # (B,L,V), no stack copy
+        # auxiliary: copy-path NLL of the next token (B,L-1), so the store/readout learn WHAT to retrieve independently of the gate
+        self.aux_nll = -copy_lp[:, :-1].gather(-1, targets[:, :, None]).squeeze(-1) if targets is not None else None
         state["n"] = state["n"] + beta.sum(1).detach()
         self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item()}
         return logp, state
