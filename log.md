@@ -7781,3 +7781,11 @@ target = statement answer tokens (BCE, pos_weight 20), because truncated BPTT ac
 plainly: like the key, the write gate is trained from synthetic supervision; nothing is given at test time. Also: contrastive pairs now cover every
 answer-token offset (multi-token answers addressable). Pre-reg run 6: write fraction 0.01–0.05; write-gate BCE < 0.01; copy-path answer NLL < 3 by
 step 300; copy arm ≥ 50 % at 2k; mem ≥ 40 % at 8k. Falsifier: writes selective + keys matched but copy NLL > 6 → the Hebbian read/tied readout is the wall.
+
+## RUN 6 RESULT (learned key + learned write gate + sparse address; readout scale still 1) — FIRST RETRIEVAL ON A REAL MODEL
+Qwen-1.5B copy arm (argmax): 2k first-token **91.1 %** (window 57.9, full 98.7), exact 37.1 %; 8k first-token **81.6 %** (window 48.6; full arm cannot
+run at 8k on the T4), exact 12.0 %; confusion 0.0 %. Write fraction 0–8 % (gate BCE ~.001–.01), key infoNCE .02–.07. 135M copy: first-token 30.5 /
+28.0, token-acc 57.8 / 52.8 (weak, inverted; unexplained). mem == window still (gate shut; copy NLL 10.3 ≈ ln V − 1.6: flat copy distribution, the
+scale-1 cosine readout). Pre-reg "copy ≥ 50 % exact at 2k" NOT met; "mem ≥ 40 % at 8k" NOT met. Loss of exact recall = later tokens of multi-token
+answers (token-acc 66 / 55 %). Readout scale fixed (run 7). Pre-reg run 7: copy-path answer NLL < 2 by step 200; Qwen copy exact ≥ 50 % at 2k;
+mem ≥ 30 % exact at 8k (separates from window for the first time); prose ppl within 1 %.
