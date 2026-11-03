@@ -7726,3 +7726,12 @@ the copy path is right, so the suspect moves to retrieval on real hidden states:
 alike. Local stand-in (embedding-dominated hidden) could not show this. Actions: (1) LayerNorm on the hidden before key/value/gate; (2) INSTRUMENT
 before believing: diagnostic 'copy' arm (gate forced to 1) + per-step copy-path NLL on answer tokens in the training log. Pre-reg P1–P5 remain
 untested until the copy arm shows retrieval; if the copy arm is also ~window, the store itself fails on real states and that is the result.
+
+## ADD-ON LINE — RUN 3 (135M, instrumented): STORE DOES NOT RETRIEVE on real hidden states — mechanism negative
+copy-path answer-token NLL 10.49 → 7.26 over 275 steps (chance ln 49152 = 10.8); 'copy' arm (gate forced 1): recall 0.0 %, first-token 34.8 %
+(< windowed base 46.4 %). Learned gate → 0.0001 (correctly: nothing useful behind it). LayerNorm on hidden did not change it. Conclusion: the
+byte-level recipe (sparse keys learned jointly over thousands of steps) does not transfer by projecting a frozen LLM's last hidden state into the
+same store, at least not in 300 steps. Two hypotheses with different fixes: (a) fact identity not separable at the key position for any key
+function of these states; (b) separable, but k-WTA key learning too weak/slow. Instrument before mechanism: kaggle_key_diag.py — exact nearest-
+neighbour matching of question-position vs statement-position hidden states (raw / LN / EMA / mean-8 / +token-emb, three layers), top-1 among the
+conversation's facts and among same-kind facts. Decision rule pre-stated: NN top-1 > 80 % → fix addressing/learning; near chance → read elsewhere.
