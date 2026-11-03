@@ -19,6 +19,8 @@ phrasing at this data size and the add-on must address differently (e.g. let the
 import os, sys, random, time
 BASE = os.environ.get("BASE", "HuggingFaceTB/SmolLM2-135M"); NTR = int(os.environ.get("NTR", 120)); NTE = int(os.environ.get("NTE", 30))
 NF = int(os.environ.get("NF", 16)); T = int(os.environ.get("T", 2048)); STEPS = int(os.environ.get("STEPS", 1200)); WIN = 8
+DROP = float(os.environ.get("DROP", 0.3)); WD = float(os.environ.get("WD", 0.01)); FRACS = [float(x) for x in os.environ.get("FRACS", "0.25,0.5,1.0").split(",")]
+CONF = os.environ.get("CONF", "A,B,C,D,E,F").split(",")   # data curve (second diag run): train on fractions of the pool; 100 % train / 50 % held-out = memorisation
 WORK = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.path.abspath("work")
 sys.path.insert(0, f"{WORK}/TryArena"); import kaggle_mem_test as K
 
@@ -69,13 +71,15 @@ def main():
                     sub = sim[i].masked_fill(~(kd == kd[i]).to(dev), -2); topk += int(sub.argmax().item() == i)
             return 100 * top / n, 100 * topk / n
     for name, streams in CONFIGS.items():
-        torch.manual_seed(0); din = sum(TR[s][0].shape[1] for s in streams)
-        key = nn.Sequential(nn.Linear(din, 512), nn.GELU(), nn.Linear(512, 256)).to(dev); opt = torch.optim.Adam(key.parameters(), lr=1e-3); t1 = time.time()
+      if name[0] not in CONF: continue
+      for frac in FRACS:
+        torch.manual_seed(0); din = sum(TR[s][0].shape[1] for s in streams); npool = int(frac * len(KDtr))
+        key = nn.Sequential(nn.Linear(din, 512), nn.GELU(), nn.Dropout(DROP), nn.Linear(512, 256)).to(dev); opt = torch.optim.AdamW(key.parameters(), lr=1e-3, weight_decay=WD); t1 = time.time()
         for s in range(STEPS):
-            idx = torch.randint(0, len(KDtr), (256,)); ks, kq = F.normalize(key(feats(TR, streams, 0, idx)), dim=-1), F.normalize(key(feats(TR, streams, 1, idx)), dim=-1)
+            key.train(); idx = torch.randint(0, npool, (256,)); ks, kq = F.normalize(key(feats(TR, streams, 0, idx)), dim=-1), F.normalize(key(feats(TR, streams, 1, idx)), dim=-1)
             loss = F.cross_entropy(kq @ ks.t() / 0.07, torch.arange(len(idx), device=dev)); opt.zero_grad(); loss.backward(); opt.step()
-        pa, pk = evalnn(key, TEp, KDp, CIDp, streams); ba, bk = evalnn(key, TEb, KDb, CIDb, streams); ta, tk = evalnn(key, TR, KDtr, CIDtr, streams)
-        print(f"[KEYDIAG2 {BASE}] {name:20s} dim {din:6d} | infoNCE {loss.item():.3f} | HELD-OUT para top-1 all {pa:5.1f} % same-kind {pk:5.1f} % | base-variant all {ba:5.1f} % same-kind {bk:5.1f} % | train all {ta:5.1f} % ({time.time()-t1:.0f}s)", flush=True)
+        key.eval(); pa, pk = evalnn(key, TEp, KDp, CIDp, streams); ba, bk = evalnn(key, TEb, KDb, CIDb, streams); ta, tk = evalnn(key, TR, KDtr, CIDtr, streams)
+        print(f"[KEYDIAG2 {BASE}] {name:20s} train-pairs {npool:5d} dim {din:6d} | infoNCE {loss.item():.3f} | HELD-OUT para top-1 all {pa:5.1f} % same-kind {pk:5.1f} % | base-variant all {ba:5.1f} % same-kind {bk:5.1f} % | train all {ta:5.1f} % ({time.time()-t1:.0f}s)", flush=True)
     print(f"[KEYDIAG2 {BASE}] done {time.time()-t0:.0f}s")
 
 if __name__ == "__main__": main()

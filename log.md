@@ -7886,3 +7886,17 @@ Next: instrument-first (kaggle_key_diag2.py, ~5–8 min/model): which key INPUT 
 mid window (control) vs late-layer "meaning" token vs EMA context vs last layer.  Pre-registered reading in its header: best config
 < 40 % same-kind on para → no key over these states generalises; the add-on must address on the base's OWN answer token instead.
 > 70 % → run 10 uses that config (KEYL/EMA flags already in kaggle_mem_test.py, commit 1d21b66).
+
+## KEY DIAG 2 RESULT (2026-11-03) — meaning-layer input helps; key is data-starved
+1638 train pairs (variant multi, 120 convs), held-out para 412 pairs. NN top-1 all-facts / same-kind on held-out PARA (chance ≈ 6 / 25 %):
+  Qwen-1.5B: A mid-w8+emb-w8 (run 7-9 key) 31.8 / 56.8 | B +late1 41.3 / 63.1 | C late1+ema1 50.0 / 61.2 | D all 44.2 / 62.6 | E late-w8 39.8 / 58.3 | F last1+ema 44.7 / 52.4
+             base-variant held-out (trained phrasings, new convs): A 72 / 87, B-E 89-93 / 93-97.  Train set: 100 % for every config.
+  135M:      A 24.8 / 47.3 | B 25.7 / 48.5 | C 31.3 / 47.1 | D 27.7 / 48.3 | E 22.3 / 44.2 | F 31.8 / 42.0; base-variant 57-80 / 58-88; train 100 %.
+Reading: (1) the deep-layer single vector (C, 3072-d) beats the 24576-d surface window by +18 points on unseen phrasings → the base's
+"meaning" state carries phrasing invariance that the 8-token window does not. (2) 100 % train vs 50 % held-out = memorisation of
+1638 pairs; the result sits between the pre-registered stop (<40) and go (>70) lines. (3) Even on trained phrasings, held-out
+conversations give only 72 % for A (run 7's 94 % recall came from the 4 fixed templates).
+Next (same instrument, ~12 min): data curve — train on 1/4, 1/2, all of a 3× larger pool (NTR 360) with dropout .3 + weight decay .01,
+configs B/C/D. Pre-registered: if para all-facts rises monotonically with data and C reaches ≥ 65 % at full → run 10 with KEYL=0.5,0.75
+EMA=0.9 and the larger training stream (the key is data-limited, which training solves). If flat (±5) across fractions → the states do
+not carry the invariance at this granularity; pivot to addressing on the base's own answer token.
