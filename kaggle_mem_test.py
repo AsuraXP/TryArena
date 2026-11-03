@@ -48,9 +48,9 @@ import os, sys, time, json, math, random, re, subprocess
 BASE = os.environ.get("BASE", "HuggingFaceTB/SmolLM2-135M")
 SEG = int(os.environ.get("SEG", 512)); FULLMAX = int(os.environ.get("FULLMAX", 8192))
 STEPS = int(os.environ.get("STEPS", 600)); B = int(os.environ.get("B", 4)); TRAIN_LEN = int(os.environ.get("TRAIN_LEN", 2048))
-NF_TRAIN = int(os.environ.get("NF", 16)); NEVAL = int(os.environ.get("NEVAL", 40)); LENS = [int(x) for x in os.environ.get("LENS", "2048,8192,16384").split(",")]
+NF_TRAIN = int(os.environ.get("NF", 16)); NEVAL = int(os.environ.get("NEVAL", 24)); LENS = [int(x) for x in os.environ.get("LENS", "2048,8192,16384").split(",")]
 GFLOOR = float(os.environ.get("GFLOOR", 0.05)); AUXW = float(os.environ.get("AUXW", 1.0)); MODULE = os.environ.get("MODULE", "learned"); CONW = float(os.environ.get("CONW", 1.0)); WGW = float(os.environ.get("WGW", 1.0))
-SEED = int(os.environ.get("SEED", 1)); TRAINV = os.environ.get("TRAINV", "multi"); NGEN = int(os.environ.get("NGEN", 12)); DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
+SEED = int(os.environ.get("SEED", 1)); TRAINV = os.environ.get("TRAINV", "multi"); NGEN = int(os.environ.get("NGEN", 8)); DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
 WORK = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.path.abspath("work"); os.makedirs(WORK, exist_ok=True)
 TAG = re.sub(r"[^A-Za-z0-9]+", "_", BASE)
 logf = open(f"{WORK}/mem_{TAG}.log", "w")   # fresh log per run (append mode mixed runs)
@@ -329,6 +329,7 @@ def main():
     for T in LENS:
         for variant in ["base", "para"]:
             for arm in ["full", "window", "mem"]:
+                if arm == "full" and T > 4096: continue   # 16 min per cell on a T4 for an arm that cannot run the main test at 8k anyway (run 8)
                 t1 = time.time(); res = evaluate_gen(T, arm, variant=variant); log(f"[GEN {TAG}] len {T} variant {variant} arm {arm}: {res} ({time.time()-t1:.0f}s)")
     # ---------------- no-harm: prose perplexity base vs base+mem (streamed with SEG either way)
     @torch.no_grad()
