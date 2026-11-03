@@ -36,7 +36,7 @@ GFLOOR = float(os.environ.get("GFLOOR", 0.05)); AUXW = float(os.environ.get("AUX
 DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
 WORK = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.path.abspath("work"); os.makedirs(WORK, exist_ok=True)
 TAG = re.sub(r"[^A-Za-z0-9]+", "_", BASE)
-logf = open(f"{WORK}/mem_{TAG}.log", "a")
+logf = open(f"{WORK}/mem_{TAG}.log", "w")   # fresh log per run (append mode mixed runs)
 def log(*x):
     s = " ".join(str(v) for v in x); print(s, flush=True); logf.write(s + "\n"); logf.flush()
 
