@@ -7718,3 +7718,11 @@ gate inputs, match mass as log1p, resolution-agreement feature; plus (earlier) a
 gate floor. Baselines (useful): full-context 135M recall 75.5 % at 2k (pre-reg said ≥90 %: falsified — a 135M misses a quarter of in-view facts),
 confusion 0.3 %; windowed base 9.9 % → 0.9 % → 0.1 %. Full arm at 8k skipped (conversation 2 % over cap; calibration slack added).
 Cost: module 19 MB constant vs base KV 47/189/377 MB. P1–P5 untested for the module in this run; they stand for run 2.
+
+## ADD-ON LINE — RUN 2 (135M + Qwen2.5-1.5B, gate-feature fix): NEGATIVE again, mem == window on every number
+135M: full 76.8 % (2k) / 45.2 % (8k); window 8.3 / 1.1 / 0.1; mem 8.3 / 1.1 / 0.1. Qwen-1.5B: full 94.4 % (2k); window 12.6 / 1.4 / 0.3; mem identical.
+No-harm 0.00 % (trivial). Training gate sat at the 0.05 floor (learned part ~0) → at eval (floor off) the memory is never used. A gate opens only where
+the copy path is right, so the suspect moves to retrieval on real hidden states: massive-activation dims dominate the top-k sparse key → all addresses
+alike. Local stand-in (embedding-dominated hidden) could not show this. Actions: (1) LayerNorm on the hidden before key/value/gate; (2) INSTRUMENT
+before believing: diagnostic 'copy' arm (gate forced to 1) + per-step copy-path NLL on answer tokens in the training log. Pre-reg P1–P5 remain
+untested until the copy arm shows retrieval; if the copy arm is also ~window, the store itself fails on real states and that is the result.

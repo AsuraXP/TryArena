@@ -33,6 +33,8 @@ class TokenMemory(nn.Module):
         super().__init__(); self.d, self.dk, self.k, self.mres, self.chunk, self.ckey = d, dk, max(1, int(sparse * dk)), mres, chunk, ckey
         din = d * (1 + ckey)   # ckey (P7): the key also sees the raw embedding of the current token, so mid-name tokens address by identity
         self.register_buffer("E", E.detach().float(), persistent=False)   # tied copy readout: proposals are real tokens only
+        self.hn = nn.LayerNorm(d)   # real LLM hidden states carry a few massive-activation dims; without normalisation every sparse key is
+                                    # dominated by the same dims and the store blurs (suspected cause of the identical mem==window runs 1-2)
         self.kp = nn.ModuleList([nn.Linear(din, dk, bias=False) for _ in range(mres)])
         for p in self.kp: nn.init.orthogonal_(p.weight)                                   # write key == read key (same code; content addressing)
         self.vp = nn.Linear(d, d, bias=False); nn.init.eye_(self.vp.weight)                 # value = (near-)identity of the embedding
@@ -63,11 +65,12 @@ class TokenMemory(nn.Module):
             hs.append(torch.stack(outs, 1)); state["ema"] = e.detach()
         return hs
 
-    def forward(self, h, base_logp, x, state, targets=None, gfloor=0.0):
-        """h: (B,L,d) base hidden states for tokens x (B,L); base_logp: (B,L,V) base log-probs for the NEXT token;
+    def forward(self, h, base_logp, x, state, targets=None, gfloor=0.0, force_g=None):
+        """force_g: if set (e.g. 1.0), the gate is overridden -- diagnostic 'copy' arm (pure retrieval).
+        h: (B,L,d) base hidden states for tokens x (B,L); base_logp: (B,L,V) base log-probs for the NEXT token;
         x: token ids (B,L).  Returns mixed log-probs (B,L,V) and the updated state.  Causal: the prediction at t uses writes
         up to (key_{t-1} -> value_t) i.e. only tokens <= t."""
-        B, L, d = h.shape; dev = h.device
+        B, L, d = h.shape; dev = h.device; h = self.hn(h)
         # surprise of each observed token under the base (needs base log-prob of x_t from position t-1; first token of a
         # segment uses the carried value if available -> approximate with the mean surprise)
         with torch.no_grad():
@@ -94,10 +97,11 @@ class TokenMemory(nn.Module):
         feats = torch.cat([h] + [torch.log1p(mm.clamp(min=0))[..., None] for mm in matches] + [(mm > 0.1).float()[..., None] for mm in matches]
                           + [F.cosine_similarity(o, vhat, dim=-1)[..., None] for o in outs], -1)   # agreement between key resolutions
         g = torch.sigmoid(self.gate(feats)) * (1 - gfloor) + gfloor                        # (B,L,1) confidence of the copy path (gfloor>0 only in training: keeps gradient alive)
+        if force_g is not None: g = torch.full_like(g, force_g)
         copy_lp = F.log_softmax(copy_logits, -1)
         logp = torch.logaddexp(torch.log1p(-g + 1e-6) + base_logp, torch.log(g + 1e-6) + copy_lp)   # (B,L,V), no stack copy
         # auxiliary: copy-path NLL of the next token (B,L-1), so the store/readout learn WHAT to retrieve independently of the gate
         self.aux_nll = -copy_lp[:, :-1].gather(-1, targets[:, :, None]).squeeze(-1) if targets is not None else None
         state["n"] = state["n"] + beta.sum(1).detach()
-        self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item()}
+        self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item(), "graw": torch.sigmoid(self.gate(feats)).detach().mean().item()}
         return logp, state

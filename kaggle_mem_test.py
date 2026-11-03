@@ -125,7 +125,7 @@ def main():
         state = mem.init_state(Bn, dev)
         for s0 in range(0, T, SEG):
             seg = ids[:, s0:s0 + SEG]; h, lp = base_fwd(seg)
-            if arm == "mem": lp, state = mem(h, lp, seg, state, targets=seg[:, 1:] if mem.training else None, gfloor=GFLOOR if mem.training else 0.0)
+            if arm in ("mem", "copy"): lp, state = mem(h, lp, seg, state, targets=seg[:, 1:] if mem.training else None, gfloor=GFLOOR if mem.training else 0.0, force_g=1.0 if arm == "copy" else None)
             res.append(fn(lp, seg, s0)); del lp
         return res
 
@@ -138,13 +138,14 @@ def main():
             for a, b, _ in spans: mask[i, a:b] = 6.0            # answer tokens weighted up
         return ids.to(dev), mask.to(dev)
     for s in range(STEPS):
-        convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8) for _ in range(B)]; ids, w = pad_batch(convs); tot = [0.0, 0.0]
+        convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8) for _ in range(B)]; ids, w = pad_batch(convs); tot = [0.0, 0.0, 0.0, 0.0, 0.0]
         def step_fn(lp, seg, s0):   # per-segment loss + backward (state is detached between segments: truncated BPTT at SEG)
             ws = w[:, s0:s0 + seg.shape[1]]; nll = -lp[:, :-1].gather(-1, seg[:, 1:, None]).squeeze(-1)
             ans = (ws[:, 1:] > 1).float(); l = ((nll * ws[:, 1:]).sum() + AUXW * (mem.aux_nll * ans).sum()) / (ids.shape[0] * ids.shape[1])   # aux: copy path on answer tokens only
+            tot[2] += (mem.aux_nll * ans).sum().item(); tot[3] += ans.sum().item(); tot[4] += (nll * ans).sum().item()   # diagnostics: copy-path / mixed NLL on answer tokens
             l.backward(); l = l * ids.shape[0] * ids.shape[1]; tot[0] += l.item(); tot[1] += ws[:, 1:].sum().item(); return None
         opt.zero_grad(); run_stream(ids, "mem", step_fn); torch.nn.utils.clip_grad_norm_(mem.parameters(), 1.0); opt.step()
-        if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} write {mem.last['beta']:.3f} theta {mem.theta.item():.2f} ({time.time()-t0:.0f}s)")
+        if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} (learned {mem.last['graw']:.4f}) write {mem.last['beta']:.3f} theta {mem.theta.item():.2f} | answer-token NLL: copy-path {tot[2]/max(1,tot[3]):.3f} mixed {tot[4]/max(1,tot[3]):.3f} ({time.time()-t0:.0f}s)")
     mem.eval(); torch.save(mem.state_dict(), f"{WORK}/mem_{TAG}.pt")
 
     # ---------------- evaluation
@@ -164,7 +165,7 @@ def main():
                     conf += any(f[2].strip() == ptxt for j, f in enumerate(facts) if j != qi and f[0] == kind)
         return {"recall": round(100 * hit / max(1, tot), 1), "first_tok": round(100 * first_ok / max(1, tot), 1), "tok_acc": round(100 * tk_ok / max(1, tk_n), 1), "confusion": round(100 * conf / max(1, tot), 1), "n_answers": tot}
     for T in LENS:
-        for arm in ["full", "window", "mem"]:
+        for arm in ["full", "window", "mem", "copy"]:   # copy = diagnostic: gate forced to 1 (pure retrieval; shows whether the store holds the facts)
             t1 = time.time(); res = evaluate(T, arm); log(f"[RESULT {TAG}] len {T} arm {arm}: {res} ({time.time()-t1:.0f}s)")
     # ---------------- no-harm: prose perplexity base vs base+mem (streamed with SEG either way)
     @torch.no_grad()
