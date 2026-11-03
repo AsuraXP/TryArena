@@ -7871,3 +7871,18 @@ Predictions:
   P8  as before (fabricated ≤ full + 5) — now measured on para too, where it is meaningful.
   If paraq ≫ paras: the write gate is the wall (mid-sentence facts not stored). If paras ≫ paraq: the question key is the wall.
 Cost: argmax eval 2 extra variants on 2 arms (+~5 min Qwen); gen unchanged. Expect ~55 min Qwen.
+
+## RUN 9 RESULT — varied training templates: FAILED, worse than run 8 (2026-11-03)
+Code 6be468c-era data path but the user's run used e738765 (slow eval); 135M 3222 s, Qwen 6818 s (2.5 h wall — most of it eval).
+Training on 7×7 varied forms did NOT converge in 400 steps: Qwen copy-path answer NLL 2.1–3.2 all run (run 7: 0.3 by step 200), key
+infoNCE 0.33–0.97 (run 7: 0.02–0.2). 135M copy-path NLL 1.0 (run 7: 0.25).
+Argmax recall (mem): Qwen base-variant 17.6 (2k) / 3.5 (8k) [run 7: 93.7 / 86.1]; para 12.9 / 1.5 (window 10.2 / 1.4) → no signal.
+  135M base 27.2 / 11.6 [run 7: 84.8 / 82.7]; para 18.2 / 5.2 (window 1.7 / 0.9) — faint generalisation (para ≈ 2/3 of base) at a collapsed level.
+  paraq ≈ paras on both models (uninformative: nothing learned on either side).
+Gen: Qwen base mem 18.1 / 5.6; para 16.7 / 4.2 (window 15.3 / 4.2) → P9 (mem ≥ window) met trivially; P6', P7' falsified. Confusion ≤ 2 % everywhere.
+Reading: an 8-token-window key cannot learn phrasing invariance from 7 forms per kind at this budget; it could only ever memorise the
+4 fixed templates (run 7). More templates / more steps is the "cover every wording" road the user rejected and I do not take it.
+Next: instrument-first (kaggle_key_diag2.py, ~5–8 min/model): which key INPUT from the frozen base gives held-out-phrasing NN top-1 —
+mid window (control) vs late-layer "meaning" token vs EMA context vs last layer.  Pre-registered reading in its header: best config
+< 40 % same-kind on para → no key over these states generalises; the add-on must address on the base's OWN answer token instead.
+> 70 % → run 10 uses that config (KEYL/EMA flags already in kaggle_mem_test.py, commit 1d21b66).
