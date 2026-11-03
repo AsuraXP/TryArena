@@ -7752,3 +7752,13 @@ with learned two-hop attention; our core did it with keys learned end-to-end. De
 (MLP on an 8-token window of mid-layer LN states + token embeddings, InfoNCE question↔statement, in-batch negatives incl. same-kind same-conversation),
 exact NN on HELD-OUT conversations. ≥ 90 % same-kind → learned keys go into the store and the 3-arm test reruns; < 90 % → wall declared for the
 frozen-base add-on; return to the core.
+
+## LEARNED KEY — RESULT: 100 % held-out NN top-1 at step 100 (99–100 % through 600; train 100 %). Hypothesis (a) dead: the information is in the
+mid-layer states; a trained key finds it. Caveat on record: held-out = new names/slots, same four question templates; paraphrase robustness untested.
+
+## ADD-ON LINE — RUN 4 PRE-REGISTRATION (LearnedKeyMemory, 135M then Qwen-1.5B)
+Module: dense unit-norm learned key (MLP on 8-token window of LN mid-layer states + LN token embeddings → 256-d), Hebbian store W (256×d) with
+novelty-gated writes, tied copy readout, confidence gate; trained with LM-mixture loss + copy-path NLL on answers + InfoNCE (question↔statement key
+pairs, in-batch negatives). Predictions: (P-copy) 'copy' arm exact recall ≥ 60 % at 2k and ≥ 50 % at 8k (key NN ~99 %; losses come from multi-token
+answers and store cross-talk among 16–40 facts). (P-mem) mem arm ≥ 50 % at 8k where window ≈ 1 %; mem within 20 pts of full at 2k. (P-harm) prose ppl
+within 1 %. Falsifiers: copy arm < 30 % at 2k → the store/readout (not the key) is the wall; mem ≪ copy → gate.

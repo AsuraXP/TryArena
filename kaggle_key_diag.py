@@ -30,7 +30,7 @@ def main():
         return out
     def add(name, s, q, kinds): feats.setdefault(name, []).append((s, q, kinds))
     for i in range(N):
-        ids, spans, facts = K.conversation(r, tok, NF, T, sents)
+        ids, spans, facts, _ss = K.conversation(r, tok, NF, T, sents)
         text = tok.decode(ids); enc = tok(text, return_offsets_mapping=True, add_special_tokens=False); offs = enc["offset_mapping"]
         x = torch.tensor([enc["input_ids"]], device=dev)   # re-encoded text: offsets and ids are consistent by construction
         with torch.no_grad(): out = base(input_ids=x, output_hidden_states=True)
@@ -93,7 +93,7 @@ def learned_key(train_n=int(os.environ.get("KTRAIN", 160)), test_n=30, win=8, st
     def extract(seed, n):
         r = random.Random(seed); S, Q, KD, CID = [], [], [], []
         for i in range(n):
-            ids, spans, facts = K.conversation(r, tok, NF, T, sents); text = tok.decode(ids)
+            ids, spans, facts, _ss = K.conversation(r, tok, NF, T, sents); text = tok.decode(ids)
             enc = tok(text, return_offsets_mapping=True, add_special_tokens=False); offs = enc["offset_mapping"]; x = torch.tensor([enc["input_ids"]], device=dev)
             with torch.no_grad(): hs = base(input_ids=x, output_hidden_states=True).hidden_states
             h = F.layer_norm(hs[L][0].float(), (hs[L].shape[-1],)); ex = F.layer_norm(E[x[0]], (E.shape[1],))

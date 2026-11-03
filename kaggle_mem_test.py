@@ -32,7 +32,7 @@ BASE = os.environ.get("BASE", "HuggingFaceTB/SmolLM2-135M")
 SEG = int(os.environ.get("SEG", 512)); FULLMAX = int(os.environ.get("FULLMAX", 8192))
 STEPS = int(os.environ.get("STEPS", 600)); B = int(os.environ.get("B", 4)); TRAIN_LEN = int(os.environ.get("TRAIN_LEN", 2048))
 NF_TRAIN = int(os.environ.get("NF", 16)); NEVAL = int(os.environ.get("NEVAL", 40)); LENS = [int(x) for x in os.environ.get("LENS", "2048,8192,16384").split(",")]
-GFLOOR = float(os.environ.get("GFLOOR", 0.05)); AUXW = float(os.environ.get("AUXW", 1.0))
+GFLOOR = float(os.environ.get("GFLOOR", 0.05)); AUXW = float(os.environ.get("AUXW", 1.0)); MODULE = os.environ.get("MODULE", "learned"); CONW = float(os.environ.get("CONW", 1.0))
 DK = int(os.environ.get("DK", 4096)); SPARSE = float(os.environ.get("SPARSE", 0.02)); MRES = int(os.environ.get("MRES", 2))
 WORK = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.path.abspath("work"); os.makedirs(WORK, exist_ok=True)
 TAG = re.sub(r"[^A-Za-z0-9]+", "_", BASE)
@@ -67,10 +67,10 @@ def load_filler():
 def conversation(r, tok, nfacts, target_len, sents, nquery=None):
     """returns token ids, answer spans [(start,end,fact_idx)], facts.  Facts spread through filler; queries at the end.
     Length is calibrated in tokens: a first draft measures the tokens-per-character ratio, the second draft hits target_len (+-5 %)."""
-    seed = r.random(); ids, spans, facts, q0 = _conversation(random.Random(seed), tok, nfacts, target_len, sents, nquery, 1.0)
+    seed = r.random(); ids, spans, facts, q0, ss = _conversation(random.Random(seed), tok, nfacts, target_len, sents, nquery, 1.0)
     qtok = len(ids) - q0; scale = max(0.05, (target_len - qtok) / max(1, q0))     # rescale the filler only; questions are measured exactly
-    if abs(len(ids) - target_len) > 0.05 * target_len: ids, spans, facts, q0 = _conversation(random.Random(seed), tok, nfacts, target_len, sents, nquery, scale)
-    return ids, spans, facts
+    if abs(len(ids) - target_len) > 0.05 * target_len: ids, spans, facts, q0, ss = _conversation(random.Random(seed), tok, nfacts, target_len, sents, nquery, scale)
+    return ids, spans, facts, ss   # spans: question answers (a,b,fact_idx); ss: statement answers (a,b,fact_idx)
 
 def _conversation(r, tok, nfacts, target_len, sents, nquery, scale):
     facts = [make_fact(r, i) for i in range(nfacts)]; uniq = {}
@@ -82,36 +82,39 @@ def _conversation(r, tok, nfacts, target_len, sents, nquery, scale):
         chunk = []; ln = 0
         while ln < per - 25:
             s = r.choice(sents); chunk.append(f"User: {s}\nAssistant: {r.choice(sents)}\n"); ln += len(s) // 4 + len(chunk[-1]) // 5
-        pos = r.randrange(len(chunk) + 1); chunk.insert(pos, f"User: By the way, {f[3]}.\nAssistant: Noted.\n"); pieces += [(c, None) for c in chunk]
+        pos = r.randrange(len(chunk) + 1); pieces += [(c, None) for c in chunk[:pos]]
+        pieces += [(f"User: By the way, {f[3][:-len(f[2])-1]}", None), (" " + f[2], ("s", fi)), (".\nAssistant: Noted.\n", None)]   # statement answer tagged ('s', fi)
+        pieces += [(c, None) for c in chunk[pos:]]
     qchar = sum(len(p) for p, _ in pieces)
     for qi in qs:
         f = facts[qi]; pieces.append((f"User: {f[4]}\nAssistant: {f[5]}", None)); pieces.append((" " + f[2], qi)); pieces.append((".\n", None))
     text = "".join(p for p, _ in pieces); enc = tok(text, return_offsets_mapping=True, add_special_tokens=False)
-    ids, offs = enc["input_ids"], enc["offset_mapping"]; spans = []; pos = 0
+    ids, offs = enc["input_ids"], enc["offset_mapping"]; spans = []; sspans = []; pos = 0
     for p, qi in pieces:
         if qi is not None:
             a, b = pos, pos + len(p); ti = [i for i, (s, e) in enumerate(offs) if e > a and s < b]
-            if ti: spans.append((ti[0], ti[-1] + 1, qi))
+            if ti: (sspans if isinstance(qi, tuple) else spans).append((ti[0], ti[-1] + 1, qi[1] if isinstance(qi, tuple) else qi))
         pos += len(p)
     q0 = next((i for i, (a, e) in enumerate(offs) if e > qchar), len(ids))
-    return ids, spans, facts, q0
+    return ids, spans, facts, q0, sspans
 
 # ---------------------------------------------------------------- model plumbing
 def main():
     import torch, torch.nn.functional as F
     from transformers import AutoTokenizer, AutoModelForCausalLM
-    sys.path.insert(0, f"{WORK}/TryArena"); from memory_module import TokenMemory
+    sys.path.insert(0, f"{WORK}/TryArena"); from memory_module import TokenMemory, LearnedKeyMemory
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu"); dt = torch.float16 if dev.type == "cuda" else torch.float32
     tok = AutoTokenizer.from_pretrained(BASE, token=os.environ.get("HF_TOKEN")); base = AutoModelForCausalLM.from_pretrained(BASE, torch_dtype=dt, token=os.environ.get("HF_TOKEN")).to(dev).eval()
     for p in base.parameters(): p.requires_grad_(False)
     E = base.get_input_embeddings().weight; d = E.shape[1]; V = E.shape[0]
-    mem = TokenMemory(d, E, dk=DK, sparse=SPARSE, mres=MRES).to(dev); opt = torch.optim.Adam(mem.parameters(), lr=1e-3)
-    nb = sum(p.numel() for p in base.parameters()); log(f"[SETUP] base {BASE} params {nb/1e6:.0f}M d {d} V {V} | module params {mem.n_params()} dk {DK} sparse {SPARSE} mres {MRES} | SEG {SEG} FULLMAX {FULLMAX} | device {dev}")
+    nl = base.config.num_hidden_layers; HL = nl // 2 if MODULE == "learned" else nl   # learned key reads the MID layer (key diagnostic: L15 of 30 best)
+    mem = (LearnedKeyMemory(d, E) if MODULE == "learned" else TokenMemory(d, E, dk=DK, sparse=SPARSE, mres=MRES)).to(dev); opt = torch.optim.Adam(mem.parameters(), lr=1e-3)
+    nb = sum(p.numel() for p in base.parameters()); log(f"[SETUP] base {BASE} params {nb/1e6:.0f}M d {d} V {V} | module {MODULE} params {mem.n_params()} hidden layer {HL}/{nl} | SEG {SEG} FULLMAX {FULLMAX} | device {dev}")
     sents = load_filler(); log(f"[SETUP] filler sentences {len(sents)}")
 
     @torch.no_grad()
     def base_fwd(ids):   # ids (B,L) -> hidden (B,L,d) float32, logp (B,L,V) float32
-        out = base(input_ids=ids, output_hidden_states=True); return out.hidden_states[-1].float(), F.log_softmax(out.logits.float(), -1)
+        out = base(input_ids=ids, output_hidden_states=True); return out.hidden_states[HL].float(), F.log_softmax(out.logits.float(), -1)
 
     def run_stream(ids, arm, fn):
         """process (B,T) ids in segments; calls fn(logp_seg, seg_ids, s0) per segment and returns the list of its results.
@@ -133,19 +136,35 @@ def main():
     r = random.Random(1); t0 = time.time(); mem.train()
     def pad_batch(convs):
         T = max(len(c[0]) for c in convs); ids = torch.full((len(convs), T), tok.pad_token_id or 0, dtype=torch.long); mask = torch.zeros(len(convs), T)
-        for i, (c, spans, _) in enumerate(convs):
+        for i, (c, spans, _, ss) in enumerate(convs):
             ids[i, :len(c)] = torch.tensor(c); mask[i, :len(c)] = 1.0
             for a, b, _ in spans: mask[i, a:b] = 6.0            # answer tokens weighted up
         return ids.to(dev), mask.to(dev)
     for s in range(STEPS):
         convs = [conversation(r, tok, NF_TRAIN, TRAIN_LEN, sents, nquery=8) for _ in range(B)]; ids, w = pad_batch(convs); tot = [0.0, 0.0, 0.0, 0.0, 0.0]
+        # (question pre-answer position, statement pre-answer position) pairs per conversation, for the contrastive key loss
+        pairs = [];  # (conv i, qpos, spos)
+        for i, (c, spans, facts, ss) in enumerate(convs):
+            sp = {fi: a - 1 for a, b, fi in ss}
+            pairs += [(i, a - 1, sp[fi]) for a, b, fi in spans if fi in sp and a > 0]
+        qf, sf = {}, {}
         def step_fn(lp, seg, s0):   # per-segment loss + backward (state is detached between segments: truncated BPTT at SEG)
             ws = w[:, s0:s0 + seg.shape[1]]; nll = -lp[:, :-1].gather(-1, seg[:, 1:, None]).squeeze(-1)
             ans = (ws[:, 1:] > 1).float(); l = ((nll * ws[:, 1:]).sum() + AUXW * (mem.aux_nll * ans).sum()) / (ids.shape[0] * ids.shape[1])   # aux: copy path on answer tokens only
             tot[2] += (mem.aux_nll * ans).sum().item(); tot[3] += ans.sum().item(); tot[4] += (nll * ans).sum().item()   # diagnostics: copy-path / mixed NLL on answer tokens
+            if MODULE == "learned":   # stash detached window features at pair positions that fall in this segment
+                for j, (i, qp, spp) in enumerate(pairs):
+                    if s0 <= qp < s0 + seg.shape[1]: qf[j] = mem.win_feats[i, qp - s0]
+                    if s0 <= spp < s0 + seg.shape[1]: sf[j] = mem.win_feats[i, spp - s0]
             l.backward(); l = l * ids.shape[0] * ids.shape[1]; tot[0] += l.item(); tot[1] += ws[:, 1:].sum().item(); return None
-        opt.zero_grad(); run_stream(ids, "mem", step_fn); torch.nn.utils.clip_grad_norm_(mem.parameters(), 1.0); opt.step()
-        if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} (learned {mem.last['graw']:.4f}) write {mem.last['beta']:.3f} theta {mem.theta.item():.2f} | answer-token NLL: copy-path {tot[2]/max(1,tot[3]):.3f} mixed {tot[4]/max(1,tot[3]):.3f} ({time.time()-t0:.0f}s)")
+        opt.zero_grad(); run_stream(ids, "mem", step_fn); con = torch.zeros((), device=dev)
+        if MODULE == "learned":
+            js = [j for j in range(len(pairs)) if j in qf and j in sf]
+            if len(js) > 1:
+                kq = F.normalize(mem.key(torch.stack([qf[j] for j in js])), dim=-1); ks = F.normalize(mem.key(torch.stack([sf[j] for j in js])), dim=-1)
+                con = F.cross_entropy(kq @ ks.t() / 0.07, torch.arange(len(js), device=dev)); (CONW * con).backward()
+        torch.nn.utils.clip_grad_norm_(mem.parameters(), 1.0); opt.step()
+        if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} (learned {mem.last['graw']:.4f}) write {mem.last['beta']:.3f} theta {mem.theta.item():.2f} | answer-token NLL: copy-path {tot[2]/max(1,tot[3]):.3f} mixed {tot[4]/max(1,tot[3]):.3f} | key infoNCE {con.item():.3f} ({time.time()-t0:.0f}s)")
     mem.eval(); torch.save(mem.state_dict(), f"{WORK}/mem_{TAG}.pt")
 
     # ---------------- evaluation
@@ -153,7 +172,7 @@ def main():
     def evaluate(T, arm, n=NEVAL, seed=777):
         er = random.Random(seed); hit = tot = conf = 0; tk_ok = tk_n = first_ok = 0
         for i in range(n):
-            nf = int(os.environ.get("NFEVAL", 0)) or max(8, min(40, T // 400)); c, spans, facts = conversation(er, tok, nf, int(T * 0.96), sents)   # 4 % slack under the cap
+            nf = int(os.environ.get("NFEVAL", 0)) or max(8, min(40, T // 400)); c, spans, facts, _ss = conversation(er, tok, nf, int(T * 0.96), sents)   # 4 % slack under the cap
             ids = torch.tensor([c], device=dev)
             if arm == "full" and ids.shape[1] > FULLMAX: return None
             try: pred = torch.cat(run_stream(ids, arm, lambda lp, seg, s0: lp[0].argmax(-1)), 0)

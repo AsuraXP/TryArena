@@ -105,3 +105,57 @@ class TokenMemory(nn.Module):
         state["n"] = state["n"] + beta.sum(1).detach()
         self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item(), "graw": torch.sigmoid(self.gate(feats)).detach().mean().item()}
         return logp, state
+
+
+class LearnedKeyMemory(nn.Module):
+    """Same store and readout as TokenMemory, with the KEY LEARNED (key diagnostic 2026-11: fixed features top out at 64 % NN top-1
+    on same-kind facts; a contrastively trained key on an 8-token window of mid-layer states reaches 99-100 % held-out).
+      key_t  = normalize(MLP([LN(h_mid[t-7..t]), LN(E[x_{t-7..t}])]))        (dkey-dim, dense, unit norm)
+      write  : W += beta_t * key_{t-1} (x) v_t          beta_t = novelty gate (base surprise of x_t)
+      read   : vhat_t = key_t W ;  copy logits = E vhat (tied readout, real tokens only) ; gate g from (LN h, log1p match, |vhat|)
+    Training signals (all in the main run): LM loss on the mixture, copy-path NLL on answer tokens, and InfoNCE between the key at the
+    question's pre-answer position and the key at the same fact's statement pre-answer position (in-batch negatives)."""
+    def __init__(self, d, E, dkey=256, win=8, hid=512, chunk=128, tau=1.0):
+        super().__init__(); self.d, self.dkey, self.win, self.chunk = d, dkey, win, chunk
+        self.register_buffer("E", E.detach().float(), persistent=False)
+        self.hn = nn.LayerNorm(d); self.en = nn.LayerNorm(d)
+        self.key = nn.Sequential(nn.Linear(2 * d * win, hid), nn.GELU(), nn.Linear(hid, dkey))
+        self.vp = nn.Linear(d, d, bias=False); nn.init.eye_(self.vp.weight)
+        self.theta = nn.Parameter(torch.tensor(2.0)); self.ssc = nn.Parameter(torch.tensor(1.0))
+        self.gate = nn.Sequential(nn.LayerNorm(d + 2), nn.Linear(d + 2, 64), nn.GELU(), nn.Linear(64, 1)); nn.init.constant_(self.gate[-1].bias, -2.0)
+        self.ltau = nn.Parameter(torch.tensor(math.log(tau))); self.last = {}; self.aux_nll = None; self.keys = None
+
+    def n_params(self): return sum(p.numel() for p in self.parameters() if p.requires_grad)
+    def init_state(self, B, device):
+        return {"W": torch.zeros(B, self.dkey, self.d, device=device), "hist": None}
+
+    def _windows(self, h, ex, state):
+        """(B,L,2d) per-token features -> (B,L,win*2d) causal windows, carrying the last win-1 tokens across segments."""
+        f = torch.cat([self.hn(h), self.en(ex)], -1); B, L, D = f.shape
+        prev = state["hist"] if state["hist"] is not None else torch.zeros(B, self.win - 1, D, device=f.device)
+        full = torch.cat([prev, f], 1); state["hist"] = full[:, -(self.win - 1):].detach()
+        return torch.cat([full[:, i:i + L] for i in range(self.win)], -1)        # window ends at t: tokens t-win+1 .. t
+
+    def forward(self, h, base_logp, x, state, targets=None, gfloor=0.0, force_g=None):
+        B, L, d = h.shape; dev = h.device; ex = self.E[x]
+        with torch.no_grad():
+            lp_prev = base_logp[:, :-1].gather(-1, x[:, 1:, None]).squeeze(-1); surpr = torch.cat([torch.full((B, 1), 2.0, device=dev), -lp_prev], 1)
+        beta = torch.sigmoid((surpr - self.theta) / F.softplus(self.ssc))
+        wf = self._windows(h, ex, state); self.win_feats = wf.detach()                             # exposed: the driver re-keys pair positions for the contrastive loss
+        Kf = F.normalize(self.key(wf), dim=-1); self.keys = Kf                                     # (B,L,dkey) unit keys
+        v = self.vp(ex); Kw = torch.cat([torch.zeros(B, 1, self.dkey, device=dev), Kf[:, :-1]], 1) * beta[..., None]
+        W = state["W"]; outs = []; ms = []
+        for c0 in range(0, L, self.chunk):
+            c1 = min(L, c0 + self.chunk); q, kw, vv = Kf[:, c0:c1], Kw[:, c0:c1], v[:, c0:c1]
+            S = torch.tril(torch.einsum("bik,bjk->bij", q, kw)); outs.append(torch.einsum("bij,bjd->bid", S, vv) + torch.einsum("bik,bkd->bid", q, W))
+            ms.append(S.abs().sum(-1) + torch.einsum("bik,bk->bi", q.abs(), W.abs().sum(-1))); W = W + torch.einsum("bjk,bjd->bkd", kw, vv)
+        state["W"] = W.detach(); vhat = torch.cat(outs, 1); match = torch.cat(ms, 1)
+        copy_logits = (vhat @ self.E.t()) / vhat.norm(dim=-1, keepdim=True).clamp(min=1e-3) * torch.exp(self.ltau)
+        feats = torch.cat([self.hn(h), torch.log1p(match.clamp(min=0))[..., None], torch.log1p(vhat.norm(dim=-1))[..., None]], -1)
+        g = torch.sigmoid(self.gate(feats)) * (1 - gfloor) + gfloor
+        if force_g is not None: g = torch.full_like(g, force_g)
+        copy_lp = F.log_softmax(copy_logits, -1)
+        logp = torch.logaddexp(torch.log1p(-g + 1e-6) + base_logp, torch.log(g + 1e-6) + copy_lp)
+        self.aux_nll = -copy_lp[:, :-1].gather(-1, targets[:, :, None]).squeeze(-1) if targets is not None else None
+        self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item(), "graw": torch.sigmoid(self.gate(feats)).detach().mean().item()}
+        return logp, state
