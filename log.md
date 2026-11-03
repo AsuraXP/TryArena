@@ -7825,3 +7825,11 @@ Predictions (written before launch):
   fails, the fix is training on varied statement forms (which is legitimate: the templates are synthetic supervision, not test data),
   and the test then needs a THIRD held-out set — noted now so it cannot be moved later.
 Launch: same two-GPU cell as run 7 (Qwen2.5-1.5B on GPU1, SmolLM2-135M on GPU0), LENS 2048,8192, STEPS 400, NGEN 12.
+
+## RUN 8a — accidental exact replication of run 7 (launch-cell bug; run 8 code did not execute)
+Cause: `pkill -f kaggle_mem_test` in the cell matched the shell running it → rm -rf never ran → clone failed on the existing dir → de3d2cf
+code ran. No variant / GEN lines in the output. Fix: `pkill -f "[k]aggle_mem_test"` in its own call (lesson already in the ledger; re-learned).
+Value: same seed, same code as run 7 → GPU non-determinism only. Qwen2.5-1.5B mem 88.1 (2k) / 76.5 (8k) vs run 7 92.4 / 85.1; copy arm
+37.7 / 42.6 vs 46.0 / 53.8. SmolLM2-135M mem 87.4 / 91.3 vs 82.1 / 82.1. Confusion 0.0 all; ppl +0.04 % / +0.29 %; full/window identical.
+Conclusion: run-to-run band is ±5–9 points. P1–P5 still met on both runs (Qwen 8k ≥ 60 both times). Quote the band from now on:
+Qwen 8k mem 76–85 %, 135M 82–91 %. Run 8 (para / gen / abstain) is relaunched with the fixed cell.
