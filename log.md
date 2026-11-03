@@ -7735,3 +7735,12 @@ same store, at least not in 300 steps. Two hypotheses with different fixes: (a) 
 function of these states; (b) separable, but k-WTA key learning too weak/slow. Instrument before mechanism: kaggle_key_diag.py — exact nearest-
 neighbour matching of question-position vs statement-position hidden states (raw / LN / EMA / mean-8 / +token-emb, three layers), top-1 among the
 conversation's facts and among same-kind facts. Decision rule pre-stated: NN top-1 > 80 % → fix addressing/learning; near chance → read elsewhere.
+
+## KEY DIAGNOSTIC — RESULT (135M, 30 conversations × 16 facts, exact NN)
+Last layer (L30) at the pre-answer position: top-1 37 % (same-kind confusions; chance 25 %). Mid layer L15: 46 % raw, **64 % with clause EMA (.75)**;
+margins ≈ 0 throughout. Reading: fact identity is only weakly present at the position before the answer — the final layer encodes "a name comes next",
+the subject word ("dog") is 3–4 tokens back and washed out by the shared "'s name is". Neither hypothesis cleanly: information present but far from
+the >95 % needed. Pre-stated rule → not "fix addressing" alone; the KEY must be built differently. Hypothesis (byte-level ckey/mres lesson): key =
+surprise-weighted average of the clause's content words (predictable function words get ~0 weight), which the question shares with the statement.
+Added to the diagnostic (surprise-weighted windows 6/10, surprise² variants, on token embeddings and on L15/L22 states). Prediction: token-embedding
+surprise-weighted key > 85 % same-kind top-1; if < 70 %, the clause-key idea is dead and reading must use the base's own attention.

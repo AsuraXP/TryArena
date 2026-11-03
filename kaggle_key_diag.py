@@ -43,8 +43,23 @@ def main():
             spos.append(tok_before(st + len("By the way, ") + len(f[3]) - len(f[2]) - 1)); qpos.append(tok_before(qa + len(f[5]))); kinds.append(f[0])
         if not ok or min(spos) < 0: continue
         spos, qpos = torch.tensor(spos, device=dev), torch.tensor(qpos, device=dev); kinds = torch.tensor(kinds)
+        # surprise of each token under the base (-log p(x_t | <t)); first token gets the mean
+        lp = F.log_softmax(out.logits[0].float(), -1); surp = torch.cat([torch.tensor([3.0], device=dev), -lp[:-1].gather(-1, x[0, 1:, None]).squeeze(-1)])
+        def swin(v, w, win, pw=1.0):   # surprise-weighted mean over the last `win` tokens (weights = surprise^pw)
+            ww = surp.clamp(min=0) ** pw; out_ = torch.zeros_like(v)
+            for p in range(v.shape[0]):
+                a = max(0, p - win + 1); wt = ww[a:p + 1]; out_[p] = (v[a:p + 1] * wt[:, None]).sum(0) / (wt.sum() + 1e-6)
+            return out_
+        exn = F.layer_norm(E[x[0]], (E.shape[1],))
+        for win in (6, 10):
+            sv = swin(exn, None, win); add(f"tokemb surp{win}", sv[spos], sv[qpos], kinds)
+            sv2 = swin(exn, None, win, pw=2.0); add(f"tokemb surp^2 w{win}", sv2[spos], sv2[qpos], kinds)
         for L in layers:
             h = out.hidden_states[L][0].float(); tag = f"L{L}"
+            hn_ = F.layer_norm(h, (h.shape[-1],))
+            for win in (6, 10):
+                sv = swin(hn_, None, win); add(f"{tag} surp{win}", sv[spos], sv[qpos], kinds)
+            sv = swin(hn_, None, 8, pw=2.0); add(f"{tag} surp^2 w8", sv[spos], sv[qpos], kinds)
             add(f"{tag} raw", h[spos], h[qpos], kinds); hn = F.layer_norm(h, (h.shape[-1],)); add(f"{tag} layernorm", hn[spos], hn[qpos], kinds)
             e75 = ema(hn, 0.75); add(f"{tag} ema.75", e75[spos], e75[qpos], kinds); e9 = ema(hn, 0.9); add(f"{tag} ema.90", e9[spos], e9[qpos], kinds)
             m8 = torch.stack([hn[max(0, p - 7):p + 1].mean(0) for p in range(hn.shape[0])]); add(f"{tag} mean8", m8[spos], m8[qpos], kinds)
@@ -61,6 +76,6 @@ def main():
                 if mask.sum() < 2: continue
                 sub = sim[i].masked_fill(~mask, -2); top1_same += int(sub.argmax().item() == i); n_same += 1
                 others = sim[i][mask & (torch.arange(len(s), device=dev) != i)]; margin.append((sim[i, i] - others.max()).item())
-        print(f"  {name:22s} NN top-1 all-facts {100*top1/max(1,n):5.1f} %  | same-kind only {100*top1_same/max(1,n_same):5.1f} %  (chance {100/NF:.0f} % / {100/max(1,n_same/ n * NF) if n else 0:.0f} %)  mean margin same-kind {sum(margin)/max(1,len(margin)):+.3f}")
+        print(f"  {name:22s} NN top-1 all-facts {100*top1/max(1,n):5.1f} %  | same-kind only {100*top1_same/max(1,n_same):5.1f} %  (chance {100/NF:.0f} % / 25 %)  mean margin same-kind {sum(margin)/max(1,len(margin)):+.3f}")
 
 if __name__ == "__main__": main()
