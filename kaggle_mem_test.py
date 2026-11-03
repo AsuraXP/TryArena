@@ -164,7 +164,7 @@ def main():
                 kq = F.normalize(mem.key(torch.stack([qf[j] for j in js])), dim=-1); ks = F.normalize(mem.key(torch.stack([sf[j] for j in js])), dim=-1)
                 con = F.cross_entropy(kq @ ks.t() / 0.07, torch.arange(len(js), device=dev)); (CONW * con).backward()
         torch.nn.utils.clip_grad_norm_(mem.parameters(), 1.0); opt.step()
-        if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} (learned {mem.last['graw']:.4f}) write {mem.last['beta']:.3f} theta {mem.theta.item():.2f} | answer-token NLL: copy-path {tot[2]/max(1,tot[3]):.3f} mixed {tot[4]/max(1,tot[3]):.3f} | key infoNCE {con.item():.3f} ({time.time()-t0:.0f}s)")
+        if s % 25 == 0: log(f"  [train] step {s} loss {tot[0]/max(1,tot[1]):.3f} gate {mem.last['g']:.3f} (learned {mem.last['graw']:.4f}) write {mem.last['beta']:.3f} (frac>.5 {mem.last.get('wfrac', float('nan')):.3f}) theta {mem.theta.item():.2f} | answer-token NLL: copy-path {tot[2]/max(1,tot[3]):.3f} mixed {tot[4]/max(1,tot[3]):.3f} | key infoNCE {con.item():.3f} ({time.time()-t0:.0f}s)")
     mem.eval(); torch.save(mem.state_dict(), f"{WORK}/mem_{TAG}.pt")
 
     # ---------------- evaluation

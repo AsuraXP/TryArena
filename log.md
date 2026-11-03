@@ -7762,3 +7762,13 @@ novelty-gated writes, tied copy readout, confidence gate; trained with LM-mixtur
 pairs, in-batch negatives). Predictions: (P-copy) 'copy' arm exact recall ≥ 60 % at 2k and ≥ 50 % at 8k (key NN ~99 %; losses come from multi-token
 answers and store cross-talk among 16–40 facts). (P-mem) mem arm ≥ 50 % at 8k where window ≈ 1 %; mem within 20 pts of full at 2k. (P-harm) prose ppl
 within 1 %. Falsifiers: copy arm < 30 % at 2k → the store/readout (not the key) is the wall; mem ≪ copy → gate.
+
+## ADD-ON LINE — RUN 4 RESULT (LearnedKeyMemory, 135M + Qwen-1.5B): falsifier "copy arm < 30 %" TRIGGERED → store/readout is the wall, not the key
+Key infoNCE 1.63 → 0.26 (135M), 1.01 → 0.02–0.18 (1.5B): keys separate facts. Copy-path answer NLL 10.5 → 7.0 (135M), 11.4 → 10.6 (1.5B); copy arm 0 %;
+mem == window (gate correctly shut). P-copy, P-mem FALSIFIED. Cause, by arithmetic (should have been caught pre-launch): `write 0.76` — the novelty gate
+(theta 2) writes ~76 % of tokens → ~1500 dense 256-d associations per 2k conversation; one correct association (overlap 1) vs ~1500 random overlaps
+(~1/16 each) → noise ≈ 2.4× signal. The byte-level store only ever worked with BOTH sparse high-dim addresses (M2/M3) AND selective writes (F1 sgate);
+neither was carried into the learned-key module. Fix (run 5): sparse k-WTA address (dk 4096, 1.5 %) on top of the learned key; write threshold theta0
+6 nats (p<.25 %), scale .5 → expected write fraction ~5 %, noise ~.15 of signal. New per-step readout: write fraction (β>.5). Pre-reg for run 5: write
+fraction < 0.15; copy-path answer NLL < 3 by step 300; copy arm ≥ 50 % at 2k; mem ≥ 40 % at 8k. Falsifier: write fraction low but copy NLL still > 6 →
+readout (tied cosine over V) is the remaining wall.

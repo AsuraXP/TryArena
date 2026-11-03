@@ -103,7 +103,8 @@ class TokenMemory(nn.Module):
         # auxiliary: copy-path NLL of the next token (B,L-1), so the store/readout learn WHAT to retrieve independently of the gate
         self.aux_nll = -copy_lp[:, :-1].gather(-1, targets[:, :, None]).squeeze(-1) if targets is not None else None
         state["n"] = state["n"] + beta.sum(1).detach()
-        self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item(), "graw": torch.sigmoid(self.gate(feats)).detach().mean().item()}
+        self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item(), "graw": torch.sigmoid(self.gate(feats)).detach().mean().item(),
+                     "wfrac": (beta > 0.5).float().mean().item()}
         return logp, state
 
 
@@ -115,19 +116,23 @@ class LearnedKeyMemory(nn.Module):
       read   : vhat_t = key_t W ;  copy logits = E vhat (tied readout, real tokens only) ; gate g from (LN h, log1p match, |vhat|)
     Training signals (all in the main run): LM loss on the mixture, copy-path NLL on answer tokens, and InfoNCE between the key at the
     question's pre-answer position and the key at the same fact's statement pre-answer position (in-batch negatives)."""
-    def __init__(self, d, E, dkey=256, win=8, hid=512, chunk=128, tau=1.0):
-        super().__init__(); self.d, self.dkey, self.win, self.chunk = d, dkey, win, chunk
+    def __init__(self, d, E, dkey=256, win=8, hid=512, chunk=128, tau=1.0, dk=4096, sparse=0.015, theta0=6.0):
+        """Run-4 lesson (arithmetic, logged): dense 256-d keys + writing 76 % of tokens = ~1500 writes/conversation, noise ~2.4x signal.
+        So: (1) store address = k-WTA sparse code (dk, top `sparse`) of the learned key -> unrelated addresses overlap ~0;
+        (2) write only unpredictable tokens: theta0 = 6 nats (p < .25 %); random names/numbers are 8+, prose mostly below."""
+        super().__init__(); self.d, self.dkey, self.win, self.chunk, self.dk, self.k = d, dkey, win, chunk, dk, max(1, int(sparse * dk))
         self.register_buffer("E", E.detach().float(), persistent=False)
         self.hn = nn.LayerNorm(d); self.en = nn.LayerNorm(d)
         self.key = nn.Sequential(nn.Linear(2 * d * win, hid), nn.GELU(), nn.Linear(hid, dkey))
         self.vp = nn.Linear(d, d, bias=False); nn.init.eye_(self.vp.weight)
-        self.theta = nn.Parameter(torch.tensor(2.0)); self.ssc = nn.Parameter(torch.tensor(1.0))
+        self.theta = nn.Parameter(torch.tensor(theta0)); self.ssc = nn.Parameter(torch.tensor(0.5))
+        self.addr = nn.Linear(dkey, dk, bias=False); nn.init.orthogonal_(self.addr.weight)     # learned key -> sparse address (k-WTA)
         self.gate = nn.Sequential(nn.LayerNorm(d + 2), nn.Linear(d + 2, 64), nn.GELU(), nn.Linear(64, 1)); nn.init.constant_(self.gate[-1].bias, -2.0)
         self.ltau = nn.Parameter(torch.tensor(math.log(tau))); self.last = {}; self.aux_nll = None; self.keys = None
 
     def n_params(self): return sum(p.numel() for p in self.parameters() if p.requires_grad)
     def init_state(self, B, device):
-        return {"W": torch.zeros(B, self.dkey, self.d, device=device), "hist": None}
+        return {"W": torch.zeros(B, self.dk, self.d, device=device), "hist": None}
 
     def _windows(self, h, ex, state):
         """(B,L,2d) per-token features -> (B,L,win*2d) causal windows, carrying the last win-1 tokens across segments."""
@@ -142,8 +147,10 @@ class LearnedKeyMemory(nn.Module):
             lp_prev = base_logp[:, :-1].gather(-1, x[:, 1:, None]).squeeze(-1); surpr = torch.cat([torch.full((B, 1), 2.0, device=dev), -lp_prev], 1)
         beta = torch.sigmoid((surpr - self.theta) / F.softplus(self.ssc))
         wf = self._windows(h, ex, state); self.win_feats = wf.detach()                             # exposed: the driver re-keys pair positions for the contrastive loss
-        Kf = F.normalize(self.key(wf), dim=-1); self.keys = Kf                                     # (B,L,dkey) unit keys
-        v = self.vp(ex); Kw = torch.cat([torch.zeros(B, 1, self.dkey, device=dev), Kf[:, :-1]], 1) * beta[..., None]
+        Kd = F.normalize(self.key(wf), dim=-1); self.keys = Kd                                     # (B,L,dkey) unit dense keys (contrastive target)
+        z = self.addr(Kd); top = z.topk(self.k, -1); Kf = torch.zeros_like(z).scatter(-1, top.indices, F.relu(top.values) + 1e-6)
+        Kf = Kf / (Kf.norm(dim=-1, keepdim=True) + 1e-6)                                            # (B,L,dk) sparse unit address
+        v = self.vp(ex); Kw = torch.cat([torch.zeros(B, 1, self.dk, device=dev), Kf[:, :-1]], 1) * beta[..., None]
         W = state["W"]; outs = []; ms = []
         for c0 in range(0, L, self.chunk):
             c1 = min(L, c0 + self.chunk); q, kw, vv = Kf[:, c0:c1], Kw[:, c0:c1], v[:, c0:c1]
@@ -157,5 +164,6 @@ class LearnedKeyMemory(nn.Module):
         copy_lp = F.log_softmax(copy_logits, -1)
         logp = torch.logaddexp(torch.log1p(-g + 1e-6) + base_logp, torch.log(g + 1e-6) + copy_lp)
         self.aux_nll = -copy_lp[:, :-1].gather(-1, targets[:, :, None]).squeeze(-1) if targets is not None else None
-        self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item(), "graw": torch.sigmoid(self.gate(feats)).detach().mean().item()}
+        self.last = {"g": g.detach().mean().item(), "beta": beta.detach().mean().item(), "graw": torch.sigmoid(self.gate(feats)).detach().mean().item(),
+                     "wfrac": (beta > 0.5).float().mean().item()}
         return logp, state
