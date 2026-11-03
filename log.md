@@ -7744,3 +7744,11 @@ the >95 % needed. Pre-stated rule → not "fix addressing" alone; the KEY must b
 surprise-weighted average of the clause's content words (predictable function words get ~0 weight), which the question shares with the statement.
 Added to the diagnostic (surprise-weighted windows 6/10, surprise² variants, on token embeddings and on L15/L22 states). Prediction: token-embedding
 surprise-weighted key > 85 % same-kind top-1; if < 70 %, the clause-key idea is dead and reading must use the base's own attention.
+
+## KEY DIAGNOSTIC 2 — surprise-weighted clause keys: PREDICTION FALSIFIED (best 48.9 % same-kind; kill line was 70 %)
+Surprise weighting lands on structural tokens ("By the way", newlines, "Assistant:"), not on the identity word. Clause-key idea closed.
+State of evidence: no fixed function of frozen states tried (14 variants × 3 layers) separates same-kind facts beyond 64 %. The full-context TF does it
+with learned two-hop attention; our core did it with keys learned end-to-end. Decisive test for the add-on form, pre-registered: LEARNED key
+(MLP on an 8-token window of mid-layer LN states + token embeddings, InfoNCE question↔statement, in-batch negatives incl. same-kind same-conversation),
+exact NN on HELD-OUT conversations. ≥ 90 % same-kind → learned keys go into the store and the 3-arm test reruns; < 90 % → wall declared for the
+frozen-base add-on; return to the core.
